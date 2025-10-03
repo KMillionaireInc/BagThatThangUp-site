@@ -3,142 +3,167 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deals — Powered by BagThatThangUp</title>
-<meta name="description" content="Auto-refreshed Amazon deals for your members. Promo pages auto-apply discounts at checkout.">
+<title>Finish Onboarding</title>
 <style>
-  :root{
-    --primary:#0ea5a6; --secondary:#1e90ff;
-    --surface:#fff; --bg:#f6faf9; --ink:#0b1320; --muted:#4d6375; --line:#e8eef5;
-    --accent:#0b72f0; --success:#0f915a;
-    --radius:16px; --shadow:0 10px 26px rgba(2,24,43,.10);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  a{color:inherit;text-decoration:none}
-  img{display:block;max-width:100%}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-
-  .topbar{background:#ffffffcc;backdrop-filter:saturate(170%) blur(8px);border-bottom:1px solid var(--line)}
-  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:12px}
-  .chip{background:#eef7ff;border:1px solid #cfe6ff;color:#083663;padding:6px 10px;border-radius:999px;font-weight:800}
-  .chip.em{background:#e7f6f1;border:1px solid #bfe7d7;color:#0c5b42}
-
-  header.hero{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-bottom:1px solid #dff1f3}
-  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
-  .logo{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#fff;border:2px solid rgba(255,255,255,.85)}
-  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .logo{width:52px;height:52px} }
-  .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
-  .sub{margin:4px 0 8px;color:#eaf7ff}
-
-  .toolbar{position:sticky;top:0;z-index:40;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
-  .toolbar .row{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
-  .search input{border:0;outline:0;flex:1;font-size:15px}
-  .select{min-width:160px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-  .pill{background:#fff;border:1px solid var(--line);border-radius:9999px;padding:8px 12px;font-weight:800;color:#083663;cursor:pointer}
-  .pill.active{background:#083663;color:#fff;border-color:#083663}
-
-  .grid{display:grid;gap:16px;margin:16px 0 36px}
-  @media (max-width:599px){ .grid{grid-template-columns:1fr} }
-  @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
-
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
-  .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-  @media (max-width:599px){ .media{height:240px} }
-  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
-  .body{padding:12px}
-  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-  .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
-  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
-  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-  .original-price{color:#999;text-decoration:line-through;font-size:13px}
-  .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-  .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
-  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid var(--success);background:var(--success);color:#fff;font-weight:900}
-  .btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid #cfe6ff;background:#eef7ff;color:#083663;font-weight:900}
-  .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
-  .actions > *{min-width:0;max-width:100%}
-  @media (max-width:599px){ .actions{grid-template-columns:1fr} }
-
-  .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
-  .empty.show{display:block}
-
-  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
+  :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:820px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.08);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:#0b72f0;color:#fff;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
+  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
+  .hide{display:none!important}
 </style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="inner">
-      <span id="siteNameChip" class="chip">Loading…</span>
-      <span id="lastUpdated" class="chip em">Last updated: —</span>
-      <span id="dealCount" class="chip">Deals shown: —</span>
-    </div>
-  </div>
+<div class="wrap">
+  <div class="card">
+    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
+    <p class="sub">Payment succeeded. Complete this one-time setup.</p>
 
-  <header class="hero">
-    <div class="inner">
-      <img id="logo" class="logo" src="" alt="" onerror="this.style.display='none'">
+    <div id="alert" class="err hide"></div>
+
+    <form id="f" novalidate>
+      <div class="full">
+        <label>Store display name</label>
+        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
+      </div>
+
       <div>
-        <h1 id="heroTitle" class="h1">Daily Amazon Promo Codes & Deals</h1>
-        <p class="sub">Promo pages auto-apply discounts at checkout.</p>
-        <div id="tabs" class="actions" style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="pill active" data-src="today">Today's Deals</button>
-          <button class="pill" data-src="yesterday">Yesterday</button>
-          <button class="pill" data-src="almost">Almost Gone</button>
-        </div>
+        <label>Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
       </div>
-    </div>
-  </header>
 
-  <div class="toolbar">
-    <div class="row">
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen"/>
+      <div>
+        <label>Site URL (subdomain)</label>
+        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
+        <div class="hint">Your site will be: <b id="hostPrev">—</b></div>
+        <div id="subWarn" class="warn hide"></div>
       </div>
-      <select id="category" class="select">
-        <option value="__all__" selected>All categories</option>
-      </select>
-      <select id="sort" class="select">
-        <option value="newest" selected>Newest</option>
-        <option value="pricelow">Price: Low → High</option>
-        <option value="pricehigh">Price: High → Low</option>
-      </select>
-      <button id="reset" class="pill">Reset</button>
+
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
+      </div>
+
+      <!-- Custom/Pro -->
+      <div id="p1" class="hide">
+        <label>Primary color (hex)</label>
+        <input id="color_primary" placeholder="#0ea5a6"/>
+      </div>
+      <div id="p2" class="hide">
+        <label>Secondary color (hex)</label>
+        <input id="color_secondary" placeholder="#1e90ff"/>
+      </div>
+      <div class="full hide" id="layWrap">
+        <label>Layout</label>
+        <select id="layout"></select>
+      </div>
+
+      <!-- Pro-only -->
+      <div class="full hide" id="proLogo">
+        <label>Logo URL (optional)</label>
+        <input id="logo_url" placeholder="https://.../logo.png"/>
+      </div>
+      <div class="full hide" id="proFeat">
+        <label>Featured ASINs (comma-separated)</label>
+        <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
+      </div>
+
+      <div class="full">
+        <button id="go" class="btn" type="submit">Submit onboarding</button>
+      </div>
+
+      <input type="hidden" id="plan"/>
+      <input type="hidden" id="plan_key"/>
+    </form>
+
+    <div id="done" class="ok hide">
+      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
     </div>
   </div>
-
-  <main class="wrap">
-    <div id="grid" class="grid"><p>Loading…</p></div>
-    <div id="empty" class="empty">No items match your search/filter. Try another keyword.</div>
-  </main>
-
-  <footer class="wrap">
-    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices can change at any time.</p>
-  </footer>
+</div>
 
 <script>
-(async function(){
-  /* ===== Tenancy & Sources ===== */
-  const HOST = location.host; // e.g., demo4.bagthatthangup.com
-  const DOMAIN = 'bagthatthangup.com';
-  const SUB = HOST.endsWith('.' + DOMAIN) ? HOST.slice(0, -('.'.length + DOMAIN.length)) : '';
+(function(){
+  /* ===== CONFIG ===== */
+  const DOMAIN = "bagthatthangup.com";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
+  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
+  const VALID_KEYS = {
+    Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
+    Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
+    Pro:    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb"
+  };
 
-  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv&cb=" + Date.now();
+  /* ===== Elements ===== */
+  const q = id => document.getElementById(id);
+  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
+  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
+  const fields = {
+    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
+    color_primary:q('color_primary'), color_secondary:q('color_secondary'), layout:q('layout'),
+    logo_url:q('logo_url'), featured_asins:q('featured_asins')
+  };
+  const p1=q('p1'), p2=q('p2'), layWrap=q('layWrap'), proLogo=q('proLogo'), proFeat=q('proFeat');
 
-  const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
-  const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
-  const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
+  /* ===== Utils ===== */
+  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
+  function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
+  function hideError(){ alertBox.classList.add('hide'); }
+  function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
+  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
 
-  const el = s => document.querySelector(s);
-  const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const moneyNum = s => { const m = String(s||'').replace(/[, $]/g,'').match(/(\d+(?:\.\d+)?)/); return m?parseFloat(m[1]):NaN; };
-  const toMoney = n => (isFinite(n) ? "$"+Number(n).toFixed(2) : "");
+  /* ===== CSV duplicate check (preferred) ===== */
+  async function checkTakenViaCSV(sub){
+    const url = SUBSCRIBERS_CSV + "&cb=" + Date.now();
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error('csv_fetch_failed');
+    const text = await res.text();
+    const rows = parseCSV(text);
+    const objs = toObjects(rows);
+    for (const r of objs){
+      const s  = String(r.subdomain||'').trim().toLowerCase();
+      const st = String(r.status||'').trim().toLowerCase();
+      if (s && s===sub && st!=='canceled' && st!=='deleted') return true;
+    }
+    return false;
+  }
 
+  /* ===== JSONP fallback check ===== */
+  function checkTakenViaJSONP(sub){
+    return new Promise((resolve,reject)=>{
+      const cb = 'btb_cb_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const url = `${GAS_ENDPOINT}?check=1&subdomain=${encodeURIComponent(sub)}&callback=${cb}&ts=${Date.now()}`;
+      const timeout = setTimeout(()=>{ cleanup(); reject(new Error('check_timeout')); }, 8000);
+      function cleanup(){
+        clearTimeout(timeout);
+        try{ delete window[cb]; }catch(_){}
+        if (script && script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[cb] = function(resp){
+        cleanup();
+        if (resp && resp.ok) return resolve(!!resp.taken);
+        reject(new Error('check_failed'));
+      };
+      script.onerror = ()=>{ cleanup(); reject(new Error('check_network')); };
+      script.src = url; document.head.appendChild(script);
+    });
+  }
+
+  /* ===== CSV parser helpers ===== */
   function parseCSV(text){
     const rows=[]; let row=[], cell="", inQ=false;
     for(let i=0;i<text.length;i++){
@@ -162,194 +187,108 @@
     });
   }
 
-  function retag(url, tag){
-    if (!url) return '';
-    try{
-      const u = new URL(url);
-      // Replace any existing tag
-      u.searchParams.delete('tag');
-      u.searchParams.append('tag', tag);
-      return u.toString();
-    }catch{
-      // If not a valid URL, return as-is
-      return url;
-    }
+  /* ===== Plan & UI setup ===== */
+  const params = new URLSearchParams(location.search);
+  const plan = params.get('plan') || '';
+  const plan_key = params.get('plan_key') || '';
+  if(!VALID_KEYS[plan] || VALID_KEYS[plan] !== plan_key){
+    showError("Invalid or missing plan link. Contact support."); q('f').classList.add('hide'); return;
   }
+  planBadge.textContent = plan;
+  (function setUI(p){
+    const isCustom = (p==='Custom'||p==='Pro'), isPro = (p==='Pro');
+    p1.classList.toggle('hide', !isCustom);
+    p2.classList.toggle('hide', !isCustom);
+    layWrap.classList.toggle('hide', !isCustom);
+    fields.layout.innerHTML = "";
+    if (p==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (p==='Pro') ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
+    proLogo.classList.toggle('hide', !isPro);
+    proFeat.classList.toggle('hide', !isPro);
+  })(plan);
 
-  function pickImage(o){
-    const raw=o.ImageURL_raw||"", clean=o.ImageURL_clean||"", gen=o.ImageURL_generated||"", fallback=o.Image||"";
-    const cand = raw || clean || gen || fallback;
-    return cand ? cand.replace(/^http:/i,"https:") : "";
-  }
-
-  function computePrices(d){
-    const deal = (isFinite(moneyNum(d.DiscountPrice)) ? moneyNum(d.DiscountPrice)
-                 : isFinite(moneyNum(d.Price)) ? moneyNum(d.Price) : NaN);
-    const candidates = [d.OriginalPrice,d.ListPrice,d.MSRP,d.WasPrice,d.OrigPrice,d.CompareAt]
-      .map(moneyNum).filter(x=>isFinite(x));
-    let orig = candidates.length ? candidates[0] : NaN;
-    const dealStr = isFinite(deal) ? toMoney(deal) : "";
-    const origStr = (isFinite(orig) && isFinite(deal) && orig > deal + 0.01) ? toMoney(orig) : "";
-    return { dealStr, origStr };
-  }
-
-  function cardHTML(d, tenant){
-    const asin = (d.ASIN_Text||d.ASIN||"").toUpperCase();
-    const title = d.Title || d.ProductTitle || "";
-    const img = pickImage(d);
-    const promo = (d.PromoCode || d.Promo || "").trim();
-    // Prefer the raw product link (PromoPage or DP) and re-tag for this tenant
-    const baseLink = (d.Link || d.TaggedLink || "").trim(); // CSV may use 'Link' or 'TaggedLink'
-    const href = tenant.amazon_tag ? retag(baseLink, tenant.amazon_tag) : baseLink;
-
-    const hasCoupon   = /^(true|1|yes)$/i.test(String(d.HasCoupon||""));
-    const starsVal = parseFloat((d.Stars||'').toString()) || 0;
-    const stars = starsVal ? `<div class="stars">${esc(starsVal)} ⭐</div>` : "";
-    const thecat = d.Category || "";
-    const { dealStr, origStr } = computePrices(d);
-
-    const autoApplies = /amazon\.com\/promocode\//i.test(href);
-    const hasCode     = !!promo;
-    const dealLine = autoApplies
-      ? (hasCode ? `Promo code auto applies — ${promo}` : `Auto-applied discount`)
-      : (hasCode ? `Copy promo code — ${promo}` : (hasCoupon ? `Clip coupon on product page` : `No promo code needed`));
-
-    const shareUrl = location.origin + location.pathname + (asin ? `?asin=${encodeURIComponent(asin)}` : '');
-
-    const buttons = [];
-    buttons.push(`
-      <button class="btn-share" onclick="navigator.share ? navigator.share({title:'${esc(title)}',url:'${esc(shareUrl)}'}) : navigator.clipboard.writeText('${esc(shareUrl)}')">
-        Share
-      </button>`);
-    if (hasCode){
-      buttons.push(`<button class="btn-code" onclick="navigator.clipboard.writeText('${esc(promo)}')">Copy Code</button>`);
-    }
-    if (href){
-      buttons.push(`<a class="btn" href="${esc(href)}" target="_blank" rel="nofollow noopener noreferrer">Go to Amazon</a>`);
-    }
-
-    return `
-      <article class="card" data-cat="${esc(thecat)}" data-search="${(title+' '+thecat+' '+asin+' '+(promo||'')).toLowerCase()}">
-        <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(title||'Amazon product')}">` : ``}</div>
-        <div class="body">
-          <div class="tags">
-            ${asin ? `<span class="tag">ASIN ${esc(asin)}</span>`:''}
-            ${thecat ? `<span class="tag">${esc(thecat)}</span>`:''}
-          </div>
-          <div class="title-line">${esc(title||'')}</div>
-          ${stars}
-          ${(origStr || dealStr) ? `
-            <div class="price-box">
-              ${origStr ? `<span class="original-price">${esc(origStr)}</span>`:''}
-              ${dealStr ? `<span class="deal-price">${esc(dealStr)}</span>`:''}
-            </div>` : ``}
-          <div class="meta2">${esc(dealLine)}</div>
-          <div class="actions">${buttons.join('')}</div>
-        </div>
-      </article>`;
-  }
-
-  function render(list){
-    const grid = el("#grid"), empty = el("#empty");
-    if(!list.length){ grid.innerHTML=""; empty.classList.add("show"); el("#dealCount").textContent="Deals shown: 0"; return; }
-    empty.classList.remove("show");
-    grid.innerHTML = list.join("");
-    el("#dealCount").textContent = "Deals shown: " + (grid.children.length || list.length);
-  }
-
-  function applyFilters(state){
-    let rows = state.ALL;
-    if (state.QUERY){
-      const q = state.QUERY.toLowerCase();
-      rows = rows.filter(d => ((d.Title||'')+' '+(d.Category||'')+' '+(d.ASIN_Text||'')+' '+(d.PromoCode||'')).toLowerCase().includes(q));
-    }
-    if (state.CAT !== '__all__'){ rows = rows.filter(d => (d.Category||'').toLowerCase() === state.CAT.toLowerCase()); }
-    if (state.SORT==='pricelow'){
-      rows = rows.slice().sort((a,b)=>(moneyNum(a.DiscountPrice||a.Price)||1e9)-(moneyNum(b.DiscountPrice||b.Price)||1e9));
-    } else if (state.SORT==='pricehigh'){
-      rows = rows.slice().sort((a,b)=>(moneyNum(b.DiscountPrice||b.Price)||-1e9)-(moneyNum(a.DiscountPrice||a.Price)||-1e9));
-    }
-    render(rows.map(d => cardHTML(d, state.tenant)));
-  }
-
-  function fillCategories(rows){
-    const cats = Array.from(new Set(rows.map(r=>(r.Category||'').trim()).filter(Boolean))).sort();
-    const sel = el("#category");
-    sel.innerHTML = `<option value="__all__" selected>All categories</option>` + cats.map(c=>`<option>${esc(c)}</option>`).join('');
-  }
-
-  async function fetchCSV(url){
-    const res = await fetch(url, { cache:'no-store' });
-    if(!res.ok) throw new Error('CSV fetch failed');
-    const text = await res.text();
-    return toObjects(parseCSV(text));
-  }
-
-  // 1) Get the tenant row
-  let tenant = null;
-  if (!SUB){
-    el("#grid").innerHTML = `<p style="padding:24px">This app serves member sites at subdomains. Visit your own link (e.g., https://yourbrand.${DOMAIN}).</p>`;
-    return;
-  }
-  try{
-    const subs = await fetchCSV(SUBSCRIBERS_CSV);
-    tenant = subs.find(r => String(r.subdomain||'').toLowerCase() === SUB.toLowerCase() && String(r.status||'').toLowerCase() !== 'canceled');
-  }catch(_){}
-  if (!tenant){
-    el("#grid").innerHTML = `<p style="padding:24px">No active site found for <b>${esc(SUB)}</b>. Check your onboarding link.</p>`;
-    return;
-  }
-
-  // 2) Theme + header
-  const p = String(tenant.color_primary||'').trim(); const s = String(tenant.color_secondary||'').trim();
-  if (/^#?[0-9a-f]{6}$/i.test(p)) document.documentElement.style.setProperty('--primary', p.startsWith('#')?p:'#'+p);
-  if (/^#?[0-9a-f]{6}$/i.test(s)) document.documentElement.style.setProperty('--secondary', s.startsWith('#')?s:'#'+s);
-  el("#siteNameChip").textContent = (tenant.site_display_name || SUB);
-  el("#heroTitle").textContent = `${tenant.site_display_name || SUB}: Daily Deals`;
-  if (tenant.logo_url) { const L = el("#logo"); L.src = tenant.logo_url; L.alt = tenant.site_display_name || 'Site logo'; }
-
-  // 3) Load deals (from your three tabs)
-  const [today, yest, almost] = await Promise.all([fetchCSV(CSV_TODAY), fetchCSV(CSV_YESTERDAY), fetchCSV(CSV_ALMOST)]);
-  el("#lastUpdated").textContent = "Last updated: " + new Date().toLocaleString();
-
-  // 4) State & controls
-  const state = {
-    tenant,
-    ALL: today, SOURCE:'today', QUERY:'', CAT:'__all__', SORT:'newest'
-  };
-  fillCategories([...today, ...yest, ...almost]);
-
-  // Tab clicks
-  document.addEventListener('click', e=>{
-    const btn = e.target.closest('.pill[data-src]');
-    if (!btn) return;
-    document.querySelectorAll('.pill[data-src]').forEach(b=>b.classList.toggle('active', b===btn));
-    const src = btn.dataset.src;
-    state.SOURCE = src;
-    state.ALL = (src==='today') ? today : (src==='yesterday' ? yest : almost);
-    applyFilters(state);
+  /* Live preview + live duplicate check (CSV first, then JSONP) */
+  updatePrev();
+  let debounceTimer=null;
+  fields.subdomain.addEventListener('input', ()=>{
+    updatePrev();
+    subWarn.classList.add('hide'); subWarn.textContent='';
+    const s = sanitizeSub(fields.subdomain.value);
+    if (!s || s.length < 3) return;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async ()=>{
+      try{
+        const taken = await checkTakenViaCSV(s);
+        if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return; }
+        // CSV said free; double-check with JSONP in case of race
+        try{
+          const taken2 = await checkTakenViaJSONP(s);
+          if (taken2){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+        }catch(_){}
+      }catch(_){
+        // CSV failed; try JSONP alone
+        try{
+          const taken = await checkTakenViaJSONP(s);
+          if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+        }catch(_){}
+      }
+    }, 350);
   });
 
-  // Search/filter/sort
-  el("#search").addEventListener('input', e=>{ state.QUERY=e.target.value; applyFilters(state); });
-  el("#category").addEventListener('change', e=>{ state.CAT=e.target.value; applyFilters(state); });
-  el("#sort").addEventListener('change', e=>{ state.SORT=e.target.value; applyFilters(state); });
-  el("#reset").addEventListener('click', ()=>{ state.QUERY=''; state.CAT='__all__'; state.SORT='newest'; el("#search").value=''; el("#category").value='__all__'; el("#sort").value='newest'; applyFilters(state); });
+  /* ===== Submit ===== */
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault(); hideError(); setBusy(true);
 
-  // Initial render
-  applyFilters(state);
+    const site_display_name = fields.site_display_name.value.trim();
+    const email = fields.email.value.trim();
+    const sub = sanitizeSub(fields.subdomain.value);
+    const amazon_tag = fields.amazon_tag.value.trim();
+    const layout = (fields.layout?.value||'') || (plan==='Basic' ? 'list' : '');
+    const color_primary = normHex(fields.color_primary?.value||'');
+    const color_secondary = normHex(fields.color_secondary?.value||'');
+    const logo_url = (fields.logo_url?.value||'').trim();
+    const featured_asins = (fields.featured_asins?.value||'').trim();
 
-  // Optional: highlight an ASIN via ?asin=
-  (function(){
-    const asin = new URLSearchParams(location.search).get('asin');
-    if (!asin) return;
-    function findCard(){
-      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
-      let node; while ((node = walker.nextNode())) { if (node.nodeValue && node.nodeValue.toUpperCase().includes(asin.toUpperCase())) return node.parentElement.closest('.card'); }
-      return null;
+    if (!site_display_name){ setBusy(false); return showError("Enter a site name."); }
+    if (!isEmail(email))   { setBusy(false); return showError("Enter a valid email."); }
+    if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
+    if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
+
+    // Availability check: CSV → JSONP → warn-and-continue
+    try{
+      const takenCSV = await checkTakenViaCSV(sub);
+      if (takenCSV){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+      try{
+        const takenJSONP = await checkTakenViaJSONP(sub);
+        if (takenJSONP){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+      }catch(_){ /* ignore; we still proceed since CSV said free */ }
+    }catch(_){
+      // Both failed later? We'll warn but still proceed; server will enforce no duplicates.
+      showError("Could not verify site URL. We’ll attempt to create your site; if it’s taken, you’ll be asked to choose another.");
     }
-    let tries=0; const iv = setInterval(()=>{ const elc = findCard(); if (elc){ clearInterval(iv); elc.scrollIntoView({behavior:'smooth',block:'center'}); elc.style.outline='3px solid var(--secondary)'; setTimeout(()=>elc.style.outline='',2500); } else if (++tries>30){ clearInterval(iv); } }, 200);
-  })();
+
+    // Write row via GET beacon (no CORS)
+    try{
+      const qs = new URLSearchParams({
+        beacon: '1',
+        timestamp: new Date().toISOString(),
+        tenant_id: '',
+        email, site_display_name, subdomain: sub, plan,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
+        extra_page_enabled: 'false',
+        status: 'active'
+      });
+      await fetch(`${GAS_ENDPOINT}?${qs.toString()}`, { method: 'GET', mode: 'no-cors' });
+
+      form.classList.add('hide'); done.classList.remove('hide');
+      const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
+    }catch(e){
+      showError("Failed to submit. Try again.");
+    }finally{
+      setBusy(false);
+    }
+  });
 })();
 </script>
 </body>
