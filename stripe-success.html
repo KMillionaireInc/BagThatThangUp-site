@@ -97,7 +97,7 @@
 (function(){
   /* ===== CONFIG ===== */
   const DOMAIN = "bagthatthangup.com";
-  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwuVE04GlyVDMnMujnT8ZuSIbH-XCj_P2KU1CoUgU5SGLqIZ0kbLMX4WjOScEQyUJ36/exec";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
   const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
   const VALID_KEYS = {
     Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
@@ -208,21 +208,25 @@
     if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
     if (!subWarn.classList.contains('hide')){ setBusy(false); return showError("That site URL is already taken. Try another."); }
 
-    const payload = {
-      timestamp:new Date().toISOString(), tenant_id:"",
-      email, site_display_name, subdomain: sub, plan,
-      amazon_tag, color_primary, color_secondary, logo_url, layout, featured_asins,
-      extra_page_enabled:false, status:"active"
-    };
-
     try{
-      // Use no-cors to bypass CORS; we can’t read the response, so we optimistically show success.
-      await fetch(GAS_ENDPOINT, {
-        method:"POST", mode:"no-cors",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+      // GET beacon to Apps Script (no CORS; script writes the row)
+      const qs = new URLSearchParams({
+        beacon: '1',
+        timestamp: new Date().toISOString(),
+        tenant_id: '',
+        email, site_display_name, subdomain: sub, plan,
+        amazon_tag,
+        color_primary,
+        color_secondary,
+        logo_url,
+        layout,
+        featured_asins,
+        extra_page_enabled: 'false',
+        status: 'active'
       });
+      await fetch(`${GAS_ENDPOINT}?${qs.toString()}`, { method: 'GET', mode: 'no-cors' });
 
+      // Show success
       form.classList.add('hide'); done.classList.remove('hide');
       const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
     }catch(e){
