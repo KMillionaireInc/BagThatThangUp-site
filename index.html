@@ -1,15 +1,356 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>BagThatThangUp — CLEAN v1</title>
-  <!-- FINGERPRINT: BTB CLEAN v1 -->
-  <style>body{font-family:system-ui,Arial,sans-serif;margin:40px;color:#0b1320}</style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Deals — Powered by BagThatThangUp</title>
+<meta name="description" content="Auto-refreshed Amazon deals for your members. Promo pages auto-apply discounts at checkout.">
+<style>
+  :root{
+    --primary:#0ea5a6; --secondary:#1e90ff;
+    --surface:#fff; --bg:#f6faf9; --ink:#0b1320; --muted:#4d6375; --line:#e8eef5;
+    --accent:#0b72f0; --success:#0f915a;
+    --radius:16px; --shadow:0 10px 26px rgba(2,24,43,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  .topbar{background:#ffffffcc;backdrop-filter:saturate(170%) blur(8px);border-bottom:1px solid var(--line)}
+  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:12px}
+  .chip{background:#eef7ff;border:1px solid #cfe6ff;color:#083663;padding:6px 10px;border-radius:999px;font-weight:800}
+  .chip.em{background:#e7f6f1;border:1px solid #bfe7d7;color:#0c5b42}
+
+  header.hero{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-bottom:1px solid #dff1f3}
+  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
+  .logo{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#fff;border:2px solid rgba(255,255,255,.85)}
+  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .logo{width:52px;height:52px} }
+  .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
+  .sub{margin:4px 0 8px;color:#eaf7ff}
+
+  .toolbar{position:sticky;top:0;z-index:40;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+  .toolbar .row{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
+  .search input{border:0;outline:0;flex:1;font-size:15px}
+  .select{min-width:160px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
+  .pill{background:#fff;border:1px solid var(--line);border-radius:9999px;padding:8px 12px;font-weight:800;color:#083663;cursor:pointer}
+  .pill.active{background:#083663;color:#fff;border-color:#083663}
+
+  .grid{display:grid;gap:16px;margin:16px 0 36px}
+  @media (max-width:599px){ .grid{grid-template-columns:1fr} }
+  @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+  .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
+  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
+  @media (max-width:599px){ .media{height:240px} }
+  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
+  .body{padding:12px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
+  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
+  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
+  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+  .original-price{color:#999;text-decoration:line-through;font-size:13px}
+  .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
+  .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid var(--success);background:var(--success);color:#fff;font-weight:900}
+  .btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid #cfe6ff;background:#eef7ff;color:#083663;font-weight:900}
+  .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
+  .actions > *{min-width:0;max-width:100%}
+  @media (max-width:599px){ .actions{grid-template-columns:1fr} }
+
+  .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
+  .empty.show{display:block}
+
+  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
+</style>
 </head>
 <body>
-  <h1>BagThatThangUp — CLEAN v1</h1>
-  <p>If you see this at bagthatthangup.com, the new project is live.</p>
+  <div class="topbar">
+    <div class="inner">
+      <span id="siteNameChip" class="chip">Loading…</span>
+      <span id="lastUpdated" class="chip em">Last updated: —</span>
+      <span id="dealCount" class="chip">Deals shown: —</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="inner">
+      <img id="logo" class="logo" src="" alt="" onerror="this.style.display='none'">
+      <div>
+        <h1 id="heroTitle" class="h1">Daily Amazon Promo Codes & Deals</h1>
+        <p class="sub">Promo pages auto-apply discounts at checkout.</p>
+        <div id="tabs" class="actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="pill active" data-src="today">Today's Deals</button>
+          <button class="pill" data-src="yesterday">Yesterday</button>
+          <button class="pill" data-src="almost">Almost Gone</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="row">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen"/>
+      </div>
+      <select id="category" class="select">
+        <option value="__all__" selected>All categories</option>
+      </select>
+      <select id="sort" class="select">
+        <option value="newest" selected>Newest</option>
+        <option value="pricelow">Price: Low → High</option>
+        <option value="pricehigh">Price: High → Low</option>
+      </select>
+      <button id="reset" class="pill">Reset</button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div id="grid" class="grid"><p>Loading…</p></div>
+    <div id="empty" class="empty">No items match your search/filter. Try another keyword.</div>
+  </main>
+
+  <footer class="wrap">
+    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices can change at any time.</p>
+  </footer>
+
+<script>
+(async function(){
+  /* ===== Tenancy & Sources ===== */
+  const HOST = location.host; // e.g., demo4.bagthatthangup.com
+  const DOMAIN = 'bagthatthangup.com';
+  const SUB = HOST.endsWith('.' + DOMAIN) ? HOST.slice(0, -('.'.length + DOMAIN.length)) : '';
+
+  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv&cb=" + Date.now();
+
+  const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
+  const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
+  const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
+
+  const el = s => document.querySelector(s);
+  const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const moneyNum = s => { const m = String(s||'').replace(/[, $]/g,'').match(/(\d+(?:\.\d+)?)/); return m?parseFloat(m[1]):NaN; };
+  const toMoney = n => (isFinite(n) ? "$"+Number(n).toFixed(2) : "");
+
+  function parseCSV(text){
+    const rows=[]; let row=[], cell="", inQ=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i], nx=text[i+1];
+      if(inQ){ if(ch==='"'&&nx==='"'){cell+='"';i++;} else if(ch==='"'){inQ=false;} else{cell+=ch;} }
+      else { if(ch==='"'){inQ=true;} else if(ch===','){row.push(cell);cell="";}
+             else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
+             else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";} else{cell+=ch;} }
+    }
+    if(cell!==""||row.length){row.push(cell);rows.push(row);}
+    return rows.filter(r=>r.length>1);
+  }
+  function toObjects(rows){
+    if(!rows.length) return [];
+    const headers = rows[0].map(h=>String(h||"").trim());
+    const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+    return rows.slice(1).map((r,ix)=>{
+      const o={ _ix: ix };
+      for(const [h,i] of Object.entries(idx)) o[h]=(r[i]||"").toString().trim();
+      return o;
+    });
+  }
+
+  function retag(url, tag){
+    if (!url) return '';
+    try{
+      const u = new URL(url);
+      // Replace any existing tag
+      u.searchParams.delete('tag');
+      u.searchParams.append('tag', tag);
+      return u.toString();
+    }catch{
+      // If not a valid URL, return as-is
+      return url;
+    }
+  }
+
+  function pickImage(o){
+    const raw=o.ImageURL_raw||"", clean=o.ImageURL_clean||"", gen=o.ImageURL_generated||"", fallback=o.Image||"";
+    const cand = raw || clean || gen || fallback;
+    return cand ? cand.replace(/^http:/i,"https:") : "";
+  }
+
+  function computePrices(d){
+    const deal = (isFinite(moneyNum(d.DiscountPrice)) ? moneyNum(d.DiscountPrice)
+                 : isFinite(moneyNum(d.Price)) ? moneyNum(d.Price) : NaN);
+    const candidates = [d.OriginalPrice,d.ListPrice,d.MSRP,d.WasPrice,d.OrigPrice,d.CompareAt]
+      .map(moneyNum).filter(x=>isFinite(x));
+    let orig = candidates.length ? candidates[0] : NaN;
+    const dealStr = isFinite(deal) ? toMoney(deal) : "";
+    const origStr = (isFinite(orig) && isFinite(deal) && orig > deal + 0.01) ? toMoney(orig) : "";
+    return { dealStr, origStr };
+  }
+
+  function cardHTML(d, tenant){
+    const asin = (d.ASIN_Text||d.ASIN||"").toUpperCase();
+    const title = d.Title || d.ProductTitle || "";
+    const img = pickImage(d);
+    const promo = (d.PromoCode || d.Promo || "").trim();
+    // Prefer the raw product link (PromoPage or DP) and re-tag for this tenant
+    const baseLink = (d.Link || d.TaggedLink || "").trim(); // CSV may use 'Link' or 'TaggedLink'
+    const href = tenant.amazon_tag ? retag(baseLink, tenant.amazon_tag) : baseLink;
+
+    const hasCoupon   = /^(true|1|yes)$/i.test(String(d.HasCoupon||""));
+    const starsVal = parseFloat((d.Stars||'').toString()) || 0;
+    const stars = starsVal ? `<div class="stars">${esc(starsVal)} ⭐</div>` : "";
+    const thecat = d.Category || "";
+    const { dealStr, origStr } = computePrices(d);
+
+    const autoApplies = /amazon\.com\/promocode\//i.test(href);
+    const hasCode     = !!promo;
+    const dealLine = autoApplies
+      ? (hasCode ? `Promo code auto applies — ${promo}` : `Auto-applied discount`)
+      : (hasCode ? `Copy promo code — ${promo}` : (hasCoupon ? `Clip coupon on product page` : `No promo code needed`));
+
+    const shareUrl = location.origin + location.pathname + (asin ? `?asin=${encodeURIComponent(asin)}` : '');
+
+    const buttons = [];
+    buttons.push(`
+      <button class="btn-share" onclick="navigator.share ? navigator.share({title:'${esc(title)}',url:'${esc(shareUrl)}'}) : navigator.clipboard.writeText('${esc(shareUrl)}')">
+        Share
+      </button>`);
+    if (hasCode){
+      buttons.push(`<button class="btn-code" onclick="navigator.clipboard.writeText('${esc(promo)}')">Copy Code</button>`);
+    }
+    if (href){
+      buttons.push(`<a class="btn" href="${esc(href)}" target="_blank" rel="nofollow noopener noreferrer">Go to Amazon</a>`);
+    }
+
+    return `
+      <article class="card" data-cat="${esc(thecat)}" data-search="${(title+' '+thecat+' '+asin+' '+(promo||'')).toLowerCase()}">
+        <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(title||'Amazon product')}">` : ``}</div>
+        <div class="body">
+          <div class="tags">
+            ${asin ? `<span class="tag">ASIN ${esc(asin)}</span>`:''}
+            ${thecat ? `<span class="tag">${esc(thecat)}</span>`:''}
+          </div>
+          <div class="title-line">${esc(title||'')}</div>
+          ${stars}
+          ${(origStr || dealStr) ? `
+            <div class="price-box">
+              ${origStr ? `<span class="original-price">${esc(origStr)}</span>`:''}
+              ${dealStr ? `<span class="deal-price">${esc(dealStr)}</span>`:''}
+            </div>` : ``}
+          <div class="meta2">${esc(dealLine)}</div>
+          <div class="actions">${buttons.join('')}</div>
+        </div>
+      </article>`;
+  }
+
+  function render(list){
+    const grid = el("#grid"), empty = el("#empty");
+    if(!list.length){ grid.innerHTML=""; empty.classList.add("show"); el("#dealCount").textContent="Deals shown: 0"; return; }
+    empty.classList.remove("show");
+    grid.innerHTML = list.join("");
+    el("#dealCount").textContent = "Deals shown: " + (grid.children.length || list.length);
+  }
+
+  function applyFilters(state){
+    let rows = state.ALL;
+    if (state.QUERY){
+      const q = state.QUERY.toLowerCase();
+      rows = rows.filter(d => ((d.Title||'')+' '+(d.Category||'')+' '+(d.ASIN_Text||'')+' '+(d.PromoCode||'')).toLowerCase().includes(q));
+    }
+    if (state.CAT !== '__all__'){ rows = rows.filter(d => (d.Category||'').toLowerCase() === state.CAT.toLowerCase()); }
+    if (state.SORT==='pricelow'){
+      rows = rows.slice().sort((a,b)=>(moneyNum(a.DiscountPrice||a.Price)||1e9)-(moneyNum(b.DiscountPrice||b.Price)||1e9));
+    } else if (state.SORT==='pricehigh'){
+      rows = rows.slice().sort((a,b)=>(moneyNum(b.DiscountPrice||b.Price)||-1e9)-(moneyNum(a.DiscountPrice||a.Price)||-1e9));
+    }
+    render(rows.map(d => cardHTML(d, state.tenant)));
+  }
+
+  function fillCategories(rows){
+    const cats = Array.from(new Set(rows.map(r=>(r.Category||'').trim()).filter(Boolean))).sort();
+    const sel = el("#category");
+    sel.innerHTML = `<option value="__all__" selected>All categories</option>` + cats.map(c=>`<option>${esc(c)}</option>`).join('');
+  }
+
+  async function fetchCSV(url){
+    const res = await fetch(url, { cache:'no-store' });
+    if(!res.ok) throw new Error('CSV fetch failed');
+    const text = await res.text();
+    return toObjects(parseCSV(text));
+  }
+
+  // 1) Get the tenant row
+  let tenant = null;
+  if (!SUB){
+    el("#grid").innerHTML = `<p style="padding:24px">This app serves member sites at subdomains. Visit your own link (e.g., https://yourbrand.${DOMAIN}).</p>`;
+    return;
+  }
+  try{
+    const subs = await fetchCSV(SUBSCRIBERS_CSV);
+    tenant = subs.find(r => String(r.subdomain||'').toLowerCase() === SUB.toLowerCase() && String(r.status||'').toLowerCase() !== 'canceled');
+  }catch(_){}
+  if (!tenant){
+    el("#grid").innerHTML = `<p style="padding:24px">No active site found for <b>${esc(SUB)}</b>. Check your onboarding link.</p>`;
+    return;
+  }
+
+  // 2) Theme + header
+  const p = String(tenant.color_primary||'').trim(); const s = String(tenant.color_secondary||'').trim();
+  if (/^#?[0-9a-f]{6}$/i.test(p)) document.documentElement.style.setProperty('--primary', p.startsWith('#')?p:'#'+p);
+  if (/^#?[0-9a-f]{6}$/i.test(s)) document.documentElement.style.setProperty('--secondary', s.startsWith('#')?s:'#'+s);
+  el("#siteNameChip").textContent = (tenant.site_display_name || SUB);
+  el("#heroTitle").textContent = `${tenant.site_display_name || SUB}: Daily Deals`;
+  if (tenant.logo_url) { const L = el("#logo"); L.src = tenant.logo_url; L.alt = tenant.site_display_name || 'Site logo'; }
+
+  // 3) Load deals (from your three tabs)
+  const [today, yest, almost] = await Promise.all([fetchCSV(CSV_TODAY), fetchCSV(CSV_YESTERDAY), fetchCSV(CSV_ALMOST)]);
+  el("#lastUpdated").textContent = "Last updated: " + new Date().toLocaleString();
+
+  // 4) State & controls
+  const state = {
+    tenant,
+    ALL: today, SOURCE:'today', QUERY:'', CAT:'__all__', SORT:'newest'
+  };
+  fillCategories([...today, ...yest, ...almost]);
+
+  // Tab clicks
+  document.addEventListener('click', e=>{
+    const btn = e.target.closest('.pill[data-src]');
+    if (!btn) return;
+    document.querySelectorAll('.pill[data-src]').forEach(b=>b.classList.toggle('active', b===btn));
+    const src = btn.dataset.src;
+    state.SOURCE = src;
+    state.ALL = (src==='today') ? today : (src==='yesterday' ? yest : almost);
+    applyFilters(state);
+  });
+
+  // Search/filter/sort
+  el("#search").addEventListener('input', e=>{ state.QUERY=e.target.value; applyFilters(state); });
+  el("#category").addEventListener('change', e=>{ state.CAT=e.target.value; applyFilters(state); });
+  el("#sort").addEventListener('change', e=>{ state.SORT=e.target.value; applyFilters(state); });
+  el("#reset").addEventListener('click', ()=>{ state.QUERY=''; state.CAT='__all__'; state.SORT='newest'; el("#search").value=''; el("#category").value='__all__'; el("#sort").value='newest'; applyFilters(state); });
+
+  // Initial render
+  applyFilters(state);
+
+  // Optional: highlight an ASIN via ?asin=
+  (function(){
+    const asin = new URLSearchParams(location.search).get('asin');
+    if (!asin) return;
+    function findCard(){
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      let node; while ((node = walker.nextNode())) { if (node.nodeValue && node.nodeValue.toUpperCase().includes(asin.toUpperCase())) return node.parentElement.closest('.card'); }
+      return null;
+    }
+    let tries=0; const iv = setInterval(()=>{ const elc = findCard(); if (elc){ clearInterval(iv); elc.scrollIntoView({behavior:'smooth',block:'center'}); elc.style.outline='3px solid var(--secondary)'; setTimeout(()=>elc.style.outline='',2500); } else if (++tries>30){ clearInterval(iv); } }, 200);
+  })();
+})();
+</script>
 </body>
 </html>
-
