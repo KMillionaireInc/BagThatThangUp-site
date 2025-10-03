@@ -98,7 +98,6 @@
   /* ===== CONFIG ===== */
   const DOMAIN = "bagthatthangup.com";
   const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
-  const SUBSCRIBERS_CSV_BASE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
   const VALID_KEYS = {
     Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
     Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
@@ -123,24 +122,28 @@
   function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
   function hideError(){ alertBox.classList.add('hide'); }
   function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
+  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
 
-  /* ===== CSV parsing ===== */
-  function parseCSV(text){
-    const rows=[]; let row=[], cell="", inQ=false;
-    for(let i=0;i<text.length;i++){
-      const ch=text[i], nx=text[i+1];
-      if(inQ){ if(ch==='"'&&nx==='"'){cell+='"';i++;} else if(ch==='"'){inQ=false;} else{cell+=ch;} }
-      else { if(ch==='"'){inQ=true;} else if(ch===','){row.push(cell);cell="";}
-             else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
-             else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";} else{cell+=ch;} }
-    }
-    if(cell!==""||row.length){row.push(cell);rows.push(row);}
-    return rows.filter(r=>r.length>1);
-  }
-  function toObjects(rows){
-    if(!rows.length) return [];
-    const headers = rows[0].map(h=>String(h||"").trim());
-    return rows.slice(1).map(r=>{ const o={}; for(let i=0;i<headers.length;i++) o[headers[i]]=(r[i]||"").toString().trim(); return o; });
+  /* ===== JSONP checker ===== */
+  function checkSubdomainJSONP(sub){
+    return new Promise((resolve,reject)=>{
+      const cb = 'btb_cb_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const url = `${GAS_ENDPOINT}?check=1&subdomain=${encodeURIComponent(sub)}&callback=${cb}`;
+      const timeout = setTimeout(()=>{ cleanup(); reject(new Error('check_timeout')); }, 8000);
+      function cleanup(){
+        clearTimeout(timeout);
+        try{ delete window[cb]; }catch(_){}
+        if (script && script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[cb] = function(resp){
+        cleanup();
+        if (resp && resp.ok) return resolve(!!resp.taken);
+        reject(new Error('check_failed'));
+      };
+      script.onerror = ()=>{ cleanup(); reject(new Error('check_network')); };
+      script.src = url; document.head.appendChild(script);
+    });
   }
 
   /* ===== Plan & UI ===== */
@@ -148,7 +151,7 @@
   const plan = params.get('plan') || '';
   const plan_key = params.get('plan_key') || '';
   if(!VALID_KEYS[plan] || VALID_KEYS[plan] !== plan_key){
-    showError("Invalid or missing plan link. Contact support."); form.classList.add('hide'); return;
+    showError("Invalid or missing plan link. Contact support."); q('f').classList.add('hide'); return;
   }
   planBadge.textContent = plan;
   (function setUI(p){
@@ -163,36 +166,22 @@
     proFeat.classList.toggle('hide', !isPro);
   })(plan);
 
-  /* ===== Subdomain preview & availability precheck ===== */
-  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
+  /* Live preview + live availability warn while typing (JSONP) */
   updatePrev();
-  fields.subdomain.addEventListener('input', ()=>{ updatePrev(); debounceCheck(); });
-
-  let subCache = { ts:0, rows:[] }, timer=null;
-  async function loadSubsFresh(){
-    // Always bust cache on critical checks
-    const url = SUBSCRIBERS_CSV_BASE + '&cb=' + Date.now();
-    const res = await fetch(url,{cache:'no-store'});
-    const text=await res.text();
-    return toObjects(parseCSV(text));
-  }
-  async function loadSubsCached(){
-    const now=Date.now(); if (now-subCache.ts<180000 && subCache.rows.length) return subCache.rows;
-    subCache.rows = await loadSubsFresh(); subCache.ts = now; return subCache.rows;
-  }
-  function debounceCheck(){ if(timer) clearTimeout(timer); timer=setTimeout(checkAvailLive, 350); }
-  async function checkAvailLive(){
+  let debounceTimer=null;
+  fields.subdomain.addEventListener('input', ()=>{
+    updatePrev();
     subWarn.classList.add('hide'); subWarn.textContent='';
-    const s = sanitizeSub(fields.subdomain.value); if(!s || s.length<3) return;
-    try{
-      const rows = await loadSubsFresh(); // live check while typing
-      const taken = rows.some(r=>{
-        const sub=String(r.subdomain||'').toLowerCase(); const st=String(r.status||'').toLowerCase();
-        return sub===s && st!=='canceled' && st!=='deleted';
-      });
-      if(taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
-    }catch(_){}
-  }
+    const s = sanitizeSub(fields.subdomain.value);
+    if (!s || s.length < 3) return;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async ()=>{
+      try{
+        const taken = await checkSubdomainJSONP(s);
+        if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+      }catch(_){/* ignore typing-time errors */}
+    }, 350);
+  });
 
   /* ===== Submit ===== */
   form.addEventListener('submit', async (ev)=>{
@@ -213,41 +202,35 @@
     if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
     if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
 
-    // HARD BLOCK: fresh duplicate check right now (cache-busted)
+    // Fresh server-side duplicate check (authoritative)
     try{
-      const rows = await loadSubsFresh();
-      const taken = rows.some(r=>{
-        const s=String(r.subdomain||'').toLowerCase();
-        const st=String(r.status||'').toLowerCase();
-        return s===sub && st!=='canceled' && st!=='deleted';
-      });
+      const taken = await checkSubdomainJSONP(sub);
       if (taken){
         setBusy(false);
         subWarn.textContent="That site URL is already taken. Try another.";
         subWarn.classList.remove('hide');
         return showError("That site URL is already taken. Try another.");
       }
-    }catch(_){/* if this fails, we still attempt to submit; server also guards duplicates */ }
+    }catch(_){
+      // If the check fails, be safe and block rather than risk duplicates
+      setBusy(false);
+      return showError("Could not verify site URL. Check your connection and try again.");
+    }
 
+    // Write row via GET beacon (no CORS)
     try{
-      // GET beacon to Apps Script (no CORS; script writes the row, also has its own duplicate guard)
       const qs = new URLSearchParams({
         beacon: '1',
         timestamp: new Date().toISOString(),
         tenant_id: '',
         email, site_display_name, subdomain: sub, plan,
-        amazon_tag,
-        color_primary,
-        color_secondary,
-        logo_url,
-        layout,
-        featured_asins,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
         extra_page_enabled: 'false',
         status: 'active'
       });
       await fetch(`${GAS_ENDPOINT}?${qs.toString()}`, { method: 'GET', mode: 'no-cors' });
 
-      // Show success
       form.classList.add('hide'); done.classList.remove('hide');
       const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
     }catch(e){
