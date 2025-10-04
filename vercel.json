@@ -1,8 +1,20 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/(.*)", "has": [{ "type": "host", "value": "bagthatthangup.com" }], "destination": "/$1" },
-    { "source": "/(.*)", "has": [{ "type": "host", "value": "www.bagthatthangup.com" }], "destination": "/$1" },
-    { "source": "/(.*)", "has": [{ "type": "host", "value": "*.bagthatthangup.com" }], "destination": "/tenant/index.html" }
-  ],
-  "trailingSlash": false
+    {
+      "source": "/stripe-success",
+      "destination": "/stripe-success.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.bagthatthangup.com" }],
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
+      "destination": "/tenant/index.html"
+    }
+  ]
 }
