@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "^/$", "dest": "/stripe-success.html" },
-    { "src": "^/(start|onboard|onboarding)$", "dest": "/index.html" },
-    { "handle": "filesystem" }
+  "rewrites": [
+    { "source": "/", "destination": "/stripe-success.html" },
+    { "source": "/(start|onboard|onboarding)", "destination": "/index.html" }
   ]
 }
