@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/(.*)", "has": [{ "type": "host", "value": "bagthatthangup.com" }], "destination": "/$1" },
     { "source": "/(.*)", "has": [{ "type": "host", "value": "www.bagthatthangup.com" }], "destination": "/$1" },
-    { "source": "/(.*)", "has": [{ "type": "host", "value": "[^.]+\\.bagthatthangup\\.com" }], "destination": "/tenant/index.html" }
-  ]
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "*.bagthatthangup.com" }], "destination": "/tenant/index.html" }
+  ],
+  "trailingSlash": false
 }
