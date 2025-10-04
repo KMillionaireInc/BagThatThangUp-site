@@ -1,1 +1,10 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
+      "destination": "/tenant/index.html"
+    }
+  ]
+}
 
