@@ -97,7 +97,7 @@
 (function(){
   /* ===== CONFIG ===== */
   const DOMAIN = "bagthatthangup.com";
-  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzuBunZjoc0ZKjzOfOknjHKwgjPcHZgdfOC6FZjaccjtqtKjUpURj-jPrUjV4WkKrS9/exec";
   const VALID_KEYS = {
     Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
     Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
@@ -207,9 +207,9 @@
 
     try{
       const taken = await checkTakenStrict(sub);
-      if (taken){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+      if (taken){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken. Try another."); }
     }catch(e){
-      setBusy(false); subWarn.textContent="Could not verify site URL. Please try again."; subWarn.classList.remove('hide');
+      setBusy(false); subWarn.textContent="Could not verify site URL right now. Try again."; subWarn.classList.remove('hide');
       return showError("Could not verify site URL. Check your connection and try again.");
     }
 
