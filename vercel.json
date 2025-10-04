@@ -1,7 +1,17 @@
 {
-  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/stripe-success.html" },
-    { "source": "/(start|onboard|onboarding)", "destination": "/index.html" }
+    { "source": "/start",          "destination": "/onboarding/index.html" },
+    { "source": "/success",        "destination": "/onboarding/stripe-success.html" },
+    { "source": "/stripe-success", "destination": "/onboarding/stripe-success.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
   ]
 }
