@@ -1,20 +1,8 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/stripe-success",
-      "destination": "/stripe-success.html"
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.bagthatthangup.com" }],
-      "destination": "/index.html"
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
-      "destination": "/tenant/index.html"
-    }
+  "version": 2,
+  "routes": [
+    { "src": "^/$", "dest": "/stripe-success.html" },
+    { "src": "^/(start|onboard|onboarding)$", "dest": "/index.html" },
+    { "handle": "filesystem" }
   ]
 }
