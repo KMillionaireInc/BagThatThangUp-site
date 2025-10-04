@@ -1,17 +1,7 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/start",          "destination": "/onboarding/index.html" },
-    { "source": "/success",        "destination": "/onboarding/stripe-success.html" },
-    { "source": "/stripe-success", "destination": "/onboarding/stripe-success.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store" }
-      ]
-    }
+    { "source": "/start", "destination": "/onboarding/index.html" },
+    { "source": "/stripe/success", "destination": "/onboarding/stripe-success.html" },
+    { "source": "/tenant", "destination": "/tenant/index.html" }
   ]
 }
