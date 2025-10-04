@@ -1,13 +1,21 @@
 {
+  "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/tenant", "destination": "/tenant/index.html" },
+    { "source": "/start",           "destination": "/onboarding/index.html" },
+    { "source": "/stripe/success",  "destination": "/onboarding/stripe-success.html" },
+    { "source": "/stripe/cancel",   "destination": "/onboarding/stripe-success.html" },
+    { "source": "/tenant",          "destination": "/tenant/index.html" },
 
-    { "source": "/stripe/success", "destination": "/onboarding/stripe-success.html" },
+    /* serve the tenant app on ANY subdomain like demo1.bagthatthangup.com */
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
+      "destination": "/tenant/index.html"
+    },
 
-    { "source": "/start", "destination": "/onboarding/index.html" },
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    /* default root -> onboarding form */
     { "source": "/", "destination": "/onboarding/index.html" }
   ]
 }
