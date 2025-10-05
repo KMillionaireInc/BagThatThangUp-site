@@ -3,8 +3,6 @@
     { "source": "/start",           "destination": "/onboarding/index.html" },
     { "source": "/stripe/success",  "destination": "/onboarding/stripe-success.html" },
     { "source": "/tenant",          "destination": "/tenant/index.html" },
-
-    // Any subdomain like demo1.bagthatthangup.com → /tenant/index.html
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
