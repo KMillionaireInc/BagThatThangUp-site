@@ -1,16 +1,14 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/stripe/success", "destination": "/onboarding/stripe-success.html" },
-    { "source": "/start", "destination": "/onboarding/index.html" },
-    { "source": "/", "destination": "/onboarding/index.html" },
+    { "source": "/start",           "destination": "/onboarding/index.html" },
+    { "source": "/stripe/success",  "destination": "/onboarding/stripe-success.html" },
+    { "source": "/tenant",          "destination": "/tenant/index.html" },
 
-    // let these folders serve their own files if hit directly
-    { "source": "/onboarding/:path*", "destination": "/onboarding/:path*" },
-    { "source": "/tenant/:path*", "destination": "/tenant/:path*" },
-
-    // catch-all: anything else (e.g. subdomains) goes to the tenant app
-    { "source": "/:path*", "destination": "/tenant/index.html" }
+    // Any subdomain like demo1.bagthatthangup.com → /tenant/index.html
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
+      "destination": "/tenant/index.html"
+    }
   ]
 }
