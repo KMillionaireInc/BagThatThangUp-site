@@ -1,1 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding</title>
+<style>
+  :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:820px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
+  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
+    <p class="sub">Payment succeeded (or you came here directly). Complete this one-time setup.</p>
+
+    <div id="alert" class="err hide"></div>
+
+    <form id="f" novalidate>
+      <div class="full">
+        <label>Store display name</label>
+        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
+      </div>
+
+      <div>
+        <label>Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+
+      <div>
+        <label>Site URL (subdomain)</label>
+        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
+        <div class="hint">Your site will be: <b id="hostPrev">—</b></div>
+        <div id="subWarn" class="warn hide"></div>
+      </div>
+
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
+      </div>
+
+      <!-- Custom/Pro -->
+      <div id="p1" class="hide">
+        <label>Primary color (hex)</label>
+        <input id="color_primary" placeholder="#0ea5a6"/>
+      </div>
+      <div id="p2" class="hide">
+        <label>Secondary color (hex)</label>
+        <input id="color_secondary" placeholder="#1e90ff"/>
+      </div>
+      <div class="full hide" id="layWrap">
+        <label>Layout</label>
+        <select id="layout"></select>
+      </div>
+
+      <!-- Pro-only -->
+      <div class="full hide" id="proLogo">
+        <label>Logo URL (optional)</label>
+        <input id="logo_url" placeholder="https://.../logo.png"/>
+      </div>
+      <div class="full hide" id="proFeat">
+        <label>Featured ASINs (comma-separated)</label>
+        <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
+      </div>
+
+      <div class="full">
+        <button id="go" class="btn" type="submit">Submit onboarding</button>
+      </div>
+    </form>
+
+    <div id="done" class="ok hide">
+      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ===== CONFIG (adjust only the DOMAIN and GAS if needed) ===== */
+  const DOMAIN = "bagthatthangup.com";
+  // If you use a Google Apps Script to capture rows, put its "web app" URL here:
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
+
+  /* ===== Elements ===== */
+  const q = id => document.getElementById(id);
+  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
+  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
+  const fields = {
+    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
+    color_primary:q('color_primary'), color_secondary:q('color_secondary'), layout:q('layout'),
+    logo_url:q('logo_url'), featured_asins:q('featured_asins')
+  };
+  const p1=q('p1'), p2=q('p2'), layWrap=q('layWrap'), proLogo=q('proLogo'), proFeat=q('proFeat');
+
+  /* ===== Utils ===== */
+  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
+  function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
+  function hideError(){ alertBox.classList.add('hide'); }
+  function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
+  function updatePrev(){
 
