@@ -1,274 +1,238 @@
-<script>
-(function () {
-  /* =========================
-     CONFIG
-  ========================== */
-  const DOMAIN = "bagthatthangup.com";
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding</title>
+<style>
+  :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:820px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
+  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
+    <p class="sub">Payment succeeded (or you came here directly). Complete this one-time setup.</p>
 
-  // Google Apps Script Web App endpoint (unchanged)
+    <div id="alert" class="err hide"></div>
+
+    <form id="f" novalidate>
+      <div class="full">
+        <label>Store display name</label>
+        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
+      </div>
+
+      <div>
+        <label>Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+
+      <div>
+        <label>Site URL (subdomain)</label>
+        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
+        <div class="hint">Your site will be: <b id="hostPrev">—</b></div>
+        <div id="subWarn" class="warn hide"></div>
+      </div>
+
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
+      </div>
+
+      <!-- Custom/Pro -->
+      <div id="p1" class="hide">
+        <label>Primary color (hex)</label>
+        <input id="color_primary" placeholder="#0ea5a6"/>
+      </div>
+      <div id="p2" class="hide">
+        <label>Secondary color (hex)</label>
+        <input id="color_secondary" placeholder="#1e90ff"/>
+      </div>
+      <div class="full hide" id="layWrap">
+        <label>Layout</label>
+        <select id="layout"></select>
+      </div>
+
+      <!-- Pro-only -->
+      <div class="full hide" id="proLogo">
+        <label>Logo URL (optional)</label>
+        <input id="logo_url" placeholder="https://.../logo.png"/>
+      </div>
+      <div class="full hide" id="proFeat">
+        <label>Featured ASINs (comma-separated)</label>
+        <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
+      </div>
+
+      <div class="full">
+        <button id="go" class="btn" type="submit">Submit onboarding</button>
+      </div>
+    </form>
+
+    <div id="done" class="ok hide">
+      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* ===== CONFIG ===== */
+  const DOMAIN = "bagthatthangup.com";
   const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
 
-  // PLAN GATE: only these exact pairs are allowed to see/submit the form
-  const VALID_KEYS = {
-    Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
-    Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
-    Pro:    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb"
+  /* obfuscated plan keys (no plain names in URL) */
+  const PLAN_KEYS = {
+    "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh": "Basic",
+    "btb_k2Xr4P0sLm9Qa7nB8cV1yWz3Ht5Fe2Dc": "Custom",
+    "btb_m8Qe1Za4Rt7Ui2Lp6Ns3Yw9Kd5Fx0Hg": "Pro"
   };
 
-  // Layout options shown for Custom/Pro
-  const LAYOUTS = [
-    { value: "classic", label: "Classic" },
-    { value: "grid",    label: "Product Grid" },
-    { value: "mag",     label: "Magazine" }
-  ];
-
-  // Subdomains we don't allow users to take
-  const RESERVED = new Set([
-    "www","app","admin","api","cdn","assets","static","img","mail",
-    "onboarding","start","stripe","success","tenant","shop","store",
-    "blog","help","support","status","docs"
-  ]);
-
-  /* =========================
-     ELEMENTS & HELPERS
-  ========================== */
-  const $ = (id) => document.getElementById(id);
-
-  const alertBox = $("alert");
-  const planBadge = $("planBadge");
-  const form = $("f");
-  const done = $("done");
-  const link = $("link");
-  const hostPrev = $("hostPrev");
-  const subWarn = $("subWarn");
-  const goBtn = $("go");
-
+  /* ===== Elements ===== */
+  const $ = id => document.getElementById(id);
+  const alertBox = $('alert'), form = $('f'), done = $('done'), link = $('link');
+  const planBadge = $('planBadge'), subWarn = $('subWarn'), hostPrev = $('hostPrev'), goBtn = $('go');
   const fields = {
-    site_display_name: $("site_display_name"),
-    email: $("email"),
-    subdomain: $("subdomain"),
-    amazon_tag: $("amazon_tag"),
-    color_primary: $("color_primary"),
-    color_secondary: $("color_secondary"),
-    layout: $("layout"),
-    logo_url: $("logo_url"),
-    featured_asins: $("featured_asins")
+    site_display_name:$('site_display_name'), email:$('email'), subdomain:$('subdomain'), amazon_tag:$('amazon_tag'),
+    color_primary:$('color_primary'), color_secondary:$('color_secondary'), layout:$('layout'),
+    logo_url:$('logo_url'), featured_asins:$('featured_asins')
   };
+  const p1=$('p1'), p2=$('p2'), layWrap=$('layWrap'), proLogo=$('proLogo'), proFeat=$('proFeat');
 
-  const p1 = $("p1"), p2 = $("p2"), layWrap = $("layWrap"),
-        proLogo = $("proLogo"), proFeat = $("proFeat");
+  /* ===== Utils ===== */
+  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
+  const show = el => el && el.classList.remove('hide');
+  const hide = el => el && el.classList.add('hide');
+  const setText = (el, v) => el && (el.textContent = v);
 
-  const qs = new URLSearchParams(location.search);
-  const plan = (qs.get("plan") || "").trim();
-  const planKey = (qs.get("plan_key") || "").trim();
+  function showError(msg){ setText(alertBox, msg); show(alertBox); }
+  function hideError(){ hide(alertBox); }
+  function setBusy(b){ if(!goBtn) return; goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
 
-  const sanitizeSub = (s) =>
-    String(s || "")
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 63);
-
-  const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s || "").trim());
-  const isHex6 = (v) => /^[0-9a-f]{6}$/i.test(String(v || "").replace(/^#/, ""));
-  const toHex6 = (v) => {
-    v = String(v || "").trim().replace(/^#/, "");
-    return isHex6(v) ? "#" + v : "";
-  };
-
-  function showError(msg) {
-    alertBox.textContent = msg;
-    alertBox.classList.remove("hide");
-  }
-
-  function hideError() {
-    alertBox.classList.add("hide");
-  }
-
-  function setBusy(b) {
-    goBtn.disabled = b;
-    goBtn.textContent = b ? "Submitting…" : "Submit onboarding";
-  }
-
-  function updatePreview() {
-    const sub = sanitizeSub(fields.subdomain.value);
-    fields.subdomain.value = sub;
-    const full = sub ? `https://${sub}.${DOMAIN}` : "—";
-    hostPrev.textContent = full;
-  }
-
-  function subdomainIssue(sub) {
-    if (!sub) return "Please enter a subdomain.";
-    if (sub.length < 3) return "Subdomain must be at least 3 characters.";
-    if (!/^[a-z0-9-]+$/.test(sub)) return "Use letters, numbers, and hyphens only.";
-    if (/--/.test(sub)) return "Use single hyphens (no consecutive hyphens).";
-    if (sub.startsWith("-") || sub.endsWith("-")) return "Cannot start or end with a hyphen.";
-    if (RESERVED.has(sub)) return `“${sub}” is reserved. Please choose another.`;
+  function validSubdomain(s){
+    if(!s) return "Please enter a subdomain.";
+    if(!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(s)) return "Use 1–63 chars: letters, numbers, hyphens (no leading/trailing hyphen).";
     return "";
   }
 
-  function applyPlanVisibility(plan) {
-    // Default hide
-    p1.classList.add("hide");
-    p2.classList.add("hide");
-    layWrap.classList.add("hide");
-    proLogo.classList.add("hide");
-    proFeat.classList.add("hide");
+  /* ===== Plan detection from obfuscated key ===== */
+  const usp = new URLSearchParams(location.search);
+  const planKey = usp.get('plan_key') || "";
+  const PLAN = PLAN_KEYS[planKey] || (['Basic','Custom','Pro'].includes(usp.get('plan')) ? usp.get('plan') : 'Basic');
 
-    // Basic: just core fields
-    if (plan === "Basic") return;
+  function renderPlan(){
+    setText(planBadge, PLAN);
+    show(planBadge);
 
-    // Custom: colors + layout
-    if (plan === "Custom") {
-      p1.classList.remove("hide");
-      p2.classList.remove("hide");
-      layWrap.classList.remove("hide");
-      return;
-    }
+    const isPro = PLAN === 'Pro';
+    const isCustom = PLAN === 'Custom';
 
-    // Pro: everything
-    if (plan === "Pro") {
-      p1.classList.remove("hide");
-      p2.classList.remove("hide");
-      layWrap.classList.remove("hide");
-      proLogo.classList.remove("hide");
-      proFeat.classList.remove("hide");
-    }
-  }
+    // show color pickers for Custom/Pro
+    if(isPro || isCustom){ show(p1); show(p2); show(layWrap); }
+    else { hide(p1); hide(p2); hide(layWrap); }
 
-  function fillLayouts() {
-    fields.layout.innerHTML = "";
-    for (const opt of LAYOUTS) {
-      const o = document.createElement("option");
-      o.value = opt.value;
-      o.textContent = opt.label;
-      fields.layout.appendChild(o);
+    // Pro extras
+    if(isPro){ show(proLogo); show(proFeat); }
+    else { hide(proLogo); hide(proFeat); }
+
+    // simple layout options example
+    if(fields.layout){
+      fields.layout.innerHTML = `
+        <option value="clean">Clean (default)</option>
+        <option value="grid">Grid</option>
+        <option value="cards">Cards</option>
+      `;
     }
   }
 
-  function guardAccess() {
-    const ok = !!plan && !!planKey && VALID_KEYS[plan] === planKey;
-    if (!ok) {
-      // Hide form & show error
-      form.style.display = "none";
-      showError("Invalid or missing plan link. Contact support.");
-      return false;
-    }
-    return true;
+  function updatePrev(){
+    if(!hostPrev || !fields.subdomain) return;
+    const s = sanitizeSub(fields.subdomain.value);
+    const warning = validSubdomain(s);
+    if(warning){ setText(subWarn, warning); show(subWarn); }
+    else { hide(subWarn); }
+    setText(hostPrev, s ? `${s}.${DOMAIN}` : '—');
   }
 
-  /* =========================
-     INIT
-  ========================== */
-  document.addEventListener("DOMContentLoaded", () => {
-    // Gate check first
-    if (!guardAccess()) return;
+  /* ===== Events ===== */
+  if(fields.subdomain) fields.subdomain.addEventListener('input', updatePrev);
 
-    // Badge + options based on plan
-    planBadge.textContent = plan;
-    fillLayouts();
-    applyPlanVisibility(plan);
+  if(form) form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    hideError();
 
-    // Autofill subdomain from store name (only if user hasn’t typed)
-    let userTypedSub = false;
-    fields.subdomain.addEventListener("input", () => {
-      userTypedSub = true;
-      const msg = subdomainIssue(fields.subdomain.value.trim());
-      subWarn.textContent = msg;
-      subWarn.classList.toggle("hide", !msg);
-      updatePreview();
-    });
+    const site_display_name = (fields.site_display_name?.value || "").trim();
+    const email = (fields.email?.value || "").trim();
+    const subdomain = sanitizeSub(fields.subdomain?.value || "");
+    const amazon_tag = (fields.amazon_tag?.value || "").trim();
 
-    fields.site_display_name.addEventListener("input", () => {
-      if (!userTypedSub) {
-        fields.subdomain.value = sanitizeSub(fields.site_display_name.value).slice(0, 30);
-        const msg = subdomainIssue(fields.subdomain.value.trim());
-        subWarn.textContent = msg;
-        subWarn.classList.toggle("hide", !msg);
-        updatePreview();
-      }
-    });
+    const color_primary = normHex(fields.color_primary?.value || "");
+    const color_secondary = normHex(fields.color_secondary?.value || "");
+    const layout = (fields.layout?.value || "clean");
+    const logo_url = (fields.logo_url?.value || "");
+    const featured_asins = (fields.featured_asins?.value || "");
 
-    // initial preview
-    updatePreview();
+    // Validate
+    if(!site_display_name) return showError("Please enter your store display name.");
+    if(!isEmail(email)) return showError("Please enter a valid email.");
+    const w = validSubdomain(subdomain); if(w) return showError(w);
+    if(PLAN !== 'Basic' && !amazon_tag) return showError("Amazon Associates ID is required for paid plans.");
+    if((PLAN === 'Custom' || PLAN === 'Pro') && (!color_primary || !color_secondary)){
+      return showError("Please provide both primary and secondary brand colors (6-digit hex).");
+    }
 
-    // Submit handler
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      hideError();
+    // Compose payload
+    const payload = {
+      plan: PLAN,
+      site_display_name, email, subdomain, amazon_tag,
+      color_primary, color_secondary, layout, logo_url, featured_asins,
+      ts: Date.now()
+    };
 
-      // Validate required fields
-      const name = fields.site_display_name.value.trim();
-      const email = fields.email.value.trim();
-      const sub = sanitizeSub(fields.subdomain.value);
-      const amazonTag = fields.amazon_tag.value.trim();
-
-      if (!name) return showError("Please enter a store display name.");
-      if (!isEmail(email)) return showError("Please enter a valid contact email.");
-
-      const subIssue = subdomainIssue(sub);
-      if (subIssue) {
-        subWarn.textContent = subIssue;
-        subWarn.classList.remove("hide");
-        return showError(subIssue);
-      }
-
-      // Optional fields by plan
-      const payload = {
-        ts: new Date().toISOString(),
-        plan,
-        plan_key: planKey, // stored for verification on the backend sheet if needed
-        store_name: name,
-        email,
-        subdomain: sub,
-        host: `${sub}.${DOMAIN}`,
-        amazon_tag: amazonTag,
-        color_primary: "",
-        color_secondary: "",
-        layout: "",
-        logo_url: "",
-        featured_asins: ""
-      };
-
-      if (plan === "Custom" || plan === "Pro") {
-        payload.color_primary = toHex6(fields.color_primary.value);
-        payload.color_secondary = toHex6(fields.color_secondary.value);
-        payload.layout = fields.layout.value || "classic";
-
-        if (plan === "Pro") {
-          payload.logo_url = (fields.logo_url.value || "").trim();
-          payload.featured_asins = (fields.featured_asins.value || "").trim();
-        }
-      }
-
+    try{
       setBusy(true);
-      try {
-        // Fire-and-forget to GAS (opaque response in no-cors)
-        await fetch(GAS_ENDPOINT, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
+      // Send to your Google Apps Script (or other endpoint)
+      await fetch(GAS_ENDPOINT, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(payload),
+        mode:'no-cors' // GAS often works best with no-cors for anonymous web apps
+      });
 
-        // Show success UI
-        form.classList.add("hide");
-        const full = `https://${payload.host}`;
-        link.href = full;
-        link.textContent = full;
-        done.classList.remove("hide");
-
-        // Then go to success page
-        setTimeout(() => {
-          location.href = "/stripe/success?ts=" + Date.now();
-        }, 1200);
-      } catch (err) {
-        console.error(err);
-        showError("Something went wrong submitting your onboarding. Please try again.");
-      } finally {
-        setBusy(false);
-      }
-    });
+      const url = `https://${subdomain}.${DOMAIN}`;
+      if(link){ link.href = url; setText(link, url); }
+      show(done);
+      // Optional: redirect after a short pause
+      setTimeout(()=>{ location.href = `/stripe/success/?ts=${Date.now()}`; }, 800);
+    }catch(err){
+      console.error(err);
+      showError("Could not submit onboarding. Please try again.");
+    }finally{
+      setBusy(false);
+    }
   });
-})();
+
+  // Initial paint
+  renderPlan();
+  updatePrev();
+});
 </script>
+</body>
+</html>
