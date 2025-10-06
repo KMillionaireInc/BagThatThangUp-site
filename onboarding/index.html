@@ -1,17 +1,17 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Finish Onboarding</title>
 <style>
   :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{max-width:900px;margin:36px auto;padding:20px}
+  .wrap{max-width:860px;margin:36px auto;padding:20px}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:24px}
-  h1{margin:0 0 8px;font-size:32px}
-  .sub{color:var(--muted);margin:0 0 18px}
+  h1{margin:0 0 8px;font-size:28px}
+  .sub{color:var(--muted);margin:0 0 16px}
   .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
   form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .full{grid-column:1/-1}
@@ -21,7 +21,7 @@
   .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:700}
   .btn:disabled{opacity:.6;cursor:not-allowed}
   .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
-  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:14px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
   .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
   .hide{display:none!important}
 </style>
@@ -87,80 +87,73 @@
     </form>
 
     <div id="done" class="ok hide">
-      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
+      <b>Submitted.</b> Your site will be available at
+      <a id="link" href="#" target="_blank" rel="noopener"></a>.
     </div>
   </div>
 </div>
 
 <script>
-(function () {
+(function(){
   /* ===== CONFIG ===== */
-  const DOMAIN  = "bagthatthangup.com";
-  // IMPORTANT: this must be your "Deploy → Web app → Current web app URL", ending with /exec
+  const DOMAIN = "bagthatthangup.com";
   const GAS_URL = "https://script.google.com/macros/s/AKfycbzGCoO7gT7Uwf25T1ODHKTgTfTBXqIfVBh9EFmR66QohwsA9TOzH1J27SnhJrRSJX04/exec";
 
-  /* ===== Grab elements ===== */
+  /* ===== Elements ===== */
   const $ = id => document.getElementById(id);
   const alertBox = $('alert'), form = $('f'), done = $('done'), link = $('link');
   const planBadge = $('planBadge'), subWarn = $('subWarn'), hostPrev = $('hostPrev'), goBtn = $('go');
-
   const fields = {
-    site_display_name: $('site_display_name'),
-    email: $('email'),
-    subdomain: $('subdomain'),
-    amazon_tag: $('amazon_tag'),
-    color_primary: $('color_primary'),
-    color_secondary: $('color_secondary'),
-    layout: $('layout'),
-    logo_url: $('logo_url'),
-    featured_asins: $('featured_asins')
+    site_display_name:$('site_display_name'), email:$('email'), subdomain:$('subdomain'), amazon_tag:$('amazon_tag'),
+    color_primary:$('color_primary'), color_secondary:$('color_secondary'), layout:$('layout'),
+    logo_url:$('logo_url'), featured_asins:$('featured_asins')
   };
-
-  const p1 = $('p1'), p2 = $('p2'), layWrap = $('layWrap'), proLogo = $('proLogo'), proFeat = $('proFeat');
+  const p1=$('p1'), p2=$('p2'), layWrap=$('layWrap'), proLogo=$('proLogo'), proFeat=$('proFeat');
 
   /* ===== Utils ===== */
-  const reserved = new Set(['www','admin','root','api','test','dev','static','assets','img','tenant','onboarding','start','stripe','success']);
   const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
   const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
-  const normHex = v => { v = String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
-  const qs = (k, d='') => new URLSearchParams(location.search).get(k) ?? d;
-
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
   function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
   function hideError(){ alertBox.classList.add('hide'); }
   function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
-  function updatePrev() {
-    const s = sanitizeSub(fields.subdomain.value);
-    hostPrev.textContent = s ? `${s}.${DOMAIN}` : '—';
+  function updatePrev(){
+    const sub = sanitizeSub(fields.subdomain.value);
+    hostPrev.textContent = sub ? `${sub}.${DOMAIN}` : '—';
   }
 
-  // JSONP helper (Apps Script no-CORS)
-  function jsonp(url, params={}, timeout=9000){
+  // Simple JSONP helper with timeout & cleanup
+  function jsonp(url, params={}, timeoutMs=6000){
     return new Promise((resolve,reject)=>{
-      const cb = 'cb_' + Math.random().toString(36).slice(2);
-      params.callback = cb;
-      const q = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-      const src = url + (url.includes('?')?'&':'?') + q;
-      const s = document.createElement('script'); s.src = src; s.async = true;
-      const t = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, timeout);
-      function cleanup(){ clearTimeout(t); delete window[cb]; s.remove(); }
-      window[cb] = (data)=>{ cleanup(); resolve(data); };
-      s.onerror = ()=>{ cleanup(); reject(new Error('load_error')); };
+      const cbName = `__jp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      params.callback = cbName;
+      const qs = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+      const src = url + (url.includes('?')?'&':'?') + qs;
+      const s = document.createElement('script');
+      let done = false;
+      window[cbName] = (data)=>{ done=true; cleanup(); resolve(data); };
+      const to = setTimeout(()=>{ if(!done){ cleanup(); reject(new Error('timeout')); }}, timeoutMs);
+      function cleanup(){ delete window[cbName]; s.remove(); clearTimeout(to); }
+      s.onerror = ()=>{ if(!done){ cleanup(); reject(new Error('script_error')); } };
+      s.src = src;
       document.head.appendChild(s);
     });
   }
 
-  /* ===== Plan handling (supports ?plan= or ?plan_key=) ===== */
+  /* ===== Query params & plan badge ===== */
   const usp = new URLSearchParams(location.search);
-  const planKey = usp.get('plan_key') || '';
-  const plan = usp.get('plan') || (planKey ? 'Basic' : '');  // display badge only
-  if (plan) planBadge.textContent = plan;
+  const plan = usp.get('plan') || '';          // display only
+  const planKey = usp.get('plan_key') || '';   // opaque proof from checkout (if present)
+  if (plan) planBadge.textContent = plan; else planBadge.classList.add('hide');
 
   function configureByPlan(){
     const tier = (plan || '').toLowerCase();
     const isPro = tier === 'pro';
     const isCustom = tier === 'custom';
+
     [p1,p2,layWrap].forEach(el => el.classList.toggle('hide', !(isCustom || isPro)));
     [proLogo,proFeat].forEach(el => el.classList.toggle('hide', !isPro));
+
     if (!layWrap.classList.contains('hide')) {
       fields.layout.innerHTML = `
         <option value="grid">Grid</option>
@@ -171,84 +164,103 @@
   }
   configureByPlan();
 
-  /* ===== Live host preview ===== */
-  function onSubdomainInput(){
-    const v = sanitizeSub(fields.subdomain.value);
-    fields.subdomain.value = v;
+  /* ===== Live preview & availability (soft) ===== */
+  fields.subdomain.addEventListener('input', () => {
+    fields.subdomain.value = sanitizeSub(fields.subdomain.value);
     updatePrev();
-    subWarn.classList.add('hide');
-    checkSubdomainAvailability(v);
-  }
+    softCheck();
+  });
+  updatePrev();
 
-  /* ===== Availability check ===== */
-  let lastCheckToken = 0;
-  async function checkSubdomainAvailability(sub){
-    if (!sub){ return; }
-    if (reserved.has(sub)){ showSubWarn('This name is reserved. Try another.'); disableSubmit(true); return; }
+  // Try to verify subdomain via JSONP, but DON'T block if it fails
+  let lastChecked = '';
+  async function softCheck(){
+    const sub = sanitizeSub(fields.subdomain.value);
+    if (!sub || sub === lastChecked) return;
+    lastChecked = sub;
 
-    const token = ++lastCheckToken;
-    disableSubmit(true);
+    subWarn.classList.add('hide'); subWarn.textContent = '';
 
-    try{
-      const res = await jsonp(GAS_URL, { check: 1, subdomain: sub, t: Date.now() });
-      if (token !== lastCheckToken) return; // stale
-      if (!res || res.ok !== true){ showSubWarn('Could not verify availability. Try again.'); return; }
-      if (res.taken){ showSubWarn('That name is already taken.'); return; }
-      subWarn.classList.add('hide');
-      disableSubmit(false);
-    }catch(e){
-      showSubWarn('Could not verify availability. Try again.');
+    try {
+      // Try either "exists" or "check"—support both shapes of the GAS you’ve used.
+      const p = { subdomain: sub, t: Date.now() };
+      let res = await jsonp(GAS_URL, { exists: 1, ...p }, 4500).catch(()=>null);
+      if (!res) res = await jsonp(GAS_URL, { check: 1, ...p }, 4500).catch(()=>null);
+
+      if (res && res.ok === true && res.taken === true) {
+        subWarn.textContent = 'That subdomain is already taken. Please choose another.';
+        subWarn.classList.remove('hide');
+      } else if (!res || res.ok === false) {
+        subWarn.textContent = 'Could not verify availability (network or endpoint issue). You can still submit; we will enforce on submit.';
+        subWarn.classList.remove('hide');
+      } // else ok & not taken => do nothing
+    } catch(_) {
+      subWarn.textContent = 'Could not verify availability (network or endpoint issue). You can still submit; we will enforce on submit.';
+      subWarn.classList.remove('hide');
     }
   }
-
-  function showSubWarn(msg){ subWarn.textContent = msg; subWarn.classList.remove('hide'); }
-  function disableSubmit(b){ goBtn.disabled = b; }
-
-  fields.subdomain.addEventListener('input', onSubdomainInput);
-  updatePrev();
 
   /* ===== Submit ===== */
   form.addEventListener('submit', async (ev)=>{
-    ev.preventDefault();
-    hideError();
+    ev.preventDefault(); hideError();
 
+    // Basic validation
     const sub = sanitizeSub(fields.subdomain.value);
-    if (!isEmail(fields.email.value)){ showError('Enter a valid email.'); return; }
-    if (!sub){ showError('Enter a site URL (subdomain).'); return; }
-    if (reserved.has(sub)){ showError('That subdomain is reserved. Choose another.'); return; }
+    if (!isEmail(fields.email.value)) return showError('Please enter a valid email.');
+    if (!sub) return showError('Please enter a subdomain.');
 
+    // Enforce uniqueness right before writing (still JSONP, but we’ll block if clearly taken)
+    try {
+      const existsRes = await jsonp(GAS_URL, { exists: 1, subdomain: sub, t: Date.now() }, 6000).catch(()=>null);
+      if (existsRes && existsRes.ok && existsRes.taken) {
+        subWarn.textContent = 'That subdomain is already taken. Please choose another.';
+        subWarn.classList.remove('hide');
+        return;
+      }
+    } catch(_) {
+      // If the check fails, we allow continue—server write is the final source of truth in your sheet.
+    }
+
+    setBusy(true);
+
+    // Build payload for sheet
     const payload = {
       beacon: 1,
-      site_display_name: fields.site_display_name.value || '',
-      email: fields.email.value || '',
+      email: fields.email.value.trim(),
+      site_display_name: fields.site_display_name.value.trim(),
       subdomain: sub,
-      amazon_tag: fields.amazon_tag.value || '',
+      plan: plan || '',            // display plan
+      plan_key: planKey || '',     // optional opaque key
+      amazon_tag: fields.amazon_tag.value.trim(),
       color_primary: normHex(fields.color_primary.value),
       color_secondary: normHex(fields.color_secondary.value),
-      logo_url: fields.logo_url.value || '',
+      logo_url: fields.logo_url.value.trim(),
       layout: fields.layout.value || '',
-      featured_asins: fields.featured_asins.value || '',
+      featured_asins: fields.featured_asins.value.trim(),
       extra_page_enabled: 'false',
       status: 'active',
-      plan: plan || ''
+      t: Date.now()
     };
 
-    try{
-      setBusy(true);
-      const res = await jsonp(GAS_URL, payload);
-      setBusy(false);
-      if (!res || res.ok !== true){ showError('Could not save your info. Please try again.'); return; }
-      // success
-      link.textContent = `${sub}.${DOMAIN}`;
-      link.href = `https://${sub}.${DOMAIN}`;
+    try {
+      const res = await jsonp(GAS_URL, payload, 8000);
+      if (!res || res.ok !== true) {
+        throw new Error(res && res.error ? res.error : 'Write failed');
+      }
+
+      // Success UI
+      const host = `${sub}.${DOMAIN}`;
+      link.href = `https://${host}`;
+      link.textContent = host;
       done.classList.remove('hide');
       form.classList.add('hide');
-    }catch(e){
+
+    } catch (err) {
+      showError('We could not save your onboarding. Please try again. ' + String(err && err.message || ''));
+    } finally {
       setBusy(false);
-      showError('Network problem saving your info. Please try again.');
     }
   });
-
 })();
 </script>
 </body>
