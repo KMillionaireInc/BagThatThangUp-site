@@ -1,1 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
+    { "source": "/stripe-success", "destination": "/onboarding/index.html" },
+
+    { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
+
+    { "source": "/(.*)", "destination": "/tenant/index.html" }
+  ]
+}
 
