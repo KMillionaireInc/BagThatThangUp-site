@@ -1,1 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Pick a plan · BagThat</title>
+  <meta name="color-scheme" content="light only">
 
+  <!-- ===== Redirect if we’re already on a customer subdomain ===== -->
+  <script>
+  (function () {
+    var DOMAIN = "bagthatthangup.com";
+    var RESERVED = new Set(["www","start","app","demo","static","assets","img"]);
+    var host = location.hostname;
+
+    // If host is a subdomain of our main domain (e.g. abc.bagthatthangup.com),
+    // send them directly to the tenant storefront instead of showing pricing.
+    if (host !== DOMAIN && host.endsWith("." + DOMAIN)) {
+      var sub = host.slice(0, -1 * (DOMAIN.length + 1)); // remove ".DOMAIN"
+      if (sub && !RESERVED.has(sub)) {
+        location.replace("/tenant/index.html?site=" + encodeURIComponent(sub));
+      }
+    }
+  })();
+  </script>
+
+  <style>
+    :root{
+      --ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f7fafc;--surface:#fff;--brand:#0b72f0;
+      --shadow:0 18px 40px rgba(11,19,32,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+    h1{font-size:40px;letter-spacing:.2px;margin:8px 0 12px}
+    .sub{color:var(--muted);margin:0 0 28px}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{
+      background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px;
+      box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:380px
+    }
+    .title{font-size:28px;margin:4px 0 10px}
+    .price{font-size:26px;margin:0 0 16px}
+    ul{margin:0 0 24px 18px;color:var(--muted)}
+    li{margin:6px 0}
+    .spacer{flex:1 0 auto}
+    .btn{
+      display:inline-block;width:100%;text-align:center;border:0;border-radius:12px;padding:12px 14px;
+      background:var(--brand);color:#fff;font-weight:700;cursor:pointer;text-decoration:none
+    }
+    .foot{color:var(--muted);font-size:13px;margin-top:10px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pick a plan to get started</h1>
+    <p class="sub">You’ll pay on Stripe and then finish a quick one-time setup.</p>
+
+    <div class="grid">
+      <!-- BASIC -->
+      <div class="card">
+        <div class="title">Basic</div>
+        <div class="price">$— / mo</div>
+        <ul>
+          <li>Ready-made template</li>
+          <li>One-click setup</li>
+          <li>Email support</li>
+        </ul>
+        <div class="spacer"></div>
+        <a class="btn" data-plan="Basic" id="btn-basic">Continue</a>
+        <div class="foot">Goes to onboarding after checkout.</div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="card">
+        <div class="title">Custom</div>
+        <div class="price">$— / mo</div>
+        <ul>
+          <li>Choose colors &amp; layout</li>
+          <li>CSV product import</li>
+          <li>Priority support</li>
+        </ul>
+        <div class="spacer"></div>
+        <a class="btn" data-plan="Custom" id="btn-custom">Continue</a>
+        <div class="foot">Goes to onboarding after checkout.</div>
+      </div>
+
+      <!-- PRO -->
+      <div class="card">
+        <div class="title">Pro</div>
+        <div class="price">$— / mo</div>
+        <ul>
+          <li>Advanced layouts</li>
+          <li>Logo &amp; featured slots</li>
+          <li>Concierge support</li>
+        </ul>
+        <div class="spacer"></div>
+        <a class="btn" data-plan="Pro" id="btn-pro">Continue</a>
+        <div class="foot">Goes to onboarding after checkout.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ===== Plan buttons -> secure onboarding links =====
+  (function(){
+    // If you already wired your server/Stripe to issue plan_key,
+    // put those *opaque* keys here (do NOT use the plain plan name).
+    const PLAN_KEYS = {
+      Basic:  "btb_basic_key_REPLACE_ME",
+      Custom: "btb_custom_key_REPLACE_ME",
+      Pro:    "btb_pro_key_REPLACE_ME"
+    };
+
+    function go(plan){
+      const key = PLAN_KEYS[plan];
+      // Prefer secure style: plan_key; fallback to plan= for backward compat
+      const url = key
+        ? `/onboarding/?plan_key=${encodeURIComponent(key)}`
+        : `/onboarding/?plan=${encodeURIComponent(plan)}`;
+      location.href = url;
+    }
+
+    document.querySelectorAll('[data-plan]').forEach(el=>{
+      el.addEventListener('click', function(){ go(this.getAttribute('data-plan')); });
+    });
+  })();
+  </script>
+</body>
+</html>
