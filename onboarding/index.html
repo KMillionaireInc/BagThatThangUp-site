@@ -6,12 +6,10 @@
 <title>Finish Onboarding</title>
 <style>
   :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{max-width:860px;margin:36px auto;padding:20px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:24px}
-  h1{margin:0 0 8px;font-size:28px}
-  .sub{color:var(--muted);margin:0 0 16px}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:820px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
   .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
   form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .full{grid-column:1/-1}
@@ -30,7 +28,7 @@
 <div class="wrap">
   <div class="card">
     <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
-    <p class="sub">Payment succeeded (or you came here directly). Complete this one-time setup.</p>
+    <p class="sub">Payment succeeded. Complete this one-time setup.</p>
 
     <div id="alert" class="err hide"></div>
 
@@ -87,8 +85,7 @@
     </form>
 
     <div id="done" class="ok hide">
-      <b>Submitted.</b> Your site will be available at
-      <a id="link" href="#" target="_blank" rel="noopener"></a>.
+      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
     </div>
   </div>
 </div>
@@ -96,135 +93,150 @@
 <script>
 (function(){
   /* ===== CONFIG ===== */
-  const DOMAIN  = "bagthatthangup.com";
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbzuBunZjoc0ZKjzOfOknjHKwgjPcHZgdfOC6FZjaccjtqtKjUpURj-jPrUjV4WkKrS9/exec";
+  const DOMAIN = "bagthatthangup.com";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+  const VALID_KEYS = {
+    Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
+    Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
+    Pro:    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb"
+  };
 
   /* ===== Elements ===== */
-  const $ = id => document.getElementById(id);
-  const alertBox = $('alert'), form = $('f'), done = $('done'), link = $('link');
-  const planBadge = $('planBadge'), subWarn = $('subWarn'), hostPrev = $('hostPrev'), goBtn = $('go');
+  const q = id => document.getElementById(id);
+  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
+  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
   const fields = {
-    site_display_name:$('site_display_name'), email:$('email'), subdomain:$('subdomain'), amazon_tag:$('amazon_tag'),
-    color_primary:$('color_primary'), color_secondary:$('color_secondary'), layout:$('layout'),
-    logo_url:$('logo_url'), featured_asins:$('featured_asins')
+    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
+    color_primary:q('color_primary'), color_secondary:q('color_secondary'), layout:q('layout'),
+    logo_url:q('logo_url'), featured_asins:q('featured_asins')
   };
-  const p1=$('p1'), p2=$('p2'), layWrap=$('layWrap'), proLogo=$('proLogo'), proFeat=$('proFeat');
+  const p1=q('p1'), p2=q('p2'), layWrap=q('layWrap'), proLogo=q('proLogo'), proFeat=q('proFeat');
 
   /* ===== Utils ===== */
-  const reserved = new Set(['www','admin','root','api','test','dev','static','assets','img','tenant','onboarding','start','stripe','success']);
   const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
   const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
   const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
-
   function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
   function hideError(){ alertBox.classList.add('hide'); }
   function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
-  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : '—'; }
+  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
 
-  // JSONP
-  function jsonp(url, params={}, timeout=8000){
+  /* ===== JSONP helper ===== */
+  function jsonp(url, params){
     return new Promise((resolve,reject)=>{
-      const cb = 'cb_' + Math.random().toString(36).slice(2);
+      const cb = 'btb_cb_' + Math.random().toString(36).slice(2);
+      params = params || {};
       params.callback = cb;
-      const q = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-      const src = url + (url.includes('?')?'&':'?') + q;
-      const s = document.createElement('script'); s.src = src; s.async = true;
-      const t = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, timeout);
-      function cleanup(){ clearTimeout(t); try{ delete window[cb]; }catch(_){} s.remove(); }
+      params.ts = Date.now();
+      const qs = new URLSearchParams(params).toString();
+      const script = document.createElement('script');
+      const timeout = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 9000);
+      function cleanup(){ clearTimeout(timeout); try{ delete window[cb]; }catch(_){}
+        if (script && script.parentNode) script.parentNode.removeChild(script); }
       window[cb] = (data)=>{ cleanup(); resolve(data); };
-      s.onerror = ()=>{ cleanup(); reject(new Error('load_error')); };
-      document.head.appendChild(s);
+      script.onerror = ()=>{ cleanup(); reject(new Error('network')); };
+      script.src = url + (url.includes('?') ? '&' : '?') + qs;
+      document.head.appendChild(script);
     });
   }
 
-  // Plan controls (UI only)
-  const usp = new URLSearchParams(location.search);
-  const plan = usp.get('plan') || '';
-  if (plan) planBadge.textContent = plan; else planBadge.classList.add('hide');
-  (function cfg(){
-    const tier = plan.toLowerCase();
-    const isCustom = tier==='custom' || tier==='pro';
-    const isPro = tier==='pro';
-    [p1,p2,layWrap].forEach(el=>el.classList.toggle('hide', !isCustom));
-    [proLogo,proFeat].forEach(el=>el.classList.toggle('hide', !isPro));
-    if (isCustom){
-      fields.layout.innerHTML = `<option value="grid">Grid</option><option value="masonry">Masonry</option><option value="rows">Rows</option>`;
-    }
-  })();
+  /* ===== Plan & UI setup ===== */
+  const params = new URLSearchParams(location.search);
+  const plan = params.get('plan') || '';
+  const plan_key = params.get('plan_key') || '';
+  if(!VALID_KEYS[plan] || VALID_KEYS[plan] !== plan_key){
+    document.querySelector('.sub').textContent = 'Invalid or missing plan link. Please use your Stripe success link.';
+    q('f').classList.add('hide');
+    showError('Invalid or missing plan. If you paid already, use the success link from Stripe.');
+    return;
+  }
+  planBadge.textContent = plan;
+  (function setUI(p){
+    const isCustom = (p==='Custom'||p==='Pro'), isPro = (p==='Pro');
+    p1.classList.toggle('hide', !isCustom);
+    p2.classList.toggle('hide', !isCustom);
+    layWrap.classList.toggle('hide', !isCustom);
+    fields.layout.innerHTML = "";
+    if (p==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (p==='Pro') ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
+    proLogo.classList.toggle('hide', !isPro);
+    proFeat.classList.toggle('hide', !isPro);
+  })(plan);
 
-  // Live preview + soft availability check
+  /* Live preview + live duplicate check */
+  updatePrev();
+  let debounceTimer=null;
   fields.subdomain.addEventListener('input', ()=>{
-    fields.subdomain.value = sanitizeSub(fields.subdomain.value);
     updatePrev();
     subWarn.classList.add('hide'); subWarn.textContent='';
-    softCheck();
-  });
-  updatePrev();
-
-  let debounce;
-  function softCheck(){
-    clearTimeout(debounce);
-    const sub = sanitizeSub(fields.subdomain.value);
-    if (!sub) return;
-    if (reserved.has(sub)){ subWarn.textContent='This name is reserved. Choose another.'; subWarn.classList.remove('hide'); return; }
-    debounce = setTimeout(async ()=>{
-      try {
-        // prefer "exists", fall back to "check"
-        let res = await jsonp(GAS_URL, { exists: 1, subdomain: sub, t: Date.now() }).catch(()=>null);
-        if (!res) res = await jsonp(GAS_URL, { check: 1, subdomain: sub, t: Date.now() }).catch(()=>null);
-        if (res && res.ok && (res.exists===true || res.taken===true)) {
-          subWarn.textContent='That subdomain is already taken. Try another.'; subWarn.classList.remove('hide');
+    const s = sanitizeSub(fields.subdomain.value);
+    if (!s || s.length < 3) return;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async ()=>{
+      try{
+        const resp = await jsonp(GAS_ENDPOINT, { exists: 1, subdomain: s });
+        if (resp && resp.ok && (resp.exists || resp.reserved)) {
+          subWarn.textContent = "That site URL is already taken. Try another.";
+          subWarn.classList.remove('hide');
         }
-      } catch(_){
-        // non-blocking; enforce on submit
-      }
+      }catch(_){}
     }, 350);
-  }
+  });
 
-  // Submit
+  /* ===== Submit ===== */
   form.addEventListener('submit', async (ev)=>{
-    ev.preventDefault(); hideError();
-    const sub = sanitizeSub(fields.subdomain.value);
-    if (!isEmail(fields.email.value)) return showError('Enter a valid email.');
-    if (!sub || sub.length<3) return showError('Enter a valid site URL (3+ chars).');
-    if (reserved.has(sub)) return showError('That subdomain is reserved. Choose another.');
+    ev.preventDefault(); hideError(); setBusy(true);
 
-    setBusy(true);
+    const site_display_name = fields.site_display_name.value.trim();
+    const email = fields.email.value.trim();
+    const sub = sanitizeSub(fields.subdomain.value);
+    const amazon_tag = fields.amazon_tag.value.trim();
+    const layout = (fields.layout?.value||'') || (plan==='Basic' ? 'list' : '');
+    const color_primary = normHex(fields.color_primary?.value||'');
+    const color_secondary = normHex(fields.color_secondary?.value||'');
+    const logo_url = (fields.logo_url?.value||'').trim();
+    const featured_asins = (fields.featured_asins?.value||'').trim();
+
+    if (!site_display_name){ setBusy(false); return showError("Enter a site name."); }
+    if (!isEmail(email))   { setBusy(false); return showError("Enter a valid email."); }
+    if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
+    if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
+
     try{
-      // enforce uniqueness right before write
-      const chk = await jsonp(GAS_URL, { exists: 1, subdomain: sub, t: Date.now() }).catch(()=>null);
-      if (chk && chk.ok && chk.exists===true){
-        subWarn.textContent='That subdomain is already taken. Try another.'; subWarn.classList.remove('hide');
-        setBusy(false); return;
+      // Double-check availability
+      const chk = await jsonp(GAS_ENDPOINT, { exists: 1, subdomain: sub });
+      if (!(chk && chk.ok)) throw new Error('check_failed');
+      if (chk.exists || chk.reserved){
+        subWarn.textContent="That site URL is already taken. Try another.";
+        subWarn.classList.remove('hide');
+        setBusy(false); return showError("That site URL is already taken.");
       }
 
-      const payload = {
+      // Write row via JSONP
+      const resp = await jsonp(GAS_ENDPOINT, {
         beacon: 1,
-        email: (fields.email.value||'').trim(),
-        site_display_name: (fields.site_display_name.value||'').trim(),
-        subdomain: sub,
-        plan: plan || '',
-        amazon_tag: (fields.amazon_tag.value||'').trim(),
-        color_primary: normHex(fields.color_primary.value),
-        color_secondary: normHex(fields.color_secondary.value),
-        logo_url: (fields.logo_url.value||'').trim(),
-        layout: fields.layout.value || '',
-        featured_asins: (fields.featured_asins.value||'').trim(),
+        timestamp: new Date().toISOString(),
+        tenant_id: '',
+        email, site_display_name, subdomain: sub, plan,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
         extra_page_enabled: 'false',
-        status: 'active',
-        t: Date.now()
-      };
+        status: 'active'
+      });
 
-      const res = await jsonp(GAS_URL, payload, 10000);
-      if (!res || res.ok !== true) throw new Error(res && res.error || 'write_failed');
+      if (!(resp && resp.ok)) throw new Error(resp && resp.error ? resp.error : 'write_failed');
 
-      const host = `${sub}.${DOMAIN}`;
-      link.href = `https://${host}`;
-      link.textContent = host;
-      form.classList.add('hide');
-      done.classList.remove('hide');
+      form.classList.add('hide'); done.classList.remove('hide');
+      const url = `https://${sub}.${DOMAIN}`;
+      link.href = url; link.textContent = url;
     }catch(e){
-      showError('Could not save your info. Try again.');
+      setBusy(false);
+      if (String(e.message||'').includes('duplicate')){
+        subWarn.textContent="That site URL is already taken. Try another.";
+        subWarn.classList.remove('hide');
+        return showError("That site URL is already taken.");
+      }
+      showError("Could not submit right now. Please try again.");
     }finally{
       setBusy(false);
     }
