@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Finish Onboarding</title>
+<meta name="color-scheme" content="light only"/>
 <style>
   :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
   *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -85,7 +86,8 @@
     </form>
 
     <div id="done" class="ok hide">
-      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
+      <b>Submitted.</b> Your site is ready at <a id="link" href="#" target="_blank" rel="noopener"></a>.
+      <div class="hint">Bookmark and share your link. We also emailed it to you (if configured).</div>
     </div>
   </div>
 </div>
@@ -95,10 +97,12 @@
   /* ===== CONFIG ===== */
   const DOMAIN = "bagthatthangup.com";
   const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-  const VALID_KEYS = {
-    Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
-    Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
-    Pro:    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb"
+
+  // Accept either secure plan_key or the plain plan. Keys prevent URL tampering.
+  const KEY_TO_PLAN = {
+    "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh": "Basic",
+    "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo": "Custom",
+    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb": "Pro"
   };
 
   /* ===== Elements ===== */
@@ -121,65 +125,71 @@
   function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
   function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
 
-  /* ===== JSONP helper ===== */
-  function jsonp(url, params){
+  /* ===== JSONP helper (no CORS headaches) ===== */
+  function jsonp(url, timeoutMs=10000){
     return new Promise((resolve,reject)=>{
-      const cb = 'btb_cb_' + Math.random().toString(36).slice(2);
-      params = params || {};
-      params.callback = cb;
-      params.ts = Date.now();
-      const qs = new URLSearchParams(params).toString();
+      const cb = 'bt_cb_' + Math.random().toString(36).slice(2);
       const script = document.createElement('script');
-      const timeout = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 9000);
-      function cleanup(){ clearTimeout(timeout); try{ delete window[cb]; }catch(_){}
+      const t = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, timeoutMs);
+      function cleanup(){ clearTimeout(t); try{ delete window[cb]; }catch(_){}
         if (script && script.parentNode) script.parentNode.removeChild(script); }
-      window[cb] = (data)=>{ cleanup(); resolve(data); };
+      window[cb] = data => { cleanup(); resolve(data); };
       script.onerror = ()=>{ cleanup(); reject(new Error('network')); };
-      script.src = url + (url.includes('?') ? '&' : '?') + qs;
+      script.src = url + (url.includes('?')?'&':'?') + 'callback=' + cb + '&ts=' + Date.now();
       document.head.appendChild(script);
     });
   }
 
-  /* ===== Plan & UI setup ===== */
-  const params = new URLSearchParams(location.search);
-  const plan = params.get('plan') || '';
-  const plan_key = params.get('plan_key') || '';
-  if(!VALID_KEYS[plan] || VALID_KEYS[plan] !== plan_key){
-    document.querySelector('.sub').textContent = 'Invalid or missing plan link. Please use your Stripe success link.';
-    q('f').classList.add('hide');
-    showError('Invalid or missing plan. If you paid already, use the success link from Stripe.');
-    return;
+  /* ===== Availability check (GAS) ===== */
+  async function checkTaken(sub){
+    const url = `${GAS_ENDPOINT}?check=1&subdomain=${encodeURIComponent(sub)}`;
+    const res = await jsonp(url);
+    if (!res || !res.ok) throw new Error('check_failed');
+    return !!res.exists; // true if taken
   }
-  planBadge.textContent = plan;
-  (function setUI(p){
-    const isCustom = (p==='Custom'||p==='Pro'), isPro = (p==='Pro');
+
+  /* ===== Plan resolve (key first, then fallback to ?plan=) ===== */
+  const params = new URLSearchParams(location.search);
+  const plan_key = params.get('plan_key') || '';
+  let plan = '';
+  if (plan_key && KEY_TO_PLAN[plan_key]) plan = KEY_TO_PLAN[plan_key];
+  else plan = params.get('plan') || '';
+  if (!plan || !/^(Basic|Custom|Pro)$/i.test(plan)){
+    showError("Invalid or missing plan. Please return to pricing and choose a plan.");
+    q('f').classList.add('hide');
+  } else {
+    plan = plan[0].toUpperCase() + plan.slice(1).toLowerCase();
+    planBadge.textContent = plan;
+    // Show plan-specific fields
+    const isCustom = (plan==='Custom' || plan==='Pro');
+    const isPro    = (plan==='Pro');
     p1.classList.toggle('hide', !isCustom);
     p2.classList.toggle('hide', !isCustom);
     layWrap.classList.toggle('hide', !isCustom);
     fields.layout.innerHTML = "";
-    if (p==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
-    if (p==='Pro') ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (plan==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (plan==='Pro')    ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
     proLogo.classList.toggle('hide', !isPro);
     proFeat.classList.toggle('hide', !isPro);
-  })(plan);
+  }
 
-  /* Live preview + live duplicate check */
+  /* ===== Live subdomain preview + duplicate check ===== */
   updatePrev();
-  let debounceTimer=null;
+  let subTimer = null;
   fields.subdomain.addEventListener('input', ()=>{
     updatePrev();
     subWarn.classList.add('hide'); subWarn.textContent='';
     const s = sanitizeSub(fields.subdomain.value);
     if (!s || s.length < 3) return;
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async ()=>{
+    if (subTimer) clearTimeout(subTimer);
+    subTimer = setTimeout(async ()=>{
       try{
-        const resp = await jsonp(GAS_ENDPOINT, { exists: 1, subdomain: s });
-        if (resp && resp.ok && (resp.exists || resp.reserved)) {
+        const taken = await checkTaken(s);
+        if (taken){
           subWarn.textContent = "That site URL is already taken. Try another.";
           subWarn.classList.remove('hide');
         }
-      }catch(_){}
+      }catch(_){/* ignore live failure */ }
     }, 350);
   });
 
@@ -202,41 +212,39 @@
     if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
     if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
 
-    try{
-      // Double-check availability
-      const chk = await jsonp(GAS_ENDPOINT, { exists: 1, subdomain: sub });
-      if (!(chk && chk.ok)) throw new Error('check_failed');
-      if (chk.exists || chk.reserved){
-        subWarn.textContent="That site URL is already taken. Try another.";
-        subWarn.classList.remove('hide');
-        setBusy(false); return showError("That site URL is already taken.");
-      }
-
-      // Write row via JSONP
-      const resp = await jsonp(GAS_ENDPOINT, {
-        beacon: 1,
-        timestamp: new Date().toISOString(),
-        tenant_id: '',
-        email, site_display_name, subdomain: sub, plan,
-        amazon_tag, color_primary, color_secondary, logo_url,
-        layout, featured_asins,
-        extra_page_enabled: 'false',
-        status: 'active'
-      });
-
-      if (!(resp && resp.ok)) throw new Error(resp && resp.error ? resp.error : 'write_failed');
-
-      form.classList.add('hide'); done.classList.remove('hide');
-      const url = `https://${sub}.${DOMAIN}`;
-      link.href = url; link.textContent = url;
-    }catch(e){
-      setBusy(false);
-      if (String(e.message||'').includes('duplicate')){
-        subWarn.textContent="That site URL is already taken. Try another.";
+    // Re-check availability (authoritative)
+    try {
+      const taken = await checkTaken(sub);
+      if (taken){
+        setBusy(false);
+        subWarn.textContent = "That site URL is already taken. Try another.";
         subWarn.classList.remove('hide');
         return showError("That site URL is already taken.");
       }
-      showError("Could not submit right now. Please try again.");
+    } catch(e){
+      // continue; backend will still reject duplicates if any race
+    }
+
+    // Write row via JSONP (so we get a real response)
+    try{
+      const qs = new URLSearchParams({
+        beacon:'1',
+        timestamp:new Date().toISOString(),
+        tenant_id:'',
+        email, site_display_name, subdomain:sub, plan,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
+        extra_page_enabled:'false',
+        status:'active'
+      });
+      const res = await jsonp(`${GAS_ENDPOINT}?${qs.toString()}`);
+      if (!res || !res.ok){
+        throw new Error(res && res.error ? res.error : 'write_failed');
+      }
+      form.classList.add('hide'); done.classList.remove('hide');
+      const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
+    }catch(e){
+      showError("Failed to submit. " + String(e.message||e));
     }finally{
       setBusy(false);
     }
