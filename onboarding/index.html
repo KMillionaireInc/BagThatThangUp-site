@@ -1,378 +1,285 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Finish Onboarding</title>
-<meta name="color-scheme" content="light only" />
-<style>
-  :root{
-    --ink:#0b1320; --muted:#5a6b7a; --line:#e8eef5; --bg:#f6f9fc; --surface:#fff; --brand:#0b72f0;
-    --ok-bg:#ebfbf8; --ok-border:#bfeee8; --err-bg:#fff3f3; --err-border:#ffd2d2;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{max-width:860px;margin:40px auto;padding:20px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
-  h1{margin:0 0 6px;font-size:30px}
-  .sub{color:var(--muted);margin:0 0 18px}
-  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
-  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .full{grid-column:1/-1}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
-  input:focus,select:focus{outline:2px solid #d8e6ff;border-color:#bcd3ff}
-  .hint{font-size:12px;color:var(--muted);margin-top:6px}
-  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:800}
-  .btn:disabled{opacity:.65;cursor:not-allowed}
-  .ok{padding:16px;border:1px solid var(--ok-border);background:var(--ok-bg);border-radius:12px;margin-top:16px}
-  .err{padding:12px;border:1px solid var(--err-border);background:var(--err-bg);border-radius:10px;color:#8a1f1f;margin-bottom:12px}
-  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
-  .hide{display:none!important}
-
-  /* success confetti */
-  .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-  .confetti i{
-    position:absolute; top:-10px; width:8px; height:14px; border-radius:2px;
-    opacity:.9; animation:drop 1.9s linear forwards; transform:rotate(20deg)
-  }
-  @keyframes drop{ to{ transform:translateY(110vh) rotate(320deg); opacity:1 } }
-
-  @media (max-width:640px){ form{grid-template-columns:1fr;gap:12px} }
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Finish Onboarding · BagThat</title>
+  <meta name="color-scheme" content="light only">
+  <style>
+    :root{
+      --ink:#0b1320;--muted:#566576;--bg:#f6f9fc;--surface:#fff;--line:#e7eef5;--brand:#0b72f0;--ok:#0b8f5a;--bad:#c62828;
+      --shadow:0 18px 40px rgba(11,19,32,.08)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:980px;margin:36px auto;padding:0 16px}
+    h1{font-size:clamp(24px,3.2vw,36px);margin:0 0 12px}
+    .sub{color:var(--muted);margin:0 0 18px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:#eef5ff;border:1px solid #cfe2ff;color:#083663;
+          font-weight:800;border-radius:999px;padding:6px 10px;margin-right:10px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:720px){ .row{grid-template-columns:1fr} }
+    label{font-weight:800;font-size:13px;margin:10px 0 6px;display:block}
+    input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 12px;font-size:15px;background:#fff}
+    input[aria-invalid="true"]{border-color:#ffbdbd;background:#fff6f6}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .muted{color:var(--muted)}
+    .cta{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{background:var(--brand);color:#fff;border:0;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}
+    .ghost{background:#eef7ff;border:1px solid #cfe6ff;color:#083663;border-radius:10px;padding:10px 12px;font-weight:800}
+    .msg{border:2px solid #ffd7d7;background:#fff6f6;color:#8a1f1f;border-radius:14px;padding:14px;margin:14px 0;display:none}
+    .msg.ok{border-color:#bfe8d1;background:#f2fbf6;color:#074e2e}
+    .chip{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #e3eaef;background:#f8fbff;color:#083663}
+    .subrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+    .note{font-size:12px;color:#36536b}
+    .hide{display:none !important;}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card">
-    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
-    <p class="sub">Payment succeeded. Complete this one-time setup.</p>
+  <div class="wrap">
+    <h1>Let’s set up your site</h1>
+    <p class="sub">Payment succeeded (or you came here directly). Complete this quick one-time setup.</p>
 
-    <div id="alert" class="err hide"></div>
+    <div id="err" class="msg" role="alert"></div>
+    <div id="ok"  class="msg ok"></div>
 
-    <form id="f" novalidate>
-      <div class="full">
-        <label>Store display name</label>
-        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
-      </div>
+    <div class="card">
+      <div class="pill" id="planPill">Selected plan: —</div>
+      <button id="pickPlan" class="ghost" type="button" onclick="location.href='/pricing/'">Choose a different plan</button>
+      <hr style="border:0;border-top:1px solid var(--line);margin:14px 0 6px">
 
-      <div>
-        <label>Contact email</label>
-        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
-      </div>
+      <form id="f">
+        <div class="row">
+          <div>
+            <label for="store">Store display name</label>
+            <input id="store" name="site_display_name" placeholder="e.g., Daisy’s Deals" required>
+          </div>
+          <div>
+            <label for="email">Contact email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required>
+          </div>
+        </div>
 
-      <div>
-        <label>Site URL (subdomain)</label>
-        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
-        <div class="hint">Your site will be: <b id="hostPrev">yourbrand.bagthatthangup.com</b></div>
-        <div id="subWarn" class="warn hide"></div>
-      </div>
+        <div class="row">
+          <div>
+            <label for="sub">Site URL (subdomain)</label>
+            <div class="subrow">
+              <input id="sub" name="subdomain" placeholder="e.g., freshdemo27" maxlength="63" required aria-describedby="subHelp">
+              <div class="chip">.bagthatthangup.com</div>
+            </div>
+            <div id="subHelp" class="hint">Lowercase letters, numbers, and hyphens only.</div>
+          </div>
+          <div>
+            <label for="tag">Amazon Associates ID</label>
+            <input id="tag" name="amazon_tag" placeholder="yourtag-20">
+            <div class="hint">Optional for now — add it later if you don’t have one yet.</div>
+          </div>
+        </div>
 
-      <div class="full">
-        <label>Amazon Associates ID</label>
-        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
-      </div>
+        <!-- Advanced (shown for Custom & Pro) -->
+        <div id="adv" class="hide">
+          <div class="row">
+            <div>
+              <label for="c1">Primary color (optional)</label>
+              <input id="c1" name="color_primary" placeholder="#0ea5a6">
+            </div>
+            <div>
+              <label for="c2">Accent color (optional)</label>
+              <input id="c2" name="color_secondary" placeholder="#1e90ff">
+            </div>
+          </div>
+          <div>
+            <label for="logo">Logo URL (optional)</label>
+            <input id="logo" name="logo_url" placeholder="https://…/logo.png">
+          </div>
+        </div>
 
-      <!-- Custom/Pro -->
-      <div id="p1" class="hide">
-        <label>Primary color (hex)</label>
-        <input id="color_primary" placeholder="#0ea5a6"/>
-      </div>
-      <div id="p2" class="hide">
-        <label>Secondary color (hex)</label>
-        <input id="color_secondary" placeholder="#1e90ff"/>
-      </div>
-      <div class="full hide" id="layWrap">
-        <label>Layout</label>
-        <select id="layout"></select>
-      </div>
-
-      <!-- Pro-only -->
-      <div class="full hide" id="proLogo">
-        <label>Logo URL (optional)</label>
-        <input id="logo_url" placeholder="https://.../logo.png"/>
-      </div>
-      <div class="full hide" id="proFeat">
-        <label>Featured ASINs (comma-separated)</label>
-        <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
-      </div>
-
-      <div class="full">
-        <button id="go" class="btn" type="submit">Submit onboarding</button>
-      </div>
-
-      <!-- hidden fields populated from query -->
-      <input type="hidden" id="plan"/>
-      <input type="hidden" id="plan_key"/>
-    </form>
-
-    <div id="done" class="ok hide">
-      <b>Submitted.</b> Your site is ready at
-      <a id="link" href="#" target="_blank" rel="noopener"></a>.
-      <div class="hint" style="margin-top:8px">Tip: bookmark it now and share it anywhere.</div>
+        <div class="cta">
+          <button class="btn" type="submit" id="submitBtn">Submit onboarding</button>
+          <span id="checkNote" class="note">We’ll create your site and email your link.</span>
+        </div>
+      </form>
     </div>
   </div>
-</div>
 
 <script>
-(function(){
-  /* ===== CONFIG ===== */
-  const DOMAIN = "bagthatthangup.com";
+(() => {
+  /* ===== CONFIG (live GAS endpoint you gave me) ===== */
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-  // Your GAS endpoint (supports JSONP ?callback=...):
-  const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-
-  // Public CSV for Subscribers (used for a fast duplicate check before asking GAS):
-  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
-
-  // Plan keys (opaque). We accept either plan_key=<opaque> OR plan=Basic|Custom|Pro.
-  // If you pass plan_key in the redirect from Stripe, the user can’t just flip a plan name in the URL.
-  const PLAN_BY_KEY = {
-    // example mapping: "test_btb_basic_123": "Basic"
-    // fill in if/when you wire Stripe success URL to include ?plan_key=
+  /* If you later want to lock to plan_key instead of plan names, fill these maps. 
+     For now we accept ?plan=Basic|Custom|Pro (your test Payment Links already point to that). */
+  const PLAN_KEY_TO_NAME = {
+    // "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
+    // "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
+    // "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "Pro",
   };
 
-  /* ===== ELEMENTS ===== */
-  const q = id => document.getElementById(id);
-  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
-  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
-  const fields = {
-    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
-    color_primary:q('color_primary'), color_secondary:q('color_secondary'), layout:q('layout'),
-    logo_url:q('logo_url'), featured_asins:q('featured_asins'), plan:q('plan'), plan_key:q('plan_key')
-  };
-  const p1=q('p1'), p2=q('p2'), layWrap=q('layWrap'), proLogo=q('proLogo'), proFeat=q('proFeat');
+  /* ===== DOM ===== */
+  const $ = s => document.querySelector(s);
+  const err = $("#err"), ok = $("#ok"), planPill = $("#planPill"), adv = $("#adv");
+  const subInput = $("#sub"), submitBtn = $("#submitBtn");
 
-  /* ===== UTILS ===== */
-  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(3,66) || String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63); // ensure ≥3 chars when possible
-  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
-  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
-  function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
-  function hideError(){ alertBox.classList.add('hide'); }
-  function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
-  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
-  function reserved(sub){ return new Set(['www','admin','root','api','test','dev','static','assets','img','tenant','onboarding','start','stripe','success']).has(sub); }
+  /* ===== Helpers ===== */
+  const qs = new URLSearchParams(location.search);
+  const planParam = (qs.get("plan") || "").trim();
+  const planKey   = (qs.get("plan_key") || "").trim();
+  let PLAN = planParam || (PLAN_KEY_TO_NAME[planKey] || "");
 
-  function spawnConfetti(){
-    const colors = ["#0b72f0","#1e90ff","#22c55e","#f59e0b","#ef4444","#a855f7"];
-    const wrap = document.createElement('div');
-    wrap.className = 'confetti';
-    document.body.appendChild(wrap);
-    const N = 90;
-    for(let i=0;i<N;i++){
-      const bit = document.createElement('i');
-      bit.style.left = (Math.random()*100)+"vw";
-      bit.style.background = colors[Math.floor(Math.random()*colors.length)];
-      bit.style.animationDelay = (Math.random()*0.9)+"s";
-      bit.style.transform = `translateY(${-40-Math.random()*60}px) rotate(${Math.random()*180}deg)`;
-      wrap.appendChild(bit);
+  function showErr(msg){
+    err.textContent = msg; err.style.display="block";
+    ok.style.display="none";
+  }
+  function showOk(html){
+    ok.innerHTML = html; ok.style.display="block";
+    err.style.display="none";
+  }
+  function sanitizeSub(s){
+    return String(s||"").toLowerCase()
+      .replace(/[^a-z0-9-]/g,"")
+      .replace(/^-+|-+$/g,"")
+      .slice(0,63);
+  }
+  function reservedSet(){
+    return new Set(["www","admin","root","api","test","dev","static","assets","img","tenant","onboarding","start","stripe","success"]);
+  }
+
+  function setPlanUI(){
+    if (!PLAN) {
+      planPill.textContent = "Selected plan: —";
+      showErr("Invalid or missing plan. Please return to the pricing page and start again.");
+      submitBtn.disabled = true;
+      return;
     }
-    setTimeout(()=>{ wrap.remove(); }, 2600);
+    planPill.textContent = "Selected plan: " + PLAN;
+    // Basic = short form; Custom/Pro = show advanced
+    adv.classList.toggle("hide", !(PLAN==="Custom" || PLAN==="Pro"));
   }
 
-  /* ===== CSV parsing (for fast duplicate check) ===== */
-  function parseCSV(text){
-    const rows=[]; let row=[], cell="", inQ=false;
-    for(let i=0;i<text.length;i++){
-      const ch=text[i], nx=text[i+1];
-      if(inQ){ if(ch==='"'&&nx==='"'){cell+='"';i++;} else if(ch==='"'){inQ=false;} else{cell+=ch;} }
-      else { if(ch==='"'){inQ=true;} else if(ch===','){row.push(cell);cell="";}
-             else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
-             else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";} else{cell+=ch;} }
+  setPlanUI();
+
+  /* ===== Subdomain availability check ===== */
+  let lastCheck = { value:"", status:"" };
+
+  async function checkSubdomain(name){
+    const sub = sanitizeSub(name);
+    subInput.value = sub;
+
+    if (!sub) {
+      subInput.setAttribute("aria-invalid","true");
+      $("#subHelp").textContent = "Please enter a subdomain (letters, numbers, hyphens).";
+      return { ok:false };
     }
-    if(cell!==""||row.length){row.push(cell);rows.push(row);}
-    return rows.filter(r=>r.length>1);
-  }
-  function toObjects(rows){
-    if(!rows.length) return [];
-    const headers = rows[0].map(h=>String(h||"").trim());
-    const idx = Object.fromEntries(headers.map((h,i)=>[h.toLowerCase(),i]));
-    return rows.slice(1).map((r,ix)=>{
-      const o={ _ix: ix };
-      for(const [h,i] of Object.entries(idx)) o[h]=(r[i]||"").toString().trim();
-      return o;
-    });
-  }
-  async function csvTaken(sub){
-    try{
-      const res = await fetch(SUBSCRIBERS_CSV + "&cb=" + Date.now(), { cache:'no-store' });
-      if(!res.ok) return null;
-      const text = await res.text();
-      const objs = toObjects(parseCSV(text));
-      const hit = objs.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
-      return !!hit;
-    }catch(_){ return null; }
-  }
+    if (reservedSet().has(sub)) {
+      subInput.setAttribute("aria-invalid","true");
+      $("#subHelp").textContent = "That word is reserved. Try another.";
+      return { ok:false };
+    }
 
-  /* ===== JSONP helpers (no CORS) ===== */
-  function jsonp(url){
-    return new Promise((resolve,reject)=>{
-      const cb = "btb_cb_" + Math.random().toString(36).slice(2);
-      const s = document.createElement('script');
-      const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 9000);
-      function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(_){}
-        if (s && s.parentNode) s.parentNode.removeChild(s);
+    $("#subHelp").textContent = "Checking availability…";
+    subInput.removeAttribute("aria-invalid");
+
+    try {
+      const u = new URL(GAS_URL);
+      u.searchParams.set("check","1");
+      u.searchParams.set("subdomain", sub);
+
+      // Small timeout guard
+      const ctrl = new AbortController();
+      const t = setTimeout(()=>ctrl.abort(), 7000);
+
+      const res = await fetch(u.toString(), { signal: ctrl.signal, cache:"no-store" });
+      clearTimeout(t);
+      const data = await res.json().catch(()=>({}));
+
+      if (data && data.ok && data.exists===false) {
+        $("#subHelp").textContent = "Great! This name is available.";
+        subInput.removeAttribute("aria-invalid");
+        lastCheck = { value: sub, status:"ok" };
+        return { ok:true };
+      } else if (data && data.reserved) {
+        subInput.setAttribute("aria-invalid","true");
+        $("#subHelp").textContent = "That word is reserved. Try another.";
+        lastCheck = { value: sub, status:"reserved" };
+        return { ok:false };
+      } else if (data && data.exists===true) {
+        subInput.setAttribute("aria-invalid","true");
+        $("#subHelp").textContent = "That site URL is already taken. Try another.";
+        lastCheck = { value: sub, status:"taken" };
+        return { ok:false };
+      } else {
+        subInput.setAttribute("aria-invalid","true");
+        $("#subHelp").textContent = "Network error while checking name.";
+        lastCheck = { value: sub, status:"net" };
+        return { ok:false };
       }
-      window[cb] = function(resp){ cleanup(); resolve(resp); };
-      s.onerror = ()=>{ cleanup(); reject(new Error("network")); };
-      s.src = url + (url.includes('?')?'&':'?') + "callback=" + cb + "&ts=" + Date.now();
-      document.head.appendChild(s);
-    });
-  }
-
-  async function checkTakenJSONP(sub){
-    const u = `${GAS}?exists=${encodeURIComponent(sub)}`;
-    const resp = await jsonp(u);
-    // Expected shape: { ok:true, exists:boolean }
-    if (resp && resp.ok === true && typeof resp.exists === 'boolean') return resp.exists;
-    // Legacy shape fallback: { ok:true, taken:boolean }
-    if (resp && typeof resp.taken === 'boolean') return resp.taken;
-    // Any explicit error?
-    if (resp && resp.error) throw new Error(String(resp.error));
-    // Unknown → treat as not taken
-    return false;
-  }
-
-  async function writeRowJSONP(payload){
-    const qs = new URLSearchParams({ beacon:'1', ...payload });
-    const resp = await jsonp(`${GAS}?${qs.toString()}`);
-    if (resp && resp.ok) return true;
-    if (resp && resp.error) throw new Error(resp.error);
-    throw new Error("write_failed");
-  }
-
-  /* ===== Plan detection & UI gating ===== */
-  function detectPlan(){
-    const p = new URLSearchParams(location.search);
-    const planKey = p.get('plan_key') || '';
-    const planName = p.get('plan') || '';
-    let plan = '';
-
-    if (planKey && PLAN_BY_KEY[planKey]) {
-      plan = PLAN_BY_KEY[planKey];
-      fields.plan_key.value = planKey;
-    } else if (/^(Basic|Custom|Pro)$/i.test(planName)) {
-      plan = planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase();
+    } catch(_e) {
+      subInput.setAttribute("aria-invalid","true");
+      $("#subHelp").textContent = "Network error while checking name.";
+      lastCheck = { value: sub, status:"net" };
+      return { ok:false };
     }
-
-    fields.plan.value = plan;
-    planBadge.textContent = plan || '—';
-    // Gate fields by plan
-    const isCustom = (plan==='Custom' || plan==='Pro');
-    const isPro = (plan==='Pro');
-    p1.classList.toggle('hide', !isCustom);
-    p2.classList.toggle('hide', !isCustom);
-    layWrap.classList.toggle('hide', !isCustom);
-    fields.layout.innerHTML='';
-    if (plan==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
-    if (plan==='Pro') ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
-    proLogo.classList.toggle('hide', !isPro);
-    proFeat.classList.toggle('hide', !isPro);
   }
 
-  /* ===== LIVE availability check ===== */
-  let debounce=null;
-  fields.subdomain.addEventListener('input', ()=>{
-    updatePrev();
-    subWarn.classList.add('hide'); subWarn.textContent='';
-    const sub = sanitizeSub(fields.subdomain.value);
-    if (!sub || sub.length < 3 || reserved(sub)) return;
-    if (debounce) clearTimeout(debounce);
-    debounce = setTimeout(async ()=>{
-      // CSV first (fast), then JSONP to GAS for authority
-      try{
-        const csvSays = await csvTaken(sub);
-        if (csvSays === true){
-          subWarn.textContent="That site URL is already taken. Try another.";
-          subWarn.classList.remove('hide');
-          return;
-        }
-        // CSV failed or says free → confirm with GAS
-        try{
-          const taken = await checkTakenJSONP(sub);
-          if (taken){
-            subWarn.textContent="That site URL is already taken. Try another.";
-            subWarn.classList.remove('hide');
-          } else {
-            subWarn.textContent="Great! This site URL is available.";
-            subWarn.classList.remove('hide');
-            subWarn.style.color = '#166534';
-          }
-        }catch(_){}
-      }catch(_){}
-    }, 350);
+  let typingTimer;
+  subInput.addEventListener("input", () => {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(()=>checkSubdomain(subInput.value), 400);
   });
 
-  /* ===== SUBMIT ===== */
-  form.addEventListener('submit', async (ev)=>{
-    ev.preventDefault(); hideError(); setBusy(true);
+  /* ===== Submit onboarding ===== */
+  $("#f").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    err.style.display="none"; ok.style.display="none";
 
-    const plan = fields.plan.value.trim();
-    if (!/^(Basic|Custom|Pro)$/.test(plan)) {
-      setBusy(false); return showError("Invalid or missing plan. Please return to the pricing page and start again.");
+    if (!PLAN) { showErr("Invalid or missing plan. Please return to pricing and select again."); return; }
+
+    const form = new FormData(e.currentTarget);
+    const sub  = sanitizeSub(form.get("subdomain"));
+
+    if (lastCheck.value !== sub || lastCheck.status!=="ok") {
+      const chk = await checkSubdomain(sub);
+      if (!chk.ok) return;
     }
 
-    const site_display_name = fields.site_display_name.value.trim();
-    const email = fields.email.value.trim();
-    const sub = sanitizeSub(fields.subdomain.value);
-    const amazon_tag = fields.amazon_tag.value.trim();
+    // Build payload for GAS
+    const payload = new URLSearchParams();
+    payload.set("beacon","1");
+    payload.set("plan", PLAN);
+    payload.set("site_display_name", form.get("site_display_name")||"");
+    payload.set("email", form.get("email")||"");
+    payload.set("subdomain", sub);
+    payload.set("amazon_tag", form.get("amazon_tag")||"");
+    payload.set("color_primary", form.get("color_primary")||"");
+    payload.set("color_secondary", form.get("color_secondary")||"");
+    payload.set("logo_url", form.get("logo_url")||"");
+    payload.set("layout", (PLAN==="Basic" ? "rows" : "grid"));
+    payload.set("extra_page_enabled", (PLAN==="Pro" ? "true" : "false"));
+    payload.set("status", "active");
 
-    const isCustom = (plan==='Custom' || plan==='Pro');
-    const isPro = (plan==='Pro');
+    submitBtn.disabled = true; submitBtn.textContent = "Submitting…";
 
-    const color_primary = isCustom ? normHex(fields.color_primary?.value||'') : '';
-    const color_secondary = isCustom ? normHex(fields.color_secondary?.value||'') : '';
-    const layout = isCustom ? (fields.layout?.value||'list') : 'list';
-    const logo_url = isPro ? (fields.logo_url?.value||'').trim() : '';
-    const featured_asins = isPro ? (fields.featured_asins?.value||'').trim() : '';
-
-    if (!site_display_name){ setBusy(false); return showError("Enter a site name."); }
-    if (!isEmail(email))   { setBusy(false); return showError("Enter a valid email."); }
-    if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
-    if (reserved(sub))     { setBusy(false); return showError("That site URL is reserved. Choose another."); }
-    if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
-
-    // Availability check: CSV → GAS (authoritative). If taken, stop.
-    try{
-      const csvSays = await csvTaken(sub);
-      if (csvSays === true){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
-      const taken = await checkTakenJSONP(sub);
-      if (taken){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
-    }catch(_){
-      // If checks fail, we still try write; the sheet will reject duplicates server-side.
-    }
-
-    // Write (JSONP) — avoids CORS
-    try{
-      await writeRowJSONP({
-        timestamp: new Date().toISOString(),
-        tenant_id: '', // let GAS set or keep blank
-        email, site_display_name, subdomain: sub, plan,
-        amazon_tag, color_primary, color_secondary, logo_url,
-        layout, featured_asins,
-        extra_page_enabled: 'false',
-        status: 'active'
-      });
-
-      // Success: show link and confetti
-      const url = `https://${sub}.${DOMAIN}`;
-      form.classList.add('hide');
-      done.classList.remove('hide');
-      link.href = url;
-      link.textContent = url;
-      spawnConfetti();
-    }catch(e){
-      console.error(e);
-      showError("Network or server error. Please try again.");
-    }finally{
-      setBusy(false);
+    try {
+      const res = await fetch(GAS_URL + "?" + payload.toString(), { method:"GET", cache:"no-store" });
+      const data = await res.json().catch(()=> ({}));
+      if (data && data.ok) {
+        showOk(`Submitted. Your site will be available at <a href="https://${sub}.bagthatthangup.com" target="_blank" rel="noopener">https://${sub}.bagthatthangup.com</a>. We’ll email your link too.`);
+        $("#f").reset();
+      } else {
+        showErr("Network error. Please try again.");
+      }
+    } catch(_e) {
+      showErr("Network error. Please try again.");
+    } finally {
+      submitBtn.disabled = false; submitBtn.textContent = "Submit onboarding";
     }
   });
 
-  /* ===== INIT ===== */
-  document.addEventListener('DOMContentLoaded', ()=>{
-    detectPlan();
-    updatePrev();
-  });
+  // Prefill email from URL if present (Stripe can append customer_email on some flows)
+  const maybeEmail = qs.get("customer_email") || qs.get("email");
+  if (maybeEmail) $("#email").value = maybeEmail;
+
 })();
 </script>
 </body>
