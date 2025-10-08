@@ -1,286 +1,355 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish Onboarding · BagThat</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{--ink:#0b1320;--muted:#4f6475;--bg:#f6faf9;--surface:#fff;--line:#e8eef5;--brand:#0b72f0;--good:#0c7a43;--bad:#b00020}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:980px;margin:34px auto;padding:0 16px}
-    h1{margin:0 0 6px;font-size:34px}
-    .sub{margin:0 0 22px;color:var(--muted)}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 34px rgba(2,24,43,.08);padding:18px}
-    form{display:grid;gap:14px}
-    label{font-weight:800;font-size:14px;margin-bottom:4px;display:block}
-    .row{display:grid;gap:12px}
-    @media (min-width:760px){ .row.two{grid-template-columns:1fr 1fr} }
-    input,select{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:12px;font-weight:600}
-    .help{color:var(--muted);font-size:12px;margin-top:6px}
-    .chip{display:inline-grid;grid-auto-flow:column;align-items:center;gap:10px;padding:8px 12px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:900;color:#053a83}
-    .hint{color:var(--muted);font-size:13px}
-    .btn{display:inline-grid;grid-auto-flow:column;place-content:center;gap:10px;padding:12px 16px;border-radius:12px;border:1px solid #0b7247;background:#11835a;color:#fff;font-weight:900;cursor:pointer}
-    .btn[disabled]{opacity:.6;cursor:not-allowed}
-    .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800}
-    .status{font-size:13px;font-weight:800;margin-top:6px}
-    .good{color:var(--good)}
-    .bad{color:var(--bad)}
-    .errbox{margin:18px 0 0;padding:14px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f;display:none}
-    .okbox{margin:18px 0 0;padding:14px;border:2px solid #c9f2d8;background:#effbf4;border-radius:14px;color:#0b4c2f;display:none}
-    .sep{height:1px;background:var(--line);margin:10px 0}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding · BagThat</title>
+<meta name="color-scheme" content="light only">
+<style>
+  :root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f6f9fc;--surface:#fff;--line:#e8eef5;--brand:#0b72f0;--ok:#0a7f4f;--bad:#b12525}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:980px;margin:28px auto;padding:0 16px}
+  h1{font-size:clamp(24px,3.2vw,36px);margin:0 0 8px}
+  p.sub{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:18px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){ .row{grid-template-columns:1fr} }
+  label{font-weight:800;font-size:13px;display:block;margin:10px 0 6px}
+  input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit}
+  .muted{color:var(--muted);font-size:12px;margin-top:4px}
+  .chip{display:inline-block;border:1px solid var(--line);padding:5px 10px;border-radius:999px;background:#f2f7ff;font-weight:800}
+  .planBar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .right{margin-left:auto}
+  .btn{appearance:none;border:0;border-radius:12px;background:var(--brand);color:#fff;font-weight:900;padding:12px 16px;cursor:pointer}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .help{font-size:12px;color:var(--muted);margin-top:8px}
+  .ok{color:var(--ok)}
+  .errbox{border:2px solid #ffd2d2;background:#fff6f6;color:var(--bad);border-radius:12px;padding:14px;margin-top:14px}
+  .success{border:2px solid #bfe9cf;background:#f3fff7;color:#0a5d3a;border-radius:12px;padding:14px;margin-top:14px}
+  .inline{display:flex;align-items:center;gap:10px}
+  .hide{display:none !important}
+  .status{font-size:12px;margin-top:6px}
+  .status.ok{color:var(--ok)}
+  .status.bad{color:var(--bad)}
+  .domainRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+  .suffix{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#f8fbff}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+</style>
 </head>
 <body>
   <div class="wrap">
     <h1>Let’s set up your site</h1>
     <p class="sub">Payment succeeded (or you came here directly). Complete this quick one-time setup.</p>
 
-    <div id="fatal" class="errbox"></div>
+    <div id="fatal" class="errbox hide"></div>
 
-    <div class="card" id="gate">
-      <div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap">
-        <div>
-          <div class="chip">Selected plan: <span id="planName">—</span></div>
-          <div class="hint" id="planHint" style="margin-top:8px"></div>
-        </div>
-        <a class="ghost" href="/pricing/">Choose a different plan</a>
+    <div class="card">
+      <div class="planBar">
+        <span class="chip">Selected plan: <b id="planName">—</b></span>
+        <a id="changePlan" class="right" href="/pricing/">Choose a different plan</a>
       </div>
-      <div class="sep"></div>
 
-      <form id="form">
-        <div class="row two">
-          <div>
-            <label for="display_name">Store display name</label>
-            <input id="display_name" name="display_name" placeholder="Demo Deals" required>
-          </div>
-          <div>
-            <label for="email">Contact email</label>
-            <input id="email" name="email" type="email" placeholder="you@example.com" required>
-          </div>
-        </div>
-
+      <div class="row">
         <div>
-          <label for="subdomain">Site URL (subdomain)</label>
-          <div class="row two">
-            <input id="subdomain" name="subdomain" placeholder="yourname" required>
-            <input value=".bagthatthangup.com" disabled>
+          <label for="store">Store display name</label>
+          <input id="store" placeholder="e.g., Daisy's Deals" autocomplete="organization"/>
+        </div>
+        <div>
+          <label for="email">Contact email</label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="sub">Site URL (subdomain)</label>
+          <div class="domainRow">
+            <input id="sub" placeholder="daisysdeals" autocapitalize="none" autocomplete="off"/>
+            <div class="suffix">.bagthatthangup.com</div>
           </div>
           <div id="subStatus" class="status"></div>
-          <div class="help">Lowercase letters, numbers, and hyphens only. Example: <b>freshdemo27</b></div>
+          <div class="muted">Lowercase letters, numbers, and hyphens only. Example: <b>freshdemo27</b></div>
         </div>
 
         <div>
-          <label for="amazon_tag">Amazon Associates ID</label>
-          <input id="amazon_tag" name="amazon_tag" placeholder="yourtag-20">
-          <div class="help">Optional for now — add it later in settings if you don’t have one yet.</div>
+          <label for="tag">Amazon Associates ID</label>
+          <input id="tag" placeholder="yourtag-20" autocapitalize="none"/>
+          <div class="muted">Optional for now — add it later in settings if you don’t have one yet.</div>
         </div>
+      </div>
 
-        <div class="row two">
+      <!-- Advanced inputs are hidden on Basic -->
+      <div id="advBlock" class="hide">
+        <div class="divider"></div>
+        <div class="row">
           <div>
-            <label for="color_primary">Primary color (optional)</label>
-            <input id="color_primary" name="color_primary" placeholder="#0ea5a6">
+            <label for="pcolor">Primary color (optional)</label>
+            <input id="pcolor" value="#0ea5a6"/>
           </div>
           <div>
-            <label for="color_secondary">Accent color (optional)</label>
-            <input id="color_secondary" name="color_secondary" placeholder="#1e90ff">
+            <label for="scolor">Accent color (optional)</label>
+            <input id="scolor" value="#1e90ff"/>
           </div>
         </div>
 
-        <div>
-          <label for="logo_url">Logo URL (optional)</label>
-          <input id="logo_url" name="logo_url" placeholder="https://…/logo.png">
+        <div class="row">
+          <div>
+            <label for="logo">Logo URL (optional)</label>
+            <input id="logo" placeholder="https://…/logo.png"/>
+            <div class="muted">PNG/SVG preferred.</div>
+          </div>
+          <div>
+            <label for="layout">Layout (optional)</label>
+            <input id="layout" placeholder="e.g., grid, rows"/>
+            <div class="muted">Leave blank for the default layout.</div>
+          </div>
         </div>
 
-        <div class="sep"></div>
-
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button class="btn" id="submitBtn" type="submit">Submit onboarding</button>
-          <span class="hint">We’ll create your site and email your link.</span>
+        <div class="row">
+          <div>
+            <label for="featured">Featured ASINs (optional)</label>
+            <input id="featured" placeholder="B0…,B0…,B0…"/>
+          </div>
+          <div>
+            <label for="extraPage">Enable extra page? (optional)</label>
+            <input id="extraPage" placeholder="true / false" value="false"/>
+          </div>
         </div>
+      </div>
 
-        <div id="err" class="errbox"></div>
-        <div id="ok" class="okbox"></div>
-      </form>
+      <div class="divider"></div>
+      <div class="inline">
+        <button id="submitBtn" class="btn">Submit onboarding</button>
+        <div id="submitMsg" class="help"></div>
+      </div>
+
+      <div id="resultOk" class="success hide"></div>
+      <div id="resultErr" class="errbox hide"></div>
     </div>
   </div>
 
-  <script>
-  // ---------- CONFIG ----------
-  const MAIN_DOMAIN = "bagthatthangup.com";
+<script>
+/* ========= CONFIG ========= */
 
-  // Your Google Apps Script Web App URL (new deployment):
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+/** Your deployed Apps Script Web App URL (exec) */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-  // ONLY accept these hard-to-guess plan keys (must match the keys you set in Stripe redirects)
-  const PLAN_KEYS = {
-    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": { code: "Basic",  hint: "Ready-made template · One-click setup · Email support" },
-    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": { code: "Custom", hint: "Choose colors & layout · CSV import · Priority support" },
-    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": { code: "Pro",    hint: "Advanced layouts · Logo & featured slots · Concierge support" }
-  };
+/** Optional: accept secret plan_keys from Stripe redirects */
+const PLAN_KEYS = {
+  // example: "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
+  //          "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
+  //          "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "Pro"
+};
 
-  // Subdomain names we will not allow
-  const RESERVED = new Set(["www","start","pricing","stripe","success","tenant","onboarding","api","assets","static","img","admin","root","dev","test"]);
+/* ========= UTIL ========= */
 
-  // ---------- UTILS ----------
-  const $ = s => document.querySelector(s);
-  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-  function getParam(name){ return new URLSearchParams(location.search).get(name) || ""; }
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
 
-  // Small JSONP helper for Apps Script (no CORS headache)
-  function jsonp(url, timeoutMs=15000){
-    return new Promise((resolve,reject)=>{
-      const cb = "cb_"+Math.random().toString(36).slice(2);
-      const s = document.createElement("script");
-      const sep = url.includes("?") ? "&" : "?";
-      s.src = url + sep + "callback=" + cb;
-      let done = false;
-      window[cb] = (data)=>{ if(done) return; done = true; cleanup(); resolve(data); };
-      s.onerror = ()=>{ if(done) return; done = true; cleanup(); reject(new Error("Network error")); };
-      const to = setTimeout(()=>{ if(done) return; done = true; cleanup(); reject(new Error("Timeout")); }, timeoutMs);
-      function cleanup(){ clearTimeout(to); delete window[cb]; s.remove(); }
-      document.body.appendChild(s);
-    });
-  }
+function sanitizeSub(s){
+  return String(s||"").toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/^-+|-+$/g,"").slice(0,63);
+}
 
-  // ---------- PLAN GATE ----------
-  const planKey = getParam("plan_key").trim();
-  const planInfo = PLAN_KEYS[planKey];
-
-  function block(reason){
-    const fatal = $("#fatal");
-    fatal.style.display = "block";
-    fatal.innerHTML = reason + ' <div class="help" style="margin-top:8px">Go back to <a href="/pricing/">pricing</a> to pick a plan.</div>';
-    $("#gate").style.display = "none";
-  }
-
-  if(!planInfo){
-    block("Could not verify your plan. (Missing or invalid plan key.)");
-  }else{
-    $("#planName").textContent = planInfo.code;
-    $("#planHint").textContent = planInfo.hint;
-  }
-
-  // ---------- SUBDOMAIN CHECK ----------
-  const subInput = $("#subdomain");
-  const subStatus = $("#subStatus");
-  let subTimer = null;
-
-  function sanitizeSub(s){
-    return String(s||"").toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/^-+|-+$/g,"").slice(0,63);
-  }
-
-  async function checkSub(){
-    const raw = subInput.value;
-    const sub = sanitizeSub(raw);
-    if(raw !== sub) subInput.value = sub;
-    if(!sub){ subStatus.textContent=""; return; }
-    if(RESERVED.has(sub)){
-      subStatus.innerHTML = `<span class="bad">Sorry, that name is reserved.</span>`;
-      return;
-    }
-    subStatus.textContent = "Checking availability…";
-    try{
-      const url = `${GAS_URL}?check=1&subdomain=${encodeURIComponent(sub)}`;
-      const res = await jsonp(url);
-      if(res && res.ok){
-        if(res.exists){
-          subStatus.innerHTML = `<span class="bad">That site URL is taken. Try another.</span>`;
-        }else{
-          subStatus.innerHTML = `<span class="good">Great — that site URL is available.</span>`;
-        }
-      }else{
-        subStatus.innerHTML = `<span class="bad">Error checking name. Try again.</span>`;
-      }
-    }catch(_){
-      subStatus.innerHTML = `<span class="bad">Network error while checking name.</span>`;
-    }
-  }
-
-  subInput.addEventListener("input", ()=>{
-    clearTimeout(subTimer);
-    subTimer = setTimeout(checkSub, 500);
+/** Lightweight JSONP (avoids CORS) */
+function jsonp(url, params={}, timeoutMs=7000){
+  return new Promise((resolve,reject)=>{
+    const cb = "cb_"+Math.random().toString(36).slice(2);
+    const q = new URLSearchParams(params);
+    q.set("callback", cb);
+    const s = document.createElement("script");
+    let done = false;
+    const cleanup = ()=>{
+      if (done) return;
+      done = true;
+      delete window[cb];
+      s.remove();
+    };
+    window[cb] = (data)=>{ cleanup(); resolve(data); };
+    s.onerror = ()=>{ cleanup(); reject(new Error("network")); };
+    s.src = url + (url.includes("?") ? "&" : "?") + q.toString();
+    document.head.appendChild(s);
+    setTimeout(()=>{ if(!done){ cleanup(); reject(new Error("timeout")); } }, timeoutMs);
   });
+}
 
-  // ---------- SUBMIT ----------
-  const form = $("#form");
+/* ========= PLAN DETECTION ========= */
+
+function detectPlan(){
+  const u = new URL(location.href);
+  const planKey = u.searchParams.get("plan_key");
+  const plan = u.searchParams.get("plan");
+  if (planKey && PLAN_KEYS[planKey]) return PLAN_KEYS[planKey];
+  if (plan && /^(Basic|Custom|Pro)$/i.test(plan)) return plan[0].toUpperCase()+plan.slice(1).toLowerCase();
+  return null;
+}
+
+/* ========= NAME CHECK ========= */
+
+let lastCheck = 0;
+let pendingToken = 0;
+
+async function checkName(){
+  const field = $("#sub");
+  const out = $("#subStatus");
+  const val = sanitizeSub(field.value);
+  field.value = val;
+
+  if (!val){
+    out.className = "status";
+    out.textContent = "";
+    return {ok:false, reason:"empty"};
+  }
+
+  const myToken = ++pendingToken;
+  out.className = "status";
+  out.textContent = "Checking…";
+
+  try{
+    const res = await jsonp(GAS_URL, { check:1, subdomain: val });
+    if (myToken !== pendingToken) return {ok:false, reason:"stale"};
+
+    if (!res || res.ok === false){
+      if (res && res.error === "bad_subdomain"){
+        out.className = "status bad";
+        out.textContent = "Only lowercase letters, numbers, and hyphens.";
+        return {ok:false, reason:"bad"};
+      }
+      out.className = "status bad";
+      out.textContent = "Network error while checking name.";
+      return {ok:false, reason:"network"};
+    }
+
+    if (res.reserved){
+      out.className = "status bad";
+      out.textContent = "This name is reserved.";
+      return {ok:false, reason:"reserved"};
+    }
+    if (res.exists){
+      out.className = "status bad";
+      out.textContent = "That name is taken. Try another.";
+      return {ok:false, reason:"taken"};
+    }
+
+    out.className = "status ok";
+    out.textContent = "Great! This name is available.";
+    return {ok:true};
+  }catch(_){
+    out.className = "status bad";
+    out.textContent = "Network error while checking name.";
+    return {ok:false, reason:"network"};
+  }
+}
+
+/* ========= SUBMIT ========= */
+
+async function submitForm(plan){
   const btn = $("#submitBtn");
-  const okBox = $("#ok");
-  const errBox = $("#err");
+  const msg = $("#submitMsg");
+  const okBox = $("#resultOk");
+  const errBox = $("#resultErr");
 
-  form.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    errBox.style.display="none";
-    okBox.style.display="none";
+  errBox.classList.add("hide"); errBox.textContent = "";
+  okBox.classList.add("hide"); okBox.textContent = "";
 
-    if(!planInfo){ return block("Missing or invalid plan key."); }
+  const store = $("#store").value.trim();
+  const email = $("#email").value.trim();
+  const sub   = sanitizeSub($("#sub").value);
+  const tag   = $("#tag").value.trim();
 
-    const display_name = $("#display_name").value.trim();
-    const email        = $("#email").value.trim();
-    const subdomain    = sanitizeSub($("#subdomain").value);
-    const amazon_tag   = $("#amazon_tag").value.trim();
-    const color_primary= $("#color_primary").value.trim();
-    const color_secondary=$("#color_secondary").value.trim();
-    const logo_url     = $("#logo_url").value.trim();
+  if (!store || !email || !sub){
+    errBox.textContent = "Please complete store name, email and subdomain.";
+    errBox.classList.remove("hide");
+    return;
+  }
 
-    if(!display_name || !email || !subdomain){
-      errBox.style.display="block";
-      errBox.textContent="Please complete all required fields.";
+  msg.textContent = "Saving…";
+  btn.disabled = true;
+
+  try{
+    // quick re-check name to avoid race
+    const check = await checkName();
+    if (!check.ok){
+      msg.textContent = "";
+      btn.disabled = false;
+      if (check.reason === "taken" || check.reason === "reserved" || check.reason === "bad"){
+        errBox.textContent = $("#subStatus").textContent || "Please choose another subdomain.";
+      }else{
+        errBox.textContent = "We couldn’t verify the subdomain. Please try again.";
+      }
+      errBox.classList.remove("hide");
       return;
     }
-    if(RESERVED.has(subdomain)){
-      errBox.style.display="block";
-      errBox.textContent="That subdomain is reserved. Choose another.";
-      return;
+
+    // collect advanced fields only for Custom/Pro
+    const put = {
+      beacon: 1,
+      plan: plan,
+      site_display_name: store,
+      email: email,
+      subdomain: sub,
+      amazon_tag: tag,
+      status: "active"
+    };
+
+    if (plan !== "Basic"){
+      put.color_primary   = $("#pcolor").value.trim();
+      put.color_secondary = $("#scolor").value.trim();
+      put.logo_url        = $("#logo").value.trim();
+      put.layout          = $("#layout").value.trim();
+      put.featured_asins  = $("#featured").value.trim();
+      put.extra_page_enabled = $("#extraPage").value.trim();
     }
 
-    btn.disabled = true; btn.textContent = "Submitting…";
-
-    try{
-      // Re-check just before writing
-      const chk = await jsonp(`${GAS_URL}?check=1&subdomain=${encodeURIComponent(subdomain)}`);
-      if(!(chk && chk.ok) || chk.exists){
-        throw new Error("That site URL is taken. Pick a different one.");
-      }
-
-      const qs = new URLSearchParams({
-        beacon: "1",
-        plan: planInfo.code,
-        site_display_name: display_name,
-        email,
-        subdomain,
-        amazon_tag,
-        color_primary,
-        color_secondary,
-        logo_url,
-        layout: "", // optional
-        featured_asins: "", // optional
-        extra_page_enabled: "false",
-        status: "active"
-      });
-
-      const res = await jsonp(`${GAS_URL}?${qs.toString()}`);
-      if(!(res && res.ok)){
-        throw new Error(res && res.error ? String(res.error) : "Unexpected error while saving.");
-      }
-
-      const siteURL = `https://${subdomain}.${MAIN_DOMAIN}/`;
-      okBox.style.display="block";
-      okBox.innerHTML = `Submitted. Your site will be available at <a href="${siteURL}">${siteURL}</a>. Bookmark and share your link.`;
-
-      btn.textContent = "Submitted";
-      setTimeout(()=>{ location.href = siteURL; }, 1200);
-
-    }catch(err){
-      errBox.style.display="block";
-      errBox.textContent = String(err.message || err);
-      btn.disabled = false; btn.textContent = "Submit onboarding";
+    const res = await jsonp(GAS_URL, put);
+    if (!res || res.ok === false){
+      const msgTxt = (res && res.error) ? String(res.error) : "Network error";
+      throw new Error(msgTxt);
     }
+
+    msg.textContent = "";
+    okBox.innerHTML = `Submitted. Your site will be available at <a href="https://${sub}.bagthatthangup.com" target="_blank">https://${sub}.bagthatthangup.com</a>.`;
+    okBox.classList.remove("hide");
+  }catch(err){
+    msg.textContent = "";
+    errBox.textContent = String(err.message || err);
+    errBox.classList.remove("hide");
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ========= INIT ========= */
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+  const plan = detectPlan();
+  if (!plan){
+    const f = $("#fatal");
+    f.textContent = "Could not verify your plan. (Missing or invalid plan or plan_key.)";
+    f.classList.remove("hide");
+    $(".card").classList.add("hide");
+    return;
+  }
+
+  $("#planName").textContent = plan;
+
+  // Show advanced block only for Custom / Pro
+  if (plan !== "Basic"){
+    $("#advBlock").classList.remove("hide");
+  }
+
+  // subdomain checker (debounced)
+  let debounceTimer = 0;
+  $("#sub").addEventListener("input", ()=>{
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(checkName, 350);
   });
 
-  // If gate failed earlier, stop here.
-  if(!planInfo){ /* blocked above */ }
-  </script>
+  // initial state if prefilled
+  if ($("#sub").value) checkName();
+
+  $("#submitBtn").addEventListener("click", ()=>submitForm(plan));
+});
+</script>
 </body>
 </html>
