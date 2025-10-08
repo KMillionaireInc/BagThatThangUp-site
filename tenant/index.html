@@ -130,7 +130,7 @@
 
 <script>
 (function(){
-  /* ====== STATIC SOURCES ====== */
+  /* ====== STATIC SOURCES (LIVE) ====== */
   const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
   const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
   const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
@@ -180,8 +180,9 @@
     });
   }
   async function fetchCSV(url){
-    const res = await fetch(url, { cache:'no-store' });
-    if(!res.ok) throw new Error('CSV fetch failed');
+    const bust = url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
+    const res = await fetch(bust, { cache:'no-store' });
+    if(!res.ok) throw new Error('CSV fetch failed: '+url);
     const text = await res.text();
     return toObjects(parseCSV(text));
   }
@@ -194,7 +195,6 @@
     try{
       const u = new URL(url.replace(/^http:/,'https:'));
       if (u.hostname.endsWith("amazon.com")){
-        // kill any existing tag and set new one
         u.searchParams.delete('tag');
         u.searchParams.set('tag', tag);
         return u.toString();
@@ -310,6 +310,11 @@
 
   /* ====== TENANT CONFIG (by subdomain) ====== */
   function currentSubdomain(){
+    // allow ?site=abcdeals override for testing
+    const qs = new URLSearchParams(location.search);
+    const forced = (qs.get('site')||'').trim().toLowerCase();
+    if (forced) return forced;
+
     const host = location.host; // e.g., demo1.bagthatthangup.com
     const parts = host.split('.');
     if (parts.length < 3) return ''; // apex or unexpected
@@ -321,26 +326,20 @@
       throw new Error("This page must be accessed via your subdomain, e.g., demo1.bagthatthangup.com");
     }
     const rows = await fetchCSV(SUBSCRIBERS_CSV);
-    const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
+    const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted|inactive$/i.test(String(r.status||'')));
     if (!row) throw new Error("Site not found or inactive. If you just signed up, finish onboarding.");
+
     const siteName = row.site_display_name || sub;
     const color1 = (row.color_primary||'').trim();
     const color2 = (row.color_secondary||'').trim();
     const logoURL = (row.logo_url||'').trim();
-    const plan = (row.plan||'').trim();
-    const layout = (row.layout||'').trim();
     const tag = (row.amazon_tag||'').trim();
 
-    if (!tag) console.warn("No amazon_tag set for tenant:", sub);
-
-    ASSOC_TAG = tag;
+    ASSOC_TAG = tag || '';
     headline.textContent = siteName;
     chipSite.textContent = siteName;
     if (logoURL) { logo.src = logoURL; logo.style.display='block'; }
     setTheme(color1, color2);
-
-    // Optional: tweak layout choices by plan (kept simple here)
-    document.body.dataset.layout = layout || (plan==='Basic' ? 'rows' : 'grid');
 
     return { sub, siteName, tag };
   }
@@ -358,7 +357,6 @@
     else if (src==='almost') ALL = almost;
     else ALL = [...today, ...yest, ...almost];
 
-    // Update chips
     lastUpdated.textContent = "Last updated: " + new Date().toLocaleString();
 
     fillCategories(ALL);
@@ -368,7 +366,7 @@
   /* ====== INIT ====== */
   document.addEventListener('DOMContentLoaded', async ()=>{
     try{
-      const { tag } = await loadTenant();
+      await loadTenant();
 
       // controls
       document.getElementById("search").addEventListener('input', e=>{ QUERY=e.target.value; applyFilters(); });
