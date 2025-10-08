@@ -1,436 +1,73 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish Onboarding · BagThat</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{
-      --ink:#0b1320;--muted:#4f6475;--line:#e8eef5;--bg:#f7fafc;--surface:#fff;--brand:#0b72f0;--ok:#0d7a5f;--warn:#b54708;--err:#b3261e;
-      --shadow:0 18px 40px rgba(11,19,32,.08);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:980px;margin:32px auto;padding:0 16px}
-    h1{font-size:34px;margin:0 0 6px}
-    p.sub{margin:0 0 18px;color:var(--muted)}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:820px){ .row{grid-template-columns:1fr} }
-    label{font-weight:800;font-size:13px;margin:10px 0 6px;display:block}
-    input, .readonly{
-      width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;
-      font-weight:700;color:#0b2435;outline:none
-    }
-    input:focus{border-color:#bcd3ff;box-shadow:0 0 0 3px #e9f1ff}
-    .suffix{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
-    .suf{padding:12px;border:1px solid var(--line);border-radius:12px;background:#f1f6ff;color:#083663;font-weight:800}
-    .help{color:var(--muted);font-size:12px;margin-top:4px}
-    .chips{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
-    .chip{background:#eef7ff;border:1px solid #cfe6ff;color:#083663;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
-    .good{color:#0b663f}
-    .bad{color:var(--err)}
-    .warn{color:var(--warn)}
-    .btn{appearance:none;border:0;border-radius:12px;background:var(--brand);color:#fff;font-weight:900;padding:12px 14px;cursor:pointer}
-    .btn[disabled]{opacity:.45;cursor:not-allowed}
-    .link{color:var(--brand);font-weight:900;text-decoration:none}
-    .errbox{margin-top:16px;border:2px solid #ffd7d7;background:#fff6f6;color:#7f1515;border-radius:14px;padding:14px;display:none}
-    .okbox{margin-top:16px;border:2px solid #c6f0de;background:#f0fff8;color:#0b4d36;border-radius:14px;padding:14px;display:none}
-    .right{display:flex;justify-content:flex-end}
-    .bar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
-    .plan{display:flex;gap:10px;align-items:center}
-    .pill{background:#e7efff;border:1px solid #cfe0ff;color:#083663;padding:6px 12px;border-radius:999px;font-weight:900}
-    .soft{color:var(--muted);font-weight:700}
-    .hide{display:none !important}
-    .spinner{display:inline-block;width:16px;height:16px;border:2px solid #bcd3ff;border-top-color:#0b72f0;border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .foothelp{color:var(--muted);font-size:12px;margin-top:8px}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Let’s set up your site</h1>
-    <p class="sub">Payment succeeded (or you came here directly). Complete this quick one-time setup.</p>
-
-    <div id="bannerError" class="errbox"></div>
-
-    <div class="bar">
-      <div class="plan">
-        <span class="soft">Selected plan:</span>
-        <span id="planPill" class="pill">—</span>
-      </div>
-      <a class="link" href="/pricing/">Choose a different plan</a>
-    </div>
-
-    <div class="card">
-      <!-- Basic short form -->
-      <div id="formBasic">
-        <div class="row">
-          <div>
-            <label for="display_basic">Store display name</label>
-            <input id="display_basic" placeholder="e.g., Daisy’s Deals" autocomplete="organization"/>
-          </div>
-          <div>
-            <label for="email_basic">Contact email</label>
-            <input id="email_basic" type="email" placeholder="you@example.com" autocomplete="email"/>
-          </div>
-        </div>
-
-        <label for="sub_basic">Site URL (subdomain)</label>
-        <div class="suffix">
-          <input id="sub_basic" placeholder="e.g., daisysdeals" inputmode="lowercase" autocapitalize="none" spellcheck="false"/>
-          <div class="suf">.bagthatthangup.com</div>
-        </div>
-        <div id="submsg_basic" class="help">Lowercase letters, numbers, and hyphens only.</div>
-
-        <label for="tag_basic">Amazon Associates ID <span class="soft">(optional)</span></label>
-        <input id="tag_basic" placeholder="yourtag-20"/>
-
-        <div class="right" style="margin-top:12px">
-          <button id="btn_basic" class="btn">Submit onboarding</button>
-        </div>
-      </div>
-
-      <!-- Custom/Pro full form -->
-      <div id="formFull" class="hide">
-        <div class="row">
-          <div>
-            <label for="display_full">Store display name</label>
-            <input id="display_full" placeholder="e.g., Daisy’s Deals" autocomplete="organization"/>
-          </div>
-          <div>
-            <label for="email_full">Contact email</label>
-            <input id="email_full" type="email" placeholder="you@example.com" autocomplete="email"/>
-          </div>
-        </div>
-
-        <label for="sub_full">Site URL (subdomain)</label>
-        <div class="suffix">
-          <input id="sub_full" placeholder="e.g., daisysdeals" inputmode="lowercase" autocapitalize="none" spellcheck="false"/>
-          <div class="suf">.bagthatthangup.com</div>
-        </div>
-        <div id="submsg_full" class="help">Lowercase letters, numbers, and hyphens only.</div>
-
-        <label for="tag_full">Amazon Associates ID <span class="soft">(optional)</span></label>
-        <input id="tag_full" placeholder="yourtag-20"/>
-
-        <div class="row">
-          <div>
-            <label for="pcolor">Primary color <span class="soft">(optional)</span></label>
-            <input id="pcolor" placeholder="#0ea5a6" />
-          </div>
-          <div>
-            <label for="scolor">Accent color <span class="soft">(optional)</span></label>
-            <input id="scolor" placeholder="#1e90ff" />
-          </div>
-        </div>
-
-        <label for="logo">Logo URL <span class="soft">(optional)</span></label>
-        <input id="logo" placeholder="https://.../logo.png"/>
-
-        <div class="right" style="margin-top:12px">
-          <button id="btn_full" class="btn">Submit onboarding</button>
-        </div>
-      </div>
-
-      <div id="err" class="errbox"></div>
-      <div id="ok" class="okbox"></div>
-      <div id="foot" class="foothelp">We’ll create your site and email your link.</div>
-    </div>
-
-    <div class="chips" style="margin-top:12px">
-      <span id="chipStatus" class="chip">Checking settings…</span>
-      <span class="chip">Domain: bagthatthangup.com</span>
-    </div>
-  </div>
-
 <script>
-(() => {
-  /* ====================== CONFIG ====================== */
-
-  // Your live Google Apps Script Web App endpoint:
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-
-  // Main domain used for tenant sites:
-  const MAIN_DOMAIN = "bagthatthangup.com";
-
-  // Reserved names that can’t be used as subdomains:
-  const RESERVED = new Set(["www","admin","root","api","test","dev","static","assets","img","tenant","start","stripe","success"]);
-
-  // 🔒 Secure plan keys: replace with the exact values you saved in Stripe.
-  // If changed later, update both here AND in the three Payment Link redirect URLs.
-  const PLAN_KEYS = {
-    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
-    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
-    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "Pro"
-  };
-
-  // Allow fallback query param ?plan=Basic|Custom|Pro (useful for testing before plan_keys are in place)
-  const ALLOW_PLAN_FALLBACK = true;
-
-  /* ====================== HELPERS ====================== */
-
-  const $ = sel => document.querySelector(sel);
-
-  // Visible plan -> controls which form is shown
-  let PLAN = null;
-
-  // Light sanitization for subdomain
-  function sanitizeSub(s){
-    return String(s||"").toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/^-+|-+$/g,"").slice(0,63);
-  }
-
-  // Debounce helper
-  function debounce(fn, delay){
-    let t=null;
-    return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), delay); };
-  }
-
-  // Tiny JSONP utility (avoids CORS issues with Apps Script)
-  function jsonp(url, params = {}, timeoutMs = 12000){
-    return new Promise((resolve, reject)=>{
-      const cb = "__jp" + Math.random().toString(36).slice(2);
-      params.callback = cb;
-      const q = new URLSearchParams(params);
-      const src = url + (url.includes("?") ? "&" : "?") + q.toString();
-
-      let done = false;
-      const s = document.createElement("script");
-      s.src = src;
-      s.onerror = finish.bind(null, new Error("network-error"));
-      document.body.appendChild(s);
-
-      const to = setTimeout(()=>finish(new Error("timeout")), timeoutMs);
-
-      function finish(err, data){
-        if(done) return;
-        done = true;
-        clearTimeout(to);
-        try{ delete window[cb]; }catch(_){}
-        try{ s.remove(); }catch(_){}
-        if(err) reject(err); else resolve(data);
+// ---- Single source of truth: GAS ?exists= via JSONP ----
+function checkExistsGAS(sub){
+  return new Promise((resolve,reject)=>{
+    const cb = 'bt_exists_' + Math.random().toString(36).slice(2);
+    const s = document.createElement('script');
+    const url = `${GAS_ENDPOINT}?exists=${encodeURIComponent(sub)}&callback=${cb}&t=${Date.now()}`;
+    const timer = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 8000);
+    function cleanup(){
+      clearTimeout(timer);
+      try{ delete window[cb]; }catch(_){}
+      if (s && s.parentNode) s.parentNode.removeChild(s);
+    }
+    window[cb] = (resp)=>{
+      cleanup();
+      if (resp && resp.ok === true && typeof resp.exists === 'boolean'){
+        resolve(resp.exists);
+      } else {
+        reject(new Error('bad_response'));
       }
-      window[cb] = (data)=>finish(null, data);
-    });
-  }
-
-  function show(el, yes){ el.classList.toggle("hide", !yes); }
-  function setText(el, text){ el.textContent = text; }
-
-  function setError(msg){
-    const e = $("#bannerError");
-    if(!msg){ e.style.display = "none"; e.textContent=""; return; }
-    e.style.display = "block";
-    e.textContent = msg;
-  }
-
-  function setInlineError(msg){
-    const e = $("#err");
-    if(!msg){ e.style.display = "none"; e.textContent=""; return; }
-    e.style.display = "block";
-    e.textContent = msg;
-  }
-
-  function setOK(msg){
-    const e = $("#ok");
-    if(!msg){ e.style.display = "none"; e.textContent=""; return; }
-    e.style.display = "block";
-    e.textContent = msg;
-  }
-
-  function disable(btn, yes){
-    btn.disabled = !!yes;
-    btn.textContent = yes ? "Working…" : "Submit onboarding";
-  }
-
-  function qs(name){
-    const u = new URL(location.href);
-    return u.searchParams.get(name);
-  }
-
-  function derivePlan(){
-    // First, honor plan_key if present & recognized
-    const key = qs("plan_key");
-    if (key && PLAN_KEYS[key]) return PLAN_KEYS[key];
-
-    // Fallback for testing (not as secure)
-    const p = qs("plan");
-    if (ALLOW_PLAN_FALLBACK && p && /^(Basic|Custom|Pro)$/i.test(p)) return p[0].toUpperCase()+p.slice(1).toLowerCase();
-
-    return null;
-  }
-
-  /* ====================== UI WIRING ====================== */
-
-  const ui = {
-    planPill: $("#planPill"),
-    chipStatus: $("#chipStatus"),
-    // Basic
-    formBasic: $("#formBasic"),
-    display_basic: $("#display_basic"),
-    email_basic: $("#email_basic"),
-    sub_basic: $("#sub_basic"),
-    submsg_basic: $("#submsg_basic"),
-    tag_basic: $("#tag_basic"),
-    btn_basic: $("#btn_basic"),
-    // Full
-    formFull: $("#formFull"),
-    display_full: $("#display_full"),
-    email_full: $("#email_full"),
-    sub_full: $("#sub_full"),
-    submsg_full: $("#submsg_full"),
-    tag_full: $("#tag_full"),
-    pcolor: $("#pcolor"),
-    scolor: $("#scolor"),
-    logo: $("#logo"),
-    btn_full: $("#btn_full")
-  };
-
-  function switchForm(){
-    setText(ui.planPill, PLAN || "—");
-    show(ui.formBasic, PLAN === "Basic");
-    show(ui.formFull, PLAN === "Custom" || PLAN === "Pro");
-  }
-
-  /* ====================== SUBDOMAIN CHECK ====================== */
-
-  async function checkSub(which){
-    const input = which === "basic" ? ui.sub_basic : ui.sub_full;
-    const msg = which === "basic" ? ui.submsg_basic : ui.submsg_full;
-
-    const raw = input.value;
-    const val = sanitizeSub(raw);
-    if (raw !== val) input.value = val;
-
-    if (!val){
-      msg.innerHTML = 'Lowercase letters, numbers, and hyphens only.';
-      msg.className = "help";
-      return false;
-    }
-    if (RESERVED.has(val)){
-      msg.innerHTML = 'This name is reserved. Please try another.';
-      msg.className = "help bad";
-      return false;
-    }
-
-    msg.innerHTML = 'Checking… <span class="spinner"></span>';
-    msg.className = "help";
-
-    try{
-      const data = await jsonp(GAS_URL, { check: 1, subdomain: val });
-      if (data && data.ok){
-        if (data.reserved){
-          msg.innerHTML = 'This name is reserved. Please try another.';
-          msg.className = "help bad";
-          return false;
-        }
-        if (data.exists){
-          msg.innerHTML = 'That site URL is already taken. Try another.';
-          msg.className = "help bad";
-          return false;
-        }
-        msg.innerHTML = 'Great! This name is available.';
-        msg.className = "help good";
-        return true;
-      }
-      msg.innerHTML = 'Network error while checking name.';
-      msg.className = "help bad";
-      return false;
-    } catch(err){
-      msg.innerHTML = 'Network error while checking name.';
-      msg.className = "help bad";
-      return false;
-    }
-  }
-
-  const debCheckBasic = debounce(()=>checkSub("basic"), 400);
-  const debCheckFull  = debounce(()=>checkSub("full"), 400);
-
-  /* ====================== SUBMIT ====================== */
-
-  async function submit(kind){
-    setInlineError("");
-    setOK("");
-
-    const isBasic = (kind === "basic");
-    const subInput = isBasic ? ui.sub_basic : ui.sub_full;
-
-    const sub = sanitizeSub(subInput.value);
-    if (!sub){ setInlineError("Please enter a valid subdomain."); return; }
-
-    const okName = await checkSub(isBasic ? "basic" : "full");
-    if (!okName){ setInlineError("Please choose a different subdomain."); return; }
-
-    const payload = {
-      plan: PLAN,
-      subdomain: sub,
-      email: (isBasic ? ui.email_basic.value : ui.email_full.value).trim(),
-      site_display_name: (isBasic ? ui.display_basic.value : ui.display_full.value).trim(),
-      amazon_tag: (isBasic ? ui.tag_basic.value : ui.tag_full.value).trim(),
-      color_primary: isBasic ? "" : ui.pcolor.value.trim(),
-      color_secondary: isBasic ? "" : ui.scolor.value.trim(),
-      logo_url: isBasic ? "" : ui.logo.value.trim(),
-      layout: isBasic ? "" : "", // reserved if you want to map later
-      featured_asins: "",
-      extra_page_enabled: "false",
-      status: "active"
     };
+    s.onerror = ()=>{ cleanup(); reject(new Error('network')); };
+    s.src = url;
+    document.head.appendChild(s);
+  });
+}
 
-    const btn = isBasic ? ui.btn_basic : ui.btn_full;
-    disable(btn, true);
+// wire up the input
+(function(){
+  const subInput = document.getElementById('subdomain');
+  const subWarn  = document.getElementById('subWarn');
+  const hostPrev = document.getElementById('hostPrev');
+  const DOMAIN   = "bagthatthangup.com";
+  const sanitize = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
 
-    try{
-      const res = await jsonp(GAS_URL, Object.assign({ beacon: 1 }, payload));
-      if (res && res.ok){
-        setOK("Submitted. Your site will be available at https://" + sub + "." + MAIN_DOMAIN + " (it may take a minute).");
-        $("#foot").textContent = "Bookmark and share your link. We also emailed it to you (if configured).";
-        // Optionally redirect them to their new site once DNS/app is ready:
-        // setTimeout(()=>location.href = "https://" + sub + "." + MAIN_DOMAIN + "/", 1500);
-      }else{
-        const msg = (res && res.error) ? String(res.error) : "Unexpected error while saving.";
-        setInlineError(msg);
+  let timer=null, lastReqId=0;
+  function updatePreview(){
+    const s = sanitize(subInput.value);
+    hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`;
+  }
+  subInput.addEventListener('input', ()=>{
+    subWarn.classList.add('hide'); subWarn.textContent='';
+    updatePreview();
+    const s = sanitize(subInput.value);
+    if (!s || s.length < 3) return;
+
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(async ()=>{
+      const myId = ++lastReqId;
+      try{
+        const exists = await checkExistsGAS(s);
+        if (myId !== lastReqId) return; // ignore stale result
+        if (exists){
+          subWarn.textContent = "That site URL is already taken. Try another.";
+          subWarn.classList.remove('hide');
+        } else {
+          subWarn.textContent = "Great! This name is available.";
+          subWarn.classList.remove('hide');
+          subWarn.style.color = "#0b7d3b";
+        }
+      }catch(_){
+        if (myId !== lastReqId) return;
+        subWarn.textContent = "Couldn’t verify name right now. You can still submit.";
+        subWarn.classList.remove('hide');
+        subWarn.style.color = "";
       }
-    }catch(err){
-      setInlineError("Network error while saving. Please try again.");
-    }finally{
-      disable(btn, false);
-    }
-  }
+    }, 400);
+  });
 
-  /* ====================== INIT ====================== */
-
-  function init(){
-    PLAN = derivePlan();
-
-    if (!PLAN){
-      setError("Could not verify your plan. (Missing or invalid plan or plan_key.)");
-      $("#chipStatus").textContent = "No plan detected";
-    }else{
-      setError("");
-      $("#chipStatus").textContent = "Plan verified";
-    }
-
-    switchForm();
-
-    // Prefill from Link (Stripe) if present
-    const email = qs("prefill_email") || "";
-    if (email){
-      ui.email_basic.value = email;
-      ui.email_full.value = email;
-    }
-
-    // Wire subdomain checks
-    ui.sub_basic.addEventListener("input", debCheckBasic);
-    ui.sub_full.addEventListener("input", debCheckFull);
-
-    // Wire submits
-    ui.btn_basic.addEventListener("click", ()=>submit("basic"));
-    ui.btn_full.addEventListener("click", ()=>submit("full"));
-  }
-
-  document.addEventListener("DOMContentLoaded", init);
+  // set initial preview once
+  updatePreview();
 })();
 </script>
-</body>
-</html>
