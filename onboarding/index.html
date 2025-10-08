@@ -1,190 +1,249 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish onboarding · BagThat</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{
-      --ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f7fafc;--surface:#fff;--brand:#0b72f0;--bad:#c62828;--good:#126e3a;
-      --shadow:0 18px 40px rgba(11,19,32,.08)
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:880px;margin:36px auto;padding:0 16px}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
-    h1{font-size:36px;margin:0 0 8px}
-    .sub{color:var(--muted);margin:0 0 18px}
-    .plan{display:inline-block;font:700 12px/1.1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#eef4ff;border:1px solid #d7e3ff;color:#0b2e6e;border-radius:999px;padding:6px 10px;margin-left:8px;vertical-align:middle}
-    label{display:block;font-weight:700;margin:14px 0 6px}
-    input[type=text], input[type=email]{width:100%;padding:12px 12px;border:1px solid var(--line);border-radius:12px;font:inherit}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .muted{color:var(--muted)}
-    .help{font-size:12px;color:var(--muted);margin-top:6px}
-    .hostline{font-size:14px;margin-top:6px}
-    .bad{color:var(--bad)} .good{color:var(--good)}
-    .actions{margin-top:18px}
-    .btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
-    .btn[disabled]{opacity:.6;cursor:not-allowed}
-    .alert{display:none;margin-bottom:14px;padding:12px;border-radius:12px;border:1px solid #ffe0e0;background:#fff6f6;color:#7a2222}
-    .done{display:none;margin-top:14px;border:1px solid #dff2e6;background:#f4fbf7;color:#0a4f30;padding:14px;border-radius:12px}
-    @media (max-width:720px){ .row{grid-template-columns:1fr} }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding</title>
+<meta name="color-scheme" content="light only"/>
+<style>
+  :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:820px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
+  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
+  .hide{display:none!important}
+</style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>Great choice! Let’s set up your site
-      <span id="planBadge" class="plan" style="display:none"></span>
-    </h1>
-    <p class="sub">Payment succeeded (or you came here directly). Complete this one-time setup.</p>
+    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
+    <p class="sub">Payment succeeded. Complete this one-time setup.</p>
 
-    <div id="alert" class="alert" role="alert"></div>
+    <div id="alert" class="err hide"></div>
 
-    <form id="f" autocomplete="on" novalidate>
-      <label for="site_display_name">Store display name</label>
-      <input id="site_display_name" name="site_display_name" type="text" placeholder="Demo Deals" required>
-
-      <div class="row">
-        <div>
-          <label for="email">Contact email</label>
-          <input id="email" name="email" type="email" inputmode="email" placeholder="you@example.com" required>
-        </div>
-        <div>
-          <label for="subdomain">Site URL (subdomain)</label>
-          <input id="subdomain" name="subdomain" type="text" inputmode="lowercase" placeholder="yourname" required>
-          <div id="hostPrev" class="hostline muted">Your site will be: —</div>
-        </div>
+    <form id="f" novalidate>
+      <div class="full">
+        <label>Store display name</label>
+        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
       </div>
 
-      <label for="amazon_tag">Amazon Associates ID</label>
-      <input id="amazon_tag" name="amazon_tag" type="text" placeholder="yourtag-20">
+      <div>
+        <label>Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
 
-      <div class="actions">
+      <div>
+        <label>Site URL (subdomain)</label>
+        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
+        <div class="hint">Your site will be: <b id="hostPrev">—</b></div>
+        <div id="subWarn" class="warn hide"></div>
+      </div>
+
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
+      </div>
+
+      <!-- Custom/Pro -->
+      <div id="p1" class="hide">
+        <label>Primary color (hex)</label>
+        <input id="color_primary" placeholder="#0ea5a6"/>
+      </div>
+      <div id="p2" class="hide">
+        <label>Secondary color (hex)</label>
+        <input id="color_secondary" placeholder="#1e90ff"/>
+      </div>
+      <div class="full hide" id="layWrap">
+        <label>Layout</label>
+        <select id="layout"></select>
+      </div>
+
+      <!-- Pro-only -->
+      <div class="full hide" id="proLogo">
+        <label>Logo URL (optional)</label>
+        <input id="logo_url" placeholder="https://.../logo.png"/>
+      </div>
+      <div class="full hide" id="proFeat">
+        <label>Featured ASINs (comma-separated)</label>
+        <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
+      </div>
+
+      <div class="full">
         <button id="go" class="btn" type="submit">Submit onboarding</button>
       </div>
     </form>
 
-    <div id="done" class="done" role="status"></div>
+    <div id="done" class="ok hide">
+      <b>Submitted.</b> Your site is ready: <a id="link" href="#" target="_blank" rel="noopener"></a>.
+      <div style="margin-top:8px;font-size:12px;color:#5a6b7a">Bookmark and share your link.</div>
+    </div>
   </div>
 </div>
 
 <script>
 (function(){
-  /* ======= CONFIG ======= */
-  const DOMAIN  = "bagthatthangup.com";             // your domain
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+  /* ===== CONFIG ===== */
+  const DOMAIN = "bagthatthangup.com";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
 
-  /* ======= Elements ======= */
-  const $ = s => document.querySelector(s);
-  const f = $("#f"), alertBox=$("#alert"), planBadge=$("#planBadge"), done=$("#done"),
-        subInp=$("#subdomain"), emailInp=$("#email"), nameInp=$("#site_display_name"),
-        tagInp=$("#amazon_tag"), hostPrev=$("#hostPrev"), goBtn=$("#go");
+  // Secure keys (what you just set in Stripe redirects)
+  const PLAN_BY_KEY = {
+    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
+    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
+    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "Pro"
+  };
 
-  /* ======= Utils ======= */
-  function showAlert(msg){ alertBox.textContent=msg; alertBox.style.display='block'; }
-  function hideAlert(){ alertBox.style.display='none'; alertBox.textContent=''; }
-  function sanitizeSub(v){
-    return String(v||'')
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g,'')
-      .replace(/^-+|-+$/g,'')
-      .slice(0,63);
+  /* ===== Elements ===== */
+  const q = id => document.getElementById(id);
+  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
+  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
+  const fields = {
+    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
+    color_primary:q('color_primary'), color_secondary:q('color_secondary'), layout:q('layout'),
+    logo_url:q('logo_url'), featured_asins:q('featured_asins')
+  };
+  const p1=q('p1'), p2=q('p2'), layWrap=q('layWrap'), proLogo=q('proLogo'), proFeat=q('proFeat');
+
+  /* ===== Utils ===== */
+  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v : ''; };
+  function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
+  function hideError(){ alertBox.classList.add('hide'); }
+  function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
+  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
+
+  /* ===== Parse plan from secure key ===== */
+  const params = new URLSearchParams(location.search);
+  const plan_key = params.get('plan_key') || '';
+  const plan = PLAN_BY_KEY[plan_key] || ''; // empty = reject
+  if (!plan){
+    document.body.innerHTML = '<div class="wrap"><div class="card"><div class="err">Invalid link. Please complete payment first.</div><p class="sub"><a href="/pricing/">Pick a plan</a></p></div></div>';
+    throw new Error('bad_plan_key');
   }
-  function jsonp(url){
-    return new Promise((resolve,reject)=>{
-      const cb="cb_"+Math.random().toString(36).slice(2);
-      const s=document.createElement("script");
-      const cleanup=()=>{ try{ delete window[cb]; }catch(_){ } s.remove(); };
-      window[cb]=data=>{ cleanup(); resolve(data); };
-      s.onerror=()=>{ cleanup(); reject(new Error("network")); };
-      s.src=url + (url.includes("?")?"&":"?") + "callback=" + cb;
-      document.head.appendChild(s);
+  planBadge.textContent = plan;
+
+  // Reveal plan-specific fields
+  (function setUI(p){
+    const isCustom = (p==='Custom'||p==='Pro'), isPro = (p==='Pro');
+    p1.classList.toggle('hide', !isCustom);
+    p2.classList.toggle('hide', !isCustom);
+    layWrap.classList.toggle('hide', !isCustom);
+    fields.layout.innerHTML = "";
+    if (p==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (p==='Pro') ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
+    proLogo.classList.toggle('hide', !isPro);
+    proFeat.classList.toggle('hide', !isPro);
+  })(plan);
+
+  /* ===== CSV helpers ===== */
+  function parseCSV(text){
+    const rows=[]; let row=[], cell="", inQ=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i], nx=text[i+1];
+      if(inQ){ if(ch==='"'&&nx==='"'){cell+='"';i++;} else if(ch==='"'){inQ=false;} else{cell+=ch;} }
+      else { if(ch==='"'){inQ=true;} else if(ch===','){row.push(cell);cell="";}
+             else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
+             else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";} else{cell+=ch;} }
+    }
+    if(cell!==""||row.length){row.push(cell);rows.push(row);}
+    return rows.filter(r=>r.length>1);
+  }
+  function toObjects(rows){
+    if(!rows.length) return [];
+    const headers = rows[0].map(h=>String(h||"").trim());
+    const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+    return rows.slice(1).map((r,ix)=>{
+      const o={ _ix: ix};
+      for(const [h,i] of Object.entries(idx)){ o[h]=(r[i]||"").toString().trim(); }
+      return o;
     });
   }
-
-  /* ======= Plan badge handling ======= */
-  const usp = new URLSearchParams(location.search);
-  const plan = usp.get("plan") || "";
-  const planKey = usp.get("plan_key") || "";
-  if (plan || planKey) {
-    planBadge.textContent = plan || "Selected";
-    planBadge.style.display = "inline-block";
+  async function fetchCSV(url){
+    const res = await fetch(url, { cache:'no-store' });
+    if(!res.ok) throw new Error('csv_fetch_failed');
+    const text = await res.text();
+    return toObjects(parseCSV(text));
   }
 
-  /* ======= Subdomain preview + availability check ======= */
-  let lastCheck = 0;
-  function updatePreview(){
-    const sub = sanitizeSub(subInp.value);
-    subInp.value = sub;
-    hostPrev.textContent = sub ? `Your site will be: ${sub}.${DOMAIN}` : "Your site will be: —";
+  /* ===== Live duplicate check (CSV) ===== */
+  updatePrev();
+  let debounceTimer=null;
+  fields.subdomain.addEventListener('input', ()=>{
+    updatePrev();
+    subWarn.classList.add('hide'); subWarn.textContent='';
+    const s = sanitizeSub(fields.subdomain.value);
+    if (!s || s.length < 3) return;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async ()=>{
+      try{
+        const rows = await fetchCSV(SUBSCRIBERS_CSV);
+        const taken = rows.some(r => String(r.subdomain||'').trim().toLowerCase()===s && !/^canceled|deleted$/i.test(String(r.status||'')));
+        if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+      }catch(_){}
+    }, 350);
+  });
 
-    if (!sub) return;
+  /* ===== Submit ===== */
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault(); hideError(); setBusy(true);
 
-    const now = Date.now();
-    if (now - lastCheck < 350) return; // throttle
-    lastCheck = now;
+    const site_display_name = fields.site_display_name.value.trim();
+    const email = fields.email.value.trim();
+    const sub = sanitizeSub(fields.subdomain.value);
+    const amazon_tag = fields.amazon_tag.value.trim();
+    const layout = (fields.layout?.value||'') || (plan==='Basic' ? 'list' : '');
+    const color_primary = normHex(fields.color_primary?.value||'');
+    const color_secondary = normHex(fields.color_secondary?.value||'');
+    const logo_url = (fields.logo_url?.value||'').trim();
+    const featured_asins = (fields.featured_asins?.value||'').trim();
 
-    const url = `${GAS_URL}?exists=1&sub=${encodeURIComponent(sub)}&t=${now}`;
-    jsonp(url).then(res=>{
-      // Service returns { ok:true, exists:false } or similar
-      if (!res || res.ok === false) {
-        hostPrev.innerHTML = `<span class="bad">Could not verify availability. We will enforce on submit.</span>`;
-        return;
-      }
-      if (res.exists) {
-        hostPrev.innerHTML = `<span class="bad">That site URL is already taken. Try another.</span>`;
-      } else {
-        hostPrev.innerHTML = `<span class="good">Available!</span> ${sub}.${DOMAIN}`;
-      }
-    }).catch(_=>{
-      hostPrev.innerHTML = `<span class="bad">Could not verify availability. We will enforce on submit.</span>`;
-    });
-  }
-  subInp.addEventListener("input", updatePreview);
-  updatePreview();
+    if (!site_display_name){ setBusy(false); return showError("Enter a site name."); }
+    if (!isEmail(email))   { setBusy(false); return showError("Enter a valid email."); }
+    if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
+    if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
 
-  /* ======= Submit ======= */
-  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||"").trim()); }
-
-  f.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    hideAlert();
-
-    const site_display_name = String(nameInp.value||"").trim();
-    const email            = String(emailInp.value||"").trim();
-    const subdomain        = sanitizeSub(subInp.value);
-    const amazon_tag       = String(tagInp.value||"").trim();
-
-    if (!site_display_name) { showAlert("Please enter your store display name."); return; }
-    if (!validEmail(email)) { showAlert("Enter a valid contact email."); return; }
-    if (!subdomain)         { showAlert("Choose a subdomain."); return; }
-
-    goBtn.disabled = true; goBtn.textContent = "Submitting…";
-
+    // CSV duplicate check (fast UI)
     try{
-      // Final server-side check and write
-      const params = new URLSearchParams({
-        beacon:"1",
-        site_display_name, email, subdomain, amazon_tag,
-        plan: plan || "",
-        status: "active"
-      });
-      const res = await jsonp(`${GAS_URL}?${params.toString()}`);
-      if (!res || res.ok !== true){
-        throw new Error(res && res.error ? res.error : "Save failed");
-      }
+      const rows = await fetchCSV(SUBSCRIBERS_CSV);
+      const taken = rows.some(r => String(r.subdomain||'').trim().toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
+      if (taken){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+    }catch(_){ /* ignore csv failure; we still try server write */ }
 
-      // Success → link straight to storefront
-      const url = `https://${subdomain}.${DOMAIN}/tenant/`;
-      f.style.display = "none";
-      done.style.display = "block";
-      done.innerHTML = `Submitted. Your site is ready at <a href="${url}">${url}</a>.`;
-    }catch(err){
-      showAlert(String(err.message || err));
+    // Write row via GET (CORS-safe). Server enforces duplicates as well.
+    try{
+      const qs = new URLSearchParams({
+        beacon: '1',
+        timestamp: new Date().toISOString(),
+        tenant_id: '',
+        email, site_display_name, subdomain: sub, plan,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
+        extra_page_enabled: 'false',
+        status: 'active'
+      });
+      await fetch(`${GAS_ENDPOINT}?${qs.toString()}`, { method: 'GET', mode: 'no-cors' });
+
+      // Success UI
+      form.classList.add('hide'); done.classList.remove('hide');
+      const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
+    }catch(e){
+      showError("Failed to submit. Try again.");
     }finally{
-      goBtn.disabled = false; goBtn.textContent = "Submit onboarding";
+      setBusy(false);
     }
   });
 })();
