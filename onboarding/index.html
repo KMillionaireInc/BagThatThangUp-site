@@ -16,7 +16,6 @@
 
     .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
     h1{margin:0 0 12px;font-size:28px}
-    .good{display:inline-grid;grid-auto-flow:column;gap:10px;align-items:center;color:#2a6b2f;background:#e7f6ee;border:1px solid #c4ecd7;border-radius:10px;padding:8px 10px;font-weight:700}
     .err{color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0;display:none}
     .plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
 
@@ -28,20 +27,17 @@
       width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px
     }
     .hint{color:var(--muted);font-size:12px}
-    .flex{display:flex;gap:10px;align-items:center}
+    .flex{display:flex;gap:12px;align-items:center}
     .chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
     .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
     .btn.primary{background:var(--ok);color:#fff}
     .btn:disabled{opacity:.6;cursor:not-allowed}
 
-    /* Color pair control */
     .color-pair{display:flex;gap:10px;align-items:center}
-    .color-pair input[type="color"]{width:42px;height:42px;border:1px solid --line;border-radius:10px;padding:0}
+    .color-pair input[type="color"]{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;padding:0}
     .color-pair input[type="text"]{width:140px}
 
     .divider{height:1px;background:var(--line);margin:6px 0}
-
-    /* Optional blocks only for Custom/Pro */
     .proonly{display:none}
   </style>
 </head>
@@ -52,10 +48,9 @@
 
       <div id="err" class="err"></div>
 
-      <!-- top info -->
-      <div class="flex" style="gap:12px;margin:6px 0 10px">
+      <div class="flex" style="margin:6px 0 10px">
         <span id="planPill" class="plan-pill">—</span>
-        <span class="chip" id="secureChip">Secure setup</span>
+        <span class="chip">Secure setup</span>
       </div>
 
       <form id="onbForm" novalidate>
@@ -82,7 +77,7 @@
           </div>
         </div>
 
-        <!-- Custom/Pro features (visible only for those plans) -->
+        <!-- Custom/Pro additions (only visible for those plans) -->
         <div class="divider"></div>
 
         <div class="row proonly">
@@ -110,13 +105,13 @@
           </div>
           <div>
             <label>Featured link (button)</label>
-            <input id="extra_link_label" type="text" placeholder="e.g., Amazon Storefront">
-            <input id="extra_link_url"   type="url"  placeholder="https://…">
+            <input id="link_label" type="text" placeholder="e.g., Amazon Storefront">
+            <input id="link_url"   type="url"  placeholder="https://…">
             <div class="hint">Shown as a button under your header.</div>
           </div>
         </div>
 
-        <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+        <div class="flex" style="margin-top:6px">
           <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
           <span id="status" class="hint"></span>
         </div>
@@ -127,7 +122,6 @@
   <script>
   (function(){
     const DOMAIN = "bagthatthangup.com";
-
     const PLAN_KEYS = {
       "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
       "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
@@ -135,127 +129,109 @@
     };
 
     const qs = new URLSearchParams(location.search);
-    const planKey = qs.get("plan_key") || "";
+    const planKey      = qs.get("plan_key") || "";
     const resolvedPlan = PLAN_KEYS[planKey];
 
-    const errEl     = document.getElementById('err');
-    const planPill  = document.getElementById('planPill');
-    const proBlocks = document.querySelectorAll('.proonly');
+    const errEl    = document.getElementById('err');
+    const planPill = document.getElementById('planPill');
+    const proOnly  = document.querySelectorAll('.proonly');
 
     if (!resolvedPlan){
-      errEl.style.display = 'block';
-      errEl.textContent = "Invalid or missing plan. Please return to the pricing page and start again.";
-      document.getElementById('onbForm').style.display = 'none';
+      errEl.style.display='block';
+      errEl.textContent="Invalid or missing plan. Please return to the pricing page and start again.";
+      document.getElementById('onbForm').style.display='none';
       return;
     }
 
     planPill.textContent = resolvedPlan;
-
     if (resolvedPlan === "Custom" || resolvedPlan === "Pro"){
-      proBlocks.forEach(el => el.style.display = 'grid');
+      proOnly.forEach(el => el.style.display = 'grid');
     }
 
     const sub = document.getElementById('sub');
     const preview = document.getElementById('preview');
     function updatePreview(){
-      const v = (sub.value || "").trim().toLowerCase();
-      preview.textContent = v ? (v + "." + DOMAIN) : "—";
+      const v = (sub.value||"").trim().toLowerCase();
+      preview.textContent = v ? `${v}.${DOMAIN}` : "—";
     }
     sub.addEventListener('input', updatePreview); updatePreview();
 
-    function wireColorPair(pickId, hexId){
+    // keep pickers and hex fields in sync (when visible)
+    function linkColorPair(pickId, hexId){
       const pick = document.getElementById(pickId);
       const hex  = document.getElementById(hexId);
       if (!pick || !hex) return;
       pick.addEventListener('input', ()=>{ hex.value = pick.value; });
-      hex.addEventListener('input', ()=>{ 
+      hex.addEventListener('input', ()=>{
         if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex.value)) pick.value = hex.value;
       });
     }
-    wireColorPair('color_primary_pick','color_primary_hex');
-    wireColorPair('color_accent_pick','color_accent_hex');
+    linkColorPair('color_primary_pick','color_primary_hex');
+    linkColorPair('color_accent_pick','color_accent_hex');
 
     const form = document.getElementById('onbForm');
     const statusEl = document.getElementById('status');
     const submitBtn = document.getElementById('submitBtn');
-
-    async function tryInvokeSubmit(payload){
-      if (typeof window.handleSubmit === "function"){
-        return await window.handleSubmit(payload);
-      }
-      try {
-        const res = await fetch("/onboarding/submit", {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error("HTTP "+res.status);
-        return await res.json();
-      } catch(e){
-        throw e;
-      }
-    }
 
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
 
       const store_name = document.getElementById('store_name').value.trim();
       const email      = document.getElementById('email').value.trim();
-      const subdomain  = sub.value.trim().toLowerCase();
+      const subdomain  = (document.getElementById('sub').value||"").trim().toLowerCase();
       const aaid       = document.getElementById('aaid').value.trim();
 
       if (!store_name || !email || !subdomain){
         errEl.style.display='block';
-        errEl.textContent = "Please complete the required fields.";
+        errEl.textContent="Please complete the required fields.";
         return;
       }
 
-      const payload = {
-        action:      "create_tenant",
-        plan:        resolvedPlan,
-        plan_key:    planKey,
-        store_name,
-        store_title: store_name,
-        email,
-        aaid,
-        subdomain,
-        domain:      `${subdomain}.${DOMAIN}`,
-        timestamp:   new Date().toISOString()
+      // EXACTLY what your GAS expects (matches your current GAS columns)
+      const params = {
+        beacon:              "1",
+        email:               email,
+        site_display_name:   store_name,
+        subdomain:           subdomain,
+        plan:                resolvedPlan,
+        amazon_tag:          aaid,
+        color_primary:       (document.getElementById('color_primary_hex')?.value || "").trim(),
+        color_secondary:     (document.getElementById('color_accent_hex')?.value  || "").trim(),
+        logo_url:            "",               // upload not wired here
+        layout:              "list",
+        featured_asins:      "",
+        extra_page_enabled:  "FALSE",
+        status:              "active",
+        extra_link_label:    (document.getElementById('link_label')?.value || "").trim(),
+        extra_link_url:      (document.getElementById('link_url')?.value   || "").trim()
       };
-
-      if (resolvedPlan === "Custom" || resolvedPlan === "Pro"){
-        const extra_label = (document.getElementById('extra_link_label')?.value || "").trim();
-        const extra_url   = (document.getElementById('extra_link_url')?.value   || "").trim();
-
-        payload.colors = {
-          primary: (document.getElementById('color_primary_hex')?.value || "#0ea5a6").trim(),
-          accent:  (document.getElementById('color_accent_hex')?.value  || "#1e90ff").trim()
-        };
-
-        // Keep both the flat fields (for GAS) and the object (for any existing handler)
-        payload.extra_link_label = extra_label;
-        payload.extra_link_url   = extra_url;
-        payload.extra_link = { label: extra_label, url: extra_url };
-      }
 
       submitBtn.disabled = true;
       statusEl.textContent = "Saving…";
 
       try {
-        await tryInvokeSubmit(payload);
+        // Use the SAME submitter as Basic (no link changes)
+        if (typeof window.handleSubmit === "function") {
+          await window.handleSubmit(params);
+        } else {
+          const res = await fetch("/onboarding/submit", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(params)
+          });
+          if (!res.ok) throw new Error("HTTP "+res.status);
+          await res.json();
+        }
 
-        const successURL =
-          `/success/?domain=${encodeURIComponent(payload.domain)}` +
-          `&store=${encodeURIComponent(payload.store_title)}` +
-          `&d=${encodeURIComponent(payload.domain)}` +
-          `&s=${encodeURIComponent(payload.store_title)}`;
-
-        location.href = successURL;
+        // Success: send to your existing success page with both param names
+        const domain = `${subdomain}.${DOMAIN}`;
+        const url = `/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store_name)}`;
+        location.href = url;
 
       } catch (err){
         console.error(err);
-        errEl.style.display = 'block';
-        errEl.textContent = "Network or write error while saving to the registry. Please try again.";
+        errEl.style.display='block';
+        errEl.textContent="Network or write error while saving to the registry. Please try again.";
         submitBtn.disabled = false;
         statusEl.textContent = "";
       }
