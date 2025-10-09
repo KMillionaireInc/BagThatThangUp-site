@@ -7,20 +7,24 @@
   <meta name="color-scheme" content="light only">
   <style>
     :root{
-      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7f9fc; --surface:#fff; --line:#e8eef5; --brand:#0b72f0; --ok:#0f915a;
+      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7f9fc; --surface:#fff; --line:#e8eef5;
+      --brand:#0b72f0; --ok:#0f915a; --chipbg:#eef4ff; --chipbd:#dce8ff; --chipink:#0b2d6b;
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     a{color:var(--brand);text-decoration:none}
+
     .wrap{max-width:980px;margin:34px auto;padding:0 16px}
     .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 28px rgba(2,24,43,.06);padding:22px}
     h1{margin:0 0 4px;font-size:28px}
     p.muted{color:var(--muted);margin:0 0 18px}
-    .pill{display:inline-flex;align-items:center;gap:8px;background:#eef4ff;border:1px solid #dce8ff;color:#0b2d6b;border-radius:999px;padding:6px 10px;font-weight:800}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--chipbg);border:1px solid var(--chipbd);color:var(--chipink);border-radius:999px;padding:6px 10px;font-weight:800}
+    .inline{display:flex;align-items:center;gap:10px}
+
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media (max-width:720px){ .row{grid-template-columns:1fr} }
     label{display:block;font-weight:800;margin:12px 0 6px}
-    input[type="text"],input[type="email"],input[type="url"],input[type="file"]{
+    input[type="text"],input[type="email"],input[type="url"],input[type="file"],input[type="color"]{
       width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;font:inherit
     }
     .hint{color:var(--muted);font-size:12px;margin-top:6px}
@@ -28,12 +32,17 @@
     .ok{display:none;margin:16px 0 0;padding:14px;border-radius:12px;background:#f2fff6;border:1px solid #cfeedd;color:#0d5f3b}
     .actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
     button.primary{background:var(--ok);color:#fff;border:1px solid #0b7247;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}
-    .inline{display:flex;align-items:center;gap:8px}
+
+    .hr{height:1px;background:var(--line);margin:18px 0}
+
+    /* Custom-only bits */
     .color-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .color-input{display:flex;gap:8px;align-items:center}
     .color-input input[type="color"]{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);padding:0}
-    .small{font-size:12px}
-    .hr{height:1px;background:var(--line);margin:18px 0}
+
+    /* Hide containers by default; we’ll unhide based on plan */
+    .is-basic{display:none}
+    .is-custom{display:none}
   </style>
 </head>
 <body>
@@ -49,6 +58,7 @@
       <div id="fatal" class="error"></div>
 
       <form id="form" novalidate>
+        <!-- Shared fields (Basic + Custom) -->
         <div class="row">
           <div>
             <label>Store display name</label>
@@ -64,7 +74,7 @@
           <div>
             <label>Site URL (subdomain)</label>
             <input id="subdomain" type="text" placeholder="lowercase-only" required>
-            <div class="hint small">Your site will be: <b id="previewHost">_.bagthatthangup.com</b></div>
+            <div class="hint">Your site will be: <b id="previewHost">_.bagthatthangup.com</b></div>
           </div>
           <div>
             <label>Amazon Associates ID</label>
@@ -72,39 +82,43 @@
           </div>
         </div>
 
-        <!-- Custom plan options (logo + brand colors + featured link) -->
-        <div class="hr"></div>
+        <!-- BASIC PLAN: nothing else -->
+        <div class="is-basic"></div>
 
-        <div class="row">
-          <div>
-            <label>Logo / avatar (optional)</label>
-            <input id="logoFile" type="file" accept="image/*">
-            <div class="hint">PNG or JPG; square works best.</div>
-          </div>
-          <div>
-            <label>Brand colors (optional)</label>
-            <div class="color-pair">
-              <div class="color-input">
-                <input id="colorPrimary" type="color" value="#0ea5a6" aria-label="Primary color">
-                <input id="colorPrimaryHex" type="text" placeholder="#0ea5a6" value="#0ea5a6">
-              </div>
-              <div class="color-input">
-                <input id="colorAccent" type="color" value="#1e90ff" aria-label="Accent color">
-                <input id="colorAccentHex" type="text" placeholder="#1e90ff" value="#1e90ff">
-              </div>
+        <!-- CUSTOM PLAN EXTRAS -->
+        <div class="is-custom">
+          <div class="hr"></div>
+          <div class="row">
+            <div>
+              <label>Logo / avatar (optional)</label>
+              <input id="logoFile" type="file" accept="image/*">
+              <div class="hint">PNG or JPG; square works best.</div>
             </div>
-            <div class="hint small">Pick a color or paste a HEX code.</div>
+            <div>
+              <label>Brand colors (optional)</label>
+              <div class="color-pair">
+                <div class="color-input">
+                  <input id="colorPrimary" type="color" value="#0ea5a6" aria-label="Primary color">
+                  <input id="colorPrimaryHex" type="text" placeholder="#0ea5a6" value="#0ea5a6">
+                </div>
+                <div class="color-input">
+                  <input id="colorAccent" type="color" value="#1e90ff" aria-label="Accent color">
+                  <input id="colorAccentHex" type="text" placeholder="#1e90ff" value="#1e90ff">
+                </div>
+              </div>
+              <div class="hint">Pick a color or paste a HEX code.</div>
+            </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div>
-            <label>Featured link (optional)</label>
-            <input id="ctaText" type="text" placeholder="Button text — e.g., ‘Visit my Amazon Store’">
-            <input id="ctaUrl" type="url" placeholder="https://example.com" style="margin-top:8px">
-            <div class="hint small">Adds a single featured call-to-action button in your header.</div>
+          <div class="row">
+            <div>
+              <label>Featured link (optional)</label>
+              <input id="ctaText" type="text" placeholder="Button text — e.g., ‘Visit my Amazon Store’">
+              <input id="ctaUrl" type="url" placeholder="https://example.com" style="margin-top:8px">
+              <div class="hint">Adds a single call-to-action button in your header.</div>
+            </div>
+            <div></div>
           </div>
-          <div></div>
         </div>
 
         <div class="actions">
@@ -119,63 +133,77 @@
   (function(){
     const $ = (s,p=document)=>p.querySelector(s);
     const params = new URLSearchParams(location.search);
+    const plan = (params.get('plan')||'Basic').toLowerCase(); // default Basic
 
-    // Show selected plan (don’t block the user if param is missing)
-    const plan = params.get('plan') || 'Custom';
-    $('#selPlan').textContent = plan;
+    // show correct sections
+    $('#selPlan').textContent = plan.charAt(0).toUpperCase()+plan.slice(1);
+    if (plan === 'basic') {
+      $('.is-basic').style.display = 'block';
+    } else if (plan === 'custom') {
+      $('.is-custom').style.display = 'block';
+    } else {
+      // fall back to basic if some unknown plan arrives
+      $('.is-basic').style.display = 'block';
+    }
 
-    // Live preview of final host
-    const subEl = $('#subdomain');
-    const prev = $('#previewHost');
-    function upd(){ const v=(subEl.value||'____').toLowerCase().replace(/[^a-z0-9-]/g,'-'); prev.textContent = v + '.bagthatthangup.com'; }
+    // subdomain preview
+    const subEl = $('#subdomain'), prev = $('#previewHost');
+    function upd(){
+      const v = (subEl.value||'____').toLowerCase().replace(/[^a-z0-9-]/g,'-');
+      prev.textContent = v + '.bagthatthangup.com';
+    }
     subEl.addEventListener('input', upd); upd();
 
-    // Keep color pickers + hex in sync
-    function tie(colorEl, hexEl){
-      colorEl.addEventListener('input', ()=> hexEl.value = colorEl.value);
-      hexEl.addEventListener('input', ()=> {
-        const v = hexEl.value.trim(); if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) colorEl.value = v;
-      });
+    // color sync only exists on custom
+    const cp = $('#colorPrimary'), cph = $('#colorPrimaryHex');
+    const ca = $('#colorAccent'),  cah = $('#colorAccentHex');
+    if (cp && cph) {
+      cp.addEventListener('input', ()=> cph.value = cp.value);
+      cph.addEventListener('input', ()=> { const v=cph.value.trim(); if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) cp.value=v; });
     }
-    tie($('#colorPrimary'), $('#colorPrimaryHex'));
-    tie($('#colorAccent'),  $('#colorAccentHex'));
+    if (ca && cah) {
+      ca.addEventListener('input', ()=> cah.value = ca.value);
+      cah.addEventListener('input', ()=> { const v=cah.value.trim(); if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) ca.value=v; });
+    }
 
-    // Submit handler
+    // submit (shared)
     $('#form').addEventListener('submit', async (e)=>{
       e.preventDefault();
       $('#fatal').style.display='none';
       $('#ok').style.display='none';
 
-      const sub = subEl.value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-');
-      if(!sub){ showErr('Please enter a valid subdomain.'); return; }
+      const sub = ($('#subdomain').value||'').toLowerCase().replace(/[^a-z0-9-]/g,'-');
+      if (!sub) { showErr('Please enter a valid subdomain.'); return; }
 
+      // Collect payload (custom extras only if present)
       const payload = {
-        plan,
-        email: $('#email').value.trim(),
+        plan: plan === 'custom' ? 'Custom' : 'Basic',
         storeName: $('#storeName').value.trim(),
+        email: $('#email').value.trim(),
         subdomain: sub,
-        associatesId: $('#assoc').value.trim(),
-        brand: {
-          primary: $('#colorPrimaryHex').value.trim(),
-          accent:  $('#colorAccentHex').value.trim()
-        },
-        featuredLink: {
-          text: $('#ctaText').value.trim(),
-          url:  $('#ctaUrl').value.trim()
-        }
+        associatesId: $('#assoc').value.trim()
       };
 
-      // If you already post to an API, call it here.
-      // This keeps your current flow where, after submit, you show the tenant URL.
+      if (plan === 'custom') {
+        payload.brand = {
+          primary: ($('#colorPrimaryHex')?.value||'').trim(),
+          accent:  ($('#colorAccentHex')?.value||'').trim()
+        };
+        payload.featuredLink = {
+          text: ($('#ctaText')?.value||'').trim(),
+          url:  ($('#ctaUrl')?.value||'').trim()
+        };
+      }
+
       try {
-        // await fetch('/api/provision', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(payload)});
+        // If you post to an API, do it here with `payload`.
         const url = `https://${sub}.bagthatthangup.com/tenant/`;
         $('#ok').innerHTML = `Submitted. Your site is ready at <a href="${url}" target="_blank" rel="noopener">${url}</a>.`;
         $('#ok').style.display='block';
         window.scrollTo({top:0,behavior:'smooth'});
-      } catch(err){
-        showErr('Something went wrong while creating the site. Please try again.');
+      } catch (err) {
         console.error(err);
+        showErr('Something went wrong while creating the site. Please try again.');
       }
     });
 
