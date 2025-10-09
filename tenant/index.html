@@ -4,216 +4,97 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Deals — Powered by BagThat</title>
-  <meta name="color-scheme" content="light only"/>
-
+  <meta name="color-scheme" content="light only">
   <style>
-    :root{
-      --ink:#0b1320; --muted:#5a6b7a; --line:#e8eef5; --bg:#f7fafc; --surface:#fff;
-      --brand:#0ba7d9; --accent:#1ad1b9; --shadow:0 18px 40px rgba(11,19,32,.08);
-      --pill:#eef6ff;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--ink);
-      font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:0;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7fafc;color:#0b1320}
+    header{background:linear-gradient(90deg,#0ea5e9,#22d3ee);color:#fff;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
+    header h1{margin:0;font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+    header .meta{display:flex;gap:12px;align-items:center}
+    header .meta span{background:#fff;color:#0b1320;padding:4px 10px;border-radius:20px;font-size:.8rem}
+    header .badge{display:inline-block;width:34px;height:34px;border-radius:50%;overflow:hidden;background:#fff;flex-shrink:0}
+    header .badge img{width:100%;height:100%;object-fit:contain}
 
-    /* Top status pills (title/time/count) */
-    .bar{display:flex;gap:10px;align-items:center;justify-content:flex-start;
-      padding:10px 14px; position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid var(--line)}
-    .pill{background:var(--pill); color:#1a2b44; border:1px solid #dfe9fb; border-radius:999px; padding:6px 10px; font-weight:600; font-size:13px}
-
-    /* Hero */
-    .hero{background:linear-gradient(135deg,var(--brand),var(--accent)); color:#fff;
-      border-bottom:1px solid #dff1f3; position:relative}
-    .hero .inner{max-width:1200px;margin:0 auto; padding:24px 18px; display:grid; gap:16px;
-      grid-template-columns:auto 1fr}
-    .avatar{width:44px;height:44px;border-radius:10px;background:#ffffff22; border:1px solid #ffffff33; object-fit:contain}
-    .hero h1{margin:0;font-size:32px;line-height:1.15;letter-spacing:.2px}
-    .hero p.sub{margin:4px 0 0;color:#e9ffff;opacity:.95}
-    .hero .tabs{margin-top:14px; display:flex; gap:12px}
-    .tab{background:#ffffff14;color:#fff;border:1px solid #ffffff33;border-radius:999px;padding:8px 12px;font-weight:700;cursor:pointer}
-    .tab:hover{background:#ffffff22}
-
-    /* PLAN BADGE — OVERLAY, NO TEXT */
-    .plan-badge{
-      position:absolute; top:12px; right:14px; width:32px; height:32px;
-      border-radius:50%; background:#fff; border:1px solid #e6eef7; padding:4px;
-      object-fit:contain; box-shadow:0 8px 18px rgba(11,19,32,.14); pointer-events:none; z-index:2;
-      display:none; /* default hidden; shown for Basic */
-    }
-    @media (max-width:640px){ .plan-badge{ top:10px; right:10px; width:28px; height:28px; padding:3px } }
-
-    /* Toolbar (search/filters) */
-    .toolbar{max-width:1200px;margin:0 auto; padding:12px 18px; display:flex; gap:10px; align-items:center}
-    .search{flex:1 1 auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line);
-      border-radius:999px; padding:10px 14px}
-    .search input{border:0; outline:none; flex:1 1 auto; font-size:14px}
-    .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 12px;cursor:pointer}
-    .chip:hover{box-shadow:0 6px 14px rgba(11,19,32,.06)}
-
-    /* Grid & cards (kept minimal; matches your current visual rhythm) */
-    .wrap{max-width:1200px;margin:0 auto;padding:6px 18px 40px}
-    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    @media (max-width:1100px){ .grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
-    @media (max-width:800px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
-    @media (max-width:520px){ .grid{grid-template-columns:1fr} }
-
-    .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .card img{width:100%;height:280px;object-fit:cover;background:#f2f5f9}
-    .card .meta{padding:10px 12px 6px;color:#667a8a;font-size:12px;display:flex;gap:8px;flex-wrap:wrap}
-    .card h3{padding:0 12px;margin:4px 0 6px;font-size:16px;line-height:1.25}
-    .card .price{padding:0 12px 8px;font-weight:800}
-    .row{display:flex;gap:8px;align-items:center;padding:0 12px 14px}
-    .btn{flex:1 1 0; background:#0b72f0;color:#fff;border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer;text-align:center}
-    .btn.ghost{background:#fff;color:#0b72f0;border:1px solid #cfe0ff}
-    .disclosure{max-width:1200px;margin:18px auto 0;padding:0 18px 18px;color:#7a8a9a;font-size:13px}
+    .sidebar{width:200px;padding:20px}
+    .sidebar nav{display:flex;flex-direction:column;gap:10px}
+    .sidebar button{padding:10px 14px;border:0;border-radius:50px;cursor:pointer;font-weight:600;color:#0b1320;background:#fff}
+    .sidebar button.active{background:#0b1320;color:#fff}
+    .content{padding:20px;flex:1}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .card{background:#fff;padding:12px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.05);display:flex;flex-direction:column}
+    .card img{width:100%;border-radius:8px;margin-bottom:10px}
+    .card h3{margin:0;font-size:1rem}
+    .card .price{font-weight:bold;color:#047857}
+    .card .old{font-size:.9rem;color:#6b7280;text-decoration:line-through;margin-left:6px}
+    .actions{margin-top:auto;display:flex;gap:8px}
+    .actions button{flex:1;padding:8px;border-radius:6px;border:0;cursor:pointer}
+    .go{background:#059669;color:#fff}
+    .copy{background:#e5e7eb;color:#111}
+    .searchbar{margin:16px 0;display:flex;gap:10px}
+    .searchbar input{flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:8px}
+    .filters{display:flex;gap:10px}
+    .filters select{padding:10px;border:1px solid #e5e7eb;border-radius:8px}
   </style>
 </head>
 <body>
-
-  <!-- top status row -->
-  <div class="bar">
-    <div class="pill" id="siteNameChip">ABCDeals</div>
-    <div class="pill" id="lastUpdated">Last updated: —</div>
-    <div class="pill" id="shownCount">Deals shown: —</div>
-  </div>
-
-  <!-- HERO (badge overlaid, no text) -->
-  <header class="hero">
-    <img id="planBadge" class="plan-badge" alt="Plan badge"/>
-    <div class="inner">
-      <img id="logo" class="avatar" src="/tenant/assets/logo.png" alt="Logo" onerror="this.style.display='none'">
-      <div>
-        <h1 id="siteTitle">ABCDeals</h1>
-        <p class="sub">Daily promo codes, coupons and finds.</p>
-        <div class="tabs">
-          <div class="tab" data-filter="today">Today’s Deals</div>
-          <div class="tab" data-filter="yesterday">Yesterday</div>
-          <div class="tab" data-filter="almost">Almost Gone</div>
-        </div>
+  <header>
+    <h1 id="siteTitle">ABCDeals</h1>
+    <div class="meta">
+      <span id="lastUpdated">Last updated: --</span>
+      <span id="dealCount">Deals shown: --</span>
+      <div class="badge">
+        <img src="/tenant/assets/basic.png" alt="Plan Badge"/>
       </div>
     </div>
   </header>
 
-  <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="search">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.965-2.955l4.245 4.245-1.414 1.414-4.245-4.245A7.463 7.463 0 0 1 10.5 18Z" stroke="#789" stroke-width="2" stroke-linecap="round"/></svg>
-      <input id="q" placeholder="Search products… e.g., sweaters, leggings, kitchen"/>
-    </div>
-    <div class="chip" id="cat">All categories</div>
-    <div class="chip" id="sort">Newest</div>
-    <div class="chip" id="reset">Reset</div>
-  </div>
-
-  <!-- App area -->
-  <div class="wrap">
-    <div id="listStatus" class="disclosure" style="padding-top:4px;">Loading deals…</div>
-    <div id="grid" class="grid" aria-live="polite"></div>
-    <div class="disclosure">
-      <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases.
-      Promo codes, coupons, and prices can change at any time.
-    </div>
-  </div>
+  <main style="display:flex">
+    <aside class="sidebar">
+      <nav>
+        <button class="active">Today's Deals</button>
+        <button>Yesterday</button>
+        <button>Almost Gone</button>
+      </nav>
+    </aside>
+    <section class="content">
+      <div class="searchbar">
+        <input type="text" placeholder="Search products… e.g., sweaters, leggings, kitchen"/>
+        <div class="filters">
+          <select><option>All categories</option></select>
+          <select><option>Newest</option></select>
+          <button>Reset</button>
+        </div>
+      </div>
+      <div class="grid" id="dealsGrid"></div>
+      <p style="margin-top:20px;font-size:.8rem;color:#6b7280">
+        Disclosure: As an Amazon Associate I earn from qualifying purchases.
+      </p>
+    </section>
+  </main>
 
   <script>
-    /* ---------- plan + title helpers ---------- */
-    function getParam(name){
-      const u = new URL(location.href);
-      return u.searchParams.get(name);
+    async function loadDeals(){
+      const res = await fetch("https://raw.githubusercontent.com/KMillionaireInc/DealsData/main/deals.json");
+      const data = await res.json();
+      const grid = document.getElementById("dealsGrid");
+      grid.innerHTML = "";
+      data.forEach(d=>{
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+          <img src="${d.image}" alt="">
+          <h3>${d.title}</h3>
+          <div><span class="price">$${d.price}</span>
+          <span class="old">$${d.oldPrice}</span></div>
+          <div class="actions">
+            <button class="copy">Copy Code</button>
+            <button class="go">Go to Amazon</button>
+          </div>`;
+        grid.appendChild(card);
+      });
+      document.getElementById("dealCount").textContent = "Deals shown: " + data.length;
+      document.getElementById("lastUpdated").textContent = "Last updated: " + new Date().toLocaleString();
     }
-    const plan = (getParam('plan') || '').trim();
-    const title = (getParam('title') || '').trim();  // allow ?title= override if you like
-
-    if (title) {
-      document.getElementById('siteTitle').textContent = title;
-      document.getElementById('siteNameChip').textContent = title;
-      document.title = title + ' — Powered by BagThat';
-    }
-
-    // Show badge only for Basic. No label. Never affects layout.
-    (function setBadge(){
-      if (plan && plan.toLowerCase() === 'basic') {
-        const b = document.getElementById('planBadge');
-        b.src = '/tenant/assets/basic.png';
-        b.style.display = 'block';
-      }
-    })();
-
-    // Optional logo: hide if file missing (onerror already hides).
-    // Nothing else needed.
-
-    /* ---------- dummy renderer (non-invasive) ----------
-       If your own renderer populates #grid and #listStatus,
-       this block won’t fight it: it only fills when no content exists. */
-    (async function maybeRender(){
-      const grid = document.getElementById('grid');
-      const status = document.getElementById('listStatus');
-
-      // If something else already rendered, don't touch.
-      const already = grid.children.length > 0;
-      if (already) { status.textContent = ''; return; }
-
-      // Try to use global DEALS if your pipeline sets it.
-      if (Array.isArray(window.DEALS) && window.DEALS.length){
-        render(window.DEALS);
-        return;
-      }
-
-      // Otherwise, attempt to fetch a local deals JSON (safe no-op if missing).
-      try{
-        const r = await fetch('/tenant/deals.json', {cache:'no-store'});
-        if (!r.ok) { status.textContent = ''; return; }
-        const data = await r.json();
-        if (Array.isArray(data) && data.length) render(data);
-        else status.textContent = '';
-      }catch(e){
-        status.textContent = '';
-      }
-
-      function cardHTML(d){
-        const price = d.price_now || d.price || '';
-        const old   = d.price_was || '';
-        const stars = d.stars || '';
-        const img   = d.img || d.image || '';
-        const title = d.title || d.name || '—';
-        const asin  = d.asin ? `ASIN ${d.asin}` : '';
-        const cat   = d.category || '';
-        const code  = d.code || '';
-        const url   = d.url || d.link || '#';
-        return `
-          <article class="card">
-            <img src="${img}" alt="">
-            <div class="meta">
-              ${asin ? `<span>${asin}</span>`:''}
-              ${cat  ? `<span>${cat}</span>`:''}
-              ${code ? `<span>✓ CC</span>`:''}
-            </div>
-            <h3>${title}</h3>
-            <div class="price">
-              ${old ? `<span style="color:#7a8a9a;text-decoration:line-through;margin-right:6px">${old}</span>`:''}
-              <span style="color:#0b8f3b">${price}</span>
-            </div>
-            <div class="row">
-              ${code ? `<button class="btn ghost" onclick="navigator.clipboard.writeText('${code}')">Copy Code</button>` : `<div style="flex:1 1 0"></div>`}
-              <a class="btn" href="${url}" target="_blank" rel="nofollow">Go to Amazon</a>
-            </div>
-          </article>
-        `;
-      }
-
-      function render(items){
-        grid.innerHTML = items.slice(0, 160).map(cardHTML).join('');
-        status.textContent = '';
-        document.getElementById('shownCount').textContent = 'Deals shown: ' + Math.min(items.length, 160);
-        const dt = new Date();
-        document.getElementById('lastUpdated').textContent =
-          'Last updated: ' + dt.toLocaleString();
-      }
-    })();
-
-    /* ---------- lightweight UI hooks (non-destructive) ---------- */
-    document.getElementById('reset').addEventListener('click', ()=>location.href=location.pathname);
+    loadDeals();
   </script>
 </body>
 </html>
