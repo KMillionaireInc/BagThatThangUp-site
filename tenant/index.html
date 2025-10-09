@@ -1,132 +1,129 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deals — Powered by BagThat</title>
-<meta name="color-scheme" content="light only"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Deals — Powered by BagThat</title>
+  <meta name="description" content="Daily promo codes, coupons and finds — auto-updated and tagged for your associate ID.">
+  <link rel="icon" href="/favicon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <style>
+    :root{
+      --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
+      --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
 
-<style>
-  :root{
-    --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
-    --btn:#0f915a; --btn-ink:#fff; --shadow:0 12px 28px rgba(2,24,43,.12);
-  }
+    .topbar{background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #e8eff0;font-size:12px}
+    .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+    .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800}
 
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  img{display:block;max-width:100%}
-  a{color:inherit;text-decoration:none}
+    .hero{position:relative;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
+    .hero .inner{max-width:1200px;margin:0 auto;padding:18px 16px 28px;display:grid;gap:14px;grid-template-columns:1fr auto;align-items:start}
+    .hero-left{min-width:0}
+    .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
+    .sub{margin:6px 0 0;color:#eaf7ff}
+    .plan-badge{display:inline-flex;align-items:center;gap:8px;background:#ffffff18;border:1px solid #ffffff55;padding:6px 10px;border-radius:999px}
+    .plan-badge img{width:22px;height:22px;object-fit:contain}
 
-  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+    .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-  /* Badges row */
-  .topchips{position:sticky;top:0;z-index:50;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
-  .topchips .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 12px}
-  .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
+    .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
+    .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
+    .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
+    .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
+    .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
+    .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
 
-  /* Header */
-  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
-  .hero .inner{max-width:1200px;margin:0 auto;padding:22px 16px 20px;display:grid;gap:16px;grid-template-columns:72px 1fr 140px}
-  .logoBox{width:72px;height:72px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:#ffffff1a;border:1px solid #ffffff33}
-  .logoBox img{max-width:100%;max-height:100%;object-fit:contain}
-  .titleWrap{min-width:0}
-  .h1{margin:0;font-weight:900;font-size:clamp(22px,2.6vw,34px);letter-spacing:.2px}
-  .sub{margin:6px 0 0;color:#eaf7ff}
-  .tabs{display:grid;gap:8px;justify-content:end;align-content:start}
-  .pill{display:inline-block;background:#fff;color:#083663;border:1px solid #d9e7ff;padding:9px 12px;border-radius:999px;font-weight:800;cursor:pointer;text-align:center}
-  .pill.primary{background:#083663;color:#fff;border-color:#083663}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
-  /* Toolbar */
-  .toolbar{position:sticky;top:44px;z-index:40;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
-  .toolbar .row{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px;grid-template-columns:1fr 170px 160px 90px}
-  .search{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
-  .search input{border:0;outline:0;font:inherit;flex:1}
-  .select,.ghost{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-  .ghost{background:#e9f8f7;border-color:#cfeeee;cursor:pointer}
+    .grid{display:grid;gap:16px;margin:16px 0 36px}
+    @media (max-width:599px){ .grid{grid-template-columns:1fr} }
+    @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
 
-  /* Grid */
-  .grid{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;gap:16px}
-  @media (max-width:599px){ .grid{grid-template-columns:1fr} }
-  @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))} }
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
+    .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
+    @media (max-width:599px){ .media{height:240px} }
+    .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
+    .body{padding:12px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+    .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
+    .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
+    .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
+    .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+    .original-price{color:#999;text-decoration:line-through;font-size:13px}
+    .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
+    .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
+    .btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid #ffd7b0;background:#ff8a1f;color:#fff;font-weight:900}
+    .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
+    .actions > *{min-width:0;max-width:100%}
+    @media (max-width:599px){ .actions{grid-template-columns:1fr} }
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
-  .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-  @media (max-width:599px){ .media{height:240px} }
-  .media img{max-width:100%;max-height:100%;object-fit:contain}
-  .body{padding:12px}
-  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-  .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
-  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
-  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-  .original-price{color:#999;text-decoration:line-through;font-size:13px}
-  .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-  .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
-  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-  .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
-  .actions > *{min-width:0;max-width:100%}
+    .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
+    .empty.show{display:block}
+    .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
 
-  .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
-  .empty.show{display:block}
-  .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
-  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
-</style>
+    footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
+  </style>
 </head>
-
 <body>
-  <!-- FATAL -->
   <div id="fatal" class="errbox" style="display:none"></div>
 
-  <!-- Chips row -->
-  <div class="topchips">
-    <div class="row wrap">
+  <div class="topbar">
+    <div class="inner">
       <span id="siteChip" class="chip">Loading site…</span>
       <span id="lastUpdated" class="chip">Last updated: —</span>
       <span id="dealCount" class="chip">Deals shown: —</span>
     </div>
   </div>
 
-  <!-- Header -->
   <header class="hero">
     <div class="inner">
-      <div class="logoBox">
-        <img id="logo" src="" alt="Logo" onerror="this.style.display='none'">
-      </div>
-      <div class="titleWrap">
+      <div class="hero-left">
         <h1 id="headline" class="h1">Deals</h1>
         <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
+        <div class="tabs">
+          <button class="pill primary tab" data-src="today">Today's Deals</button>
+          <button class="pill tab" data-src="yesterday">Yesterday</button>
+          <button class="pill tab" data-src="almost">Almost Gone</button>
+        </div>
       </div>
-      <div class="tabs">
-        <button class="pill primary tab" data-src="today">Today's Deals</button>
-        <button class="pill tab" data-src="yesterday">Yesterday</button>
-        <button class="pill tab" data-src="almost">Almost Gone</button>
+      <div id="planBadge" class="plan-badge" style="display:none">
+        <img src="/tenant/assets/basic.png" alt="Plan badge">
+        <span id="planText">Basic</span>
       </div>
     </div>
   </header>
 
-  <!-- Toolbar -->
   <div class="toolbar">
-    <div class="row">
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
-        <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen" aria-label="Search deals"/>
+    <div class="wrap">
+      <div class="toolbar-row">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen" aria-label="Search deals"/>
+        </div>
+        <select id="category" class="select" aria-label="Filter by category">
+          <option value="__all__" selected>All categories</option>
+        </select>
+        <select id="sort" class="select" aria-label="Sort deals">
+          <option value="newest" selected>Newest</option>
+          <option value="pricelow">Price: Low → High</option>
+          <option value="pricehigh">Price: High → Low</option>
+        </select>
+        <button id="reset" class="ghost" type="button">Reset</button>
       </div>
-      <select id="category" class="select" aria-label="Filter by category">
-        <option value="__all__" selected>All categories</option>
-      </select>
-      <select id="sort" class="select" aria-label="Sort deals">
-        <option value="newest" selected>Newest</option>
-        <option value="pricelow">Price: Low → High</option>
-        <option value="pricehigh">Price: High → Low</option>
-      </select>
-      <button id="reset" class="ghost" type="button">Reset</button>
     </div>
   </div>
 
-  <!-- Grid -->
   <main id="main" class="wrap">
     <div id="grid" class="grid"><p>Loading deals…</p></div>
     <div id="empty" class="empty">No items match your search/filter. Try a different keyword.</div>
@@ -138,23 +135,20 @@
 
 <script>
 (function(){
-  /* ====== CONFIG (EDIT PATHS IF NEEDED) ====== */
-  // Product data (published CSVs)
+  /* ====== STATIC SOURCES ====== */
   const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
   const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
   const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
 
-  // Subscribers CSV (public) used to resolve per-tenant config
+  // Subscribers CSV (public) to resolve per-tenant config
   const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
-
-  // Default icon for Basic plan (PNG you uploaded)
-  const BASIC_ICON = "/assets/basic.png"; /* change if you used a different path */
 
   /* ====== DOM ====== */
   const $ = s => document.querySelector(s);
   const grid = $("#grid"), empty = $("#empty");
   const chipSite = $("#siteChip"), lastUpdated = $("#lastUpdated"), dealCount = $("#dealCount");
-  const headline = $("#headline"), subhead = $("#subhead"), logo = $("#logo");
+  const headline = $("#headline"), subhead = $("#subhead");
+  const planBadge = $("#planBadge"), planText = $("#planText");
 
   /* ====== UTILS ====== */
   const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -321,7 +315,7 @@
 
   /* ====== TENANT CONFIG (by subdomain) ====== */
   function currentSubdomain(){
-    const host = location.host; // e.g., abcdeals.bagthatthangup.com
+    const host = location.host; // e.g., demo1.bagthatthangup.com
     const parts = host.split('.');
     if (parts.length < 3) return ''; // apex or unexpected
     return parts[0].toLowerCase();
@@ -334,36 +328,31 @@
     const rows = await fetchCSV(SUBSCRIBERS_CSV);
     const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
     if (!row) throw new Error("Site not found or inactive. If you just signed up, finish onboarding.");
-
     const siteName = row.site_display_name || sub;
     const color1 = (row.color_primary||'').trim();
     const color2 = (row.color_secondary||'').trim();
-    const plan   = (row.plan||'').trim(); // Basic / Custom / Pro
-    const tag    = (row.amazon_tag||'').trim();
-    const logoURL= (row.logo_url||'').trim();
-    const logoData=(row.logo_data||'').trim(); // optional: base64 data URL stored by onboarding
+    const logoURL = (row.logo_url||'').trim();
+    const plan = (row.plan||'').trim();
+    const layout = (row.layout||'').trim();
+    const tag = (row.amazon_tag||'').trim();
 
-    // Theming
-    if (color1 || color2) setTheme(color1, color2);
-
-    // Header text + chip
+    ASSOC_TAG = tag;
     headline.textContent = siteName;
     chipSite.textContent = siteName;
+    if (color1 || color2) setTheme(color1, color2);
 
-    // Logo rule:
-    // - Basic => forced to BASIC_ICON
-    // - Custom/Pro => prefer logo_url, then logo_data (data:), else fallback to BASIC_ICON
-    let chosenLogo = BASIC_ICON;
-    if (/custom|pro/i.test(plan)) {
-      if (logoURL) chosenLogo = logoURL;
-      else if (logoData && logoData.startsWith('data:')) chosenLogo = logoData;
+    // Show plan badge only for Basic (uses /tenant/assets/basic.png)
+    if (/^basic$/i.test(plan)) {
+      planText.textContent = "Basic";
+      planBadge.style.display = "inline-flex";
+    } else {
+      planBadge.style.display = "none";
     }
-    logo.src = chosenLogo;
 
-    if (!tag) console.warn("No amazon_tag set for tenant:", sub);
-    ASSOC_TAG = tag;
+    // Optional: tweak layout choices by plan (kept simple here)
+    document.body.dataset.layout = layout || (plan==='Basic' ? 'rows' : 'grid');
 
-    return { sub, siteName, plan, tag };
+    return { sub, siteName, tag };
   }
 
   /* ====== DEALS LOAD ====== */
@@ -380,6 +369,7 @@
     else ALL = [...today, ...yest, ...almost];
 
     lastUpdated.textContent = "Last updated: " + new Date().toLocaleString();
+
     fillCategories(ALL);
     applyFilters();
   }
@@ -406,7 +396,7 @@
       const box = document.getElementById('fatal');
       box.textContent = String(err.message || err);
       box.style.display = 'block';
-      document.querySelector('.topchips').style.display='none';
+      document.querySelector('.topbar').style.display='none';
       document.querySelector('.hero').style.display='none';
       document.querySelector('.toolbar').style.display='none';
       document.querySelector('main').style.display='none';
