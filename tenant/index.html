@@ -1,422 +1,219 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deals — Powered by BagThat</title>
-<meta name="description" content="Daily Amazon promo codes & deals — auto-updated and tagged for your associate ID.">
-<link rel="icon" href="/favicon.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/favicon.png">
-<style>
-  :root{
-    --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
-    --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Deals — Powered by BagThat</title>
+  <meta name="color-scheme" content="light only"/>
 
-  .topbar{background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #e8eff0;font-size:12px}
-  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800}
+  <style>
+    :root{
+      --ink:#0b1320; --muted:#5a6b7a; --line:#e8eef5; --bg:#f7fafc; --surface:#fff;
+      --brand:#0ba7d9; --accent:#1ad1b9; --shadow:0 18px 40px rgba(11,19,32,.08);
+      --pill:#eef6ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);
+      font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 
-  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3;position:relative}
-  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr;position:relative}
-  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
-  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .avatar{width:52px;height:52px} }
-  .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
-  .sub{margin:4px 0 8px;color:#eaf7ff}
-  .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
-  .pill.primary{background:#083663;color:#fff;border-color:#083663}
+    /* Top status pills (title/time/count) */
+    .bar{display:flex;gap:10px;align-items:center;justify-content:flex-start;
+      padding:10px 14px; position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid var(--line)}
+    .pill{background:var(--pill); color:#1a2b44; border:1px solid #dfe9fb; border-radius:999px; padding:6px 10px; font-weight:600; font-size:13px}
 
-  /* icon-only plan badge (top-right of hero) */
-  .plan-badge{
-    position:absolute; top:14px; right:14px;
-    width:32px; height:32px; border-radius:999px;
-    background:#ffffff; border:1px solid #e6eef7;
-    padding:4px; object-fit:contain; box-shadow:0 6px 16px rgba(11,19,32,.12);
-  }
-  @media (max-width:640px){ .plan-badge{ top:10px; right:10px; width:28px; height:28px; padding:3px } }
+    /* Hero */
+    .hero{background:linear-gradient(135deg,var(--brand),var(--accent)); color:#fff;
+      border-bottom:1px solid #dff1f3; position:relative}
+    .hero .inner{max-width:1200px;margin:0 auto; padding:24px 18px; display:grid; gap:16px;
+      grid-template-columns:auto 1fr}
+    .avatar{width:44px;height:44px;border-radius:10px;background:#ffffff22; border:1px solid #ffffff33; object-fit:contain}
+    .hero h1{margin:0;font-size:32px;line-height:1.15;letter-spacing:.2px}
+    .hero p.sub{margin:4px 0 0;color:#e9ffff;opacity:.95}
+    .hero .tabs{margin-top:14px; display:flex; gap:12px}
+    .tab{background:#ffffff14;color:#fff;border:1px solid #ffffff33;border-radius:999px;padding:8px 12px;font-weight:700;cursor:pointer}
+    .tab:hover{background:#ffffff22}
 
-  .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
-  .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
-  .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
-  .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
-  .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-  .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
+    /* PLAN BADGE — OVERLAY, NO TEXT */
+    .plan-badge{
+      position:absolute; top:12px; right:14px; width:32px; height:32px;
+      border-radius:50%; background:#fff; border:1px solid #e6eef7; padding:4px;
+      object-fit:contain; box-shadow:0 8px 18px rgba(11,19,32,.14); pointer-events:none; z-index:2;
+      display:none; /* default hidden; shown for Basic */
+    }
+    @media (max-width:640px){ .plan-badge{ top:10px; right:10px; width:28px; height:28px; padding:3px } }
 
-  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+    /* Toolbar (search/filters) */
+    .toolbar{max-width:1200px;margin:0 auto; padding:12px 18px; display:flex; gap:10px; align-items:center}
+    .search{flex:1 1 auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line);
+      border-radius:999px; padding:10px 14px}
+    .search input{border:0; outline:none; flex:1 1 auto; font-size:14px}
+    .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 12px;cursor:pointer}
+    .chip:hover{box-shadow:0 6px 14px rgba(11,19,32,.06)}
 
-  .grid{display:grid;gap:16px;margin:16px 0 36px}
-  @media (max-width:599px){ .grid{grid-template-columns:1fr} }
-  @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
+    /* Grid & cards (kept minimal; matches your current visual rhythm) */
+    .wrap{max-width:1200px;margin:0 auto;padding:6px 18px 40px}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+    @media (max-width:800px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:520px){ .grid{grid-template-columns:1fr} }
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
-  .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-  @media (max-width:599px){ .media{height:240px} }
-  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
-  .body{padding:12px}
-  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-  .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
-  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
-  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-  .original-price{color:#999;text-decoration:line-through;font-size:13px}
-  .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-  .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
-  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-  .btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid #ffd7b0;background:#ff8a1f;color:#fff;font-weight:900}
-  .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
-  .actions > *{min-width:0;max-width:100%}
-  @media (max-width:599px){ .actions{grid-template-columns:1fr} }
-
-  .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
-  .empty.show{display:block}
-  .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
-
-  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
-</style>
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .card img{width:100%;height:280px;object-fit:cover;background:#f2f5f9}
+    .card .meta{padding:10px 12px 6px;color:#667a8a;font-size:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .card h3{padding:0 12px;margin:4px 0 6px;font-size:16px;line-height:1.25}
+    .card .price{padding:0 12px 8px;font-weight:800}
+    .row{display:flex;gap:8px;align-items:center;padding:0 12px 14px}
+    .btn{flex:1 1 0; background:#0b72f0;color:#fff;border:0;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer;text-align:center}
+    .btn.ghost{background:#fff;color:#0b72f0;border:1px solid #cfe0ff}
+    .disclosure{max-width:1200px;margin:18px auto 0;padding:0 18px 18px;color:#7a8a9a;font-size:13px}
+  </style>
 </head>
 <body>
-  <div id="fatal" class="errbox" style="display:none"></div>
 
-  <div class="topbar">
-    <div class="inner">
-      <span id="siteChip" class="chip">Loading site…</span>
-      <span id="lastUpdated" class="chip">Last updated: —</span>
-      <span id="dealCount" class="chip">Deals shown: —</span>
-    </div>
+  <!-- top status row -->
+  <div class="bar">
+    <div class="pill" id="siteNameChip">ABCDeals</div>
+    <div class="pill" id="lastUpdated">Last updated: —</div>
+    <div class="pill" id="shownCount">Deals shown: —</div>
   </div>
 
+  <!-- HERO (badge overlaid, no text) -->
   <header class="hero">
+    <img id="planBadge" class="plan-badge" alt="Plan badge"/>
     <div class="inner">
-      <img id="logo" class="avatar" src="" alt="Logo" onerror="this.style.display='none'">
-      <!-- plan badge (icon only) -->
-      <img id="planBadge" class="plan-badge" alt="" style="display:none" />
+      <img id="logo" class="avatar" src="/tenant/assets/logo.png" alt="Logo" onerror="this.style.display='none'">
       <div>
-        <h1 id="headline" class="h1">Deals</h1>
-        <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
-        <div class="actions">
-          <button class="pill primary tab" data-src="today">Today's Deals</button>
-          <button class="pill tab" data-src="yesterday">Yesterday</button>
-          <button class="pill tab" data-src="almost">Almost Gone</button>
+        <h1 id="siteTitle">ABCDeals</h1>
+        <p class="sub">Daily promo codes, coupons and finds.</p>
+        <div class="tabs">
+          <div class="tab" data-filter="today">Today’s Deals</div>
+          <div class="tab" data-filter="yesterday">Yesterday</div>
+          <div class="tab" data-filter="almost">Almost Gone</div>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- Toolbar -->
   <div class="toolbar">
-    <div class="wrap">
-      <div class="toolbar-row">
-        <div class="search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
-          <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen" aria-label="Search deals"/>
-        </div>
-        <select id="category" class="select" aria-label="Filter by category">
-          <option value="__all__" selected>All categories</option>
-        </select>
-        <select id="sort" class="select" aria-label="Sort deals">
-          <option value="newest" selected>Newest</option>
-          <option value="pricelow">Price: Low → High</option>
-          <option value="pricehigh">Price: High → Low</option>
-        </select>
-        <button id="reset" class="ghost" type="button">Reset</button>
-      </div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.965-2.955l4.245 4.245-1.414 1.414-4.245-4.245A7.463 7.463 0 0 1 10.5 18Z" stroke="#789" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" placeholder="Search products… e.g., sweaters, leggings, kitchen"/>
+    </div>
+    <div class="chip" id="cat">All categories</div>
+    <div class="chip" id="sort">Newest</div>
+    <div class="chip" id="reset">Reset</div>
+  </div>
+
+  <!-- App area -->
+  <div class="wrap">
+    <div id="listStatus" class="disclosure" style="padding-top:4px;">Loading deals…</div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div class="disclosure">
+      <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases.
+      Promo codes, coupons, and prices can change at any time.
     </div>
   </div>
 
-  <main id="main" class="wrap">
-    <div id="grid" class="grid"><p>Loading deals…</p></div>
-    <div id="empty" class="empty">No items match your search/filter. Try a different keyword.</div>
-  </main>
+  <script>
+    /* ---------- plan + title helpers ---------- */
+    function getParam(name){
+      const u = new URL(location.href);
+      return u.searchParams.get(name);
+    }
+    const plan = (getParam('plan') || '').trim();
+    const title = (getParam('title') || '').trim();  // allow ?title= override if you like
 
-  <footer class="wrap">
-    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices can change at any time.</p>
-  </footer>
+    if (title) {
+      document.getElementById('siteTitle').textContent = title;
+      document.getElementById('siteNameChip').textContent = title;
+      document.title = title + ' — Powered by BagThat';
+    }
 
-<script>
-(function(){
-  /* ====== STATIC SOURCES ====== */
-  const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
-  const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
-  const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
-
-  // Subscribers CSV (public) to resolve per-tenant config
-  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
-
-  /* ====== DOM ====== */
-  const $ = s => document.querySelector(s);
-  const grid = $("#grid"), empty = $("#empty");
-  const chipSite = $("#siteChip"), lastUpdated = $("#lastUpdated"), dealCount = $("#dealCount");
-  const headline = $("#headline"), subhead = $("#subhead"), logo = $("#logo");
-  const badge = $("#planBadge");
-
-  /* ====== UTILS ====== */
-  const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const toMoney = n => (isFinite(n) ? "$"+Number(n).toFixed(2) : "");
-  const moneyNum = s => { const m = String(s||'').replace(/[, ]/g,'').match(/(\d+(?:\.\d+)?)/); return m?parseFloat(m[1]):NaN; };
-  const percentNum = s => { const m = String(s||'').match(/(\d+(?:\.\d+)?)\s*%/); return m?parseFloat(m[1]):NaN; };
-
-  function parseCSV(text){
-    const rows=[]; let row=[], cell="", inQ=false;
-    for(let i=0;i<text.length;i++){
-      const ch=text[i], nx=text[i+1];
-      if(inQ){
-        if(ch==='"'&&nx==='"'){cell+='"';i++;}
-        else if(ch==='"'){inQ=false;}
-        else{cell+=ch;}
-      }else{
-        if(ch==='"'){inQ=true;}
-        else if(ch===','){row.push(cell);cell="";}
-        else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
-        else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";}
-        else{cell+=ch;}
+    // Show badge only for Basic. No label. Never affects layout.
+    (function setBadge(){
+      if (plan && plan.toLowerCase() === 'basic') {
+        const b = document.getElementById('planBadge');
+        b.src = '/tenant/assets/basic.png';
+        b.style.display = 'block';
       }
-    }
-    if(cell!==""||row.length){row.push(cell);rows.push(row);}
-    return rows.filter(r=>r.length>1);
-  }
-  function toObjects(rows){
-    if(!rows.length) return [];
-    const headers = rows[0].map(h=>String(h||"").trim());
-    const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
-    return rows.slice(1).map((r,ix)=>{
-      const o={ _ix: ix};
-      for(const [h,i] of Object.entries(idx)){ o[h]=(r[i]||"").toString().trim(); }
-      return o;
-    });
-  }
-  async function fetchCSV(url){
-    const res = await fetch(url, { cache:'no-store' });
-    if(!res.ok) throw new Error('CSV fetch failed');
-    const text = await res.text();
-    return toObjects(parseCSV(text));
-  }
-  function setTheme(primary, secondary){
-    if (primary) document.documentElement.style.setProperty('--brand', primary);
-    if (secondary) document.documentElement.style.setProperty('--accent', secondary);
-  }
-  function retagURL(url, tag){
-    if (!url) return "";
-    try{
-      const u = new URL(url.replace(/^http:/,'https:'));
-      if (u.hostname.endsWith("amazon.com")){
-        u.searchParams.delete('tag');
-        u.searchParams.set('tag', tag);
-        return u.toString();
+    })();
+
+    // Optional logo: hide if file missing (onerror already hides).
+    // Nothing else needed.
+
+    /* ---------- dummy renderer (non-invasive) ----------
+       If your own renderer populates #grid and #listStatus,
+       this block won’t fight it: it only fills when no content exists. */
+    (async function maybeRender(){
+      const grid = document.getElementById('grid');
+      const status = document.getElementById('listStatus');
+
+      // If something else already rendered, don't touch.
+      const already = grid.children.length > 0;
+      if (already) { status.textContent = ''; return; }
+
+      // Try to use global DEALS if your pipeline sets it.
+      if (Array.isArray(window.DEALS) && window.DEALS.length){
+        render(window.DEALS);
+        return;
       }
-      return url;
-    }catch(_){ return url; }
-  }
-  function buildAmazonLink(obj, tag){
-    const asin = (obj.ASIN_Text||obj.ASIN||"").toUpperCase();
-    let href  = obj.TaggedLink || obj.Link || "";
-    const promoAuto = /amazon\.com\/promocode\//i.test(href);
-    if (!href){
-      if (/^[A-Z0-9]{10}$/.test(asin)) href = `https://www.amazon.com/dp/${asin}`;
-    }
-    if (href) href = retagURL(href, tag);
-    return { href, promoAuto };
-  }
-  function computePrices(d){
-    const deal = (isFinite(moneyNum(d.DiscountPrice)) ? moneyNum(d.DiscountPrice)
-                 : isFinite(moneyNum(d.Price)) ? moneyNum(d.Price) : NaN);
-    const candidates = [d.OriginalPrice,d.ListPrice,d.MSRP,d.WasPrice,d.OrigPrice,d.CompareAt]
-      .map(moneyNum).filter(x=>isFinite(x));
-    let orig = candidates.length ? candidates[0] : NaN;
-    if(!isFinite(orig)){
-      const pct = percentNum(d.Discount||d.PercentOff||d.PctOff);
-      if (isFinite(deal) && isFinite(pct) && pct>0 && pct<100) orig = deal/(1-pct/100);
-    }
-    if(!isFinite(orig)){
-      const priceField = moneyNum(d.Price);
-      if (isFinite(deal) && isFinite(priceField) && priceField > deal + 0.01) orig = priceField;
-    }
-    const dealStr = isFinite(deal) ? toMoney(deal) : "";
-    const origStr = (isFinite(orig) && isFinite(deal) && orig > deal + 0.01) ? toMoney(orig) : "";
-    return { dealStr, origStr };
-  }
-  function pickImage(o){
-    const raw=o.ImageURL_raw||"", clean=o.ImageURL_clean||"", gen=o.ImageURL_generated||"", fallback=o.Image||"";
-    const cand = raw || clean || gen || fallback;
-    return cand ? cand.replace(/^http:/i,"https:") : "";
-  }
 
-  /* ====== RENDER ====== */
-  function cardHTML(d, tag){
-    const asin = (d.ASIN_Text||d.ASIN||"").toUpperCase();
-    const title = d.Title || d.ProductTitle || "";
-    const img = pickImage(d);
-    const promo = (d.PromoCode || d.Promo || "").trim();
-    const { href, promoAuto } = buildAmazonLink(d, tag);
-    const hasCoupon   = /^(true|1|yes)$/i.test(String(d.HasCoupon||""));
-    const ccFlag = String(d.CCFlag||"").trim().toLowerCase().startsWith('y');
-    const stars = d.Stars ? `<div class="stars">${esc(d.Stars)} ⭐</div>` : "";
-    const thecat = d.Category || "";
-    const { dealStr, origStr } = computePrices(d);
+      // Otherwise, attempt to fetch a local deals JSON (safe no-op if missing).
+      try{
+        const r = await fetch('/tenant/deals.json', {cache:'no-store'});
+        if (!r.ok) { status.textContent = ''; return; }
+        const data = await r.json();
+        if (Array.isArray(data) && data.length) render(data);
+        else status.textContent = '';
+      }catch(e){
+        status.textContent = '';
+      }
 
-    const dealLine = promoAuto
-      ? (promo ? `Promo code auto applies — ${promo}` : `Auto-applied discount`)
-      : (promo ? `Copy promo code — ${promo}` : (hasCoupon ? `Clip coupon on product page` : `No promo code needed`));
+      function cardHTML(d){
+        const price = d.price_now || d.price || '';
+        const old   = d.price_was || '';
+        const stars = d.stars || '';
+        const img   = d.img || d.image || '';
+        const title = d.title || d.name || '—';
+        const asin  = d.asin ? `ASIN ${d.asin}` : '';
+        const cat   = d.category || '';
+        const code  = d.code || '';
+        const url   = d.url || d.link || '#';
+        return `
+          <article class="card">
+            <img src="${img}" alt="">
+            <div class="meta">
+              ${asin ? `<span>${asin}</span>`:''}
+              ${cat  ? `<span>${cat}</span>`:''}
+              ${code ? `<span>✓ CC</span>`:''}
+            </div>
+            <h3>${title}</h3>
+            <div class="price">
+              ${old ? `<span style="color:#7a8a9a;text-decoration:line-through;margin-right:6px">${old}</span>`:''}
+              <span style="color:#0b8f3b">${price}</span>
+            </div>
+            <div class="row">
+              ${code ? `<button class="btn ghost" onclick="navigator.clipboard.writeText('${code}')">Copy Code</button>` : `<div style="flex:1 1 0"></div>`}
+              <a class="btn" href="${url}" target="_blank" rel="nofollow">Go to Amazon</a>
+            </div>
+          </article>
+        `;
+      }
 
-    const btns = [];
-    if (promo){ btns.push(`<button class="btn-code" onclick="navigator.clipboard.writeText('${esc(promo)}')">Copy Code</button>`); }
-    if (href){ btns.push(`<a class="btn" href="${esc(href)}" target="_blank" rel="nofollow noopener noreferrer">Go to Amazon</a>`); }
+      function render(items){
+        grid.innerHTML = items.slice(0, 160).map(cardHTML).join('');
+        status.textContent = '';
+        document.getElementById('shownCount').textContent = 'Deals shown: ' + Math.min(items.length, 160);
+        const dt = new Date();
+        document.getElementById('lastUpdated').textContent =
+          'Last updated: ' + dt.toLocaleString();
+      }
+    })();
 
-    return `
-      <article class="card" data-cat="${esc(thecat)}" data-search="${(title+' '+thecat+' '+asin+' '+(promo||'')).toLowerCase()}">
-        <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(title||'Amazon product')}">` : ``}</div>
-        <div class="body">
-          <div class="tags">
-            ${asin ? `<span class="tag">ASIN ${esc(asin)}</span>`:''}
-            ${thecat ? `<span class="tag">${esc(thecat)}</span>`:''}
-            ${ccFlag ? `<span class="tag cc">✓ CC</span>`:''}
-          </div>
-          ${title ? `<div class="title-line">${esc(title)}</div>`:''}
-          ${stars}
-          ${(origStr || dealStr) ? `
-            <div class="price-box" aria-label="Price">
-              ${origStr ? `<span class="original-price" aria-hidden="true">${esc(origStr)}</span>`:''}
-              ${dealStr ? `<span class="deal-price">${esc(dealStr)}</span>`:''}
-            </div>` : ``}
-          <div class="meta2">${esc(dealLine)}</div>
-          <div class="actions">${btns.join('')}</div>
-        </div>
-      </article>`;
-  }
-
-  function render(list, tag){
-    if(!list.length){ grid.innerHTML=""; empty.classList.add("show"); dealCount.textContent="Deals shown: 0"; return; }
-    empty.classList.remove("show");
-    grid.innerHTML = list.map(d=>cardHTML(d, tag)).join("");
-    dealCount.textContent = "Deals shown: " + list.length;
-  }
-
-  /* ====== FILTERS ====== */
-  let ALL=[], SOURCE='today', QUERY='', CAT='__all__', SORT='newest', ASSOC_TAG='';
-  function applyFilters(){
-    let rows = ALL;
-    if (QUERY){
-      const q = QUERY.toLowerCase();
-      rows = rows.filter(d => ((d.Title||'')+' '+(d.Category||'')+' '+(d.ASIN_Text||'')+' '+(d.PromoCode||'')).toLowerCase().includes(q));
-    }
-    if (CAT !== '__all__'){ rows = rows.filter(d => (d.Category||'').toLowerCase() === CAT.toLowerCase()); }
-    if (SORT==='pricelow'){
-      rows = rows.slice().sort((a,b)=>(moneyNum(a.DiscountPrice||a.Price)||1e9)-(moneyNum(b.DiscountPrice||b.Price)||1e9));
-    } else if (SORT==='pricehigh'){
-      rows = rows.slice().sort((a,b)=>(moneyNum(b.DiscountPrice||b.Price)||-1e9)-(moneyNum(a.DiscountPrice||a.Price)||-1e9));
-    }
-    render(rows, ASSOC_TAG);
-  }
-  function fillCategories(rows){
-    const cats = Array.from(new Set(rows.map(r=>(r.Category||'').trim()).filter(Boolean))).sort();
-    const sel = document.getElementById("category");
-    sel.innerHTML = `<option value="__all__" selected>All categories</option>` + cats.map(c=>`<option>${esc(c)}</option>`).join('');
-  }
-
-  /* ====== TENANT CONFIG (by subdomain) ====== */
-  function currentSubdomain(){
-    const host = location.host; // e.g., abcdeals.bagthatthangup.com
-    const parts = host.split('.');
-    if (parts.length < 3) return ''; // apex or unexpected
-    return parts[0].toLowerCase();
-  }
-  async function loadTenant(){
-    const sub = currentSubdomain();
-    if (!sub){
-      throw new Error("This page must be accessed via your subdomain, e.g., demo1.bagthatthangup.com");
-    }
-    const rows = await fetchCSV(SUBSCRIBERS_CSV);
-    const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
-    if (!row) throw new Error("Site not found or inactive. If you just signed up, finish onboarding.");
-    const siteName = row.site_display_name || sub;
-    const color1 = (row.color_primary||'').trim();
-    const color2 = (row.color_secondary||'').trim();
-    const logoURL = (row.logo_url||'').trim();
-    const plan = (row.plan||'').trim();
-    const layout = (row.layout||'').trim();
-    const tag = (row.amazon_tag||'').trim();
-    const badgeURL = (row.badge_url||'').trim();
-
-    if (!tag) console.warn("No amazon_tag set for tenant:", sub);
-
-    ASSOC_TAG = tag;
-    headline.textContent = siteName;
-    chipSite.textContent = siteName;
-    if (logoURL) { logo.src = logoURL; logo.style.display='block'; }
-    setTheme(color1, color2);
-
-    // plan badge (icon only, no text)
-    const fallbackBasic = "/tenant/assets/basic.png";
-    const badgeSrc = badgeURL || (plan.toLowerCase()==='basic' ? fallbackBasic : "");
-    if (badgeSrc){
-      badge.src = badgeSrc;
-      badge.style.display = 'block';
-    }else{
-      badge.style.display = 'none';
-    }
-
-    // Optional: tweak layout choices by plan (kept simple here)
-    document.body.dataset.layout = layout || (plan==='Basic' ? 'rows' : 'grid');
-
-    return { sub, siteName, tag };
-  }
-
-  /* ====== DEALS LOAD ====== */
-  async function loadDeals(src){
-    SOURCE = src;
-    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('primary', b.dataset.src===src));
-
-    const [today, yest, almost] = await Promise.all([
-      fetchCSV(CSV_TODAY), fetchCSV(CSV_YESTERDAY), fetchCSV(CSV_ALMOST)
-    ]);
-    if (src==='today') ALL = today;
-    else if (src==='yesterday') ALL = yest;
-    else if (src==='almost') ALL = almost;
-    else ALL = [...today, ...yest, ...almost];
-
-    // Update chips
-    lastUpdated.textContent = "Last updated: " + new Date().toLocaleString();
-
-    fillCategories(ALL);
-    applyFilters();
-  }
-
-  /* ====== INIT ====== */
-  document.addEventListener('DOMContentLoaded', async ()=>{
-    try{
-      const { tag } = await loadTenant();
-
-      // controls
-      document.getElementById("search").addEventListener('input', e=>{ QUERY=e.target.value; applyFilters(); });
-      document.getElementById("category").addEventListener('change', e=>{ CAT=e.target.value; applyFilters(); });
-      document.getElementById("sort").addEventListener('change', e=>{ SORT=e.target.value; applyFilters(); });
-      document.getElementById("reset").addEventListener('click', ()=>{ QUERY=''; CAT='__all__'; SORT='newest';
-        document.getElementById("search").value=''; document.getElementById("category").value='__all__'; document.getElementById("sort").value='newest'; applyFilters();
-      });
-      document.addEventListener('click', e=>{
-        const btn = e.target.closest('.tab[data-src]');
-        if (btn) loadDeals(btn.dataset.src);
-      });
-
-      await loadDeals('today');
-    }catch(err){
-      const box = document.getElementById('fatal');
-      box.textContent = String(err.message || err);
-      box.style.display = 'block';
-      document.querySelector('.topbar').style.display='none';
-      document.querySelector('.hero').style.display='none';
-      document.querySelector('.toolbar').style.display='none';
-      document.querySelector('main').style.display='none';
-      document.querySelector('footer').style.display='none';
-    }
-  });
-})();
-</script>
+    /* ---------- lightweight UI hooks (non-destructive) ---------- */
+    document.getElementById('reset').addEventListener('click', ()=>location.href=location.pathname);
+  </script>
 </body>
 </html>
