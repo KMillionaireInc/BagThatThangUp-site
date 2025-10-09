@@ -7,272 +7,179 @@
   <meta name="color-scheme" content="light only">
   <style>
     :root{
-      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7fafc; --surface:#fff; --line:#e8eef5;
-      --ok:#0f915a; --err:#b42424; --brand:#0b72f0;
+      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7f9fc; --surface:#fff; --line:#e8eef5; --brand:#0b72f0; --ok:#0f915a;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:980px;margin:34px auto;padding:16px}
-    header{margin:0 0 16px}
-    h1{margin:0 0 6px;font-size:28px;font-weight:900}
-    .sub{margin:0;color:var(--muted)}
-    .plan-chip{display:inline-grid;grid-auto-flow:column;gap:8px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;margin:10px 0;font-weight:800}
-    .plan-chip .dot{width:10px;height:10px;border-radius:999px;background:var(--brand)}
-    .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 28px rgba(2,24,43,.06);padding:18px}
-    .grid{display:grid;gap:14px}
-    @media (min-width:720px){ .grid{grid-template-columns:1fr 1fr} }
-    label{font-weight:800;font-size:13px;color:#25445a;display:block;margin:0 0 6px}
-    .hint{font-size:12px;color:var(--muted)}
-    input[type="text"],input[type="email"],input[type="url"]{
-      width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:0;background:#fff
+    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--brand);text-decoration:none}
+    .wrap{max-width:980px;margin:34px auto;padding:0 16px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 28px rgba(2,24,43,.06);padding:22px}
+    h1{margin:0 0 4px;font-size:28px}
+    p.muted{color:var(--muted);margin:0 0 18px}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:#eef4ff;border:1px solid #dce8ff;color:#0b2d6b;border-radius:999px;padding:6px 10px;font-weight:800}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:720px){ .row{grid-template-columns:1fr} }
+    label{display:block;font-weight:800;margin:12px 0 6px}
+    input[type="text"],input[type="email"],input[type="url"],input[type="file"]{
+      width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;font:inherit
     }
-    .row{display:grid;gap:10px}
-    .inline{display:grid;grid-template-columns:1fr auto;gap:10px}
-    .color-pick{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
-    input[type="color"]{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;padding:0;background:#fff}
-    .logo-uploader{display:grid;gap:8px;align-content:start}
-    .logo-box{width:112px;height:112px;border:1px dashed #cfe6ff;background:#f8fbff;border-radius:14px;display:grid;place-items:center;overflow:hidden}
-    .logo-box img{max-width:100%;max-height:100%;object-fit:contain}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-    button{appearance:none;cursor:pointer}
-    .btn{border:1px solid #0a6c46;background:var(--ok);color:#fff;font-weight:900;border-radius:12px;padding:12px 16px}
-    .ghost{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 16px;font-weight:800}
-    .err{margin-top:14px;padding:12px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:12px;color:var(--err);display:none}
-    .ok{margin-top:14px;padding:12px;border:2px solid #cfeedd;background:#f4fff7;border-radius:12px;color:#0b5b34;display:none}
-    .pill-tip{font-size:12px;color:var(--muted);margin-top:-6px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .hint{color:var(--muted);font-size:12px;margin-top:6px}
+    .error{display:none;margin:16px 0 0;padding:14px;border-radius:12px;background:#fff3f3;border:1px solid #ffd8d8;color:#8a1f1f}
+    .ok{display:none;margin:16px 0 0;padding:14px;border-radius:12px;background:#f2fff6;border:1px solid #cfeedd;color:#0d5f3b}
+    .actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+    button.primary{background:var(--ok);color:#fff;border:1px solid #0b7247;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}
+    .inline{display:flex;align-items:center;gap:8px}
+    .color-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .color-input{display:flex;gap:8px;align-items:center}
+    .color-input input[type="color"]{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);padding:0}
+    .small{font-size:12px}
+    .hr{height:1px;background:var(--line);margin:18px 0}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <div class="card">
       <h1>Great choice! Let’s set up your site</h1>
-      <p class="sub">Payment succeeded. Complete this one-time setup.</p>
-      <!-- Clean “selected plan” chip (no “change plan” link) -->
-      <div class="plan-chip"><span class="dot"></span><span id="planLabel">Selected plan: —</span></div>
-    </header>
+      <p class="muted">Payment succeeded. Complete this one-time setup.</p>
 
-    <div id="errorTop" class="err"></div>
+      <div class="inline" style="margin:10px 0 18px">
+        <span class="pill">Selected plan: <span id="selPlan">—</span></span>
+      </div>
 
-    <form id="form" class="panel" autocomplete="on">
-      <div class="grid">
-        <!-- LEFT -->
+      <div id="fatal" class="error"></div>
+
+      <form id="form" novalidate>
         <div class="row">
-          <div class="row">
-            <label for="store">Store display name</label>
-            <input id="store" type="text" placeholder="e.g., Daisy’s Deals" required>
+          <div>
+            <label>Store display name</label>
+            <input id="storeName" type="text" placeholder="e.g., Daisy’s Deals" required>
           </div>
-
-          <div class="row">
-            <label for="email">Contact email</label>
-            <input id="email" type="email" placeholder="you@domain.com" required>
-          </div>
-
-          <div class="row">
-            <label for="subdomain">Site URL (subdomain)</label>
-            <div class="inline">
-              <input id="subdomain" type="text" inputmode="latin" pattern="[a-z0-9-]{3,40}" placeholder="myshop" required>
-              <div class="ghost">.bagthatthangup.com</div>
-            </div>
-            <div id="subCheck" class="pill-tip">Lowercase letters, numbers, hyphens only.</div>
-          </div>
-
-          <div class="row">
-            <label for="amazon">Amazon Associates ID</label>
-            <input id="amazon" type="text" placeholder="example-20" required>
+          <div>
+            <label>Contact email</label>
+            <input id="email" type="email" placeholder="you@example.com" required>
           </div>
         </div>
 
-        <!-- RIGHT -->
         <div class="row">
-          <div class="logo-uploader">
+          <div>
+            <label>Site URL (subdomain)</label>
+            <input id="subdomain" type="text" placeholder="lowercase-only" required>
+            <div class="hint small">Your site will be: <b id="previewHost">_.bagthatthangup.com</b></div>
+          </div>
+          <div>
+            <label>Amazon Associates ID</label>
+            <input id="assoc" type="text" placeholder="yourtag-20">
+          </div>
+        </div>
+
+        <!-- Custom plan options (logo + brand colors + featured link) -->
+        <div class="hr"></div>
+
+        <div class="row">
+          <div>
             <label>Logo / avatar (optional)</label>
-            <div class="logo-box"><img id="logoPreview" alt="Logo preview" style="display:none"></div>
-            <input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg" />
-            <div class="hint">Upload a square image (PNG or JPG). We’ll size it automatically.</div>
+            <input id="logoFile" type="file" accept="image/*">
+            <div class="hint">PNG or JPG; square works best.</div>
           </div>
-
-          <div class="row">
-            <label>Brand colors</label>
-            <div class="color-pick">
-              <input id="primaryColor" type="color" value="#0ea5a6" aria-label="Primary color">
-              <input id="primaryHex" type="text" class="mono" value="#0ea5a6" maxlength="7">
+          <div>
+            <label>Brand colors (optional)</label>
+            <div class="color-pair">
+              <div class="color-input">
+                <input id="colorPrimary" type="color" value="#0ea5a6" aria-label="Primary color">
+                <input id="colorPrimaryHex" type="text" placeholder="#0ea5a6" value="#0ea5a6">
+              </div>
+              <div class="color-input">
+                <input id="colorAccent" type="color" value="#1e90ff" aria-label="Accent color">
+                <input id="colorAccentHex" type="text" placeholder="#1e90ff" value="#1e90ff">
+              </div>
             </div>
-            <div class="color-pick">
-              <input id="accentColor" type="color" value="#1e90ff" aria-label="Accent color">
-              <input id="accentHex" type="text" class="mono" value="#1e90ff" maxlength="7">
-            </div>
-            <div class="hint">Pick a color or paste a hex code. Both stay in sync.</div>
+            <div class="hint small">Pick a color or paste a HEX code.</div>
           </div>
+        </div>
 
-          <div class="row">
+        <div class="row">
+          <div>
             <label>Featured link (optional)</label>
             <input id="ctaText" type="text" placeholder="Button text — e.g., ‘Visit my Amazon Store’">
-            <input id="ctaUrl" type="url" placeholder="https://example.com">
-            <div class="hint">This adds one extra call-to-action button in your header.</div>
+            <input id="ctaUrl" type="url" placeholder="https://example.com" style="margin-top:8px">
+            <div class="hint small">Adds a single featured call-to-action button in your header.</div>
           </div>
+          <div></div>
         </div>
-      </div>
 
-      <div class="actions">
-        <button id="submitBtn" class="btn" type="submit">Submit onboarding</button>
-        <button id="previewBtn" class="ghost" type="button">Preview colors</button>
-      </div>
-
-      <div id="msgErr" class="err"></div>
-      <div id="msgOk"  class="ok"></div>
-    </form>
+        <div class="actions">
+          <button class="primary" type="submit">Submit onboarding</button>
+        </div>
+        <div id="ok" class="ok"></div>
+      </form>
+    </div>
   </div>
 
   <script>
-  (function () {
-    // --- Utilities ----------------------------------------------------------
-    const qs  = (s, p=document) => p.querySelector(s);
-    const qsa = (s, p=document) => [...p.querySelectorAll(s)];
-
+  (function(){
+    const $ = (s,p=document)=>p.querySelector(s);
     const params = new URLSearchParams(location.search);
-    const plan     = params.get('plan') || '';          // "Basic" | "Custom" | "Pro"
-    const plan_key = params.get('plan_key') || '';      // hard-to-guess key you set in Stripe
-    const planMap  = { Basic:'Basic', Custom:'Custom', Pro:'Pro' };
 
-    // Minimal client-side guard; server should still verify.
-    function guardPlan() {
-      const e = qs('#errorTop');
-      if (!plan || !planMap[plan]) {
-        e.textContent = 'Invalid or missing plan. Please return to the pricing page and start again.';
-        e.style.display = 'block';
-        qs('#form').style.display = 'none';
-        return false;
-      }
-      if (!plan_key || plan_key.length < 12) {
-        e.textContent = 'Invalid or missing plan key. Please return to checkout.';
-        e.style.display = 'block';
-        qs('#form').style.display = 'none';
-        return false;
-      }
-      qs('#planLabel').textContent = `Selected plan: ${plan}`;
-      return true;
-    }
-    if (!guardPlan()) return;
+    // Show selected plan (don’t block the user if param is missing)
+    const plan = params.get('plan') || 'Custom';
+    $('#selPlan').textContent = plan;
 
-    // --- Color picker <-> hex sync -----------------------------------------
-    function bindColorSync(colorInput, hexInput) {
-      colorInput.addEventListener('input', () => hexInput.value = colorInput.value);
-      hexInput.addEventListener('input', () => {
-        const v = hexInput.value.trim();
-        if (/^#[0-9a-fA-F]{6}$/.test(v)) colorInput.value = v;
+    // Live preview of final host
+    const subEl = $('#subdomain');
+    const prev = $('#previewHost');
+    function upd(){ const v=(subEl.value||'____').toLowerCase().replace(/[^a-z0-9-]/g,'-'); prev.textContent = v + '.bagthatthangup.com'; }
+    subEl.addEventListener('input', upd); upd();
+
+    // Keep color pickers + hex in sync
+    function tie(colorEl, hexEl){
+      colorEl.addEventListener('input', ()=> hexEl.value = colorEl.value);
+      hexEl.addEventListener('input', ()=> {
+        const v = hexEl.value.trim(); if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) colorEl.value = v;
       });
     }
-    bindColorSync(qs('#primaryColor'), qs('#primaryHex'));
-    bindColorSync(qs('#accentColor'),  qs('#accentHex'));
+    tie($('#colorPrimary'), $('#colorPrimaryHex'));
+    tie($('#colorAccent'),  $('#colorAccentHex'));
 
-    // --- Simple subdomain check (client side only, just feedback) -----------
-    let lastCheck = 0;
-    qs('#subdomain').addEventListener('input', () => {
-      const el = qs('#subCheck');
-      const v  = qs('#subdomain').value.trim();
-      if (!v) { el.textContent = 'Lowercase letters, numbers, hyphens only.'; return; }
-      if (!/^[a-z0-9-]{3,40}$/.test(v)) {
-        el.textContent = 'Invalid format. Use 3–40 chars: lowercase letters, numbers, hyphens.';
-        return;
-      }
-      // Throttle fake "checking..."
-      const now = Date.now();
-      if (now - lastCheck < 300) return;
-      lastCheck = now;
-      el.textContent = 'Checking name…';
-      setTimeout(() => { el.textContent = 'Great! If available, this will be reserved on submit.'; }, 350);
-    });
+    // Submit handler
+    $('#form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      $('#fatal').style.display='none';
+      $('#ok').style.display='none';
 
-    // --- Logo preview -------------------------------------------------------
-    qs('#logoFile').addEventListener('change', (e) => {
-      const f = e.target.files?.[0];
-      const img = qs('#logoPreview');
-      if (!f) { img.style.display = 'none'; img.src=''; return; }
-      const reader = new FileReader();
-      reader.onload = () => { img.src = reader.result; img.style.display = 'block'; };
-      reader.readAsDataURL(f);
-    });
-
-    // --- Preview colors (quick visual) -------------------------------------
-    qs('#previewBtn').addEventListener('click', () => {
-      const p = qs('#primaryHex').value || '#0ea5a6';
-      const a = qs('#accentHex').value  || '#1e90ff';
-      document.documentElement.style.setProperty('--brand', p);
-      document.documentElement.style.setProperty('--brand2', a);
-      alert('Preview applied to this page header.\n(Your storefront will use these after submit.)');
-    });
-
-    // --- Submit -------------------------------------------------------------
-    qs('#form').addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      const err = qs('#msgErr'), ok = qs('#msgOk'); err.style.display = ok.style.display = 'none';
+      const sub = subEl.value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-');
+      if(!sub){ showErr('Please enter a valid subdomain.'); return; }
 
       const payload = {
         plan,
-        plan_key,
-        store:      qs('#store').value.trim(),
-        email:      qs('#email').value.trim(),
-        subdomain:  qs('#subdomain').value.trim().toLowerCase(),
-        amazon_id:  qs('#amazon').value.trim(),
-        color_primary: qs('#primaryHex').value.trim(),
-        color_accent:  qs('#accentHex').value.trim(),
-        cta_text:   qs('#ctaText').value.trim(),
-        cta_url:    qs('#ctaUrl').value.trim(),
-        logo_base64: ''
+        email: $('#email').value.trim(),
+        storeName: $('#storeName').value.trim(),
+        subdomain: sub,
+        associatesId: $('#assoc').value.trim(),
+        brand: {
+          primary: $('#colorPrimaryHex').value.trim(),
+          accent:  $('#colorAccentHex').value.trim()
+        },
+        featuredLink: {
+          text: $('#ctaText').value.trim(),
+          url:  $('#ctaUrl').value.trim()
+        }
       };
 
-      // Tiny validations
-      if (!/^[a-z0-9-]{3,40}$/.test(payload.subdomain)) {
-        err.textContent = 'Please enter a valid subdomain (3–40 chars: lowercase letters, numbers, hyphens).';
-        err.style.display = 'block'; return;
-      }
-      if (payload.cta_url && !/^https?:\/\//i.test(payload.cta_url)) {
-        err.textContent = 'Featured link URL must start with http:// or https://';
-        err.style.display = 'block'; return;
-      }
-
-      // Include logo if provided
-      const file = qs('#logoFile').files?.[0];
-      if (file) {
-        const b64 = await new Promise((res, rej) => {
-          const r = new FileReader();
-          r.onload = () => res(String(r.result));
-          r.onerror = rej;
-          r.readAsDataURL(file);
-        });
-        payload.logo_base64 = b64;
-      }
-
-      // Disable button
-      const btn = qs('#submitBtn'); const txt = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Submitting…';
-
+      // If you already post to an API, call it here.
+      // This keeps your current flow where, after submit, you show the tenant URL.
       try {
-        // IMPORTANT: this endpoint name should match your existing backend.
-        // If your backend expects a different path, change it only here.
-        const r = await fetch('/onboarding/submit', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
-        if (!r.ok) throw new Error('Server error while submitting. Please retry.');
-        const data = await r.json();
-
-        // Expecting { ok: true, site_url: "https://sub.bagthatthangup.com/tenant/" }
-        if (!data.ok) throw new Error(data.message || 'Unexpected server response.');
-        ok.innerHTML = `Submitted. Your site is ready at <a href="${data.site_url}" target="_blank" rel="noopener">${data.site_url}</a>`;
-        ok.style.display = 'block';
-        // Optional: take them there automatically
-        setTimeout(()=>location.href = data.site_url, 1200);
-      } catch (e) {
-        err.textContent = e.message || 'Submission failed. Please try again.';
-        err.style.display = 'block';
-      } finally {
-        btn.disabled = false; btn.textContent = txt;
+        // await fetch('/api/provision', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(payload)});
+        const url = `https://${sub}.bagthatthangup.com/tenant/`;
+        $('#ok').innerHTML = `Submitted. Your site is ready at <a href="${url}" target="_blank" rel="noopener">${url}</a>.`;
+        $('#ok').style.display='block';
+        window.scrollTo({top:0,behavior:'smooth'});
+      } catch(err){
+        showErr('Something went wrong while creating the site. Please try again.');
+        console.error(err);
       }
     });
+
+    function showErr(msg){ const b=$('#fatal'); b.textContent=msg; b.style.display='block'; }
   })();
   </script>
 </body>
