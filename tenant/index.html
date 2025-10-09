@@ -7,203 +7,448 @@
   <meta name="description" content="Daily Amazon promo codes & deals — auto-updated and tagged for your associate ID.">
   <link rel="icon" href="/favicon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/favicon.png">
-  <meta name="color-scheme" content="light only">
-
   <style>
     :root{
-      /* Brand is updated at runtime by your JS (setTheme). These are fallbacks. */
-      --brand:#0ea5a6; 
-      --accent:#1e90ff; 
-      --ink:#0b1320; 
-      --muted:#4d6375; 
-      --bg:#f7faf9; 
-      --surface:#ffffff; 
-      --line:#e7eef4; 
-      --shadow:0 10px 26px rgba(2,24,43,.10);
-      --shadow-lg:0 18px 40px rgba(2,24,43,.12);
-      --pill:#083663;
-      --pill-ink:#fff;
-      --good:#0b7247;
-      --warn:#ff8a1f;
-      --star:#f39c12;
-      --chip:#e7f2ff;
+      --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
+      --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
     }
-
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
 
-    a{color:inherit;text-decoration:none}
-    img{display:block;max-width:100%}
+    .chips{display:flex;gap:10px;align-items:center;padding:8px 12px}
+    .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
 
-    /* Top info chips */
-    .topchips{
-      position:sticky;top:0;z-index:60;
-      display:flex;gap:8px;align-items:center;
-      padding:8px 14px;border-bottom:1px solid var(--line);
-      background:#ffffffcc;backdrop-filter:saturate(180%) blur(8px);
-    }
-    .chip{background:var(--chip);border:1px solid #cfe6ff;color:#083663;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px}
+    .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
+    .hero .inner{max-width:1200px;margin:0 auto;padding:18px 16px 24px}
+    .hero-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+    .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
+    .sub{margin:6px 0 0;color:#eaf7ff}
+    .tabs{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+    .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-    /* Hero */
-    .hero{
-      background:linear-gradient(135deg,var(--brand),var(--accent));
-      color:#fff;border-bottom:1px solid #dff1f3;
-    }
-    .hero-inner{
-      max-width:1200px;margin:0 auto;padding:28px 16px;
-      display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
-    }
-    .hero-left{
-      display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;
-    }
-    .hero-badge{
-      display:grid;place-items:center;width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.25);font-weight:900;
-    }
-    .hero-title{margin:0;font-weight:900;font-size:clamp(22px,2.6vw,34px);letter-spacing:.2px}
-    .hero-sub{margin:2px 0 0;color:#e9f6ff}
-    .hero-tabs{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{
-      background:#ffffff;
-      color:#083663;
-      border:1px solid #d9e7ff;
-      padding:10px 14px;border-radius:999px;font-weight:800;cursor:pointer;
-      transition:transform .06s ease, box-shadow .15s ease, background .15s ease;
-    }
-    .pill:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.10)}
-    .pill.primary{background:var(--pill);color:var(--pill-ink);border-color:var(--pill)}
-
-    /* Toolbar */
-    .toolbar{position:sticky;top:48px;z-index:50;background:#f7faf9cc;backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line)}
-    .toolbar-inner{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .search{
-      flex:1;min-width:240px;display:flex;align-items:center;gap:10px;
-      background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)
-    }
-    .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530;background:transparent}
+    .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
+    .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
+    .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
+    .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
     .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
     .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
-    .ghost:hover{filter:brightness(.98)}
 
-    /* Main grid */
     .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
     .grid{display:grid;gap:16px;margin:16px 0 36px}
     @media (max-width:599px){ .grid{grid-template-columns:1fr} }
     @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))} }
 
-    /* Cards */
-    .card{
-      background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
-      display:flex;flex-direction:column;overflow:hidden;transition:transform .08s ease, box-shadow .2s ease;
-    }
-    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
-    .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-    @media (max-width:599px){ .media{height:240px} }
-    .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
-
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
+    .media{background:#fff;border-bottom:1px solid #eaeef3;display:flex;justify-content:center;align-items:center;overflow:hidden;height:260px}
+    .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain}
     .body{padding:12px}
     .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
     .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-    .tag.cc{background:#dff5e9;border-color:#8edbb7;color:#0b4c2f}
-
+    .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
     .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-    .stars{font-size:14px;color:var(--star);font-weight:700;margin:2px 0 6px}
-
+    .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
     .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-    .original-price{color:#99a7b3;text-decoration:line-through;font-size:13px}
-    .deal-price{color:var(--good);font-weight:900;font-size:18px}
-
-    .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f;margin-top:6px}
-
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    .btn{
-      display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--good);color:#fff;font-weight:900;transition:filter .12s ease}
-    .btn:hover{filter:brightness(.96)}
-    .btn-code{
-      display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900;transition:filter .12s ease}
-    .btn-code:hover{filter:brightness(.98)}
+    .original-price{color:#999;text-decoration:line-through;font-size:13px}
+    .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
+    .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
+    .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
     .actions > *{min-width:0;max-width:100%}
     @media (max-width:599px){ .actions{grid-template-columns:1fr} }
 
-    /* Empty state + fatal */
     .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
     .empty.show{display:block}
-    .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
+    .errbox{max-width:1100px;margin:18px auto 0;padding:14px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:12px;color:#8a1f1f}
+    .errhdr{font-weight:900;margin-bottom:6px}
 
-    footer{color:#4e6a79;border-top:1px solid var(--line);padding:24px 0;margin-top:20px;text-align:center}
-    .muted{color:#70879a}
+    footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
   </style>
 </head>
 <body>
-
-  <!-- Fatal error box (kept for your JS try/catch) -->
-  <div id="fatal" class="errbox" style="display:none"></div>
-
-  <!-- Sticky status chips (site name, when updated, count) -->
-  <div class="topchips">
-    <span id="siteChip" class="chip">Loading site…</span>
+  <!-- top chips -->
+  <div class="chips">
+    <span id="siteChip" class="chip">Site: —</span>
     <span id="lastUpdated" class="chip">Last updated: —</span>
     <span id="dealCount" class="chip">Deals shown: —</span>
   </div>
 
-  <!-- HERO -->
+  <!-- hero -->
   <header class="hero">
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-badge" id="logo" aria-hidden="true">🛍️</div>
+    <div class="inner">
+      <div class="hero-grid">
         <div>
-          <h1 id="headline" class="hero-title">Deals</h1>
-          <p id="subhead" class="hero-sub">Daily promo codes, coupons and finds.</p>
+          <h1 id="headline" class="h1">Deals</h1>
+          <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
+          <div class="tabs">
+            <button class="pill primary tab" data-src="today">Today’s Deals</button>
+            <button class="pill tab" data-src="yesterday">Yesterday</button>
+            <button class="pill tab" data-src="almost">Almost Gone</button>
+          </div>
         </div>
-      </div>
-      <div class="hero-tabs">
-        <button class="pill primary tab" data-src="today">Today’s Deals</button>
-        <button class="pill tab" data-src="yesterday">Yesterday</button>
-        <button class="pill tab" data-src="almost">Almost Gone</button>
       </div>
     </div>
   </header>
 
-  <!-- TOOLBAR -->
+  <!-- toolbar -->
   <div class="toolbar">
-    <div class="toolbar-inner">
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen" aria-label="Search deals"/>
+    <div class="wrap">
+      <div class="toolbar-row">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.3-4.3M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#4e6a79" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Search products… e.g., sweaters, leggings, kitchen" aria-label="Search deals"/>
+        </div>
+        <select id="category" class="select" aria-label="Filter by category">
+          <option value="__all__" selected>All categories</option>
+        </select>
+        <select id="sort" class="select" aria-label="Sort deals">
+          <option value="newest" selected>Newest</option>
+          <option value="pricelow">Price: Low → High</option>
+          <option value="pricehigh">Price: High → Low</option>
+        </select>
+        <button id="reset" class="ghost" type="button">Reset</button>
       </div>
-      <select id="category" class="select" aria-label="Filter by category">
-        <option value="__all__" selected>All categories</option>
-      </select>
-      <select id="sort" class="select" aria-label="Sort deals">
-        <option value="newest" selected>Newest</option>
-        <option value="pricelow">Price: Low → High</option>
-        <option value="pricehigh">Price: High → Low</option>
-      </select>
-      <button id="reset" class="ghost" type="button">Reset</button>
     </div>
   </div>
 
-  <!-- GRID -->
+  <!-- errors -->
+  <div id="fatal" class="errbox" style="display:none">
+    <div class="errhdr">We couldn’t load everything</div>
+    <div id="fatalMsg">Network error.</div>
+    <div style="margin-top:8px">
+      <button id="retryBtn" class="ghost" type="button">Try again</button>
+    </div>
+  </div>
+
+  <!-- content -->
   <main id="main" class="wrap">
     <div id="grid" class="grid"><p>Loading deals…</p></div>
     <div id="empty" class="empty">No items match your search/filter. Try a different keyword.</div>
   </main>
 
   <footer class="wrap">
-    <p class="muted"><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices can change at any time.</p>
+    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices can change at any time.</p>
   </footer>
 
-  <!-- IMPORTANT: your existing JS stays exactly the same structure.
-       I’m keeping every ID/class your code relies on.
-       Paste the SAME JS you had before BELOW (or leave it if this file already contains it).
-       If you already have the working JS here, no changes needed. -->
+<script>
+(function(){
+  /* ====== STATIC SOURCES (unchanged) ====== */
+  const CSV_TODAY     = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
+  const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
+  const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
 
-  <script>
-  /* ===== If your previous JS was already here, keep it.
-     If not, paste your working loader/retagger/filter JS below.
-     This polish file only changed visuals/HTML structure — not behavior. */
-  </script>
+  // public Subscribers CSV
+  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
+
+  /* ====== DOM ====== */
+  const $ = s => document.querySelector(s);
+  const grid = $("#grid"), empty = $("#empty");
+  const chipSite = $("#siteChip"), lastUpdated = $("#lastUpdated"), dealCount = $("#dealCount");
+  const headline = $("#headline"), subhead = $("#subhead");
+  const fatal = $("#fatal"), fatalMsg = $("#fatalMsg"), retryBtn = $("#retryBtn");
+
+  /* ====== UTILS ====== */
+  const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const toMoney = n => (isFinite(n) ? "$"+Number(n).toFixed(2) : "");
+  const moneyNum = s => { const m = String(s||'').replace(/[, ]/g,'').match(/(\d+(?:\.\d+)?)/); return m?parseFloat(m[1]):NaN; };
+  const percentNum = s => { const m = String(s||'').match(/(\d+(?:\.\d+)?)\s*%/); return m?parseFloat(m[1]):NaN; };
+  const timeoutFetch = (url, ms=15000) => {
+    const ctl = new AbortController();
+    const t = setTimeout(()=>ctl.abort(), ms);
+    return fetch(url, {cache:'no-store', signal:ctl.signal}).finally(()=>clearTimeout(t));
+  };
+
+  function parseCSV(text){
+    const rows=[]; let row=[], cell="", inQ=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i], nx=text[i+1];
+      if(inQ){
+        if(ch==='"'&&nx==='"'){cell+='"';i++;}
+        else if(ch==='"'){inQ=false;}
+        else{cell+=ch;}
+      }else{
+        if(ch==='"'){inQ=true;}
+        else if(ch===','){row.push(cell);cell="";}
+        else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
+        else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";}
+        else{cell+=ch;}
+      }
+    }
+    if(cell!==""||row.length){row.push(cell);rows.push(row);}
+    return rows.filter(r=>r.length>1);
+  }
+  function toObjects(rows){
+    if(!rows.length) return [];
+    const headers = rows[0].map(h=>String(h||"").trim());
+    const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+    return rows.slice(1).map((r,ix)=>{
+      const o={ _ix: ix};
+      for(const [h,i] of Object.entries(idx)){ o[h]=(r[i]||"").toString().trim(); }
+      return o;
+    });
+  }
+  async function fetchCSV(url){
+    const res = await timeoutFetch(url, 15000);
+    if(!res.ok) throw new Error(`CSV fetch failed (${res.status})`);
+    const text = await res.text();
+    return toObjects(parseCSV(text));
+  }
+  function setTheme(primary, secondary){
+    if (primary) document.documentElement.style.setProperty('--brand', primary);
+    if (secondary) document.documentElement.style.setProperty('--accent', secondary);
+  }
+  function retagURL(url, tag){
+    if (!url) return "";
+    try{
+      const u = new URL(url.replace(/^http:/,'https:'));
+      if (u.hostname.endsWith("amazon.com")){
+        u.searchParams.delete('tag');
+        if (tag) u.searchParams.set('tag', tag);
+        return u.toString();
+      }
+      return url;
+    }catch(_){ return url; }
+  }
+  function buildAmazonLink(obj, tag){
+    const asin = (obj.ASIN_Text||obj.ASIN||"").toUpperCase();
+    let href  = obj.TaggedLink || obj.Link || "";
+    const promoAuto = /amazon\.com\/promocode\//i.test(href);
+    if (!href){
+      if (/^[A-Z0-9]{10}$/.test(asin)) href = `https://www.amazon.com/dp/${asin}`;
+    }
+    if (href) href = retagURL(href, tag);
+    return { href, promoAuto };
+  }
+  function computePrices(d){
+    const deal = (isFinite(moneyNum(d.DiscountPrice)) ? moneyNum(d.DiscountPrice)
+                 : isFinite(moneyNum(d.Price)) ? moneyNum(d.Price) : NaN);
+    const candidates = [d.OriginalPrice,d.ListPrice,d.MSRP,d.WasPrice,d.OrigPrice,d.CompareAt]
+      .map(moneyNum).filter(x=>isFinite(x));
+    let orig = candidates.length ? candidates[0] : NaN;
+    if(!isFinite(orig)){
+      const pct = percentNum(d.Discount||d.PercentOff||d.PctOff);
+      if (isFinite(deal) && isFinite(pct) && pct>0 && pct<100) orig = deal/(1-pct/100);
+    }
+    if(!isFinite(orig)){
+      const priceField = moneyNum(d.Price);
+      if (isFinite(deal) && isFinite(priceField) && priceField > deal + 0.01) orig = priceField;
+    }
+    const dealStr = isFinite(deal) ? toMoney(deal) : "";
+    const origStr = (isFinite(orig) && isFinite(deal) && orig > deal + 0.01) ? toMoney(orig) : "";
+    return { dealStr, origStr };
+  }
+  function pickImage(o){
+    const raw=o.ImageURL_raw||"", clean=o.ImageURL_clean||"", gen=o.ImageURL_generated||"", fallback=o.Image||"";
+    const cand = raw || clean || gen || fallback;
+    return cand ? cand.replace(/^http:/i,"https:") : "";
+  }
+
+  /* ====== RENDER ====== */
+  function cardHTML(d, tag){
+    const asin = (d.ASIN_Text||d.ASIN||"").toUpperCase();
+    const title = d.Title || d.ProductTitle || "";
+    const img = pickImage(d);
+    const promo = (d.PromoCode || d.Promo || "").trim();
+    const { href, promoAuto } = buildAmazonLink(d, tag);
+    const hasCoupon   = /^(true|1|yes)$/i.test(String(d.HasCoupon||""));
+    const ccFlag = String(d.CCFlag||"").trim().toLowerCase().startsWith('y');
+    const stars = d.Stars ? `<div class="stars">${esc(d.Stars)} ⭐</div>` : "";
+    const thecat = d.Category || "";
+    const { dealStr, origStr } = computePrices(d);
+
+    const dealLine = promoAuto
+      ? (promo ? `Promo code auto applies — ${promo}` : `Auto-applied discount`)
+      : (promo ? `Copy promo code — ${promo}` : (hasCoupon ? `Clip coupon on product page` : `No promo code needed`));
+
+    const btns = [];
+    if (promo){ btns.push(`<button class="btn-code" onclick="navigator.clipboard.writeText('${esc(promo)}')">Copy Code</button>`); }
+    if (href){ btns.push(`<a class="btn" href="${esc(href)}" target="_blank" rel="nofollow noopener noreferrer">Go to Amazon</a>`); }
+
+    return `
+      <article class="card" data-cat="${esc(thecat)}" data-search="${(title+' '+thecat+' '+asin+' '+(promo||'')).toLowerCase()}">
+        <div class="media">${img ? `<img src="${esc(img)}" alt="${esc(title||'Amazon product')}">` : ``}</div>
+        <div class="body">
+          <div class="tags">
+            ${asin ? `<span class="tag">ASIN ${esc(asin)}</span>`:''}
+            ${thecat ? `<span class="tag">${esc(thecat)}</span>`:''}
+            ${ccFlag ? `<span class="tag cc">✓ CC</span>`:''}
+          </div>
+          ${title ? `<div class="title-line">${esc(title)}</div>`:''}
+          ${stars}
+          ${(origStr || dealStr) ? `
+            <div class="price-box" aria-label="Price">
+              ${origStr ? `<span class="original-price" aria-hidden="true">${esc(origStr)}</span>`:''}
+              ${dealStr ? `<span class="deal-price">${esc(dealStr)}</span>`:''}
+            </div>` : ``}
+          <div class="meta2">${esc(dealLine)}</div>
+          <div class="actions">${btns.join('')}</div>
+        </div>
+      </article>`;
+  }
+
+  function render(list, tag){
+    if(!list.length){ grid.innerHTML=""; empty.classList.add("show"); dealCount.textContent="Deals shown: 0"; return; }
+    empty.classList.remove("show");
+    grid.innerHTML = list.map(d=>cardHTML(d, tag)).join("");
+    dealCount.textContent = "Deals shown: " + list.length;
+  }
+
+  /* ====== FILTERS ====== */
+  let ALL=[], SOURCE='today', QUERY='', CAT='__all__', SORT='newest', ASSOC_TAG='';
+  function applyFilters(){
+    let rows = ALL;
+    if (QUERY){
+      const q = QUERY.toLowerCase();
+      rows = rows.filter(d => ((d.Title||'')+' '+(d.Category||'')+' '+(d.ASIN_Text||'')+' '+(d.PromoCode||'')).toLowerCase().includes(q));
+    }
+    if (CAT !== '__all__'){ rows = rows.filter(d => (d.Category||'').toLowerCase() === CAT.toLowerCase()); }
+    if (SORT==='pricelow'){
+      rows = rows.slice().sort((a,b)=>(moneyNum(a.DiscountPrice||a.Price)||1e9)-(moneyNum(b.DiscountPrice||b.Price)||1e9));
+    } else if (SORT==='pricehigh'){
+      rows = rows.slice().sort((a,b)=>(moneyNum(b.DiscountPrice||b.Price)||-1e9)-(moneyNum(a.DiscountPrice||a.Price)||-1e9));
+    }
+    render(rows, ASSOC_TAG);
+  }
+  function fillCategories(rows){
+    const cats = Array.from(new Set(rows.map(r=>(r.Category||'').trim()).filter(Boolean))).sort();
+    const sel = document.getElementById("category");
+    sel.innerHTML = `<option value="__all__" selected>All categories</option>` + cats.map(c=>`<option>${esc(c)}</option>`).join('');
+  }
+
+  /* ====== TENANT CONFIG (by subdomain) ====== */
+  function currentSubdomain(){
+    const host = location.host; // e.g., abcdeals.bagthatthangup.com
+    const parts = host.split('.');
+    if (parts.length < 3) return ''; // apex or unexpected
+    return parts[0].toLowerCase();
+  }
+  function titleCase(slug){
+    return slug ? slug.replace(/[-_]+/g,' ')
+      .replace(/\b\w/g, c => c.toUpperCase()) : 'Deals';
+  }
+  async function loadTenant(){
+    const sub = currentSubdomain();
+    if (!sub){ throw new Error("This page must be accessed via your subdomain (e.g., abcdeals.bagthatthangup.com)."); }
+
+    let rows;
+    try{
+      rows = await fetchCSV(SUBSCRIBERS_CSV);
+    }catch(err){
+      // Fail-safe: still set a reasonable title
+      const fallbackName = titleCase(sub);
+      headline.textContent = fallbackName;
+      chipSite.textContent = fallbackName;
+      throw new Error("Tenant registry CSV could not be loaded. " + err.message);
+    }
+
+    const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
+    if (!row){
+      const fallbackName = titleCase(sub);
+      headline.textContent = fallbackName;
+      chipSite.textContent = fallbackName;
+      throw new Error("Site not found or inactive in tenant registry.");
+    }
+
+    const siteName = row.site_display_name?.trim() || titleCase(sub);
+    const color1 = (row.color_primary||'').trim();
+    const color2 = (row.color_secondary||'').trim();
+    const plan   = (row.plan||'').trim();
+    const layout = (row.layout||'').trim();
+    const tag    = (row.amazon_tag||'').trim();
+
+    // apply name/theme
+    headline.textContent = siteName;
+    chipSite.textContent = siteName;
+    setTheme(color1, color2);
+    if (plan) document.body.dataset.plan = plan;
+    if (layout) document.body.dataset.layout = layout;
+
+    if (!tag) console.warn("No amazon_tag set for tenant:", sub);
+    ASSOC_TAG = tag;
+
+    return { sub, siteName, tag };
+  }
+
+  /* ====== DEALS LOAD (robust) ====== */
+  async function loadDeals(src){
+    SOURCE = src;
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('primary', b.dataset.src===src));
+
+    let today=[], yest=[], almost=[];
+    let errors = [];
+
+    const results = await Promise.allSettled([
+      fetchCSV(CSV_TODAY).then(v=>{today=v}),
+      fetchCSV(CSV_YESTERDAY).then(v=>{yest=v}),
+      fetchCSV(CSV_ALMOST).then(v=>{almost=v}),
+    ]);
+
+    results.forEach((r, i)=>{
+      if (r.status === 'rejected'){
+        const which = i===0?'Today':i===1?'Yesterday':'Almost';
+        errors.push(`${which}: ${r.reason?.message || r.reason}`);
+      }
+    });
+
+    if (errors.length){
+      fatal.style.display = 'block';
+      fatalMsg.textContent = `Some sources failed to load. ${errors.join(' | ')}`;
+    }else{
+      fatal.style.display='none';
+    }
+
+    if (src==='today') ALL = today;
+    else if (src==='yesterday') ALL = yest;
+    else if (src==='almost') ALL = almost;
+    else ALL = [...today, ...yest, ...almost];
+
+    lastUpdated.textContent = "Last updated: " + new Date().toLocaleString();
+    fillCategories(ALL);
+    applyFilters();
+
+    if (!ALL.length){
+      // nothing loaded at all
+      grid.innerHTML = "";
+      empty.classList.add('show');
+      dealCount.textContent = "Deals shown: 0";
+    }
+  }
+
+  /* ====== INIT ====== */
+  document.addEventListener('DOMContentLoaded', async ()=>{
+    retryBtn.addEventListener('click', ()=>location.reload());
+
+    try{
+      await loadTenant();
+
+      // controls
+      document.getElementById("search").addEventListener('input', e=>{ QUERY=e.target.value; applyFilters(); });
+      document.getElementById("category").addEventListener('change', e=>{ CAT=e.target.value; applyFilters(); });
+      document.getElementById("sort").addEventListener('change', e=>{ SORT=e.target.value; applyFilters(); });
+      document.getElementById("reset").addEventListener('click', ()=>{ QUERY=''; CAT='__all__'; SORT='newest';
+        document.getElementById("search").value=''; document.getElementById("category").value='__all__'; document.getElementById("sort").value='newest'; applyFilters();
+      });
+      document.addEventListener('click', e=>{
+        const btn = e.target.closest('.tab[data-src]');
+        if (btn) loadDeals(btn.dataset.src);
+      });
+
+      await loadDeals('today');
+    }catch(err){
+      // Show one clear message but still leave the page usable
+      fatal.style.display = 'block';
+      fatalMsg.textContent = String(err.message || err);
+      // Keep sensible defaults for title already set in loadTenant()
+      grid.innerHTML = "";
+      empty.classList.add('show');
+    }
+  });
+})();
+</script>
 </body>
 </html>
