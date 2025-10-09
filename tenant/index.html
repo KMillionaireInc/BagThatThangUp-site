@@ -22,13 +22,16 @@
 
     .hero{position:relative;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
     .hero .inner{max-width:1200px;margin:0 auto;padding:18px 16px 28px;display:grid;gap:14px;grid-template-columns:1fr auto;align-items:start}
-    .hero-left{min-width:0}
+    .hero-left{min-width:0;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+    .site-logo{width:40px;height:40px;border-radius:10px;overflow:hidden;background:#ffffff22;border:1px solid #ffffff55;display:none}
+    .site-logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+    .title-wrap{min-width:0}
     .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
     .sub{margin:6px 0 0;color:#eaf7ff}
-    .plan-badge{display:inline-flex;align-items:center;gap:8px;background:#ffffff18;border:1px solid #ffffff55;padding:6px 10px;border-radius:999px}
+    .plan-badge{display:none;align-items:center;gap:8px;background:#ffffff18;border:1px solid #ffffff55;padding:6px 10px;border-radius:999px}
     .plan-badge img{width:22px;height:22px;object-fit:contain}
 
-    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;grid-column:1 / -1}
     .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
     .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
@@ -89,16 +92,19 @@
   <header class="hero">
     <div class="inner">
       <div class="hero-left">
-        <h1 id="headline" class="h1">Deals</h1>
-        <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
+        <div id="siteLogo" class="site-logo" aria-hidden="true"><img alt="" id="siteLogoImg"></div>
+        <div class="title-wrap">
+          <h1 id="headline" class="h1">Deals</h1>
+          <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
+        </div>
         <div class="tabs">
           <button class="pill primary tab" data-src="today">Today's Deals</button>
           <button class="pill tab" data-src="yesterday">Yesterday</button>
           <button class="pill tab" data-src="almost">Almost Gone</button>
         </div>
       </div>
-      <div id="planBadge" class="plan-badge" style="display:none">
-        <img src="/tenant/assets/basic.png" alt="Plan badge">
+      <div id="planBadge" class="plan-badge">
+        <img src="/tenant/assets/basic.png" alt="Basic plan">
         <span id="planText">Basic</span>
       </div>
     </div>
@@ -148,6 +154,7 @@
   const grid = $("#grid"), empty = $("#empty");
   const chipSite = $("#siteChip"), lastUpdated = $("#lastUpdated"), dealCount = $("#dealCount");
   const headline = $("#headline"), subhead = $("#subhead");
+  const siteLogo = $("#siteLogo"), siteLogoImg = $("#siteLogoImg");
   const planBadge = $("#planBadge"), planText = $("#planText");
 
   /* ====== UTILS ====== */
@@ -341,15 +348,23 @@
     chipSite.textContent = siteName;
     if (color1 || color2) setTheme(color1, color2);
 
-    // Show plan badge only for Basic (uses /tenant/assets/basic.png)
-    if (/^basic$/i.test(plan)) {
-      planText.textContent = "Basic";
-      planBadge.style.display = "inline-flex";
+    // Show uploaded logo if present (any plan)
+    if (logoURL){
+      siteLogoImg.src = logoURL;
+      siteLogo.style.display = 'block';
+      planBadge.style.display = 'none'; // custom logo takes precedence, even on Basic
     } else {
-      planBadge.style.display = "none";
+      siteLogo.style.display = 'none';
+      // No logo provided: show Basic badge only if plan is Basic
+      if (/^basic$/i.test(plan)) {
+        planText.textContent = "Basic";
+        planBadge.style.display = "inline-flex";
+      } else {
+        planBadge.style.display = "none";
+      }
     }
 
-    // Optional: tweak layout choices by plan (kept simple here)
+    // Optional: layout switch (kept here to preserve your hook)
     document.body.dataset.layout = layout || (plan==='Basic' ? 'rows' : 'grid');
 
     return { sub, siteName, tag };
