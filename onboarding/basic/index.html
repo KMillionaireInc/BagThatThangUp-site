@@ -1,214 +1,139 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish Onboarding · BagThat (Basic)</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{
-      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7fafc; --surface:#fff; --line:#e8eef5;
-      --brand:#0b72f0; --ok:#0f915a; --warn:#b63a2b; --shadow:0 18px 40px rgba(11,19,32,.08)
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:960px;margin:28px auto;padding:0 16px}
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-    h1{margin:0 0 12px;font-size:28px}
-    .err{color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0;display:none}
-    .ok{color:#2a6b2f;background:#e7f6ee;border:1px solid #c4ecd7;border-radius:10px;padding:8px 10px;margin:8px 0;display:none}
-    .plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
-    form{display:grid;gap:14px;margin-top:10px}
-    .row{display:grid;gap:12px}
-    @media (min-width:720px){ .row{grid-template-columns:1fr 1fr} }
-    label{font-weight:800;font-size:14px}
-    input[type="text"],input[type="email"],input[type="url"]{
-      width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px
-    }
-    .hint{color:var(--muted);font-size:12px}
-    .flex{display:flex;gap:12px;align-items:center}
-    .chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
-    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
-    .btn.primary{background:var(--ok);color:#fff}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding · BagThat — Basic</title>
+<meta name="color-scheme" content="light only">
+<style>
+:root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;--line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:960px;margin:28px auto;padding:0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+h1{margin:0 0 12px;font-size:28px}
+.err{display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0}
+.plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
+form{display:grid;gap:14px;margin-top:10px}
+.row{display:grid;gap:12px} @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+label{font-weight:800;font-size:14px}
+input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px}
+.hint{color:var(--muted);font-size:12px}
+.flex{display:flex;gap:12px;align-items:center}
+.chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btn.primary{background:var(--ok);color:#fff}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Great choice! Let’s set up your site</h1>
-
-      <div id="err" class="err"></div>
-      <div id="okmsg" class="ok"></div>
-
-      <div class="flex" style="margin:6px 0 10px">
-        <span class="plan-pill">Basic</span>
-        <span class="chip">Secure setup</span>
-      </div>
-
-      <form id="onbForm" novalidate>
-        <div class="row">
-          <div>
-            <label for="store_name">Store display name</label>
-            <input id="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
-          </div>
-          <div>
-            <label for="email">Contact email</label>
-            <input id="email" type="email" placeholder="you@example.com" required>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="sub">Site URL (subdomain)</label>
-            <input id="sub" type="text" placeholder="e.g., daisysdeals" pattern="^[a-z0-9-]+$" required>
-            <div class="hint">Lowercase letters, numbers, and hyphens. Your site will be: <b id="preview">—</b></div>
-            <div id="subWarn" class="hint" style="color:#8a1f1f;display:none"></div>
-          </div>
-          <div>
-            <label for="aaid">Amazon Associates ID</label>
-            <input id="aaid" type="text" placeholder="yourtag-20">
-          </div>
-        </div>
-
-        <div class="flex" style="margin-top:6px">
-          <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
-          <span id="status" class="hint"></span>
-        </div>
-      </form>
-    </div>
+<div class="wrap"><div class="card">
+  <h1>Great choice! Let’s set up your site</h1>
+  <div id="err" class="err"></div>
+  <div class="flex" style="margin:6px 0 10px">
+    <span class="plan-pill">Basic</span>
+    <span class="chip">Secure setup</span>
   </div>
 
-  <script>
-  (function(){
-    // ===== CONSTANTS (your real values) =====
-    const DOMAIN  = "bagthatthangup.com";
-    const PLAN    = "Basic";
-    const KEY_REQ = "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7"; // Basic plan_key
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+  <form id="onbForm" novalidate>
+    <div class="row">
+      <div>
+        <label for="store_name">Store display name</label>
+        <input id="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
+      </div>
+      <div>
+        <label for="email">Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" required>
+      </div>
+    </div>
 
-    // ===== helpers =====
-    const $ = id => document.getElementById(id);
-    const errEl = $("err"), okEl = $("okmsg");
-    const statusEl = $("status"), submit = $("submitBtn");
-    const subIn = $("sub"), preview = $("preview"), subWarn = $("subWarn");
-    function showErr(msg){ errEl.textContent = msg; errEl.style.display="block"; }
-    function hideErr(){ errEl.style.display="none"; }
-    function showOk(msg){ okEl.textContent = msg; okEl.style.display="block"; }
-    function hideOk(){ okEl.style.display="none"; }
-    const sanitizeSub = s => String(s||"").toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/^-+|-+$/g,"").slice(0,63);
+    <div class="row">
+      <div>
+        <label for="sub">Site URL (subdomain)</label>
+        <input id="sub" type="text" placeholder="e.g., daisysdeals" pattern="^[a-z0-9-]+$" required>
+        <div class="hint">Lowercase letters, numbers, and hyphens. Your site will be: <b id="preview">—</b></div>
+      </div>
+      <div>
+        <label for="aaid">Amazon Associates ID</label>
+        <input id="aaid" type="text" placeholder="yourtag-20">
+      </div>
+    </div>
 
-    // enforce correct plan_key
-    const qs = new URLSearchParams(location.search);
-    if (qs.get("plan_key") !== KEY_REQ){
-      showErr("Invalid or missing plan link. Please return to the pricing page and start again.");
-      $("onbForm").style.display = "none";
-      return;
-    }
+    <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+      <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
+      <span id="status" class="hint"></span>
+    </div>
+  </form>
+</div></div>
 
-    function updatePreview(){
-      const v = sanitizeSub(subIn.value);
-      preview.textContent = v ? (v + "." + DOMAIN) : "—";
-    }
-    subIn.addEventListener("input", ()=>{ subWarn.style.display="none"; updatePreview(); });
-    updatePreview();
+<script>
+(function(){
+  const DOMAIN  = "bagthatthangup.com";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-    // JSONP helper with explicit error bubbling
-    function jsonp(url, params={}, timeoutMs=12000){
-      return new Promise((resolve, reject)=>{
-        const cb = "cb_" + Math.random().toString(36).slice(2);
-        const u = new URL(url);
-        Object.entries(params).forEach(([k,v])=> u.searchParams.set(k,v));
-        u.searchParams.set("callback", cb);
-        const s = document.createElement("script");
-        const timer = setTimeout(()=>{cleanup();reject(new Error("timeout"));}, timeoutMs);
-        function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(_){}
-          if (s && s.parentNode) s.parentNode.removeChild(s); }
-        window[cb] = (resp)=>{ cleanup(); resolve(resp); };
-        s.onerror = ()=>{ cleanup(); reject(new Error("network")); };
-        s.src = u.toString();
-        document.head.appendChild(s);
-      });
-    }
+  const sub = document.getElementById('sub');
+  const preview = document.getElementById('preview');
+  function updatePreview(){ const v=(sub.value||"").trim().toLowerCase(); preview.textContent = v? (v+"."+DOMAIN) : "—"; }
+  sub.addEventListener('input', updatePreview); updatePreview();
 
-    async function reachability(){
-      try{
-        const r = await jsonp(GAS_URL, {ping:1, ts:Date.now()}, 5000);
-        if (r && r.ok){ showOk("Connected to registry."); return true; }
-        showErr("Registry reachable but returned an unexpected response."); return false;
-      }catch(e){
-        showErr("Cannot reach registry (network/permission)."); return false;
-      }
-    }
-
-    async function isTaken(sub){
-      try{
-        const r = await jsonp(GAS_URL, {check:1, subdomain:sub, ts:Date.now()}, 8000);
-        if (r && r.ok) return !!r.exists;
-        return false;
-      }catch(_){ return false; }
-    }
-
-    // one-time: verify GAS reachable so we fail fast with a clear message
-    reachability();
-
-    $("onbForm").addEventListener("submit", async (e)=>{
-      e.preventDefault(); hideErr(); hideOk(); subWarn.style.display="none";
-
-      const store = $("store_name").value.trim();
-      const email = $("email").value.trim();
-      const sub   = sanitizeSub(subIn.value);
-      const aaid  = $("aaid").value.trim();
-      if (!store || !email || !sub) return showErr("Please complete the required fields.");
-
-      statusEl.textContent = "Saving…"; submit.disabled = true;
-
-      // soft duplicate / reserved check
-      if (await isTaken(sub)){
-        submit.disabled = false; statusEl.textContent = "";
-        subWarn.textContent = "That site URL is already taken. Try another.";
-        subWarn.style.display = "block";
-        return showErr("That site URL is already taken.");
-      }
-
-      // write row (matches your current GAS parameters)
-      const payload = {
-        beacon: "1",
-        timestamp: new Date().toISOString(),
-        tenant_id: "",
-        email,
-        site_display_name: store,
-        subdomain: sub,
-        plan: PLAN,
-        amazon_tag: aaid,
-        color_primary: "",
-        color_secondary: "",
-        logo_url: "",
-        layout: "",
-        featured_asins: "",
-        extra_page_enabled: "false",
-        status: "active",
-        ts: Date.now()
-      };
-
-      try{
-        const r = await jsonp(GAS_URL, payload, 12000);
-        if (!(r && r.ok)){
-          // surface exact error from GAS so we know what's wrong
-          const msg = (r && r.error) ? r.error : "write_failed";
-          showErr("Registry error: " + msg);
-          submit.disabled = false; statusEl.textContent = "";
-          return;
-        }
-        const domain = `${sub}.${DOMAIN}`;
-        location.href = `/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store)}`;
-      }catch(err){
-        console.error(err);
-        showErr("Network or write error while saving to the registry. Please try again.");
-        submit.disabled = false; statusEl.textContent = "";
-      }
+  function jsonp(url, params){
+    return new Promise((resolve,reject)=>{
+      const cb="btJSONP_"+Math.random().toString(36).slice(2);
+      params={...(params||{}),callback:cb};
+      const q = Object.keys(params).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k])).join("&");
+      const s=document.createElement("script"); s.src=url+(url.includes("?")?"&":"?")+q;
+      window[cb]=d=>{resolve(d);cleanup();}; s.onerror=()=>{reject(new Error("JSONP error"));cleanup();};
+      function cleanup(){try{delete window[cb]}catch(_){ } s.remove();}
+      document.head.appendChild(s);
     });
-  })();
-  </script>
+  }
+
+  const form=document.getElementById('onbForm');
+  const errEl=document.getElementById('err');
+  const submitBtn=document.getElementById('submitBtn');
+  const statusEl=document.getElementById('status');
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const store_name=document.getElementById('store_name').value.trim();
+    const email=document.getElementById('email').value.trim();
+    const subdomain=sub.value.trim().toLowerCase();
+    const aaid=document.getElementById('aaid').value.trim();
+
+    if(!store_name||!email||!subdomain){
+      errEl.style.display='block'; errEl.textContent="Please complete the required fields."; return;
+    }
+
+    const params={
+      beacon:1,
+      email,
+      site_display_name:store_name,
+      subdomain,
+      plan:"Basic",
+      amazon_tag: aaid,
+      color_primary:"",
+      color_secondary:"",
+      logo_url:"",
+      layout:"list",
+      featured_asins:"",
+      extra_page_enabled:"false",
+      status:"active",
+      extra_link_label:"",
+      extra_link_url:""
+    };
+
+    submitBtn.disabled=true; statusEl.textContent="Saving…"; errEl.style.display='none';
+    try{
+      const res=await jsonp(GAS_URL, params);
+      if(!res||res.ok!==true) throw new Error(res&&res.error?res.error:"Write failed");
+      const domain=`${subdomain}.${DOMAIN}`;
+      location.href=`/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store_name)}`;
+    }catch(err){
+      console.error(err);
+      errEl.style.display='block'; errEl.textContent="Network or write error while saving to the registry. Please try again.";
+      submitBtn.disabled=false; statusEl.textContent="";
+    }
+  });
+})();
+</script>
 </body>
 </html>
