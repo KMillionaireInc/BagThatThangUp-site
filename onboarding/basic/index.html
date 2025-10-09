@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Finish Onboarding · BagThat (Basic)</title>
+  <meta name="color-scheme" content="light only">
+  <style>
+    :root{
+      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7fafc; --surface:#fff; --line:#e8eef5;
+      --brand:#0b72f0; --ok:#0f915a; --warn:#b63a2b; --shadow:0 18px 40px rgba(11,19,32,.08)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:960px;margin:28px auto;padding:0 16px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    h1{margin:0 0 12px;font-size:28px}
+    .err{color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0;display:none}
+    .plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
+    form{display:grid;gap:14px;margin-top:10px}
+    .row{display:grid;gap:12px}
+    @media (min-width:720px){ .row{grid-template-columns:1fr 1fr} }
+    label{font-weight:800;font-size:14px}
+    input[type="text"],input[type="email"],input[type="url"]{
+      width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px
+    }
+    .hint{color:var(--muted);font-size:12px}
+    .flex{display:flex;gap:10px;align-items:center}
+    .chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+    .btn.primary{background:var(--ok);color:#fff}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Great choice! Let’s set up your site</h1>
+
+      <div id="err" class="err"></div>
+
+      <div class="flex" style="gap:12px;margin:6px 0 10px">
+        <span id="planPill" class="plan-pill">Basic</span>
+        <span class="chip">Secure setup</span>
+      </div>
+
+      <form id="onbForm" novalidate>
+        <div class="row">
+          <div>
+            <label for="store_name">Store display name</label>
+            <input id="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
+          </div>
+          <div>
+            <label for="email">Contact email</label>
+            <input id="email" type="email" placeholder="you@example.com" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="sub">Site URL (subdomain)</label>
+            <input id="sub" type="text" placeholder="e.g., daisysdeals" pattern="^[a-z0-9-]+$" required>
+            <div class="hint">Lowercase letters, numbers, and hyphens. Your site will be: <b id="preview">—</b></div>
+            <div id="subWarn" class="hint" style="color:#8a1f1f;display:none"></div>
+          </div>
+          <div>
+            <label for="aaid">Amazon Associates ID</label>
+            <input id="aaid" type="text" placeholder="yourtag-20">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+          <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
+          <span id="status" class="hint"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    /* ===== BASIC is hard-locked on this page ===== */
+    const DOMAIN  = "bagthatthangup.com";
+    const PLAN    = "Basic";
+    const KEY_REQ = "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7"; // your Basic plan_key
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+
+    const $ = id => document.getElementById(id);
+    const errEl   = $("err");
+    const subWarn = $("subWarn");
+    const form    = $("onbForm");
+    const preview = $("preview");
+    const subIn   = $("sub");
+    const statusEl= $("status");
+    const submit  = $("submitBtn");
+
+    function showError(msg){ errEl.textContent = msg; errEl.style.display = "block"; }
+    function hideError(){ errEl.style.display = "none"; }
+    const sanitizeSub = s => String(s||"").toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/^-+|-+$/g,"").slice(0,63);
+
+    // Require correct plan_key (prevents tampering)
+    const qs = new URLSearchParams(location.search);
+    const incomingKey = qs.get("plan_key") || "";
+    if (incomingKey !== KEY_REQ){
+      showError("Invalid or missing plan link. Please return to the pricing page and start again.");
+      form.style.display = "none";
+      return;
+    }
+
+    // Live preview
+    function updatePreview(){
+      const v = sanitizeSub(subIn.value);
+      preview.textContent = v ? (v + "." + DOMAIN) : "—";
+    }
+    subIn.addEventListener("input", ()=>{ subWarn.style.display="none"; updatePreview(); });
+    updatePreview();
+
+    // Tiny JSONP helper
+    function jsonp(url, params={}, timeoutMs=10000){
+      return new Promise((resolve, reject)=>{
+        const cb = "cb_" + Math.random().toString(36).slice(2);
+        const u = new URL(url);
+        Object.entries(params).forEach(([k,v])=> u.searchParams.set(k,v));
+        u.searchParams.set("callback", cb);
+        const s = document.createElement("script");
+        const timer = setTimeout(()=>{cleanup();reject(new Error("timeout"));}, timeoutMs);
+        function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(_){}
+          if (s && s.parentNode) s.parentNode.removeChild(s); }
+        window[cb] = (resp)=>{ cleanup(); resolve(resp); };
+        s.onerror = ()=>{ cleanup(); reject(new Error("network")); };
+        s.src = u.toString();
+        document.head.appendChild(s);
+      });
+    }
+
+    async function isTaken(sub){
+      try{
+        const r = await jsonp(GAS_URL, {check:"1", subdomain: sub, ts: Date.now()}, 8000);
+        return (r && r.ok && r.exists) ? true : false;
+      }catch(_){ return false; }
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      hideError(); subWarn.style.display = "none";
+
+      const store = $("store_name").value.trim();
+      const email = $("email").value.trim();
+      const sub   = sanitizeSub(subIn.value);
+      const aaid  = $("aaid").value.trim();
+
+      if (!store || !email || !sub){
+        return showError("Please complete the required fields.");
+      }
+
+      statusEl.textContent = "Saving…"; submit.disabled = true;
+
+      // soft duplicate check (server also enforces)
+      if (await isTaken(sub)){
+        submit.disabled = false; statusEl.textContent = "";
+        subWarn.textContent = "That site URL is already taken. Try another.";
+        subWarn.style.display = "block";
+        return showError("That site URL is already taken.");
+      }
+
+      // Write to GAS (current single-sheet flow; we’ll move to per-plan tabs later)
+      const payload = {
+        beacon: "1",
+        timestamp: new Date().toISOString(),
+        tenant_id: "",
+        email,
+        site_display_name: store,
+        subdomain: sub,
+        plan: PLAN,
+        amazon_tag: aaid,
+        color_primary: "",
+        color_secondary: "",
+        logo_url: "",
+        layout: "",
+        featured_asins: "",
+        extra_page_enabled: "false",
+        status: "active",
+        ts: Date.now()
+      };
+
+      try{
+        const r = await jsonp(GAS_URL, payload, 12000);
+        if (!(r && r.ok)) throw new Error(r && r.error ? r.error : "write_failed");
+
+        const domain = `${sub}.${DOMAIN}`;
+        const successURL = `/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store)}`;
+        location.href = successURL;
+      }catch(err){
+        console.error(err);
+        showError("Network or write error while saving to the registry. Please try again.");
+        submit.disabled = false; statusEl.textContent = "";
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
