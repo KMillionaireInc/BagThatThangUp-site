@@ -1,272 +1,373 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish Onboarding · BagThat</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{
-      --ink:#0b1320; --muted:#5a6b7a; --line:#e8eef5; --bg:#f7fafc; --surface:#fff; --brand:#0b72f0;
-      --ok:#0f915a; --bad:#c62828; --shadow:0 18px 40px rgba(11,19,32,.08);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:980px;margin:36px auto;padding:0 16px}
-    h1{font-size:32px;margin:0 0 6px}
-    .sub{color:var(--muted);margin:0 0 20px}
-
-    .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:800px){ .row{grid-template-columns:1fr} }
-    label{display:block;font-weight:700;margin:0 0 6px}
-    input[type=text],input[type=email]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px}
-    .help{color:var(--muted);font-size:12px;margin-top:6px}
-    .pill{display:inline-block;background:#eef4ff;border:1px solid #d9e7ff;padding:6px 10px;border-radius:999px;font-weight:800;margin-right:8px}
-    .err{color:var(--bad);background:#fff6f6;border:1px solid #ffdede;border-radius:10px;padding:10px;margin:12px 0;display:none}
-    .ok{color:#0b3d2b;background:#edf9f3;border:1px solid #caeedc;border-radius:10px;padding:10px;margin:12px 0;display:none}
-
-    .btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}
-    .btn.primary{background:var(--brand);color:#fff}
-    .btn.green{background:var(--ok);color:#fff}
-    .actions{display:flex;gap:10px;flex-wrap:wrap}
-
-    .upload{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
-    .avatar{width:96px;height:96px;border-radius:12px;border:1px solid var(--line);background:#fff;object-fit:cover;display:block}
-    .color-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .chip{display:inline-grid;grid-template-columns:28px 1fr;gap:8px;align-items:center;
-          border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff}
-    .chip input[type=color]{appearance:none;width:22px;height:22px;border:1px solid #c7d3df;border-radius:999px;padding:0}
-    .chip input[type=text]{width:110px;border:0;padding:0;font-weight:700}
-
-    .hidden{display:none}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding</title>
+<style>
+  :root{--ink:#0b1320;--muted:#5a6b7a;--line:#e8eef5;--bg:#f6f9fc;--surface:#fff;--brand:#0b72f0}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:840px;margin:36px auto;padding:20px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.06);padding:22px}
+  h1{margin:0 0 6px;font-size:28px} .sub{color:var(--muted);margin:0 0 16px}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#194bfb;font-size:12px;margin-left:8px}
+  .lock{font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:16px}
+  .lock svg{opacity:.7}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .full{grid-column:1/-1}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .row{display:grid;grid-template-columns:1fr 110px;gap:10px} /* text + color chip */
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .ok{padding:14px;border:1px solid #bfeee8;background:#ebfbf8;border-radius:12px;margin-top:16px}
+  .err{padding:12px;border:1px solid #ffd2d2;background:#fff3f3;border-radius:10px;color:#8a1f1f;margin-bottom:12px}
+  .warn{font-size:12px;color:#8a1f1f;margin-top:6px}
+  .hide{display:none!important}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Let’s set up your site</h1>
-    <p class="sub">Payment succeeded (or you came here directly). Complete this quick one-time setup.</p>
+<div class="wrap">
+  <div class="card">
+    <h1>Great choice! Let’s set up your site <span id="planBadge" class="badge"></span></h1>
+    <p class="lock">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M7 10V7a5 5 0 0 1 10 0v3m-9 4v3m10-7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2Z" stroke="#5a6b7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Secure setup • You can change these later
+    </p>
+    <p class="sub">Payment succeeded. Complete this one-time setup.</p>
 
-    <div class="panel">
-      <span class="pill" id="planPill">Plan: —</span>
-      <span class="pill" id="keyPill" title="Opaque verification key">Key: —</span>
-    </div>
+    <div id="alert" class="err hide"></div>
 
-    <form id="form" class="panel" novalidate>
-      <div id="err" class="err"></div>
-      <div id="ok" class="ok"></div>
-
-      <!-- BASIC FIELDS (for all plans) -->
-      <div class="row">
-        <div>
-          <label for="store_name">Store display name</label>
-          <input id="store_name" name="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
-        </div>
-        <div>
-          <label for="email">Contact email</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required>
-        </div>
+    <form id="f" novalidate>
+      <div class="full">
+        <label>Store display name</label>
+        <input id="site_display_name" placeholder="Demo Deals" autocomplete="organization"/>
       </div>
 
-      <div class="row">
-        <div>
-          <label for="subdomain">Site URL (subdomain)</label>
-          <input id="subdomain" name="subdomain" type="text" placeholder="lowercase-letters-or-hyphen" pattern="[a-z0-9-]+" required>
-          <div id="subHelp" class="help">Your site will be: <b id="previewHost">—</b></div>
-        </div>
-        <div>
-          <label for="amazon_id">Amazon Associates ID</label>
-          <input id="amazon_id" name="amazon_id" type="text" placeholder="myaffiliate-20">
-          <div class="help">Optional — you can add/update it later.</div>
-        </div>
+      <div>
+        <label>Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"/>
       </div>
 
-      <!-- CUSTOM/PRO FIELDS (shown only for Custom & Pro) -->
-      <div id="customBlock" class="panel" style="margin:-8px -8px 16px -8px">
-        <h3 style="margin:0 0 8px">Branding (Custom & Pro)</h3>
+      <div>
+        <label>Site URL (subdomain)</label>
+        <input id="subdomain" placeholder="yourbrand" autocomplete="off"/>
+        <div class="hint">Your site will be: <b id="hostPrev">—</b></div>
+        <div id="subWarn" class="warn hide"></div>
+      </div>
 
-        <!-- Logo upload -->
-        <div class="upload" style="margin-bottom:12px">
-          <img id="logoPreview" class="avatar" alt="Logo preview" src="" onerror="this.src='';this.style.background='#fff'">
-          <div>
-            <label for="logo_file">Logo / avatar</label>
-            <input id="logo_file" type="file" accept="image/*">
-            <div class="help">PNG/JPG, ≤ 1MB recommended. We’ll resize to ~256×256 for you.</div>
-            <!-- These two are what get submitted -->
-            <input type="hidden" id="logo_data_url" name="brand_logo_data_url" value="">
-            <input type="hidden" id="logo_mime" name="brand_logo_mime" value="">
-          </div>
-        </div>
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input id="amazon_tag" placeholder="yourtag-20" autocomplete="off"/>
+      </div>
 
-        <!-- Two colors -->
-        <label>Brand colors</label>
-        <div class="color-row" style="margin-bottom:12px">
-          <span class="chip">
-            <input id="c1" type="color" value="#0ea5a6">
-            <input id="c1hex" type="text" value="#0ea5a6" name="brand_color_primary">
-          </span>
-          <span class="chip">
-            <input id="c2" type="color" value="#1e90ff">
-            <input id="c2hex" type="text" value="#1e90ff" name="brand_color_accent">
-          </span>
-        </div>
-
-        <!-- Extra link -->
+      <!-- Custom & Pro: brand colors + extra button -->
+      <div id="customBlock" class="full hide">
         <div class="row">
           <div>
-            <label for="extra_link_label">Extra button label</label>
-            <input id="extra_link_label" name="extra_link_label" type="text" placeholder="e.g., My Amazon Storefront">
+            <label>Primary color</label>
+            <input id="color_primary_hex" placeholder="#0ea5a6" />
           </div>
           <div>
-            <label for="extra_link_url">Extra button URL</label>
-            <input id="extra_link_url" name="extra_link_url" type="text" placeholder="https://amazon.com/shop/yourhandle">
+            <label>&nbsp;</label>
+            <input id="color_primary" type="color" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div>
+            <label>Secondary color</label>
+            <input id="color_secondary_hex" placeholder="#1e90ff" />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <input id="color_secondary" type="color" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div>
+            <label>Extra button label (optional)</label>
+            <input id="extra_btn_label" placeholder="Visit our Facebook group"/>
+          </div>
+          <div>
+            <label>Extra button URL</label>
+            <input id="extra_btn_url" placeholder="https://facebook.com/…"/>
           </div>
         </div>
       </div>
-      <!-- /CUSTOM/PRO FIELDS -->
 
-      <div class="actions">
-        <button id="submit" class="btn green" type="submit">Submit onboarding</button>
+      <!-- Pro-only keeps your existing optional fields -->
+      <div id="proOnly" class="full hide">
+        <label>Logo URL (optional)</label>
+        <input id="logo_url" placeholder="https://.../logo.png"/>
+        <div class="row" style="margin-top:12px">
+          <div class="full">
+            <label>Featured ASINs (comma-separated)</label>
+            <input id="featured_asins" placeholder="B0C123ABCD,B0D456EFGH"/>
+          </div>
+        </div>
       </div>
 
-      <!-- carried through as submitted fields -->
-      <input type="hidden" id="plan" name="plan" value="">
-      <input type="hidden" id="plan_key" name="plan_key" value="">
+      <!-- Layout (Custom & Pro) -->
+      <div class="full hide" id="layWrap">
+        <label>Layout</label>
+        <select id="layout"></select>
+      </div>
+
+      <div class="full">
+        <button id="go" class="btn" type="submit">Submit onboarding</button>
+      </div>
+
+      <input type="hidden" id="plan"/>
+      <input type="hidden" id="plan_key"/>
     </form>
 
-    <div id="after" class="panel hidden">
-      <h3>Submitted.</h3>
-      <p>Your site link will look like <a id="siteLink" href="#" target="_blank" rel="noopener">https://example.bagthatthangup.com</a>.</p>
+    <div id="done" class="ok hide">
+      <b>Submitted.</b> Your site will be available at <a id="link" href="#" target="_blank" rel="noopener"></a>.
     </div>
   </div>
+</div>
 
-  <script>
-  (function(){
-    const DOMAIN = "bagthatthangup.com";
-    const qs = new URLSearchParams(location.search);
-    const plan = (qs.get("plan")||"").trim();
-    const planKey = (qs.get("plan_key")||"").trim();
+<script>
+(function(){
+  /* ===== CONFIG ===== */
+  const DOMAIN = "bagthatthangup.com";
+  const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+  const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
+  const VALID_KEYS = {
+    Basic:  "btb_7vRyKQ6mP2wTg8nC4aZJd9sLq3Xe0Uh",
+    Custom: "btc_R3mXn8qJ0vWk2pY5sHa4Lu9Td6Bf1Zo",
+    Pro:    "btp_9hNsR3eL8kV5wC2mT1qXy4dJz7aF0Gb"
+  };
 
-    // Fill pills + hidden fields
-    document.getElementById("planPill").textContent = "Plan: " + (plan||"—");
-    document.getElementById("keyPill").textContent  = planKey ? "Key: ✓" : "Key: —";
-    document.getElementById("plan").value = plan;
-    document.getElementById("plan_key").value = planKey;
+  /* ===== Elements ===== */
+  const q = id => document.getElementById(id);
+  const alertBox = q('alert'), form = q('f'), done = q('done'), link = q('link');
+  const planBadge = q('planBadge'), subWarn = q('subWarn'), hostPrev = q('hostPrev'), goBtn = q('go');
+  const fields = {
+    site_display_name:q('site_display_name'), email:q('email'), subdomain:q('subdomain'), amazon_tag:q('amazon_tag'),
+    color_primary:q('color_primary'), color_secondary:q('color_secondary'),
+    color_primary_hex:q('color_primary_hex'), color_secondary_hex:q('color_secondary_hex'),
+    extra_btn_label:q('extra_btn_label'), extra_btn_url:q('extra_btn_url'),
+    layout:q('layout'), logo_url:q('logo_url'), featured_asins:q('featured_asins')
+  };
+  const customBlock = q('customBlock');
+  const proOnly = q('proOnly');
+  const layWrap = q('layWrap');
 
-    // Show/hide the custom block
-    const customBlock = document.getElementById("customBlock");
-    if (plan === "Custom" || plan === "Pro") {
-      customBlock.style.display = "";
-    } else {
-      customBlock.style.display = "none";
+  /* ===== Utils ===== */
+  const sanitizeSub = s => String(s||'').toLowerCase().replace(/[^a-z0-9-]/g,'').replace(/^-+|-+$/g,'').slice(0,63);
+  const isEmail = s => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s||'').trim());
+  const normHex = v => { v=String(v||'').trim().replace(/^#/,''); return /^[0-9a-f]{6}$/i.test(v) ? '#'+v.toLowerCase() : ''; };
+  function showError(msg){ alertBox.textContent = msg; alertBox.classList.remove('hide'); }
+  function hideError(){ alertBox.classList.add('hide'); }
+  function setBusy(b){ goBtn.disabled=b; goBtn.textContent=b?'Submitting…':'Submit onboarding'; }
+  function updatePrev(){ const s = sanitizeSub(fields.subdomain.value); hostPrev.textContent = s ? `${s}.${DOMAIN}` : `yourbrand.${DOMAIN}`; }
+
+  // keep color picker <-> hex in sync
+  function syncColorPair(hexInput, colorInput, fallbackHex){
+    function hexToColor(v){ const n = normHex(v); if(n){ colorInput.value = n; } }
+    function colorToHex(v){ fields[hexInput.id].value = v.toLowerCase(); }
+    hexInput.addEventListener('input', e=>hexToColor(e.target.value||fallbackHex));
+    colorInput.addEventListener('input', e=>colorToHex(e.target.value));
+    // initialize
+    if (hexInput.value) hexToColor(hexInput.value);
+    else if (colorInput.value) colorToHex(colorInput.value);
+    else { hexInput.value = fallbackHex; colorInput.value = fallbackHex; }
+  }
+
+  /* ===== CSV duplicate check ===== */
+  async function checkTakenViaCSV(sub){
+    const url = SUBSCRIBERS_CSV + "&cb=" + Date.now();
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error('csv_fetch_failed');
+    const text = await res.text();
+    const rows = parseCSV(text);
+    const objs = toObjects(rows);
+    for (const r of objs){
+      const s  = String(r.subdomain||'').trim().toLowerCase();
+      const st = String(r.status||'').trim().toLowerCase();
+      if (s && s===sub && st!=='canceled' && st!=='deleted') return true;
     }
+    return false;
+  }
 
-    // Subdomain preview
-    const subEl = document.getElementById("subdomain");
-    const previewHost = document.getElementById("previewHost");
-    function updatePreview(){
-      const sub = (subEl.value||"").toLowerCase().replace(/[^a-z0-9-]/g,"");
-      previewHost.textContent = sub ? (sub + "." + DOMAIN) : "—";
-    }
-    subEl.addEventListener("input", updatePreview);
-    updatePreview();
-
-    // Color pickers keep hex inputs in sync
-    const c1 = document.getElementById("c1"), c1hex = document.getElementById("c1hex");
-    const c2 = document.getElementById("c2"), c2hex = document.getElementById("c2hex");
-    if (c1 && c1hex){
-      c1.addEventListener("input", ()=> c1hex.value = c1.value);
-      c1hex.addEventListener("input", ()=> { if(/^#?[0-9a-fA-F]{6}$/.test(c1hex.value.replace('#',''))) c1.value = c1hex.value.startsWith('#')?c1hex.value:"#"+c1hex.value;});
-      c2.addEventListener("input", ()=> c2hex.value = c2.value);
-      c2hex.addEventListener("input", ()=> { if(/^#?[0-9a-fA-F]{6}$/.test(c2hex.value.replace('#',''))) c2.value = c2hex.value.startsWith('#')?c2hex.value:"#"+c2hex.value;});
-    }
-
-    // Logo upload → preview + base64 hidden field (small + safe)
-    const fileEl = document.getElementById("logo_file");
-    const prevEl = document.getElementById("logoPreview");
-    const dataEl = document.getElementById("logo_data_url");
-    const mimeEl = document.getElementById("logo_mime");
-
-    if (fileEl){
-      fileEl.addEventListener("change", async (e)=>{
-        const f = e.target.files && e.target.files[0];
-        if(!f) return;
-        if(!/^image\//.test(f.type)){ showErr("Please choose a PNG or JPG image."); fileEl.value = ""; return; }
-        if(f.size > 2*1024*1024){ showErr("Image is larger than 2MB. Please pick a smaller file."); fileEl.value = ""; return; }
-
-        try{
-          const buf = await f.arrayBuffer();
-          const img = new Image();
-          img.onload = ()=>{
-            // resize to ~256×256 max (keep aspect)
-            const MAX = 256;
-            let w = img.width, h = img.height;
-            if (w>MAX || h>MAX){
-              const r = Math.min(MAX/w, MAX/h);
-              w = Math.round(w*r); h = Math.round(h*r);
-            }
-            const c = document.createElement("canvas");
-            c.width = w; c.height = h;
-            const cx = c.getContext("2d");
-            cx.fillStyle = "#ffffff"; cx.fillRect(0,0,w,h); // white bg for JPGs
-            cx.drawImage(img,0,0,w,h);
-            // Prefer PNG for crisp logos
-            const data = c.toDataURL("image/png");
-            dataEl.value = data;
-            mimeEl.value = "image/png";
-            prevEl.src = data;
-          };
-          img.onerror = ()=> showErr("Could not read image.");
-          img.src = URL.createObjectURL(new Blob([buf], {type: f.type}));
-        }catch(err){
-          showErr("Image processing error.");
-        }
-      });
-    }
-
-    // Submit → we keep your current endpoint logic by submitting everything as standard fields.
-    const form = document.getElementById("form");
-    form.addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      hideMsg();
-      // Minimal client validation we control here
-      if(!subEl.value){ return showErr("Please enter a site URL (subdomain)."); }
-      if(!document.getElementById("store_name").value){ return showErr("Please enter a store display name."); }
-      if(!document.getElementById("email").value){ return showErr("Please enter a contact email."); }
-
-      // Build FormData and POST to the same target your existing flow expects:
-      // We post back to *this* page so your existing serverless handler (if any)
-      // or static capture can continue to work. If your current form already had
-      // an action attribute, you can add it here. For now we'll post to location.href.
-      const fd = new FormData(form);
-
-      // Try to submit to any existing receiver on the page origin (update this if you already have an endpoint)
-      // If you already wired an endpoint, replace `submitTarget` with it. Otherwise this falls back to normal navigation.
-      const submitTarget = (form.getAttribute("action") || "/onboarding/submit");
-
-      try{
-        const res = await fetch(submitTarget, { method:"POST", body: fd });
-        // If your existing backend responds with JSON containing { ok:true, site:"subdomain" }
-        // we’ll use it; otherwise we show a generic success note and rely on your current redirect.
-        if(res.ok){
-          let site = "";
-          try { const j = await res.json(); if (j && j.site) site = j.site; } catch(_){}
-          document.getElementById("after").classList.remove("hidden");
-          document.getElementById("siteLink").textContent = (site ? `https://${site}.${DOMAIN}` : `https://${(subEl.value||"—")}.${DOMAIN}`);
-          document.getElementById("siteLink").href = (site ? `https://${site}.${DOMAIN}` : `https://${(subEl.value||"")}.${DOMAIN}`);
-          showOk("Submitted. We’ll create your site and email the link.");
-        }else{
-          showErr("Network error while submitting. Please try again.");
-        }
-      }catch(err){
-        showErr("Network error while submitting.");
+  /* ===== JSONP fallback check to GAS ===== */
+  function checkTakenViaJSONP(sub){
+    return new Promise((resolve,reject)=>{
+      const cb = 'btb_cb_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const url = `${GAS_ENDPOINT}?check=1&subdomain=${encodeURIComponent(sub)}&callback=${cb}&ts=${Date.now()}`;
+      const timeout = setTimeout(()=>{ cleanup(); reject(new Error('check_timeout')); }, 8000);
+      function cleanup(){
+        clearTimeout(timeout);
+        try{ delete window[cb]; }catch(_){}
+        if (script && script.parentNode) script.parentNode.removeChild(script);
       }
+      window[cb] = function(resp){
+        cleanup();
+        if (resp && resp.ok) return resolve(!!resp.taken || !!resp.exists);
+        reject(new Error('check_failed'));
+      };
+      script.onerror = ()=>{ cleanup(); reject(new Error('check_network')); };
+      script.src = url; document.head.appendChild(script);
     });
+  }
 
-    function showErr(msg){ const el = document.getElementById("err"); el.textContent = msg; el.style.display="block"; }
-    function showOk(msg){ const el = document.getElementById("ok"); el.textContent = msg; el.style.display="block"; }
-    function hideMsg(){ document.getElementById("err").style.display="none"; document.getElementById("ok").style.display="none"; }
+  /* ===== CSV helpers ===== */
+  function parseCSV(text){
+    const rows=[]; let row=[], cell="", inQ=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i], nx=text[i+1];
+      if(inQ){ if(ch==='"'&&nx==='"'){cell+='"';i++;} else if(ch==='"'){inQ=false;} else{cell+=ch;} }
+      else { if(ch==='"'){inQ=true;} else if(ch===','){row.push(cell);cell="";}
+             else if(ch==='\r'&&nx==='\n'){row.push(cell);rows.push(row);row=[];cell="";i++;}
+             else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell="";} else{cell+=ch;} }
+    }
+    if(cell!==""||row.length){row.push(cell);rows.push(row);}
+    return rows.filter(r=>r.length>1);
+  }
+  function toObjects(rows){
+    if(!rows.length) return [];
+    const headers = rows[0].map(h=>String(h||"").trim());
+    const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+    return rows.slice(1).map((r,ix)=>{
+      const o={ _ix: ix };
+      for(const [h,i] of Object.entries(idx)) o[h]=(r[i]||"").toString().trim();
+      return o;
+    });
+  }
+
+  /* ===== Plan & UI setup (NO plan switching here) ===== */
+  const params = new URLSearchParams(location.search);
+  const plan = params.get('plan') || '';
+  const plan_key = params.get('plan_key') || '';
+  const planNames = { Basic:'Basic', Custom:'Custom', Pro:'Pro' };
+
+  // Require a valid plan+key pair
+  (function enforcePlan(){
+    let ok=false;
+    for (const p of Object.keys(VALID_KEYS)) {
+      if (p===plan && VALID_KEYS[p]===plan_key) { ok=true; break; }
+    }
+    if (!ok) {
+      document.getElementById('f').classList.add('hide');
+      showError("Invalid or missing plan link. Please return to checkout.");
+      return;
+    }
+    planBadge.textContent = `Selected plan: ${planNames[plan]||plan}`;
+    q('plan').value = plan;
+    q('plan_key').value = plan_key;
+
+    // Show/hide sections
+    const isCustomOrPro = (plan==='Custom' || plan==='Pro');
+    const isPro = (plan==='Pro');
+    customBlock.classList.toggle('hide', !isCustomOrPro);
+    proOnly.classList.toggle('hide', !isPro);
+    layWrap.classList.toggle('hide', !isCustomOrPro);
+
+    // Layout choices
+    fields.layout.innerHTML = "";
+    if (plan==='Custom') ["list","grid"].forEach(x=>fields.layout.add(new Option(x,x)));
+    if (plan==='Pro')    ["list","grid","spotlight","magazine"].forEach(x=>fields.layout.add(new Option(x,x)));
   })();
-  </script>
+
+  // Initialize color sync
+  syncColorPair(fields.color_primary_hex, fields.color_primary, "#0ea5a6");
+  syncColorPair(fields.color_secondary_hex, fields.color_secondary, "#1e90ff");
+
+  /* Live preview + live duplicate check */
+  updatePrev();
+  let debounceTimer=null;
+  fields.subdomain.addEventListener('input', ()=>{
+    updatePrev();
+    subWarn.classList.add('hide'); subWarn.textContent='';
+    const s = sanitizeSub(fields.subdomain.value);
+    if (!s || s.length < 3) return;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async ()=>{
+      try{
+        const taken = await checkTakenViaCSV(s);
+        if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return; }
+        try{
+          const taken2 = await checkTakenViaJSONP(s);
+          if (taken2){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+        }catch(_){}
+      }catch(_){
+        try{
+          const taken = await checkTakenViaJSONP(s);
+          if (taken){ subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); }
+        }catch(_){}
+      }
+    }, 350);
+  });
+
+  /* ===== Submit ===== */
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault(); hideError(); setBusy(true);
+
+    const site_display_name = fields.site_display_name.value.trim();
+    const email = fields.email.value.trim();
+    const sub = sanitizeSub(fields.subdomain.value);
+    const amazon_tag = fields.amazon_tag.value.trim();
+
+    const color_primary = normHex(fields.color_primary_hex?.value||'');
+    const color_secondary = normHex(fields.color_secondary_hex?.value||'');
+    const layout = (fields.layout?.value||'') || (plan==='Basic' ? 'list' : '');
+    const logo_url = (fields.logo_url?.value||'').trim();
+    const featured_asins = (fields.featured_asins?.value||'').trim();
+    const extra_btn_label = (fields.extra_btn_label?.value||'').trim();
+    const extra_btn_url = (fields.extra_btn_url?.value||'').trim();
+
+    if (!site_display_name){ setBusy(false); return showError("Enter a site name."); }
+    if (!isEmail(email))   { setBusy(false); return showError("Enter a valid email."); }
+    if (!sub || sub.length<3){ setBusy(false); return showError("Enter a valid site URL (3+ chars)."); }
+    if (!amazon_tag)       { setBusy(false); return showError("Enter your Amazon Associates ID."); }
+
+    // Ensure plan-gated fields are respected (Basic ignores custom fields)
+    if (plan==='Basic'){
+      fields.color_primary_hex.value = fields.color_secondary_hex.value = '';
+      fields.extra_btn_label.value = fields.extra_btn_url.value = '';
+    }
+
+    // Availability check: CSV → JSONP
+    try{
+      const takenCSV = await checkTakenViaCSV(sub);
+      if (takenCSV){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+      try{
+        const takenJSONP = await checkTakenViaJSONP(sub);
+        if (takenJSONP){ setBusy(false); subWarn.textContent="That site URL is already taken. Try another."; subWarn.classList.remove('hide'); return showError("That site URL is already taken."); }
+      }catch(_){}
+    }catch(_){
+      // warn but continue; server will still enforce duplicate on write
+      showError("Could not verify site URL in real time. We’ll attempt to create your site.");
+    }
+
+    // Write row via GET beacon (no CORS)
+    try{
+      const qs = new URLSearchParams({
+        beacon: '1',
+        timestamp: new Date().toISOString(),
+        tenant_id: '',
+        email, site_display_name, subdomain: sub, plan,
+        amazon_tag, color_primary, color_secondary, logo_url,
+        layout, featured_asins,
+        extra_btn_label, extra_btn_url,
+        extra_page_enabled: 'false',
+        status: 'active'
+      });
+      await fetch(`${GAS_ENDPOINT}?${qs.toString()}`, { method: 'GET', mode: 'no-cors' });
+
+      form.classList.add('hide'); done.classList.remove('hide');
+      const url = `https://${sub}.${DOMAIN}`; link.href=url; link.textContent=url;
+    }catch(e){
+      showError("Network error submitting your setup. Please try again.");
+    }finally{
+      setBusy(false);
+    }
+  });
+})();
+</script>
 </body>
 </html>
