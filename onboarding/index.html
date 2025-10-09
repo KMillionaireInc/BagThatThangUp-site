@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <!-- Custom/Pro features (unchanged) -->
+        <!-- Custom/Pro features (visible only for those plans) -->
         <div class="divider"></div>
 
         <div class="row proonly">
@@ -128,7 +128,6 @@
   (function(){
     const DOMAIN = "bagthatthangup.com";
 
-    // Map secure keys -> plan names (unchanged)
     const PLAN_KEYS = {
       "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
       "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
@@ -150,15 +149,12 @@
       return;
     }
 
-    // Show selected plan
     planPill.textContent = resolvedPlan;
 
-    // Only show custom/pro controls when applicable
     if (resolvedPlan === "Custom" || resolvedPlan === "Pro"){
       proBlocks.forEach(el => el.style.display = 'grid');
     }
 
-    // Subdomain preview
     const sub = document.getElementById('sub');
     const preview = document.getElementById('preview');
     function updatePreview(){
@@ -167,7 +163,6 @@
     }
     sub.addEventListener('input', updatePreview); updatePreview();
 
-    // Sync color pickers & hex
     function wireColorPair(pickId, hexId){
       const pick = document.getElementById(pickId);
       const hex  = document.getElementById(hexId);
@@ -180,7 +175,6 @@
     wireColorPair('color_primary_pick','color_primary_hex');
     wireColorPair('color_accent_pick','color_accent_hex');
 
-    // Submit
     const form = document.getElementById('onbForm');
     const statusEl = document.getElementById('status');
     const submitBtn = document.getElementById('submitBtn');
@@ -205,7 +199,6 @@
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
 
-      // Required
       const store_name = document.getElementById('store_name').value.trim();
       const email      = document.getElementById('email').value.trim();
       const subdomain  = sub.value.trim().toLowerCase();
@@ -217,7 +210,6 @@
         return;
       }
 
-      // Payload
       const payload = {
         action:      "create_tenant",
         plan:        resolvedPlan,
@@ -247,8 +239,19 @@
 
       try {
         await tryInvokeSubmit(payload);
-        // ⬇️ ONLY NEW LINE: go to success screen with the computed domain
-        location.href = `/onboarding/success.html?d=${encodeURIComponent(payload.domain)}&s=${encodeURIComponent(payload.store_title)}`;
+
+        // *** ONLY BEHAVIOR CHANGE ***
+        // Reuse your existing success page:
+        // include both legacy and new param names so your success page
+        // can read whichever it expects.
+        const successURL =
+          `/success/?domain=${encodeURIComponent(payload.domain)}` +
+          `&store=${encodeURIComponent(payload.store_title)}` +
+          `&d=${encodeURIComponent(payload.domain)}` +
+          `&s=${encodeURIComponent(payload.store_title)}`;
+
+        location.href = successURL;
+
       } catch (err){
         console.error(err);
         errEl.style.display = 'block';
