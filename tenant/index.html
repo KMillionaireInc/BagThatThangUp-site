@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Deals — Powered by BagThat</title>
 <meta name="description" content="Daily Amazon promo codes & deals — auto-updated and tagged for your associate ID.">
-
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/favicon.png">
-
 <style>
   :root{
     --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
@@ -19,31 +17,27 @@
   a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
 
   .topbar{background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #e8eff0;font-size:12px}
-  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
   .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800}
 
-  .hero{position:relative;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
-  .hero .inner{max-width:1200px;margin:0 auto;padding:18px 16px 20px;display:grid;gap:14px;grid-template-columns:64px 1fr auto}
-  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff;display:none}
-  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr auto} .avatar{width:52px;height:52px} }
+  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3;position:relative}
+  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr;position:relative}
+  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
+  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .avatar{width:52px;height:52px} }
   .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
   .sub{margin:4px 0 8px;color:#eaf7ff}
-  .hero .tabs{display:flex;gap:10px;flex-wrap:wrap}
+  .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
   .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
   .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-  /* Plan badge — icon only (no text) */
+  /* icon-only plan badge (top-right of hero) */
   .plan-badge{
-    display:none; /* JS toggles */
-    align-self:start;
-    margin-top:6px;
-    margin-left:6px;
-    padding:6px;
-    border-radius:999px;
-    background:#ffffff18;
-    border:1px solid #ffffff55;
+    position:absolute; top:14px; right:14px;
+    width:32px; height:32px; border-radius:999px;
+    background:#ffffff; border:1px solid #e6eef7;
+    padding:4px; object-fit:contain; box-shadow:0 6px 16px rgba(11,19,32,.12);
   }
-  .plan-badge img{ width:22px; height:22px; object-fit:contain; }
+  @media (max-width:640px){ .plan-badge{ top:10px; right:10px; width:28px; height:28px; padding:3px } }
 
   .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
   .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
@@ -102,19 +96,16 @@
   <header class="hero">
     <div class="inner">
       <img id="logo" class="avatar" src="" alt="Logo" onerror="this.style.display='none'">
+      <!-- plan badge (icon only) -->
+      <img id="planBadge" class="plan-badge" alt="" style="display:none" />
       <div>
         <h1 id="headline" class="h1">Deals</h1>
         <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
-        <div class="tabs">
+        <div class="actions">
           <button class="pill primary tab" data-src="today">Today's Deals</button>
           <button class="pill tab" data-src="yesterday">Yesterday</button>
           <button class="pill tab" data-src="almost">Almost Gone</button>
         </div>
-      </div>
-
-      <!-- Icon-only plan badge (shown for Basic IF no logo uploaded) -->
-      <div id="planBadge" class="plan-badge" aria-hidden="true">
-        <img src="/tenant/assets/basic.png" alt="">
       </div>
     </div>
   </header>
@@ -155,7 +146,7 @@
   const CSV_YESTERDAY = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
   const CSV_ALMOST    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
 
-  // Subscribers CSV (public) to resolve per-tenant config (plan, logo, colors, tag, etc.)
+  // Subscribers CSV (public) to resolve per-tenant config
   const SUBSCRIBERS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
 
   /* ====== DOM ====== */
@@ -163,7 +154,7 @@
   const grid = $("#grid"), empty = $("#empty");
   const chipSite = $("#siteChip"), lastUpdated = $("#lastUpdated"), dealCount = $("#dealCount");
   const headline = $("#headline"), subhead = $("#subhead"), logo = $("#logo");
-  const planBadge = $("#planBadge");
+  const badge = $("#planBadge");
 
   /* ====== UTILS ====== */
   const esc = s => String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -216,7 +207,7 @@
       const u = new URL(url.replace(/^http:/,'https:'));
       if (u.hostname.endsWith("amazon.com")){
         u.searchParams.delete('tag');
-        if (tag) u.searchParams.set('tag', tag);
+        u.searchParams.set('tag', tag);
         return u.toString();
       }
       return url;
@@ -343,31 +334,35 @@
     const rows = await fetchCSV(SUBSCRIBERS_CSV);
     const row = rows.find(r => String(r.subdomain||'').toLowerCase()===sub && !/^canceled|deleted$/i.test(String(r.status||'')));
     if (!row) throw new Error("Site not found or inactive. If you just signed up, finish onboarding.");
-
     const siteName = row.site_display_name || sub;
     const color1 = (row.color_primary||'').trim();
     const color2 = (row.color_secondary||'').trim();
     const logoURL = (row.logo_url||'').trim();
-    const plan = (row.plan||'').trim();          // Basic / Custom / Pro
+    const plan = (row.plan||'').trim();
+    const layout = (row.layout||'').trim();
     const tag = (row.amazon_tag||'').trim();
+    const badgeURL = (row.badge_url||'').trim();
+
+    if (!tag) console.warn("No amazon_tag set for tenant:", sub);
 
     ASSOC_TAG = tag;
     headline.textContent = siteName;
     chipSite.textContent = siteName;
+    if (logoURL) { logo.src = logoURL; logo.style.display='block'; }
+    setTheme(color1, color2);
 
-    // logo: if provided, show it and hide the plan badge
-    if (logoURL) {
-      logo.src = logoURL;
-      logo.style.display = 'block';
-      planBadge.style.display = 'none';
-    } else {
-      logo.style.display = 'none';
-      // If no logo AND plan is Basic -> show small icon badge (no text)
-      if (/^basic$/i.test(plan)) planBadge.style.display = 'inline-flex';
-      else planBadge.style.display = 'none';
+    // plan badge (icon only, no text)
+    const fallbackBasic = "/tenant/assets/basic.png";
+    const badgeSrc = badgeURL || (plan.toLowerCase()==='basic' ? fallbackBasic : "");
+    if (badgeSrc){
+      badge.src = badgeSrc;
+      badge.style.display = 'block';
+    }else{
+      badge.style.display = 'none';
     }
 
-    setTheme(color1, color2);
+    // Optional: tweak layout choices by plan (kept simple here)
+    document.body.dataset.layout = layout || (plan==='Basic' ? 'rows' : 'grid');
 
     return { sub, siteName, tag };
   }
@@ -385,6 +380,7 @@
     else if (src==='almost') ALL = almost;
     else ALL = [...today, ...yest, ...almost];
 
+    // Update chips
     lastUpdated.textContent = "Last updated: " + new Date().toLocaleString();
 
     fillCategories(ALL);
@@ -394,7 +390,7 @@
   /* ====== INIT ====== */
   document.addEventListener('DOMContentLoaded', async ()=>{
     try{
-      await loadTenant();
+      const { tag } = await loadTenant();
 
       // controls
       document.getElementById("search").addEventListener('input', e=>{ QUERY=e.target.value; applyFilters(); });
