@@ -109,9 +109,9 @@
             <div class="hint">Optional. If omitted we’ll use a simple letter avatar.</div>
           </div>
           <div>
-            <label>Extra link (button)</label>
-            <input id="link_label" type="text" placeholder="e.g., Amazon Storefront">
-            <input id="link_url"   type="url"  placeholder="https://…">
+            <label>Featured link (button)</label>
+            <input id="extra_link_label" type="text" placeholder="e.g., Amazon Storefront">
+            <input id="extra_link_url"   type="url"  placeholder="https://…">
             <div class="hint">Shown as a button under your header.</div>
           </div>
         </div>
@@ -224,14 +224,18 @@
       };
 
       if (resolvedPlan === "Custom" || resolvedPlan === "Pro"){
+        const extra_label = (document.getElementById('extra_link_label')?.value || "").trim();
+        const extra_url   = (document.getElementById('extra_link_url')?.value   || "").trim();
+
         payload.colors = {
           primary: (document.getElementById('color_primary_hex')?.value || "#0ea5a6").trim(),
           accent:  (document.getElementById('color_accent_hex')?.value  || "#1e90ff").trim()
         };
-        payload.extra_link = {
-          label: (document.getElementById('link_label')?.value || "").trim(),
-          url:   (document.getElementById('link_url')?.value   || "").trim()
-        };
+
+        // Keep both the flat fields (for GAS) and the object (for any existing handler)
+        payload.extra_link_label = extra_label;
+        payload.extra_link_url   = extra_url;
+        payload.extra_link = { label: extra_label, url: extra_url };
       }
 
       submitBtn.disabled = true;
@@ -240,10 +244,6 @@
       try {
         await tryInvokeSubmit(payload);
 
-        // *** ONLY BEHAVIOR CHANGE ***
-        // Reuse your existing success page:
-        // include both legacy and new param names so your success page
-        // can read whichever it expects.
         const successURL =
           `/success/?domain=${encodeURIComponent(payload.domain)}` +
           `&store=${encodeURIComponent(payload.store_title)}` +
