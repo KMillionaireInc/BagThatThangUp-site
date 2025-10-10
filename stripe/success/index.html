@@ -1,47 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Redirecting…</title>
-  <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:40px;background:#f6f9fc;color:#0b1320}
-    .card{max-width:720px;margin:40px auto;background:#fff;border:1px solid #e8eef5;border-radius:16px;padding:24px;box-shadow:0 10px 26px rgba(2,24,43,.08)}
-    h1{margin:0 0 8px;font-size:22px}
-    p{margin:0 0 10px;color:#5a6b7a}
-    a{color:#0b72f0}
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Setup Complete · BagThat</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7fafc;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 18px 40px rgba(11,19,32,.08);padding:32px;text-align:center;max-width:420px}
+h1{margin-bottom:16px;font-size:24px;color:#0b1320}
+p{margin:0 0 14px;color:#5a6b7a}
+a.btn{display:inline-block;margin-top:20px;background:#0f915a;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700}
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Finishing up…</h1>
-    <p>Sending you to onboarding.</p>
-    <p id="fallback" style="display:none"></p>
-  </div>
-
-  <script>
-  (function () {
-    const qp = new URLSearchParams(location.search);
-    const plan = qp.get('plan') || '';
-    const planKey = qp.get('plan_key') || '';
-
-    if (!plan || !planKey) {
-      document.getElementById('fallback').style.display = 'block';
-      document.getElementById('fallback').innerHTML =
-        'Missing plan info. Please reopen your checkout link or contact support.';
-      return;
-    }
-
-    const dest = `/onboarding/?plan=${encodeURIComponent(plan)}&plan_key=${encodeURIComponent(planKey)}`;
-    // Don’t keep this page in the history:
-    location.replace(dest);
-  })();
-  </script>
-
-  <noscript>
-    <div class="card">
-      <p>JavaScript is required. Please enable it and refresh.</p>
-    </div>
-  </noscript>
+<div class="card">
+  <h1>🎉 Site Created!</h1>
+  <p id="msg"></p>
+  <a id="link" class="btn" href="#">Open My Site</a>
+</div>
+<script>
+const p=new URLSearchParams(location.search);
+const domain=p.get("domain");
+const store=p.get("store");
+if(domain){
+  document.getElementById("msg").textContent=`${store} has been added successfully.`;
+  const link=document.getElementById("link");
+  link.href=`https://${domain}`;
+  link.textContent=`Visit ${domain}`;
+}else{
+  document.getElementById("msg").textContent="Setup complete.";
+  document.getElementById("link").style.display="none";
+}
+</script>
 </body>
 </html>
