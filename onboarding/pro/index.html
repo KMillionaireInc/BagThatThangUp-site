@@ -5,21 +5,43 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Pro Plan Setup · BagThat</title>
 <style>
-:root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;--line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)}
+:root{
+  --ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;
+  --line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+}
 .wrap{max-width:960px;margin:28px auto;padding:0 16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;box-shadow:var(--shadow);padding:22px
+}
 h1{margin:0 0 12px;font-size:28px}
-.err{display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0}
-.plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
+.err{
+  display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;
+  border-radius:12px;padding:12px 14px;margin:12px 0
+}
+.plan-pill{
+  display:inline-block;background:#083663;color:#fff;border:1px solid #083663;
+  padding:8px 12px;border-radius:999px;font-weight:800
+}
 form{display:grid;gap:14px;margin-top:10px}
-.row{display:grid;gap:12px} @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+.row{display:grid;gap:12px}
+@media(min-width:720px){.row{grid-template-columns:1fr 1fr}}
 label{font-weight:800;font-size:14px}
-input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px}
+input[type="text"],input[type="email"]{
+  width:100%;padding:11px 12px;border:1px solid var(--line);
+  border-radius:12px;font-size:15px
+}
 .hint{color:var(--muted);font-size:12px}
 .flex{display:flex;gap:12px;align-items:center}
-.btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btn{
+  appearance:none;border:0;border-radius:12px;padding:12px 14px;
+  font-weight:900;cursor:pointer
+}
 .btn.primary{background:var(--ok);color:#fff}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 </style>
@@ -59,7 +81,7 @@ input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px s
       </div>
 
       <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
-        <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
+        <button id="submitBtn" class="btn primary" type="submit">Submit Onboarding</button>
         <span id="status" class="hint"></span>
       </div>
     </form>
@@ -68,7 +90,7 @@ input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px s
 
 <script>
 (function(){
-  const DOMAIN  = "bagthatthangup.com";
+  const DOMAIN = "bagthatthangup.com";
   const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
   const qp = new URLSearchParams(location.search);
@@ -82,73 +104,81 @@ input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px s
 
   const sub = document.getElementById("sub");
   const preview = document.getElementById("preview");
-  function updatePreview(){ const v=(sub.value||"").trim().toLowerCase(); preview.textContent = v? (v+"."+DOMAIN) : "—"; }
-  sub.addEventListener("input", updatePreview); updatePreview();
+  function updatePreview(){
+    const v = (sub.value || "").trim().toLowerCase();
+    preview.textContent = v ? (v + "." + DOMAIN) : "—";
+  }
+  sub.addEventListener("input", updatePreview);
+  updatePreview();
 
+  // JSONP fixed to match backend ("cb")
   function jsonp(url, params){
     return new Promise((resolve,reject)=>{
-      const cb="btJSONP_"+Math.random().toString(36).slice(2);
-      params={...(params||{}),callback:cb};
-      const q=Object.keys(params).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k])).join("&");
-      const s=document.createElement("script");
-      s.src=url+(url.includes("?")?"&":"?")+q;
-      window[cb]=d=>{resolve(d);cleanup();};
-      s.onerror=()=>{reject(new Error("JSONP error"));cleanup();};
-      function cleanup(){try{delete window[cb]}catch(_){ } s.remove();}
+      const cb = "cb";
+      params = { ...(params||{}), callback: cb };
+      const q = Object.keys(params)
+        .map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k]))
+        .join("&");
+      const s = document.createElement("script");
+      s.src = url + (url.includes("?") ? "&" : "?") + q;
+      window[cb] = d => { resolve(d); cleanup(); };
+      s.onerror = () => { reject(new Error("JSONP error")); cleanup(); };
+      function cleanup(){ try{ delete window[cb]; }catch(_){ } s.remove(); }
       document.head.appendChild(s);
     });
   }
 
-  const form=document.getElementById("onbForm");
-  const errEl=document.getElementById("err");
-  const submitBtn=document.getElementById("submitBtn");
-  const statusEl=document.getElementById("status");
+  const form = document.getElementById("onbForm");
+  const errEl = document.getElementById("err");
+  const submitBtn = document.getElementById("submitBtn");
+  const statusEl = document.getElementById("status");
 
   form.addEventListener("submit", async (e)=>{
     e.preventDefault();
-    const store_name=document.getElementById("store_name").value.trim();
-    const email=document.getElementById("email").value.trim();
-    const subdomain=sub.value.trim().toLowerCase();
-    const aaid=document.getElementById("aaid").value.trim();
+    const store_name = document.getElementById("store_name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subdomain = sub.value.trim().toLowerCase();
+    const aaid = document.getElementById("aaid").value.trim();
 
-    if(!store_name||!email||!subdomain){
-      errEl.style.display='block';
-      errEl.textContent="Please complete the required fields.";
+    if(!store_name || !email || !subdomain){
+      errEl.style.display = 'block';
+      errEl.textContent = "Please complete the required fields.";
       return;
     }
 
-    const params={
-      beacon:1, // <<< CRITICAL FIX
+    const params = {
+      beacon: 1,              // ensures backend writes row
       plan,
       email,
-      site_display_name:store_name,
+      site_display_name: store_name,
       subdomain,
-      amazon_tag:aaid,
-      color_primary:"",
-      color_secondary:"",
-      logo_url:"",
-      layout:"list",
-      featured_asins:"",
-      extra_page_enabled:"false",
-      status:"active",
-      extra_link_label:"",
-      extra_link_url:""
+      amazon_tag: aaid,
+      color_primary: "",
+      color_secondary: "",
+      logo_url: "",
+      layout: "list",
+      featured_asins: "",
+      extra_page_enabled: "false",
+      status: "active",
+      extra_link_label: "",
+      extra_link_url: ""
     };
 
-    submitBtn.disabled=true;
-    statusEl.textContent="Saving…";
-    errEl.style.display='none';
+    submitBtn.disabled = true;
+    statusEl.textContent = "Saving…";
+    errEl.style.display = 'none';
 
-    try{
-      const res=await jsonp(GAS_URL, params);
-      if(!res||res.ok!==true) throw new Error(res&&res.error?res.error:"Write failed");
-      const domain=`${subdomain}.${DOMAIN}`;
-      location.href=`/stripe/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}`;
-    }catch(err){
+    try {
+      const res = await jsonp(GAS_URL, params);
+      if(!res || res.ok !== true) throw new Error(res && res.error ? res.error : "Write failed");
+
+      const domain = `${subdomain}.${DOMAIN}`;
+      location.href = `/stripe/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}`;
+    } catch (err) {
       console.error(err);
       alert("Error saving your info.");
-      submitBtn.disabled=false;
-      statusEl.textContent="";
+      submitBtn.disabled = false;
+      statusEl.textContent = "";
     }
   });
 })();
