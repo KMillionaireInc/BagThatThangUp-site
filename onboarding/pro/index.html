@@ -1,43 +1,160 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat · Pro Onboarding</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pro Plan Setup · BagThat</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6faf9;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
-form{background:#fff;padding:30px;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.12);max-width:420px;width:100%}
-input{width:100%;padding:10px;margin:6px 0;border:1px solid #ccc;border-radius:8px}
-button{background:#0f915a;color:#fff;border:none;padding:12px;width:100%;border-radius:8px;font-weight:700}
+:root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;--line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:960px;margin:28px auto;padding:0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+h1{margin:0 0 12px;font-size:28px}
+.err{display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0}
+.plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
+form{display:grid;gap:14px;margin-top:10px}
+.row{display:grid;gap:12px} @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+label{font-weight:800;font-size:14px}
+input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px}
+.hint{color:var(--muted);font-size:12px}
+.flex{display:flex;gap:12px;align-items:center}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btn.primary{background:var(--ok);color:#fff}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 </style>
 </head>
 <body>
-<form id="proForm">
-<h2>Pro Plan Setup</h2>
-<input name="site_display_name" placeholder="Store name" required>
-<input name="email" type="email" placeholder="Contact email" required>
-<input name="subdomain" placeholder="Subdomain" required>
-<input name="amazon_tag" placeholder="Amazon Associates ID">
-<button type="submit">Submit Onboarding</button>
-</form>
+<div class="wrap">
+  <div class="card">
+    <h1>Welcome! Let’s set up your Pro site</h1>
+    <div id="err" class="err"></div>
+    <div class="flex" style="margin:6px 0 10px">
+      <span class="plan-pill">Pro</span>
+      <span class="chip">Full feature access</span>
+    </div>
+
+    <form id="onbForm" novalidate>
+      <div class="row">
+        <div>
+          <label for="store_name">Store display name</label>
+          <input id="store_name" type="text" placeholder="e.g., Elite Finds" required>
+        </div>
+        <div>
+          <label for="email">Contact email</label>
+          <input id="email" type="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="sub">Site URL (subdomain)</label>
+          <input id="sub" type="text" placeholder="e.g., elitefinds" pattern="^[a-z0-9-]+$" required>
+          <div class="hint">Your site will be: <b id="preview">—</b></div>
+        </div>
+        <div>
+          <label for="aaid">Amazon Associates ID</label>
+          <input id="aaid" type="text" placeholder="yourtag-20">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+        <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
+        <span id="status" class="hint"></span>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
-const GAS="https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-document.getElementById("proForm").addEventListener("submit",async e=>{
- e.preventDefault();
- const f=new FormData(e.target);
- const q=new URLSearchParams([...f.entries()]);
- q.append("plan","pro"); q.append("callback","cb");
- const url=GAS+"?"+q.toString();
- try{
-   const r=await fetch(url); const t=await r.text();
-   if(t.includes('"ok":true')){
-     const domain=f.get("subdomain")+".bagthatthangup.com";
-     const store=f.get("site_display_name");
-     location.href="/stripe/success/index.html?domain="+encodeURIComponent(domain)+"&store="+encodeURIComponent(store);
-   } else alert("Error saving your info.");
- }catch(_){alert("Network error. Try again.");}
-});
+(function(){
+  const DOMAIN  = "bagthatthangup.com";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+
+  // Map plan_key → readable plan name
+  const qp = new URLSearchParams(location.search);
+  const planKey = qp.get("plan_key");
+  const planMap = {
+    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "basic",
+    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "custom",
+    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "pro"
+  };
+  const plan = planMap[planKey] || "pro";
+
+  // Preview domain
+  const sub = document.getElementById("sub");
+  const preview = document.getElementById("preview");
+  function updatePreview(){ const v=(sub.value||"").trim().toLowerCase(); preview.textContent = v? (v+"."+DOMAIN) : "—"; }
+  sub.addEventListener("input", updatePreview); updatePreview();
+
+  // JSONP utility
+  function jsonp(url, params){
+    return new Promise((resolve,reject)=>{
+      const cb="btJSONP_"+Math.random().toString(36).slice(2);
+      params={...(params||{}),callback:cb};
+      const q=Object.keys(params).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k])).join("&");
+      const s=document.createElement("script");
+      s.src=url+(url.includes("?")?"&":"?")+q;
+      window[cb]=d=>{resolve(d);cleanup();};
+      s.onerror=()=>{reject(new Error("JSONP error"));cleanup();};
+      function cleanup(){try{delete window[cb]}catch(_){ } s.remove();}
+      document.head.appendChild(s);
+    });
+  }
+
+  // Handle form submission
+  const form=document.getElementById("onbForm");
+  const errEl=document.getElementById("err");
+  const submitBtn=document.getElementById("submitBtn");
+  const statusEl=document.getElementById("status");
+
+  form.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const store_name=document.getElementById("store_name").value.trim();
+    const email=document.getElementById("email").value.trim();
+    const subdomain=sub.value.trim().toLowerCase();
+    const aaid=document.getElementById("aaid").value.trim();
+
+    if(!store_name||!email||!subdomain){
+      errEl.style.display='block';
+      errEl.textContent="Please complete the required fields.";
+      return;
+    }
+
+    const params={
+      plan,
+      email,
+      site_display_name:store_name,
+      subdomain,
+      amazon_tag:aaid,
+      color_primary:"",
+      color_secondary:"",
+      logo_url:"",
+      layout:"list",
+      featured_asins:"",
+      extra_page_enabled:"false",
+      status:"active",
+      extra_link_label:"",
+      extra_link_url:""
+    };
+
+    submitBtn.disabled=true;
+    statusEl.textContent="Saving…";
+    errEl.style.display='none';
+
+    try{
+      const res=await jsonp(GAS_URL, params);
+      if(!res||res.ok!==true) throw new Error(res&&res.error?res.error:"Write failed");
+      const domain=`${subdomain}.${DOMAIN}`;
+      location.href=`/stripe/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}`;
+    }catch(err){
+      console.error(err);
+      alert("Error saving your info.");
+      submitBtn.disabled=false;
+      statusEl.textContent="";
+    }
+  });
+})();
 </script>
 </body>
 </html>
-
