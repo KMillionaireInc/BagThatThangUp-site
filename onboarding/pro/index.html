@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finish Onboarding · BagThat — Pro</title>
+<meta name="color-scheme" content="light only">
+<style>
+/* Same styles as custom for brevity */
+:root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;--line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:960px;margin:28px auto;padding:0 16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+h1{margin:0 0 12px;font-size:28px}
+.err{display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0}
+.plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
+form{display:grid;gap:14px;margin-top:10px}
+.row{display:grid;gap:12px} @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+label{font-weight:800;font-size:14px}
+input[type="text"],input[type="email"],input[type="url"],input[type="file"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px}
+.hint{color:var(--muted);font-size:12px}
+.flex{display:flex;gap:12px;align-items:center}
+.chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btn.primary{background:var(--ok);color:#fff}
+.color-pair{display:flex;gap:10px;align-items:center}
+.color-pair input[type="color"]{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;padding:0}
+.color-pair input[type="text"]{width:140px}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+  <h1>Great choice! Let’s set up your site</h1>
+  <div id="err" class="err"></div>
+  <div class="flex" style="margin:6px 0 10px">
+    <span class="plan-pill">Pro</span>
+    <span class="chip">Secure setup</span>
+  </div>
+
+  <form id="onbForm" novalidate>
+    <div class="row">
+      <div>
+        <label for="store_name">Store display name</label>
+        <input id="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
+      </div>
+      <div>
+        <label for="email">Contact email</label>
+        <input id="email" type="email" placeholder="you@example.com" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="sub">Site URL (subdomain)</label>
+        <input id="sub" type="text" placeholder="e.g., daisysdeals" pattern="^[a-z0-9-]+$" required>
+        <div class="hint">Lowercase letters, numbers, and hyphens. Your site will be: <b id="preview">—</b></div>
+      </div>
+      <div>
+        <label for="aaid">Amazon Associates ID</label>
+        <input id="aaid" type="text" placeholder="yourtag-20">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Primary color</label>
+        <div class="color-pair">
+          <input id="color_primary_pick" type="color" value="#0ea5a6">
+          <input id="color_primary_hex"  type="text"  value="#0ea5a6" placeholder="#0ea5a6">
+        </div>
+      </div>
+      <div>
+        <label>Accent color</label>
+        <div class="color-pair">
+          <input id="color_accent_pick" type="color" value="#1e90ff">
+          <input id="color_accent_hex"  type="text"  value="#1e90ff" placeholder="#1e90ff">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="logo">Logo / avatar (PNG/JPG)</label>
+        <input id="logo" type="file" accept="image/*">
+        <div class="hint">Optional. (For now this demo stores only the URL field blank.)</div>
+      </div>
+      <div>
+        <label>Featured link (button)</label>
+        <input id="link_label" type="text" placeholder="e.g., Amazon Storefront">
+        <input id="link_url"   type="url"  placeholder="https://…">
+        <div class="hint">Shown as a button under your header.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+      <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
+      <span id="status" class="hint"></span>
+    </div>
+  </form>
+</div></div>
+
+<script>
+(function(){
+  const DOMAIN  = "bagthatthangup.com";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+
+  const sub = document.getElementById('sub');
+  const preview = document.getElementById('preview');
+  function updatePreview(){ const v=(sub.value||"").trim().toLowerCase(); preview.textContent = v? (v+"."+DOMAIN) : "—"; }
+  sub.addEventListener('input', updatePreview); updatePreview();
+
+  ['primary','accent'].forEach(k=>{
+    const pick=document.getElementById(`color_${k}_pick`);
+    const hex=document.getElementById(`color_${k}_hex`);
+    pick.addEventListener('input', ()=>{ hex.value=pick.value; });
+    hex.addEventListener('input', ()=>{ if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex.value)) pick.value=hex.value; });
+  });
+
+  function jsonp(url, params){
+    return new Promise((resolve,reject)=>{
+      const cb="btJSONP_"+Math.random().toString(36).slice(2);
+      params={...(params||{}),callback:cb};
+      const q = Object.keys(params).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k])).join("&");
+      const s=document.createElement("script"); s.src=url+(url.includes("?")?"&":"?")+q;
+      window[cb]=d=>{resolve(d);cleanup();}; s.onerror=()=>{reject(new Error("JSONP error"));cleanup();};
+      function cleanup(){try{delete window[cb]}catch(_){ } s.remove();}
+      document.head.appendChild(s);
+    });
+  }
+
+  const form=document.getElementById('onbForm');
+  const errEl=document.getElementById('err');
+  const submitBtn=document.getElementById('submitBtn');
+  const statusEl=document.getElementById('status');
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const store_name=document.getElementById('store_name').value.trim();
+    const email=document.getElementById('email').value.trim();
+    const subdomain=sub.value.trim().toLowerCase();
+    const aaid=document.getElementById('aaid').value.trim();
+    const c1=document.getElementById('color_primary_hex').value.trim();
+    const c2=document.getElementById('color_accent_hex').value.trim();
+    const linkLabel=(document.getElementById('link_label').value||"").trim();
+    const linkUrl=(document.getElementById('link_url').value||"").trim();
+
+    if(!store_name||!email||!subdomain){
+      errEl.style.display='block'; errEl.textContent="Please complete the required fields."; return;
+    }
+
+    const params={
+      beacon:1,
+      email,
+      site_display_name:store_name,
+      subdomain,
+      plan:"Pro",
+      amazon_tag: aaid,
+      color_primary:c1,
+      color_secondary:c2,
+      logo_url:"",
+      layout:"list",
+      featured_asins:"",
+      extra_page_enabled:"false",
+      status:"active",
+      extra_link_label:linkLabel,
+      extra_link_url:linkUrl
+    };
+
+    submitBtn.disabled=true; statusEl.textContent="Saving…"; errEl.style.display='none';
+    try{
+      const res=await jsonp(GAS_URL, params);
+      if(!res||res.ok!==true) throw new Error(res&&res.error?res.error:"Write failed");
+      const domain=`${subdomain}.${DOMAIN}`;
+      location.href=`/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store_name)}`;
+    }catch(err){
+      console.error(err);
+      errEl.style.display='block'; errEl.textContent="Network or write error while saving to the registry. Please try again.";
+      submitBtn.disabled=false; statusEl.textContent="";
+    }
+  });
+})();
+</script>
+</body>
+</html>
