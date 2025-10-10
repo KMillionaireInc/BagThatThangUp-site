@@ -1,242 +1,29 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Finish Onboarding · BagThat</title>
-  <meta name="color-scheme" content="light only">
-  <style>
-    :root{
-      --ink:#0b1320; --muted:#5a6b7a; --bg:#f7fafc; --surface:#fff; --line:#e8eef5;
-      --brand:#0b72f0; --ok:#0f915a; --warn:#b63a2b; --shadow:0 18px 40px rgba(11,19,32,.08)
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:960px;margin:28px auto;padding:0 16px}
-
-    .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-    h1{margin:0 0 12px;font-size:28px}
-    .err{color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0;display:none}
-    .plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
-
-    form{display:grid;gap:14px;margin-top:10px}
-    .row{display:grid;gap:12px}
-    @media (min-width:720px){ .row{grid-template-columns:1fr 1fr} }
-    label{font-weight:800;font-size:14px}
-    input[type="text"],input[type="email"],input[type="url"]{
-      width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px
-    }
-    .hint{color:var(--muted);font-size:12px}
-    .flex{display:flex;gap:12px;align-items:center}
-    .chip{display:inline-block;padding:4px 8px;border:1px solid #d9e7ff;background:#eef6ff;border-radius:999px;font-weight:800;color:#083663}
-    .btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
-    .btn.primary{background:var(--ok);color:#fff}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-
-    .color-pair{display:flex;gap:10px;align-items:center}
-    .color-pair input[type="color"]{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;padding:0}
-    .color-pair input[type="text"]{width:140px}
-
-    .divider{height:1px;background:var(--line);margin:6px 0}
-    .proonly{display:none}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redirecting to onboarding…</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7fafc;margin:0;display:flex;justify-content:center;align-items:center;height:100vh;color:#0b1320}
+.card{background:#fff;padding:32px;border-radius:16px;box-shadow:0 18px 40px rgba(11,19,32,.08);text-align:center;max-width:420px}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Great choice! Let’s set up your site</h1>
-
-      <div id="err" class="err"></div>
-
-      <div class="flex" style="margin:6px 0 10px">
-        <span id="planPill" class="plan-pill">—</span>
-        <span class="chip">Secure setup</span>
-      </div>
-
-      <form id="onbForm" novalidate>
-        <div class="row">
-          <div>
-            <label for="store_name">Store display name</label>
-            <input id="store_name" type="text" placeholder="e.g., Daisy’s Deals" required>
-          </div>
-          <div>
-            <label for="email">Contact email</label>
-            <input id="email" type="email" placeholder="you@example.com" required>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="sub">Site URL (subdomain)</label>
-            <input id="sub" type="text" placeholder="e.g., daisysdeals" pattern="^[a-z0-9-]+$" required>
-            <div class="hint">Lowercase letters, numbers, and hyphens. Your site will be: <b id="preview">—</b></div>
-          </div>
-          <div>
-            <label for="aaid">Amazon Associates ID</label>
-            <input id="aaid" type="text" placeholder="yourtag-20">
-          </div>
-        </div>
-
-        <!-- Custom/Pro additions (only visible for those plans) -->
-        <div class="divider"></div>
-
-        <div class="row proonly">
-          <div>
-            <label>Primary color</label>
-            <div class="color-pair">
-              <input id="color_primary_pick" type="color" value="#0ea5a6">
-              <input id="color_primary_hex"  type="text"  value="#0ea5a6" placeholder="#0ea5a6">
-            </div>
-          </div>
-          <div>
-            <label>Accent color</label>
-            <div class="color-pair">
-              <input id="color_accent_pick" type="color" value="#1e90ff">
-              <input id="color_accent_hex"  type="text"  value="#1e90ff" placeholder="#1e90ff">
-            </div>
-          </div>
-        </div>
-
-        <div class="row proonly">
-          <div>
-            <label for="logo">Logo / avatar (PNG/JPG)</label>
-            <input id="logo" type="file" accept="image/*">
-            <div class="hint">Optional. If omitted we’ll use a simple letter avatar.</div>
-          </div>
-          <div>
-            <label>Featured link (button)</label>
-            <input id="link_label" type="text" placeholder="e.g., Amazon Storefront">
-            <input id="link_url"   type="url"  placeholder="https://…">
-            <div class="hint">Shown as a button under your header.</div>
-          </div>
-        </div>
-
-        <div class="flex" style="margin-top:6px">
-          <button id="submitBtn" class="btn primary" type="submit">Submit onboarding</button>
-          <span id="status" class="hint"></span>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-  (function(){
-    const DOMAIN = "bagthatthangup.com";
-    const PLAN_KEYS = {
-      "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "Basic",
-      "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "Custom",
-      "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "Pro"
-    };
-
-    const qs = new URLSearchParams(location.search);
-    const planKey      = qs.get("plan_key") || "";
-    const resolvedPlan = PLAN_KEYS[planKey];
-
-    const errEl    = document.getElementById('err');
-    const planPill = document.getElementById('planPill');
-    const proOnly  = document.querySelectorAll('.proonly');
-
-    if (!resolvedPlan){
-      errEl.style.display='block';
-      errEl.textContent="Invalid or missing plan. Please return to the pricing page and start again.";
-      document.getElementById('onbForm').style.display='none';
-      return;
-    }
-
-    planPill.textContent = resolvedPlan;
-    if (resolvedPlan === "Custom" || resolvedPlan === "Pro"){
-      proOnly.forEach(el => el.style.display = 'grid');
-    }
-
-    const sub = document.getElementById('sub');
-    const preview = document.getElementById('preview');
-    function updatePreview(){
-      const v = (sub.value||"").trim().toLowerCase();
-      preview.textContent = v ? `${v}.${DOMAIN}` : "—";
-    }
-    sub.addEventListener('input', updatePreview); updatePreview();
-
-    // keep pickers and hex fields in sync (when visible)
-    function linkColorPair(pickId, hexId){
-      const pick = document.getElementById(pickId);
-      const hex  = document.getElementById(hexId);
-      if (!pick || !hex) return;
-      pick.addEventListener('input', ()=>{ hex.value = pick.value; });
-      hex.addEventListener('input', ()=>{
-        if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex.value)) pick.value = hex.value;
-      });
-    }
-    linkColorPair('color_primary_pick','color_primary_hex');
-    linkColorPair('color_accent_pick','color_accent_hex');
-
-    const form = document.getElementById('onbForm');
-    const statusEl = document.getElementById('status');
-    const submitBtn = document.getElementById('submitBtn');
-
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-
-      const store_name = document.getElementById('store_name').value.trim();
-      const email      = document.getElementById('email').value.trim();
-      const subdomain  = (document.getElementById('sub').value||"").trim().toLowerCase();
-      const aaid       = document.getElementById('aaid').value.trim();
-
-      if (!store_name || !email || !subdomain){
-        errEl.style.display='block';
-        errEl.textContent="Please complete the required fields.";
-        return;
-      }
-
-      // EXACTLY what your GAS expects (matches your current GAS columns)
-      const params = {
-        beacon:              "1",
-        email:               email,
-        site_display_name:   store_name,
-        subdomain:           subdomain,
-        plan:                resolvedPlan,
-        amazon_tag:          aaid,
-        color_primary:       (document.getElementById('color_primary_hex')?.value || "").trim(),
-        color_secondary:     (document.getElementById('color_accent_hex')?.value  || "").trim(),
-        logo_url:            "",               // upload not wired here
-        layout:              "list",
-        featured_asins:      "",
-        extra_page_enabled:  "FALSE",
-        status:              "active",
-        extra_link_label:    (document.getElementById('link_label')?.value || "").trim(),
-        extra_link_url:      (document.getElementById('link_url')?.value   || "").trim()
-      };
-
-      submitBtn.disabled = true;
-      statusEl.textContent = "Saving…";
-
-      try {
-        // Use the SAME submitter as Basic (no link changes)
-        if (typeof window.handleSubmit === "function") {
-          await window.handleSubmit(params);
-        } else {
-          const res = await fetch("/onboarding/submit", {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body: JSON.stringify(params)
-          });
-          if (!res.ok) throw new Error("HTTP "+res.status);
-          await res.json();
-        }
-
-        // Success: send to your existing success page with both param names
-        const domain = `${subdomain}.${DOMAIN}`;
-        const url = `/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store_name)}`;
-        location.href = url;
-
-      } catch (err){
-        console.error(err);
-        errEl.style.display='block';
-        errEl.textContent="Network or write error while saving to the registry. Please try again.";
-        submitBtn.disabled = false;
-        statusEl.textContent = "";
-      }
-    });
-  })();
-  </script>
+<div class="card">
+  <h2>Preparing your setup…</h2>
+  <p>Please wait.</p>
+</div>
+<script>
+(function(){
+  const qp=new URLSearchParams(location.search);
+  const key=(qp.get('plan_key')||'').toLowerCase();
+  let dest='/pricing/';
+  if(key.startsWith('btb_')) dest='/onboarding/basic/';
+  else if(key.startsWith('btc_')) dest='/onboarding/custom/';
+  else if(key.startsWith('btp_')) dest='/onboarding/pro/';
+  location.replace(dest);
+})();
+</script>
 </body>
 </html>
