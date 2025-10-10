@@ -30,8 +30,11 @@ document.getElementById("basicForm").addEventListener("submit",async e=>{
  const url=GAS+"?"+q.toString();
  try{
    const r=await fetch(url); const t=await r.text();
-   if(t.includes('"ok":true')) location.href="/stripe/success/index.html?plan=basic&sub="+f.get("subdomain");
-   else alert("Error saving your info.");
+   if(t.includes('"ok":true')){
+     const domain=f.get("subdomain")+".bagthatthangup.com";
+     const store=f.get("site_display_name");
+     location.href="/stripe/success/index.html?domain="+encodeURIComponent(domain)+"&store="+encodeURIComponent(store);
+   } else alert("Error saving your info.");
  }catch(_){alert("Network error. Try again.");}
 });
 </script>
