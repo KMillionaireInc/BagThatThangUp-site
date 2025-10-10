@@ -7,14 +7,14 @@
 <meta name="color-scheme" content="light only">
 <style>
 :root{--ink:#0b1320;--muted:#5a6b7a;--bg:#f7fafc;--surface:#fff;--line:#e8eef5;--ok:#0f915a;--shadow:0 18px 40px rgba(11,19,32,.08)}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 .wrap{max-width:960px;margin:28px auto;padding:0 16px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
 h1{margin:0 0 12px;font-size:28px}
 .err{display:none;color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;border-radius:12px;padding:12px 14px;margin:12px 0}
 .plan-pill{display:inline-block;background:#083663;color:#fff;border:1px solid #083663;padding:8px 12px;border-radius:999px;font-weight:800}
 form{display:grid;gap:14px;margin-top:10px}
-.row{display:grid;gap:12px} @media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
+.row{display:grid;gap:12px}@media (min-width:720px){.row{grid-template-columns:1fr 1fr}}
 label{font-weight:800;font-size:14px}
 input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px}
 .hint{color:var(--muted);font-size:12px}
@@ -72,35 +72,40 @@ input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px s
 
   const sub = document.getElementById('sub');
   const preview = document.getElementById('preview');
-  function updatePreview(){ const v=(sub.value||"").trim().toLowerCase(); preview.textContent = v? (v+"."+DOMAIN) : "—"; }
-  sub.addEventListener('input', updatePreview); updatePreview();
+  sub.addEventListener('input', ()=> {
+    const v=(sub.value||"").trim().toLowerCase();
+    preview.textContent = v ? (v+"."+DOMAIN) : "—";
+  });
 
-  function jsonp(url, params){
-    return new Promise((resolve,reject)=>{
-      const cb="btJSONP_"+Math.random().toString(36).slice(2);
-      params={...(params||{}),callback:cb};
-      const q = Object.keys(params).map(k=>encodeURIComponent(k)+"="+encodeURIComponent(params[k])).join("&");
-      const s=document.createElement("script"); s.src=url+(url.includes("?")?"&":"?")+q;
-      window[cb]=d=>{resolve(d);cleanup();}; s.onerror=()=>{reject(new Error("JSONP error"));cleanup();};
-      function cleanup(){try{delete window[cb]}catch(_){ } s.remove();}
-      document.head.appendChild(s);
+  async function jsonpRequest(url, params){
+    return new Promise((resolve, reject)=>{
+      const cbName = "btCB_" + Math.random().toString(36).slice(2);
+      params = {...params, callback: cbName};
+      const q = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join("&");
+      const full = url + (url.includes("?")?"&":"?") + q;
+      const script = document.createElement("script");
+      script.src = full;
+      script.onerror = ()=>{ reject(new Error("Network or CORS error")); cleanup(); };
+      function cleanup(){ try{delete window[cbName];}catch(_){ } if(script.parentNode) script.remove(); }
+      window[cbName] = data=>{ resolve(data); cleanup(); };
+      document.head.appendChild(script);
     });
   }
 
-  const form=document.getElementById('onbForm');
-  const errEl=document.getElementById('err');
-  const submitBtn=document.getElementById('submitBtn');
-  const statusEl=document.getElementById('status');
-
-  form.addEventListener('submit', async (e)=>{
+  document.getElementById('onbForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     const store_name=document.getElementById('store_name').value.trim();
     const email=document.getElementById('email').value.trim();
-    const subdomain=sub.value.trim().toLowerCase();
+    const subdomain=document.getElementById('sub').value.trim().toLowerCase();
     const aaid=document.getElementById('aaid').value.trim();
+    const errEl=document.getElementById('err');
+    const statusEl=document.getElementById('status');
+    const submitBtn=document.getElementById('submitBtn');
 
     if(!store_name||!email||!subdomain){
-      errEl.style.display='block'; errEl.textContent="Please complete the required fields."; return;
+      errEl.style.display='block';
+      errEl.textContent="Please complete all required fields.";
+      return;
     }
 
     const params={
@@ -121,16 +126,21 @@ input[type="text"],input[type="email"]{width:100%;padding:11px 12px;border:1px s
       extra_link_url:""
     };
 
-    submitBtn.disabled=true; statusEl.textContent="Saving…"; errEl.style.display='none';
+    submitBtn.disabled=true;
+    statusEl.textContent="Saving...";
+    errEl.style.display='none';
+
     try{
-      const res=await jsonp(GAS_URL, params);
+      const res=await jsonpRequest(GAS_URL,params);
       if(!res||res.ok!==true) throw new Error(res&&res.error?res.error:"Write failed");
       const domain=`${subdomain}.${DOMAIN}`;
-      location.href=`/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}&d=${encodeURIComponent(domain)}&s=${encodeURIComponent(store_name)}`;
+      location.href=`/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store_name)}`;
     }catch(err){
       console.error(err);
-      errEl.style.display='block'; errEl.textContent="Network or write error while saving to the registry. Please try again.";
-      submitBtn.disabled=false; statusEl.textContent="";
+      errEl.style.display='block';
+      errEl.textContent="Network or write error while saving to the registry. Please try again.";
+      submitBtn.disabled=false;
+      statusEl.textContent="";
     }
   });
 })();
