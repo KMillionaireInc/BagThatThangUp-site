@@ -6,7 +6,8 @@
 
     { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
 
-    { "source": "/(.*)", "destination": "/tenant/index.html" }
+    { "has": [{ "type": "host", "value": "*.*.bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
+
+    { "source": "/tenant/(.*)", "destination": "/tenant/index.html" }
   ]
 }
-
