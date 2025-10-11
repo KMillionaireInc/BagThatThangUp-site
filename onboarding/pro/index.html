@@ -3,38 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Custom Plan Setup · BagThat</title>
+<title>Pro Plan Setup · BagThat</title>
 <style>
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:#f7faf9;margin:0;
-  display:flex;justify-content:center;align-items:center;
-  height:100vh
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f7fafc;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #0b1320;
 }
-.card{
-  background:#fff;border:1px solid #e8eef5;border-radius:16px;
-  box-shadow:0 10px 26px rgba(2,24,43,.08);
-  padding:32px;text-align:left;max-width:460px;width:90%
+.card {
+  background: #fff;
+  border: 1px solid #e8eef5;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(11,19,32,.08);
+  padding: 32px;
+  text-align: left;
+  max-width: 460px;
+  width: 90%;
 }
-h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
-label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
-input,select{
-  width:100%;padding:10px 12px;border-radius:10px;
-  border:1px solid #cdd8e1;margin-top:6px;font-size:15px
+h1 {margin-bottom: 16px; font-size: 24px; text-align: center;}
+p {margin: 0 0 14px; color: #5a6b7a;}
+label {display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
+input,select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #cdd8e1;
+  margin-top: 6px;
+  font-size: 15px;
 }
-button{
-  width:100%;margin-top:24px;background:#0f915a;color:#fff;
-  padding:12px 18px;border-radius:10px;border:0;font-weight:700;cursor:pointer
+button {
+  background: #0f915a;
+  color: #fff;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
 }
-button:hover{background:#0c6e45}
-.color-row{display:flex;gap:10px}
-.note{font-size:13px;color:#64727f;margin-top:6px}
+button:disabled {opacity: .6; cursor: not-allowed;}
+.note {font-size: 13px; color: #64727f; margin-top: 6px;}
+.color-row {display: flex; gap: 10px;}
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>Custom Plan Setup</h1>
-  <form id="customForm">
+  <h1>Pro Plan Setup</h1>
+  <form id="proForm">
     <label>Store name
       <input name="site_display_name" required>
     </label>
@@ -43,11 +63,12 @@ button:hover{background:#0c6e45}
     </label>
     <label>Subdomain (no spaces)
       <input name="subdomain" pattern="[a-z0-9-]+" required>
-      <div class="note">Example: mystore → mystore.bagthatthangup.com</div>
+      <div class="note">Example: mybrand → mybrand.bagthatthangup.com</div>
     </label>
     <label>Amazon Associates ID
       <input name="amazon_tag" required>
     </label>
+
     <label>Logo URL
       <input type="url" name="logo_url" placeholder="https://...">
       <div class="note">Upload your logo (e.g. Imgur) and paste the link here.</div>
@@ -62,10 +83,10 @@ button:hover{background:#0c6e45}
       </label>
     </div>
 
-    <label>Extra Button Label (optional)
-      <input name="extra_button_label" placeholder="Follow Me on Amazon">
+    <label>Featured Button Label
+      <input name="extra_button_label" placeholder="Shop My Amazon Storefront">
     </label>
-    <label>Extra Button URL
+    <label>Featured Button URL
       <input type="url" name="extra_button_url" placeholder="https://www.amazon.com/shop/...">
     </label>
 
@@ -76,7 +97,7 @@ button:hover{background:#0c6e45}
       </select>
     </label>
 
-    <input type="hidden" name="plan" value="custom">
+    <input type="hidden" name="plan" value="pro">
     <input type="hidden" name="status" value="active">
 
     <button type="submit">Submit Onboarding</button>
@@ -86,7 +107,7 @@ button:hover{background:#0c6e45}
 <script>
 const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-document.getElementById("customForm").addEventListener("submit", async e => {
+document.getElementById("proForm").addEventListener("submit", async e => {
   e.preventDefault();
   const form = e.target;
   const btn = form.querySelector("button");
@@ -103,9 +124,8 @@ document.getElementById("customForm").addEventListener("submit", async e => {
   }
   f.set("subdomain", sub);
 
-  // Build query string exactly like Basic (GET style)
   const q = new URLSearchParams([...f.entries()]);
-  q.append("plan", "custom");
+  q.append("plan", "pro");
   q.append("callback", "cb");
 
   const url = GAS + "?" + q.toString();
@@ -118,7 +138,7 @@ document.getElementById("customForm").addEventListener("submit", async e => {
       const store = f.get("site_display_name");
       const logo = f.get("logo_url") || "";
       const colorPrimary = f.get("color_primary") || "#0f915a";
-      location.href = `/stripe/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Custom&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(colorPrimary)}`;
+      location.href = `/stripe/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Pro&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(colorPrimary)}`;
     } else {
       alert("Error saving your info. Please try again.");
       btn.disabled = false;
