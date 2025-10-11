@@ -128,14 +128,32 @@
     const sub=location.hostname.split(".")[0].toLowerCase();
     const rows=await getCSV(SUBSCRIBERS);
     const me=rows.find(r=>r.subdomain?.toLowerCase()===sub);
+    const logoEl=document.getElementById("logo");
+    const siteEl=document.getElementById("siteName");
+
     if(me){
-      document.getElementById("siteName").textContent=me.site_display_name||sub;
+      siteEl.textContent=me.site_display_name||sub;
       if(me.color_primary)document.documentElement.style.setProperty("--brand",me.color_primary);
       if(me.color_secondary)document.documentElement.style.setProperty("--accent",me.color_secondary);
-      if(me.logo_url)document.getElementById("logo").src=me.logo_url;
+
+      const plan=(me.plan||"").toLowerCase();
+      const hasLogo=me.logo_url&&me.logo_url.trim()!=="";
+      if(hasLogo){
+        logoEl.src=me.logo_url;
+      }else if(plan==="basic"){
+        logoEl.src="/tenant/assets/basic.png";
+      }else if(plan==="custom"){
+        logoEl.src="/tenant/assets/custom.png";
+      }else if(plan==="pro"){
+        logoEl.src="/tenant/assets/custompro.png";
+      }else{
+        logoEl.src="https://via.placeholder.com/64x64.png?text=BT";
+      }
+
       return me.amazon_tag||"";
     } else {
-      document.getElementById("siteName").textContent="Deals";
+      siteEl.textContent="Deals";
+      logoEl.src="/tenant/assets/basic.png";
       return "";
     }
   }
