@@ -5,12 +5,46 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Custom Plan Setup · BagThat</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7faf9;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
-.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.08);padding:32px;text-align:left;max-width:440px;width:90%}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:#f7faf9;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh
+}
+.card{
+  background:#fff;
+  border:1px solid #e8eef5;
+  border-radius:16px;
+  box-shadow:0 10px 26px rgba(2,24,43,.08);
+  padding:32px;
+  text-align:left;
+  max-width:460px;
+  width:90%
+}
 h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
 label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
-input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cdd8e1;margin-top:6px;font-size:15px}
-button{width:100%;margin-top:24px;background:#0f915a;color:#fff;padding:12px 18px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #cdd8e1;
+  margin-top:6px;
+  font-size:15px
+}
+button{
+  width:100%;
+  margin-top:24px;
+  background:#0f915a;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:10px;
+  border:0;
+  font-weight:700;
+  cursor:pointer
+}
 button:hover{background:#0c6e45}
 .color-row{display:flex;gap:10px}
 .note{font-size:13px;color:#64727f;margin-top:6px}
@@ -19,7 +53,7 @@ button:hover{background:#0c6e45}
 <body>
 <div class="card">
   <h1>Custom Plan Setup</h1>
-  <form id="form">
+  <form id="customForm">
     <label>Store name
       <input name="site_display_name" required>
     </label>
@@ -36,7 +70,7 @@ button:hover{background:#0c6e45}
 
     <label>Logo URL
       <input type="url" name="logo_url" placeholder="https://...">
-      <div class="note">Upload your logo somewhere (e.g., Imgur) and paste the link here.</div>
+      <div class="note">Upload your logo (e.g. Imgur) and paste the link here.</div>
     </label>
 
     <div class="color-row">
@@ -62,7 +96,7 @@ button:hover{background:#0c6e45}
       </select>
     </label>
 
-    <input type="hidden" name="plan" value="Custom">
+    <input type="hidden" name="plan" value="custom">
     <input type="hidden" name="status" value="active">
 
     <button type="submit">Submit Onboarding</button>
@@ -70,25 +104,46 @@ button:hover{background:#0c6e45}
 </div>
 
 <script>
-const SHEET_URL="https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
+const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-document.getElementById("form").addEventListener("submit", async e=>{
+document.getElementById("customForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const btn=e.target.querySelector("button");
-  btn.disabled=true;btn.textContent="Submitting...";
-  const data=Object.fromEntries(new FormData(e.target).entries());
-  data.timestamp=new Date().toISOString();
-  const res=await fetch(SHEET_URL,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
-  });
-  const json=await res.json();
-  if(json.result==="success"){
-    window.location.href=`/stripe/success/index.html?domain=${data.subdomain}.bagthatthangup.com&store=${encodeURIComponent(data.site_display_name)}`;
-  }else{
-    alert("Something went wrong. Please try again.");
-    btn.disabled=false;btn.textContent="Submit Onboarding";
+  const form = e.target;
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+
+  const f = new FormData(form);
+  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (!sub) {
+    alert("Please enter a valid subdomain (letters/numbers only).");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+    return;
+  }
+  f.set("subdomain", sub);
+
+  const q = new URLSearchParams([...f.entries()]);
+  q.append("callback", "cb");
+
+  const url = GAS + "?" + q.toString();
+
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    if (t.includes('"ok":true')) {
+      const domain = sub + ".bagthatthangup.com";
+      const store = f.get("site_display_name");
+      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=custom`;
+    } else {
+      alert("Error saving your info. Please try again.");
+      btn.disabled = false;
+      btn.textContent = "Submit Onboarding";
+    }
+  } catch (err) {
+    alert("Network error. Please check your connection and try again.");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
   }
 });
 </script>
