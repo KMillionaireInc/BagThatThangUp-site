@@ -11,36 +11,10 @@
     },
 
     {
-      "has": [
-        { "type": "host", "value": ":tenant.bagthatthangup.com" },
-        { "type": "query", "key": "plan", "value": "basic" }
-      ],
-      "source": "/",
-      "destination": "/tenant/basic/index.html"
-    },
-    {
-      "has": [
-        { "type": "host", "value": ":tenant.bagthatthangup.com" },
-        { "type": "query", "key": "plan", "value": "custom" }
-      ],
-      "source": "/",
-      "destination": "/tenant/custom/index.html"
-    },
-    {
-      "has": [
-        { "type": "host", "value": ":tenant.bagthatthangup.com" },
-        { "type": "query", "key": "plan", "value": "pro" }
-      ],
-      "source": "/",
-      "destination": "/tenant/pro/index.html"
-    },
-
-    {
       "has": [{ "type": "host", "value": ":tenant.bagthatthangup.com" }],
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/tenant/basic/index.html"
-    },
-
-    { "source": "/(.*)", "destination": "/tenant/index.html" }
+    }
   ]
 }
+
