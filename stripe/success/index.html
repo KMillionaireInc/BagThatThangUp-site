@@ -1,34 +1,95 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Setup Complete · BagThat</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7fafc;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
-.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 18px 40px rgba(11,19,32,.08);padding:32px;text-align:center;max-width:420px}
-h1{margin-bottom:16px;font-size:24px;color:#0b1320}
-p{margin:0 0 14px;color:#5a6b7a}
-a.btn{display:inline-block;margin-top:20px;background:#0f915a;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700}
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #f7fafc;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #0b1320;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #e8eef5;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(11,19,32,.08);
+    padding: 32px;
+    text-align: center;
+    max-width: 440px;
+    width: 90%;
+  }
+  h1 {
+    margin-bottom: 12px;
+    font-size: 26px;
+    color: #0b1320;
+  }
+  p {
+    margin: 0 0 10px;
+    color: #5a6b7a;
+  }
+  .plan {
+    font-weight: 700;
+    color: #0f915a;
+    margin-bottom: 10px;
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 18px;
+    background: #0f915a;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .secondary {
+    display: inline-block;
+    margin-top: 12px;
+    background: #e8eef5;
+    color: #0b1320;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>🎉 Site Created!</h1>
+  <h1>🎉 Setup Complete!</h1>
   <p id="msg"></p>
+  <p id="plan" class="plan"></p>
   <a id="link" class="btn" href="#">Open My Site</a>
+  <br>
+  <a class="secondary" href="/pricing/">Back to Plans</a>
 </div>
+
 <script>
-const p=new URLSearchParams(location.search);
-const domain=p.get("domain");
-const store=p.get("store");
-if(domain){
-  document.getElementById("msg").textContent=`${store} has been added successfully.`;
-  const link=document.getElementById("link");
-  link.href=`https://${domain}`;
-  link.textContent=`Visit ${domain}`;
-}else{
-  document.getElementById("msg").textContent="Setup complete.";
-  document.getElementById("link").style.display="none";
+const p = new URLSearchParams(location.search);
+const domain = p.get("domain");
+const store = p.get("store") || "Your new store";
+const plan = (p.get("plan") || "").toUpperCase();
+
+const msg = document.getElementById("msg");
+const planEl = document.getElementById("plan");
+const link = document.getElementById("link");
+
+if (domain) {
+  msg.textContent = `${store} has been created successfully.`;
+  planEl.textContent = plan ? `Plan: ${plan}` : "";
+  link.href = `https://${domain}`;
+  link.textContent = `Visit ${domain}`;
+} else {
+  msg.textContent = "Setup complete! You can now access your site.";
+  link.href = "/";
+  link.textContent = "Return Home";
 }
 </script>
 </body>
