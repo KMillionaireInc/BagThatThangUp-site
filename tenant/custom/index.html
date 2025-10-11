@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deals — Powered by BagThat</title>
-<meta name="description" content="Daily Amazon promo codes & deals — auto-updated and tagged for your associate ID.">
+<title id="titleTag">Daily Deals</title>
+<meta name="description" content="Daily Amazon promo codes & deals — auto-updated for your store.">
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/favicon.png">
 <style>
@@ -65,9 +65,9 @@
   .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
   .empty.show{display:block}
   .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
-  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px}
+  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
+  footer small{color:#9aa6b4}
 
-  /* Featured link button under header */
   .feature-bar{max-width:1200px;margin:8px auto 0;padding:0 16px;display:none}
   .feature-bar a{display:inline-block;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid #cfeeee;font-weight:900}
 </style>
@@ -120,36 +120,37 @@
     <div id="empty" class="empty">No items match your search/filter.</div>
   </main>
 
-  <footer class="wrap"><p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Prices may change.</p></footer>
+  <footer class="wrap">
+    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Prices may change.</p>
+    <small>Site hosted on BagThat platform</small>
+  </footer>
 
-  <script>
-  (function(){
-    // Title from subdomain
-    const host = location.hostname.split(".")[0] || "Deals";
-    const title = host.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase());
-    document.getElementById("headline").textContent = title;
-    document.getElementById("siteChip").textContent = title;
+<script>
+(function(){
+  const host = location.hostname.split(".")[0] || "Deals";
+  const title = host.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase());
+  document.getElementById("headline").textContent = title;
+  document.getElementById("siteChip").textContent = title;
+  document.getElementById("titleTag").textContent = `${title} Deals`;
 
-    // Optional config injection (colors/logo/featured link).
-    // If you later inject window.__BT from your registry, this will apply.
-    const C = window.__BT || {};
-    if (C.colors && C.colors.primary && C.colors.accent){
-      document.documentElement.style.setProperty("--brand", C.colors.primary);
-      document.documentElement.style.setProperty("--accent", C.colors.accent);
-    }
-    if (C.logo_url) {
-      const lg = document.getElementById("logo");
-      lg.src = C.logo_url;
-      lg.style.display = "block";
-    }
-    if (C.extra_link && C.extra_link.label && C.extra_link.url){
-      const bar = document.getElementById("featureBar");
-      const a = document.getElementById("featureLink");
-      a.textContent = C.extra_link.label; a.href = C.extra_link.url;
-      bar.style.display = "block";
-    }
-  })();
-  </script>
-  <script src="/tenant/assets/deals.js"></script>
+  // optional injected config (colors, logo, feature link)
+  const C = window.__BT || {};
+  if (C.colors?.primary) document.documentElement.style.setProperty("--brand", C.colors.primary);
+  if (C.colors?.accent)  document.documentElement.style.setProperty("--accent", C.colors.accent);
+  if (C.logo_url) {
+    const lg = document.getElementById("logo");
+    lg.src = C.logo_url;
+    lg.style.display = "block";
+  }
+  if (C.extra_link?.label && C.extra_link?.url) {
+    const bar = document.getElementById("featureBar");
+    const a = document.getElementById("featureLink");
+    a.textContent = C.extra_link.label;
+    a.href = C.extra_link.url;
+    bar.style.display = "block";
+  }
+})();
+</script>
+<script src="/tenant/assets/deals.js"></script>
 </body>
 </html>
