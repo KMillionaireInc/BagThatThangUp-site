@@ -13,8 +13,7 @@
     {
       "has": [{ "type": "host", "value": ":tenant.bagthatthangup.com" }],
       "source": "/(.*)",
-      "destination": "/tenant/basic/index.html"
+      "destination": "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec"
     }
   ]
 }
-
