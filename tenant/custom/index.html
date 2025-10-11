@@ -51,11 +51,15 @@ img{display:block;max-width:100%}
   border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
 .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;
   border:1px solid #cfeeee;font-weight:800;cursor:pointer}
+.layout-toggle{display:flex;gap:8px;margin-left:auto}
+.toggle-btn{border:1px solid #cfeeee;background:#fff;padding:8px 12px;
+  border-radius:8px;font-weight:800;cursor:pointer}
+.toggle-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 
 .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 .grid{display:grid;gap:16px;margin:16px 0 36px}
-@media (min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
-@media (max-width:599px){.grid{grid-template-columns:1fr}}
+.grid-view{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.list-view{grid-template-columns:1fr}
 
 .card{background:var(--surface);border:1px solid var(--line);
   border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
@@ -97,7 +101,7 @@ footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px
   <img id="logo" alt="Logo">
   <div>
     <h1 id="headline" class="h1">Deals</h1>
-    <p class="sub" id="subhead">Curated promo codes, updated daily.</p>
+    <p class="sub" id="subhead">Curated promo codes, refreshed daily.</p>
     <div class="actions">
       <button class="pill primary tab" data-src="today">Today's Deals</button>
       <button class="pill tab" data-src="yesterday">Yesterday</button>
@@ -110,22 +114,24 @@ footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px
 <div class="toolbar">
   <div class="wrap">
     <div class="toolbar-row">
-      <div class="search">
-        <input id="search" type="search" placeholder="Search deals…">
-      </div>
+      <div class="search"><input id="search" type="search" placeholder="Search deals…"></div>
       <select id="category" class="select"><option value="__all__">All categories</option></select>
       <select id="sort" class="select">
         <option value="newest" selected>Newest</option>
         <option value="pricelow">Price: Low → High</option>
         <option value="pricehigh">Price: High → Low</option>
       </select>
+      <div class="layout-toggle">
+        <button class="toggle-btn active" id="gridViewBtn">Grid</button>
+        <button class="toggle-btn" id="listViewBtn">List</button>
+      </div>
       <button id="reset" class="ghost">Reset</button>
     </div>
   </div>
 </div>
 
 <main id="main" class="wrap">
-  <div id="grid" class="grid"><p>Loading deals…</p></div>
+  <div id="grid" class="grid grid-view"><p>Loading deals…</p></div>
   <div id="empty" class="empty">No deals match your search.</div>
 </main>
 
@@ -189,11 +195,27 @@ footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px
     }
 
     const tag=me.amazon_tag||"";
-    const src="today"; // default
     const [today,yest,almost]=await Promise.all([fetchCSV(CSV_TODAY),fetchCSV(CSV_YEST),fetchCSV(CSV_ALMOST)]);
     let data=today;
-    document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{data=(b.dataset.src=="yesterday"?yest:b.dataset.src=="almost"?almost:today);grid.innerHTML=data.map(x=>buildCard(x,tag)).join("");});
-    grid.innerHTML=data.map(x=>buildCard(x,tag)).join("");
+    function render(list){grid.innerHTML=list.map(x=>buildCard(x,tag)).join("");}
+    render(data);
+    document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+      document.querySelectorAll(".tab").forEach(x=>x.classList.remove("primary"));
+      b.classList.add("primary");
+      data=b.dataset.src=="yesterday"?yest:b.dataset.src=="almost"?almost:today;
+      render(data);
+    });
+
+    // layout toggle
+    const gridBtn=$("#gridViewBtn"), listBtn=$("#listViewBtn");
+    function setLayout(mode){
+      grid.className="grid "+(mode==="list"?"list-view":"grid-view");
+      gridBtn.classList.toggle("active",mode==="grid");
+      listBtn.classList.toggle("active",mode==="list");
+    }
+    gridBtn.onclick=()=>setLayout("grid");
+    listBtn.onclick=()=>setLayout("list");
+
     $("#year").textContent=new Date().getFullYear();
   }
 
