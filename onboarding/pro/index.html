@@ -1,33 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pro Plan Setup · BagThat</title>
 <style>
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #f7fafc;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: #0b1320;
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:#f7fafc;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh
 }
-.card {
-  background: #fff;
-  border: 1px solid #e8eef5;
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(11,19,32,.08);
-  padding: 32px;
-  text-align: left;
-  max-width: 440px;
-  width: 90%;
+.card{
+  background:#fff;
+  border:1px solid #e8eef5;
+  border-radius:16px;
+  box-shadow:0 18px 40px rgba(11,19,32,.08);
+  padding:32px;
+  text-align:left;
+  max-width:460px;
+  width:90%
 }
-h1 {margin-bottom: 16px; font-size: 22px; text-align:center;}
+h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
 label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
-input,textarea{
+input,select{
   width:100%;
   padding:10px 12px;
   border-radius:10px;
@@ -68,12 +67,20 @@ button:hover{background:#0c6e45}
       <input name="amazon_tag" required>
     </label>
 
-    <label>Concierge Notes (optional)
-      <textarea name="concierge_notes" rows="3" placeholder="Describe your design or layout preferences..."></textarea>
+    <label>Logo URL
+      <input type="url" name="logo_url" placeholder="https://...">
     </label>
 
-    <label>Featured Product ASINs (comma-separated)
-      <input name="featured_asins" placeholder="B0ABC12345, B0XYZ67890, ...">
+    <label>Primary Brand Color
+      <input type="color" name="color_primary" value="#0ea5a6">
+    </label>
+
+    <label>Featured Slot Text
+      <input name="featured_text" placeholder="Example: Featured Deal of the Day">
+    </label>
+
+    <label>Featured Slot URL
+      <input type="url" name="featured_url" placeholder="https://...">
     </label>
 
     <input type="hidden" name="plan" value="pro">
@@ -86,7 +93,7 @@ button:hover{background:#0c6e45}
 <script>
 const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-document.getElementById("proForm").addEventListener("submit", async e => {
+document.getElementById("proForm").addEventListener("submit", e => {
   e.preventDefault();
   const form = e.target;
   const btn = form.querySelector("button");
@@ -94,7 +101,7 @@ document.getElementById("proForm").addEventListener("submit", async e => {
   btn.textContent = "Submitting...";
 
   const f = new FormData(form);
-  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g,"");
   if (!sub) {
     alert("Please enter a valid subdomain (letters/numbers only).");
     btn.disabled = false;
@@ -106,25 +113,24 @@ document.getElementById("proForm").addEventListener("submit", async e => {
   const q = new URLSearchParams([...f.entries()]);
   q.append("callback", "cb");
 
-  const url = GAS + "?" + q.toString();
+  const s = document.createElement("script");
+  s.src = GAS + "?" + q.toString();
 
-  try {
-    const r = await fetch(url);
-    const t = await r.text();
-    if (t.includes('"ok":true')) {
+  window.cb = function(res){
+    if(res && res.ok){
       const domain = sub + ".bagthatthangup.com";
       const store = f.get("site_display_name");
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=pro`;
-    } else {
+      const logo = f.get("logo_url") || "";
+      const color = f.get("color_primary") || "#0f915a";
+      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Pro&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(color)}`;
+    }else{
       alert("Error saving your info. Please try again.");
       btn.disabled = false;
       btn.textContent = "Submit Onboarding";
     }
-  } catch (err) {
-    alert("Network error. Please check your connection and try again.");
-    btn.disabled = false;
-    btn.textContent = "Submit Onboarding";
-  }
+    s.remove();
+  };
+  document.body.appendChild(s);
 });
 </script>
 </body>
