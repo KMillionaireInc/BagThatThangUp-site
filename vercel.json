@@ -4,10 +4,18 @@
     { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
     { "source": "/stripe-success", "destination": "/onboarding/index.html" },
 
-    { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
+    {
+      "has": [{ "type": "host", "value": "bagthatthangup.com" }],
+      "source": "/(.*)",
+      "destination": "/index.html"
+    },
 
-    { "has": [{ "type": "host", "value": "*.*.bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
+    {
+      "has": [{ "type": "host", "value": ":tenant.bagthatthangup.com" }],
+      "source": "/",
+      "destination": "/tenant/basic/index.html"
+    },
 
-    { "source": "/tenant/(.*)", "destination": "/tenant/index.html" }
+    { "source": "/(.*)", "destination": "/tenant/index.html" }
   ]
 }
