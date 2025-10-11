@@ -96,7 +96,7 @@ button:hover{background:#0c6e45}
       </select>
     </label>
 
-    <input type="hidden" name="plan" value="custom">
+    <input type="hidden" name="plan" value="Custom">
     <input type="hidden" name="status" value="active">
 
     <button type="submit">Submit Onboarding</button>
@@ -104,7 +104,7 @@ button:hover{background:#0c6e45}
 </div>
 
 <script>
-const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+const GAS = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
 
 document.getElementById("customForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -123,25 +123,28 @@ document.getElementById("customForm").addEventListener("submit", async e => {
   }
   f.set("subdomain", sub);
 
-  const q = new URLSearchParams([...f.entries()]);
-  q.append("callback", "cb");
-
-  const url = GAS + "?" + q.toString();
+  const data = Object.fromEntries(f.entries());
+  const res = await fetch(GAS, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
 
   try {
-    const r = await fetch(url);
-    const t = await r.text();
-    if (t.includes('"ok":true')) {
-      const domain = sub + ".bagthatthangup.com";
+    const json = await res.json();
+    if (json.result === "success" || json.ok === true) {
+      const domain = `${sub}.bagthatthangup.com`;
       const store = f.get("site_display_name");
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=custom`;
+      const logo = f.get("logo_url") || "";
+      const colorPrimary = f.get("color_primary") || "#0f915a";
+      location.href = `/stripe/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Custom&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(colorPrimary)}`;
     } else {
       alert("Error saving your info. Please try again.");
       btn.disabled = false;
       btn.textContent = "Submit Onboarding";
     }
   } catch (err) {
-    alert("Network error. Please check your connection and try again.");
+    alert("Network or server error. Please try again.");
     btn.disabled = false;
     btn.textContent = "Submit Onboarding";
   }
