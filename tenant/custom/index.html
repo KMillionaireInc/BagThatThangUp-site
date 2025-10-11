@@ -3,31 +3,56 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title id="titleTag">Daily Deals</title>
-<meta name="description" content="Daily Amazon promo codes & deals — auto-updated for your store.">
+<title>Deals · Custom Site</title>
+<meta name="description" content="Daily Amazon promo codes, coupons & curated finds. As an Amazon Associate I earn from qualifying purchases.">
 <link rel="icon" href="/favicon.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/favicon.png">
+
 <style>
   :root{
-    --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375; --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
-    --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
+    --brand:#0ea5a6;
+    --accent:#1e90ff;
+    --ink:#0b1320;
+    --muted:#4d6375;
+    --line:#e8eef5;
+    --surface:#fff;
+    --bg:#f6faf9;
+    --btn:#0f915a;
+    --btn-ink:#fff;
+    --shadow:0 10px 26px rgba(2,24,43,.12);
   }
+
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
-  .topbar{background:#ffffffcc;backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid #e8eff0;font-size:12px}
-  .topbar .inner{max-width:1200px;margin:0 auto;padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .chip{background:#e7f6f6;color:#0b4c4d;border:1px solid #cfeeee;padding:6px 10px;border-radius:999px;font-weight:800}
-  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3;position:relative}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  /* Disclosure */
+  .disclosure-bar{
+    background:#fff8e1;
+    border-bottom:1px solid #f0e0b0;
+    color:#664d03;
+    text-align:center;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 12px;
+  }
+
+  /* Header */
+  .hero{
+    background:linear-gradient(135deg,var(--brand),var(--accent));
+    color:#fff;
+    border-bottom:1px solid #dff1f3;
+  }
   .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
   .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
-  @media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .avatar{width:52px;height:52px} }
+  @media (max-width:640px){.hero .inner{grid-template-columns:52px 1fr}.avatar{width:52px;height:52px}}
   .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
-  .sub{margin:4px 0 8px;color:#eaf7ff}
+  .sub{margin:4px 0 8px;color:#fffbe7;font-size:14px}
   .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer;text-align:center}
   .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
+  /* Toolbar */
   .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
   .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
   .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -35,81 +60,73 @@
   .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
   .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
   .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-  .grid{display:grid;gap:16px;margin:16px 0 36px}
-  @media (max-width:599px){ .grid{grid-template-columns:1fr} }
-  @media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+  .layout-toggle{
+    display:flex;align-items:center;gap:6px;
+    padding:10px 12px;background:#fff;border:1px solid #d0e3e3;
+    border-radius:10px;cursor:pointer;font-weight:700;color:#083663;
+  }
+  .layout-toggle svg{width:18px;height:18px;stroke:#083663;stroke-width:2;fill:none}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+  /* Cards */
+  .grid{display:grid;gap:16px;margin:16px 0 36px}
+  .list .grid{display:block}
+  @media(max-width:599px){.grid{grid-template-columns:1fr}}
+  @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+        overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease,box-shadow .2s ease;margin-bottom:16px}
   .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-  @media (max-width:599px){ .media{height:240px} }
-  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain;object-position:top center}
+  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:center;overflow:hidden;padding:10px;height:260px}
+  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain}
   .body{padding:12px}
-  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-  .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
-  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
-  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-  .original-price{color:#999;text-decoration:line-through;font-size:13px}
+  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px}
   .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-  .meta2{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#0b3d3f}
+  .original-price{color:#999;text-decoration:line-through;font-size:13px;margin-left:8px}
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
   .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-  .btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;padding:12px;border-radius:12px;border:1px solid #ffd7b0;background:#ff8a1f;color:#fff;font-weight:900}
-  .btn-code{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
-  .actions > *{min-width:0;max-width:100%}
-  @media (max-width:599px){ .actions{grid-template-columns:1fr} }
+  .btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900;text-align:center;padding:12px;border-radius:12px}
+  .empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
 
-  .empty{display:none;text-align:center;color:#4e6a79;padding:40px 16px}
-  .empty.show{display:block}
-  .errbox{max-width:900px;margin:40px auto;padding:18px;border:2px solid #ffd2d2;background:#fff6f6;border-radius:14px;color:#8a1f1f}
   footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
-  footer small{color:#9aa6b4}
-
-  .feature-bar{max-width:1200px;margin:8px auto 0;padding:0 16px;display:none}
-  .feature-bar a{display:inline-block;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid #cfeeee;font-weight:900}
 </style>
 </head>
-<body>
-  <div id="fatal" class="errbox" style="display:none"></div>
 
-  <div class="topbar">
-    <div class="inner">
-      <span id="siteChip" class="chip">Loading site…</span>
-      <span id="lastUpdated" class="chip">Last updated: —</span>
-      <span id="dealCount" class="chip">Deals shown: —</span>
-    </div>
+<body>
+  <div class="disclosure-bar">
+    Daily Amazon promo codes, coupons & curated finds — As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices may change at any time.
   </div>
 
   <header class="hero">
     <div class="inner">
-      <img id="logo" class="avatar" src="" alt="Logo" onerror="this.style.display='none'">
+      <img class="avatar" id="avatar" src="/tenant/assets/custom-badge.png" alt="Logo">
       <div>
-        <h1 id="headline" class="h1">Deals</h1>
-        <p class="sub" id="subhead">Daily promo codes, coupons and finds.</p>
-        <div class="actions">
+        <h1 class="h1" id="siteName">Daily Deals</h1>
+        <p class="sub">Curated daily Amazon deals, refreshed daily.</p>
+        <div class="actions" id="buttons">
           <button class="pill primary tab" data-src="today">Today's Deals</button>
-          <button class="pill tab" data-src="yesterday">Yesterday</button>
+          <button class="pill tab" data-src="yesterday">Yesterday's Finds</button>
           <button class="pill tab" data-src="almost">Almost Gone</button>
         </div>
       </div>
     </div>
   </header>
 
-  <div id="featureBar" class="feature-bar"><a id="featureLink" href="#" target="_blank" rel="noopener"></a></div>
-
   <div class="toolbar">
     <div class="wrap">
       <div class="toolbar-row">
-        <div class="search"><input id="search" type="search" placeholder="Search products…" aria-label="Search deals"/></div>
-        <select id="category" class="select"></select>
+        <div class="search"><input id="search" type="search" placeholder="Search deals…"/></div>
         <select id="sort" class="select">
-          <option value="newest" selected>Newest</option>
+          <option value="newest">Newest</option>
           <option value="pricelow">Price: Low → High</option>
           <option value="pricehigh">Price: High → Low</option>
         </select>
+        <button id="layoutToggle" class="layout-toggle" title="Switch layout">
+          <svg id="iconGrid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <svg id="iconList" viewBox="0 0 24 24" style="display:none"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
         <button id="reset" class="ghost">Reset</button>
       </div>
     </div>
@@ -117,40 +134,95 @@
 
   <main id="main" class="wrap">
     <div id="grid" class="grid"><p>Loading deals…</p></div>
-    <div id="empty" class="empty">No items match your search/filter.</div>
+    <div id="empty" class="empty">No deals found.</div>
   </main>
 
-  <footer class="wrap">
-    <p><b>Disclosure:</b> As an Amazon Associate I earn from qualifying purchases. Prices may change.</p>
-    <small>Site hosted on BagThat platform</small>
+  <footer>
+    © 2025 — Powered by <b>BagThat</b>
   </footer>
 
 <script>
-(function(){
-  const host = location.hostname.split(".")[0] || "Deals";
-  const title = host.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase());
-  document.getElementById("headline").textContent = title;
-  document.getElementById("siteChip").textContent = title;
-  document.getElementById("titleTag").textContent = `${title} Deals`;
+(async function(){
+  const CSV_TODAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
+  const CSV_YESTERDAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
+  const CSV_ALMOST="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
+  const SUBS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
 
-  // optional injected config (colors, logo, feature link)
-  const C = window.__BT || {};
-  if (C.colors?.primary) document.documentElement.style.setProperty("--brand", C.colors.primary);
-  if (C.colors?.accent)  document.documentElement.style.setProperty("--accent", C.colors.accent);
-  if (C.logo_url) {
-    const lg = document.getElementById("logo");
-    lg.src = C.logo_url;
-    lg.style.display = "block";
+  const $=s=>document.querySelector(s);
+  const grid=$("#grid"), empty=$("#empty"), avatar=$("#avatar"), siteName=$("#siteName"), buttons=$("#buttons");
+
+  function parseCSV(t){const r=[],e=t.split(/\r?\n/);for(const n of e){if(!n.trim())continue;r.push(n.split(","))}return r}
+  function toObjects(r){const h=r.shift();return r.map(x=>Object.fromEntries(h.map((k,i)=>[k,x[i]||""])))}  
+  async function getCSV(u){const r=await fetch(u);return toObjects(parseCSV(await r.text()))}
+
+  const sub=location.hostname.split(".")[0].toLowerCase();
+  const tenants=await getCSV(SUBS);
+  const me=tenants.find(r=>r.subdomain?.toLowerCase()===sub);
+  if(me){
+    siteName.textContent=me.site_display_name||sub;
+    if(me.logo_url) avatar.src=me.logo_url;
+    if(me.color_primary) document.documentElement.style.setProperty("--brand",me.color_primary);
+    if(me.color_secondary) document.documentElement.style.setProperty("--accent",me.color_secondary);
+    if(me.extra_button_label&&me.extra_button_url){
+      const btn=document.createElement("a");
+      btn.className="pill";
+      btn.href=me.extra_button_url;
+      btn.target="_blank";
+      btn.textContent=me.extra_button_label;
+      buttons.appendChild(btn);
+    }
   }
-  if (C.extra_link?.label && C.extra_link?.url) {
-    const bar = document.getElementById("featureBar");
-    const a = document.getElementById("featureLink");
-    a.textContent = C.extra_link.label;
-    a.href = C.extra_link.url;
-    bar.style.display = "block";
+
+  const TAG=me?.amazon_tag||"";
+  let CURRENT="today";
+
+  const money=n=>"$"+parseFloat(n).toFixed(2);
+  const gridEl=$("#grid");
+
+  function buildCard(d){
+    const img=(d.ImageURL_raw||d.ImageURL_clean||d.ImageURL_generated||"").replace(/^http:/,"https:");
+    const promo=(d.PromoCode||"").trim();
+    const deal=money(d.DiscountPrice||d.Price||0);
+    const orig=d.OriginalPrice?`<span class='original-price'>${money(d.OriginalPrice)}</span>`:"";
+    const link=d.TaggedLink||d.Link||"#";
+    const tagged=TAG?link.replace(/(tag=[^&]*)?/,"tag="+TAG):link;
+    return `<article class="card">
+      <div class="media">${img?`<img src="${img}" alt="${d.Title}">`:""}</div>
+      <div class="body">
+        <div class="title-line">${d.Title}</div>
+        <div><span class="deal-price">${deal}</span>${orig}</div>
+        <div class="actions">
+          ${promo?`<button class="btn-code" onclick="navigator.clipboard.writeText('${promo}')">Copy Code</button>`:""}
+          <a class="btn" href="${tagged}" target="_blank">Shop</a>
+        </div>
+      </div>
+    </article>`;
   }
+
+  async function loadDeals(src){
+    const map={today:CSV_TODAY,yesterday:CSV_YESTERDAY,almost:CSV_ALMOST};
+    const data=await getCSV(map[src]);
+    gridEl.innerHTML=data.map(buildCard).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{CURRENT=b.dataset.src;loadDeals(CURRENT);document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("primary",x===b));}));
+  });
+
+  // Layout toggle
+  const toggle=$("#layoutToggle"), iconGrid=$("#iconGrid"), iconList=$("#iconList");
+  function setLayout(mode){
+    document.body.classList.toggle("list",mode==="list");
+    iconGrid.style.display=mode==="grid"?"none":"block";
+    iconList.style.display=mode==="grid"?"block":"none";
+    sessionStorage.setItem("layoutMode",mode);
+  }
+  let layout=sessionStorage.getItem("layoutMode")||(me?.layout||"grid");
+  setLayout(layout);
+  toggle.addEventListener("click",()=>setLayout(layout=layout==="grid"?"list":"grid"));
+
+  loadDeals("today");
 })();
 </script>
-<script src="/tenant/assets/deals.js"></script>
 </body>
 </html>
