@@ -1,158 +1,96 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Custom Plan Setup · BagThat</title>
 <style>
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:#f7fafc;margin:0;display:flex;justify-content:center;
-  align-items:center;min-height:100vh;color:#0b1320
-}
-.card{
-  background:#fff;border:1px solid #e8eef5;border-radius:16px;
-  box-shadow:0 18px 40px rgba(11,19,32,.08);padding:32px;
-  text-align:center;max-width:440px;width:90%
-}
-h1{margin-bottom:16px;font-size:24px}
-p{margin:0 0 14px;color:#5a6b7a}
-input,select{
-  width:100%;padding:11px;border:1px solid #e8eef5;
-  border-radius:10px;margin:6px 0;font-size:15px
-}
-input[type="color"]{height:48px;cursor:pointer}
-button{
-  background:#0f915a;color:#fff;border:0;padding:12px 18px;
-  border-radius:10px;font-weight:700;cursor:pointer;margin-top:12px;width:100%
-}
-button:disabled{opacity:.6;cursor:not-allowed}
-.err{color:#8a1f1f;background:#fff6f6;border:2px solid #ffd2d2;
-  border-radius:10px;padding:10px;margin-bottom:10px;display:none}
-label{text-align:left;display:block;margin-top:8px;font-weight:700;font-size:14px}
-.preview{width:80px;height:80px;border-radius:10px;object-fit:cover;margin-top:6px;display:none}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7faf9;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.08);padding:32px;text-align:left;max-width:440px;width:90%}
+h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
+label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cdd8e1;margin-top:6px;font-size:15px}
+button{width:100%;margin-top:24px;background:#0f915a;color:#fff;padding:12px 18px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+button:hover{background:#0c6e45}
+.color-row{display:flex;gap:10px}
+.note{font-size:13px;color:#64727f;margin-top:6px}
 </style>
 </head>
 <body>
 <div class="card">
   <h1>Custom Plan Setup</h1>
-  <div id="err" class="err"></div>
+  <form id="form">
+    <label>Store name
+      <input name="site_display_name" required>
+    </label>
+    <label>Contact email
+      <input type="email" name="email" required>
+    </label>
+    <label>Subdomain (no spaces)
+      <input name="subdomain" pattern="[a-z0-9-]+" required>
+      <div class="note">Example: mystore → mystore.bagthatthangup.com</div>
+    </label>
+    <label>Amazon Associates ID
+      <input name="amazon_tag" required>
+    </label>
 
-  <label>Store Display Name*</label>
-  <input id="store_name" placeholder="My Deals Hub" required>
+    <label>Logo URL
+      <input type="url" name="logo_url" placeholder="https://...">
+      <div class="note">Upload your logo somewhere (e.g., Imgur) and paste the link here.</div>
+    </label>
 
-  <label>Contact Email*</label>
-  <input id="email" type="email" placeholder="you@example.com" required>
+    <div class="color-row">
+      <label style="flex:1">Primary Color
+        <input type="color" name="color_primary" value="#0ea5a6">
+      </label>
+      <label style="flex:1">Accent Color
+        <input type="color" name="color_secondary" value="#1e90ff">
+      </label>
+    </div>
 
-  <label>Subdomain*</label>
-  <input id="sub" placeholder="yourstore" required>
+    <label>Extra Button Label (optional)
+      <input name="extra_button_label" placeholder="Follow Me on Amazon">
+    </label>
+    <label>Extra Button URL
+      <input type="url" name="extra_button_url" placeholder="https://www.amazon.com/shop/...">
+    </label>
 
-  <label>Amazon Associates ID</label>
-  <input id="aaid" placeholder="yourtag-20">
+    <label>Layout Preference
+      <select name="layout">
+        <option value="grid">Grid</option>
+        <option value="list">List</option>
+      </select>
+    </label>
 
-  <label>Logo Image URL</label>
-  <input id="logo_url" type="url" placeholder="https://example.com/logo.png">
-  <img id="logo_preview" class="preview" alt="Logo preview">
+    <input type="hidden" name="plan" value="Custom">
+    <input type="hidden" name="status" value="active">
 
-  <label>Primary Brand Color</label>
-  <input id="color_primary" type="color" value="#0ea5a6">
-
-  <label>Secondary Accent Color</label>
-  <input id="color_secondary" type="color" value="#1e90ff">
-
-  <label>Extra Button Label</label>
-  <input id="extra_label" placeholder="Visit My Storefront">
-
-  <label>Extra Button URL</label>
-  <input id="extra_url" placeholder="https://amazon.com/shop/...">
-
-  <label>Preferred Layout</label>
-  <select id="layout">
-    <option value="grid">Grid</option>
-    <option value="list">List</option>
-  </select>
-
-  <button id="btn">Submit Onboarding</button>
+    <button type="submit">Submit Onboarding</button>
+  </form>
 </div>
 
 <script>
-(async()=>{
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
-  const DOMAIN = "bagthatthangup.com";
-  const plan = "custom";
+const SHEET_URL="https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
 
-  function jsonpRequest(url, params){
-    return new Promise((resolve,reject)=>{
-      const cbName = "cb"+Math.random().toString(36).slice(2);
-      params = {...params, callback: cbName};
-      const q = Object.entries(params)
-        .map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join("&");
-      const s = document.createElement("script");
-      s.src = `${url}?${q}`;
-      let done=false;
-      window[cbName] = d => { done=true; resolve(d); cleanup(); };
-      s.onerror = () => { if(!done){ reject(new Error("JSONP error")); cleanup(); } };
-      function cleanup(){ delete window[cbName]; s.remove(); }
-      document.body.appendChild(s);
-    });
-  }
-
-  const errEl=document.getElementById("err");
-  const btn=document.getElementById("btn");
-  const logoField=document.getElementById("logo_url");
-  const logoPrev=document.getElementById("logo_preview");
-  logoField.addEventListener("input",()=>{
-    const url=logoField.value.trim();
-    if(url){logoPrev.src=url;logoPrev.style.display="block";}
-    else logoPrev.style.display="none";
+document.getElementById("form").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const btn=e.target.querySelector("button");
+  btn.disabled=true;btn.textContent="Submitting...";
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  data.timestamp=new Date().toISOString();
+  const res=await fetch(SHEET_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
   });
-
-  btn.onclick=async()=>{
-    errEl.style.display="none";
-    const store=document.getElementById("store_name").value.trim();
-    const email=document.getElementById("email").value.trim();
-    const sub=document.getElementById("sub").value.trim().toLowerCase();
-    const tag=document.getElementById("aaid").value.trim();
-    const logo=document.getElementById("logo_url").value.trim();
-    const color1=document.getElementById("color_primary").value.trim();
-    const color2=document.getElementById("color_secondary").value.trim();
-    const extraLabel=document.getElementById("extra_label").value.trim();
-    const extraUrl=document.getElementById("extra_url").value.trim();
-    const layout=document.getElementById("layout").value;
-
-    if(!store||!email||!sub){
-      errEl.textContent="Please complete all required fields.";
-      errEl.style.display="block";return;
-    }
-
-    btn.disabled=true;btn.textContent="Saving...";
-
-    try{
-      const r=await jsonpRequest(GAS_URL,{
-        beacon:1,
-        plan,
-        email,
-        site_display_name:store,
-        subdomain:sub,
-        amazon_tag:tag,
-        logo_url:logo,
-        color_primary:color1,
-        color_secondary:color2,
-        extra_button_label:extraLabel,
-        extra_button_url:extraUrl,
-        layout,
-        status:"active"
-      });
-      if(!r||r.ok!==true)throw new Error(r&&r.error?r.error:"write_failed");
-      const domain=`${sub}.${DOMAIN}`;
-      location.href=`/stripe/success/?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}`;
-    }catch(e){
-      console.error(e);
-      alert("Error saving your info.");
-      btn.disabled=false;btn.textContent="Submit Onboarding";
-    }
-  };
-})();
+  const json=await res.json();
+  if(json.result==="success"){
+    window.location.href=`/stripe/success/index.html?domain=${data.subdomain}.bagthatthangup.com&store=${encodeURIComponent(data.site_display_name)}`;
+  }else{
+    alert("Something went wrong. Please try again.");
+    btn.disabled=false;btn.textContent="Submit Onboarding";
+  }
+});
 </script>
 </body>
 </html>
