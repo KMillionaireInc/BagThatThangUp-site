@@ -1,29 +1,116 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat · Pro Onboarding</title></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat · Onboarding</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #f6faf9;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(2,24,43,.12);
+    max-width: 420px;
+    width: 100%;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  button {
+    background: #0f915a;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+</head>
 <body>
-<form id="proForm" style="max-width:420px;margin:60px auto;background:#fff;padding:30px;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.12)">
-<h2>Pro Plan Setup</h2>
-<input name="site_display_name" placeholder="Store name" required>
-<input name="email" type="email" placeholder="Contact email" required>
-<input name="subdomain" placeholder="Subdomain" required>
-<input name="amazon_tag" placeholder="Amazon Associates ID">
-<button type="submit">Submit Onboarding</button>
+
+<form id="onboardForm">
+  <h2>BagThat Site Setup</h2>
+  <input name="site_display_name" placeholder="Store name" required>
+  <input name="email" type="email" placeholder="Contact email" required>
+  <input name="subdomain" placeholder="Subdomain (letters/numbers only)" required>
+  <input name="amazon_tag" placeholder="Amazon Associates ID">
+  <select name="plan" required>
+    <option value="">Select your plan...</option>
+    <option value="basic">Basic</option>
+    <option value="custom">Custom</option>
+    <option value="pro">Pro</option>
+  </select>
+  <button type="submit">Submit Onboarding</button>
 </form>
+
 <script>
-const GAS="https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-document.getElementById("proForm").addEventListener("submit",async e=>{
- e.preventDefault();
- const f=new FormData(e.target);
- const q=new URLSearchParams([...f.entries()]);
- q.append("plan","pro"); q.append("callback","cb");
- const url=GAS+"?"+q.toString();
- try{
-   const r=await fetch(url); const t=await r.text();
-   if(t.includes('"ok":true')) location.href="/stripe/success/index.html?plan=pro&sub="+f.get("subdomain");
-   else alert("Error saving your info.");
- }catch(_){alert("Network error. Try again.");}
+const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+
+document.getElementById("onboardForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+
+  const f = new FormData(form);
+  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (!sub) {
+    alert("Please enter a valid subdomain (letters/numbers only).");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+    return;
+  }
+  f.set("subdomain", sub);
+
+  const plan = f.get("plan");
+  if (!plan) {
+    alert("Please select your plan.");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+    return;
+  }
+
+  const q = new URLSearchParams([...f.entries()]);
+  q.append("callback", "cb");
+  const url = GAS + "?" + q.toString();
+
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    if (t.includes('"ok":true')) {
+      const domain = sub + ".bagthatthangup.com";
+      const store = f.get("site_display_name");
+      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=${encodeURIComponent(plan)}`;
+    } else {
+      alert("Error saving your info. Please try again.");
+      btn.disabled = false;
+      btn.textContent = "Submit Onboarding";
+    }
+  } catch (err) {
+    alert("Network error. Please check your connection and try again.");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+  }
 });
 </script>
 </body>
