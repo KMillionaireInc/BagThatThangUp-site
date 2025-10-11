@@ -4,98 +4,93 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title id="titleTag">Daily Drops</title>
-<meta name="description" content="Daily Amazon promo codes & curated deals. As an Amazon Associate I earn from qualifying purchases.">
+<meta name="description" content="Curated Amazon promo codes and daily drops — refreshed automatically.">
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/favicon.png">
-
 <style>
   :root{
-    --brand:#ffa500; /* default orange */
-    --accent:#ffeb3b; /* yellow */
-    --ink:#0b1320;
-    --muted:#4d6375;
-    --line:#e8eef5;
-    --surface:#fff;
-    --bg:#f6faf9;
-    --btn:#0f915a;
-    --btn-ink:#fff;
-    --shadow:0 10px 26px rgba(2,24,43,.12);
+    --brand:#ffa500; --accent:#ffeb3b; --ink:#0b1320; --muted:#4d6375;
+    --line:#e8eef5; --surface:#fff; --bg:#f6faf9;
+    --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
   }
-
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
   a{color:inherit;text-decoration:none}
   img{display:block;max-width:100%}
 
-  .disclosure-bar{
-    background:#fff8e1;
-    border-bottom:1px solid #f0e0b0;
-    color:#664d03;
-    text-align:center;
-    font-size:13px;
-    font-weight:700;
-    padding:8px 12px;
-  }
-
+  .disclosure-bar{background:#fff8e1;border-bottom:1px solid #f0e0b0;
+    color:#664d03;text-align:center;font-size:13px;font-weight:700;padding:8px 12px}
   .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
-  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
-  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
+  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;
+    display:grid;gap:14px;grid-template-columns:64px 1fr}
+  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);
+    object-fit:cover;background:#fff}
   @media (max-width:640px){.hero .inner{grid-template-columns:52px 1fr}.avatar{width:52px;height:52px}}
   .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
   .sub{margin:4px 0 8px;color:#fffbe7;font-size:14px;line-height:1.4}
   .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;
+    padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
   .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-  .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
+  .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;
+    backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
   .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
   .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
+  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);
+    border-radius:999px;display:flex;gap:8px;padding:10px 14px;
+    box-shadow:0 6px 14px rgba(2,24,43,.06)}
   .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
-  .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-  .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
-
+  .select{min-width:170px;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
+  .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;
+    border:1px solid #cfeeee;font-weight:800;cursor:pointer}
   .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
   .grid{display:grid;gap:16px;margin:16px 0 36px}
   @media(max-width:599px){.grid{grid-template-columns:1fr}}
   @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+  .card{background:var(--surface);border:1px solid var(--line);
+    border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
   .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:center;overflow:hidden;padding:10px;height:260px}
-  .media img{max-width:100%;max-height:100%;height:auto;width:auto;object-fit:contain}
+  .media{background:#fff;border-bottom:1px solid var(--line);
+    display:flex;justify-content:center;align-items:center;overflow:hidden;
+    padding:10px;height:260px}
+  .media img{max-width:100%;max-height:100%;object-fit:contain}
   .body{padding:12px}
   .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px}
+  .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
   .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-  .original-price{color:#999;text-decoration:line-through;font-size:13px;margin-left:8px}
+  .original-price{color:#999;text-decoration:line-through;font-size:13px}
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-  .btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900;text-align:center;padding:12px;border-radius:12px}
+  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;
+    border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
+  .btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;
+    font-weight:900;text-align:center;padding:12px;border-radius:12px}
   .empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
-
-  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
+  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;
+    margin-top:20px;text-align:center;font-size:13px}
   footer small{color:#9aa6b4}
 </style>
 </head>
-
 <body>
 
-  <!-- Top Disclosure -->
   <div class="disclosure-bar">
-    Daily Amazon promo codes, coupons & curated finds — As an Amazon Associate I earn from qualifying purchases. Prices and codes may change at any time.
+    Daily Amazon promo codes & curated finds — As an Amazon Associate I earn from qualifying purchases. Prices and codes may change at any time.
   </div>
 
-  <!-- Header -->
   <header class="hero">
     <div class="inner">
-      <img id="logo" class="avatar" src="https://via.placeholder.com/64x64.png?text=D" alt="Store Logo">
+      <img id="logo" class="avatar" src="https://via.placeholder.com/64x64.png?text=★" alt="Store Logo">
       <div>
         <h1 id="headline" class="h1">Daily Drops</h1>
-        <p id="subhead" class="sub">Curated daily Amazon deals, refreshed automatically.</p>
+        <p id="subhead" class="sub">Curated Amazon deals, refreshed daily.</p>
         <div class="actions">
           <button class="pill primary tab" data-src="today">Today's Deals</button>
-          <button class="pill tab" data-src="yesterday">Yesterday's Finds</button>
+          <button class="pill tab" data-src="yesterday">Yesterday</button>
           <button class="pill tab" data-src="almost">Almost Gone</button>
           <a class="pill" href="/tenant/pro/myfaves.html">My Faves</a>
           <a class="pill" href="https://amazon.com/shop/KimberlyMillionaire" target="_blank">Storefront</a>
@@ -105,7 +100,6 @@
     </div>
   </header>
 
-  <!-- Toolbar -->
   <div class="toolbar">
     <div class="wrap">
       <div class="toolbar-row">
@@ -120,7 +114,6 @@
     </div>
   </div>
 
-  <!-- Main -->
   <main id="main" class="wrap">
     <div id="grid" class="grid"><p>Loading deals…</p></div>
     <div id="empty" class="empty">No deals found.</div>
@@ -130,63 +123,65 @@
     <small>As an Amazon Associate I earn from qualifying purchases.</small>
   </footer>
 
-  <script>
-  // ===== Dynamic Tenant Branding =====
-  (function(){
-    const sub = location.hostname.split(".")[0] || "Deals";
-    const siteTitle = sub.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase());
-    document.getElementById("headline").textContent = siteTitle + "'s Daily Drops";
-    document.getElementById("titleTag").textContent = siteTitle + " · Daily Drops";
-  })();
+<script>
+(async function(){
+  const sub = location.hostname.split(".")[0] || "Deals";
+  const siteTitle = sub.replace(/[-_]+/g," ").replace(/\b\w/g,m=>m.toUpperCase());
+  document.getElementById("headline").textContent = siteTitle + "'s Daily Drops";
+  document.getElementById("titleTag").textContent = siteTitle + " · Daily Drops";
 
-  // ===== Sample Static Data (replace later with API/CSV integration) =====
-  const DATA = {
-    today: [
-      {Title:"Wireless Earbuds",Price:"39.99",OriginalPrice:"79.99",PromoCode:"SAVE40",Link:"https://amazon.com/dp/B0TEST001"},
-      {Title:"LED Vanity Mirror",Price:"19.99",OriginalPrice:"39.99",PromoCode:"MIRROR20",Link:"https://amazon.com/dp/B0TEST002"}
-    ],
-    yesterday:[
-      {Title:"Yoga Mat",Price:"14.99",OriginalPrice:"29.99",PromoCode:"YOGA15",Link:"https://amazon.com/dp/B0TEST003"}
-    ],
-    almost:[
-      {Title:"Mini Blender",Price:"24.99",OriginalPrice:"49.99",PromoCode:"BLEND25",Link:"https://amazon.com/dp/B0TEST004"}
-    ]
-  };
-  let CURRENT="today";
   const grid=document.getElementById("grid"), empty=document.getElementById("empty");
   const money=n=>"$"+parseFloat(n).toFixed(2);
+
+  async function fetchDeals(sheetName){
+    try{
+      const res = await fetch(`https://script.google.com/macros/s/AKfycbwYOURSCRIPTID/exec?plan=pro&tab=${sheetName}`);
+      const data = await res.json();
+      return Array.isArray(data)?data:[];
+    }catch(e){
+      console.error(e);
+      return [];
+    }
+  }
 
   function render(list){
     if(!list.length){ grid.innerHTML=""; empty.style.display="block"; return; }
     empty.style.display="none";
     grid.innerHTML=list.map(d=>`
       <article class="card">
-        <div class="media"><img src="https://via.placeholder.com/200x200.png?text=Deal" alt="${d.Title}"></div>
+        <div class="media"><img src="${d.ImageURL_clean||d.ImageURL_raw||'https://via.placeholder.com/200x200.png?text=Deal'}" alt="${d.Title||''}"></div>
         <div class="body">
-          <div class="title-line">${d.Title}</div>
-          <div class="price-box"><span class="deal-price">${money(d.Price)}</span><span class="original-price">${money(d.OriginalPrice)}</span></div>
+          <div class="title-line">${d.Title||''}</div>
+          <div class="price-box">
+            <span class="deal-price">${money(d.DiscountPrice||0)}</span>
+            ${d.OriginalPrice?`<span class="original-price">${money(d.OriginalPrice)}</span>`:''}
+          </div>
           <div class="actions">
-            <button class="btn-code" onclick="navigator.clipboard.writeText('${d.PromoCode}')">Copy Code</button>
-            <a class="btn" href="${d.Link}" target="_blank" rel="nofollow noopener">Shop</a>
+            ${d.PromoCode?`<button class="btn-code" onclick="navigator.clipboard.writeText('${d.PromoCode}')">Copy Code</button>`:''}
+            <a class="btn" href="${d.TaggedLink||d.ProductLink_RA||'#'}" target="_blank" rel="nofollow noopener">Shop</a>
           </div>
         </div>
       </article>`).join("");
   }
 
-  function load(src){
-    CURRENT=src;
-    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("primary",b.dataset.src===src));
-    render(DATA[src]||[]);
+  let CURRENT="today";
+  async function load(tab){
+    CURRENT=tab;
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("primary",b.dataset.src===tab));
+    const list = await fetchDeals(tab);
+    render(list);
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
     document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>load(b.dataset.src)));
     document.getElementById("reset").addEventListener("click",()=>{
       document.getElementById("search").value="";
-      render(DATA[CURRENT]);
+      load(CURRENT);
     });
-    load("today");
   });
-  </script>
+
+  load("today");
+})();
+</script>
 </body>
 </html>
