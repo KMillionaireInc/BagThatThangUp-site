@@ -3,56 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pro Plan Setup · BagThat</title>
+<title>Custom Plan Setup · BagThat</title>
 <style>
 body{
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:#f7fafc;
-  margin:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  background:#f7faf9;margin:0;
+  display:flex;justify-content:center;align-items:center;
   height:100vh
 }
 .card{
-  background:#fff;
-  border:1px solid #e8eef5;
-  border-radius:16px;
-  box-shadow:0 18px 40px rgba(11,19,32,.08);
-  padding:32px;
-  text-align:left;
-  max-width:460px;
-  width:90%
+  background:#fff;border:1px solid #e8eef5;border-radius:16px;
+  box-shadow:0 10px 26px rgba(2,24,43,.08);
+  padding:32px;text-align:left;max-width:460px;width:90%
 }
 h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
 label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
 input,select{
-  width:100%;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #cdd8e1;
-  margin-top:6px;
-  font-size:15px
+  width:100%;padding:10px 12px;border-radius:10px;
+  border:1px solid #cdd8e1;margin-top:6px;font-size:15px
 }
 button{
-  width:100%;
-  margin-top:24px;
-  background:#0f915a;
-  color:#fff;
-  padding:12px 18px;
-  border-radius:10px;
-  border:0;
-  font-weight:700;
-  cursor:pointer
+  width:100%;margin-top:24px;background:#0f915a;color:#fff;
+  padding:12px 18px;border-radius:10px;border:0;font-weight:700;cursor:pointer
 }
 button:hover{background:#0c6e45}
+.color-row{display:flex;gap:10px}
 .note{font-size:13px;color:#64727f;margin-top:6px}
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>Pro Plan Setup</h1>
-  <form id="proForm">
+  <h1>Custom Plan Setup</h1>
+  <form id="customForm">
     <label>Store name
       <input name="site_display_name" required>
     </label>
@@ -66,24 +48,35 @@ button:hover{background:#0c6e45}
     <label>Amazon Associates ID
       <input name="amazon_tag" required>
     </label>
-
     <label>Logo URL
       <input type="url" name="logo_url" placeholder="https://...">
+      <div class="note">Upload your logo (e.g. Imgur) and paste the link here.</div>
     </label>
 
-    <label>Primary Brand Color
-      <input type="color" name="color_primary" value="#0ea5a6">
+    <div class="color-row">
+      <label style="flex:1">Primary Color
+        <input type="color" name="color_primary" value="#0ea5a6">
+      </label>
+      <label style="flex:1">Accent Color
+        <input type="color" name="color_secondary" value="#1e90ff">
+      </label>
+    </div>
+
+    <label>Extra Button Label (optional)
+      <input name="extra_button_label" placeholder="Follow Me on Amazon">
+    </label>
+    <label>Extra Button URL
+      <input type="url" name="extra_button_url" placeholder="https://www.amazon.com/shop/...">
     </label>
 
-    <label>Featured Slot Text
-      <input name="featured_text" placeholder="Example: Featured Deal of the Day">
+    <label>Layout Preference
+      <select name="layout">
+        <option value="grid">Grid</option>
+        <option value="list">List</option>
+      </select>
     </label>
 
-    <label>Featured Slot URL
-      <input type="url" name="featured_url" placeholder="https://...">
-    </label>
-
-    <input type="hidden" name="plan" value="pro">
+    <input type="hidden" name="plan" value="custom">
     <input type="hidden" name="status" value="active">
 
     <button type="submit">Submit Onboarding</button>
@@ -93,7 +86,7 @@ button:hover{background:#0c6e45}
 <script>
 const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-document.getElementById("proForm").addEventListener("submit", e => {
+document.getElementById("customForm").addEventListener("submit", async e => {
   e.preventDefault();
   const form = e.target;
   const btn = form.querySelector("button");
@@ -101,7 +94,7 @@ document.getElementById("proForm").addEventListener("submit", e => {
   btn.textContent = "Submitting...";
 
   const f = new FormData(form);
-  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g,"");
+  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
   if (!sub) {
     alert("Please enter a valid subdomain (letters/numbers only).");
     btn.disabled = false;
@@ -110,27 +103,32 @@ document.getElementById("proForm").addEventListener("submit", e => {
   }
   f.set("subdomain", sub);
 
+  // Build query string exactly like Basic (GET style)
   const q = new URLSearchParams([...f.entries()]);
+  q.append("plan", "custom");
   q.append("callback", "cb");
 
-  const s = document.createElement("script");
-  s.src = GAS + "?" + q.toString();
+  const url = GAS + "?" + q.toString();
 
-  window.cb = function(res){
-    if(res && res.ok){
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    if (t.includes('"ok":true')) {
       const domain = sub + ".bagthatthangup.com";
       const store = f.get("site_display_name");
       const logo = f.get("logo_url") || "";
-      const color = f.get("color_primary") || "#0f915a";
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Pro&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(color)}`;
-    }else{
+      const colorPrimary = f.get("color_primary") || "#0f915a";
+      location.href = `/stripe/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Custom&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(colorPrimary)}`;
+    } else {
       alert("Error saving your info. Please try again.");
       btn.disabled = false;
       btn.textContent = "Submit Onboarding";
     }
-    s.remove();
-  };
-  document.body.appendChild(s);
+  } catch (err) {
+    alert("Network error. Please check your connection and try again.");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+  }
 });
 </script>
 </body>
