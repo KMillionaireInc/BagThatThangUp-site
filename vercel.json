@@ -1,16 +1,11 @@
 {
   "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/onboarding/basic", "destination": "/onboarding/basic/index.html" },
-    { "source": "/onboarding/custom", "destination": "/onboarding/Custom/index.html" },
+    { "source": "/onboarding/custom", "destination": "/onboarding/custom/index.html" },
     { "source": "/onboarding/pro", "destination": "/onboarding/pro/index.html" },
-    { "source": "/stripe-success", "destination": "/stripe/success/index.html" },
+    { "source": "/onboarding/success", "destination": "/onboarding/success/index.html" },
 
-    {
-      "has": [{ "type": "host", "value": "bagthatthangup.com" }],
-      "source": "/(.*)",
-      "destination": "/index.html"
-    },
+    { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/tenant/index.html" }
   ]
 }
