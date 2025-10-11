@@ -21,124 +21,111 @@ body {
   border-radius: 16px;
   box-shadow: 0 18px 40px rgba(11,19,32,.08);
   padding: 32px;
-  text-align: center;
-  max-width: 420px;
+  text-align: left;
+  max-width: 440px;
   width: 90%;
 }
-h1 {margin-bottom: 16px; font-size: 24px;}
-p {margin: 0 0 14px; color: #5a6b7a;}
-input {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #e8eef5;
-  border-radius: 10px;
-  margin: 6px 0;
-  font-size: 15px;
+h1 {margin-bottom: 16px; font-size: 22px; text-align:center;}
+label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
+input,textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #cdd8e1;
+  margin-top:6px;
+  font-size:15px
 }
-button {
-  background: #0f915a;
-  color: #fff;
-  border: 0;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 12px;
+button{
+  width:100%;
+  margin-top:24px;
+  background:#0f915a;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:10px;
+  border:0;
+  font-weight:700;
+  cursor:pointer
 }
-button:disabled {opacity: .6; cursor: not-allowed;}
-.err {
-  color: #8a1f1f;
-  background: #fff6f6;
-  border: 2px solid #ffd2d2;
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
-  display: none;
-}
+button:hover{background:#0c6e45}
+.note{font-size:13px;color:#64727f;margin-top:6px}
 </style>
 </head>
 <body>
 <div class="card">
   <h1>Pro Plan Setup</h1>
-  <div id="err" class="err"></div>
-  <input id="store_name" placeholder="Store display name" required>
-  <input id="email" type="email" placeholder="Contact email" required>
-  <input id="sub" placeholder="Site URL (subdomain)" required>
-  <input id="aaid" placeholder="Amazon Associates ID">
-  <button id="btn">Submit Onboarding</button>
+  <form id="proForm">
+    <label>Store name
+      <input name="site_display_name" required>
+    </label>
+    <label>Contact email
+      <input type="email" name="email" required>
+    </label>
+    <label>Subdomain (no spaces)
+      <input name="subdomain" pattern="[a-z0-9-]+" required>
+      <div class="note">Example: mystore → mystore.bagthatthangup.com</div>
+    </label>
+    <label>Amazon Associates ID
+      <input name="amazon_tag" required>
+    </label>
+
+    <label>Concierge Notes (optional)
+      <textarea name="concierge_notes" rows="3" placeholder="Describe your design or layout preferences..."></textarea>
+    </label>
+
+    <label>Featured Product ASINs (comma-separated)
+      <input name="featured_asins" placeholder="B0ABC12345, B0XYZ67890, ...">
+    </label>
+
+    <input type="hidden" name="plan" value="pro">
+    <input type="hidden" name="status" value="active">
+
+    <button type="submit">Submit Onboarding</button>
+  </form>
 </div>
 
 <script>
-(async () => {
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
-  const DOMAIN = "bagthatthangup.com";
+const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-  // --- determine plan from plan_key ---
-  const planKey = new URLSearchParams(location.search).get("plan_key");
-  const planMap = {
-    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7": "basic",
-    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5": "custom",
-    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f": "pro"
-  };
-  const plan = planMap[planKey] || "pro";
+document.getElementById("proForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
 
-  // --- helper: JSONP fetch ---
-  function jsonpRequest(url, params) {
-    return new Promise((resolve, reject) => {
-      const cbName = "cb";
-      const q = new URLSearchParams({...params, callback: cbName}).toString();
-      const s = document.createElement("script");
-      s.src = `${url}?${q}`;
-      let done = false;
-      window[cbName] = d => { done = true; resolve(d); cleanup(); };
-      s.onerror = () => { if (!done) { reject(new Error("JSONP error")); cleanup(); } };
-      function cleanup() { delete window[cbName]; s.remove(); }
-      document.body.appendChild(s);
-    });
+  const f = new FormData(form);
+  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (!sub) {
+    alert("Please enter a valid subdomain (letters/numbers only).");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+    return;
   }
+  f.set("subdomain", sub);
 
-  const errEl = document.getElementById("err");
-  const btn = document.getElementById("btn");
+  const q = new URLSearchParams([...f.entries()]);
+  q.append("callback", "cb");
 
-  btn.onclick = async () => {
-    errEl.style.display = "none";
-    const store = document.getElementById("store_name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    let sub = document.getElementById("sub").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
-    const tag = document.getElementById("aaid").value.trim();
+  const url = GAS + "?" + q.toString();
 
-    if (!store || !email || !sub) {
-      errEl.textContent = "Please complete all required fields.";
-      errEl.style.display = "block";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Submitting...";
-
-    try {
-      const res = await jsonpRequest(GAS_URL, {
-        plan,
-        email,
-        site_display_name: store,
-        subdomain: sub,
-        amazon_tag: tag,
-        status: "active"
-      });
-
-      if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : "write_failed");
-
-      const domain = `${sub}.${DOMAIN}`;
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=${plan}`;
-
-    } catch (err) {
-      console.error(err);
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    if (t.includes('"ok":true')) {
+      const domain = sub + ".bagthatthangup.com";
+      const store = f.get("site_display_name");
+      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=pro`;
+    } else {
       alert("Error saving your info. Please try again.");
       btn.disabled = false;
       btn.textContent = "Submit Onboarding";
     }
-  };
-})();
+  } catch (err) {
+    alert("Network error. Please check your connection and try again.");
+    btn.disabled = false;
+    btn.textContent = "Submit Onboarding";
+  }
+});
 </script>
 </body>
 </html>
