@@ -3,89 +3,86 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Daily Deals · BagThat Tenant</title>
-<meta name="description" content="Daily Amazon promo codes, coupons, and curated finds. Auto-updated for your subdomain storefront.">
+<title>Deals — Powered by BagThat</title>
+<meta name="description" content="Daily Amazon promo codes & curated deals. As an Amazon Associate I earn from qualifying purchases.">
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/favicon.png">
 
 <style>
-:root{
-  --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375;
-  --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
-  --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
+  :root{
+    --brand:#0ea5a6; --accent:#1e90ff;
+    --ink:#0b1320; --muted:#4d6375;
+    --line:#e8eef5; --surface:#fff; --bg:#f6faf9;
+    --btn:#0f915a; --btn-ink:#fff;
+    --shadow:0 10px 26px rgba(2,24,43,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
 
-/* Header disclosure */
-.disclosure-bar{
-  background:#fff8e1;
-  border-bottom:1px solid #f0e0b0;
-  color:#664d03;
-  text-align:center;
-  font-size:13px;
-  font-weight:700;
-  padding:8px 12px;
-}
+  .disclosure-bar{
+    background:#fff8e1;border-bottom:1px solid #f0e0b0;
+    color:#664d03;text-align:center;
+    font-size:13px;font-weight:700;padding:8px 12px;
+  }
 
-/* Hero header */
-.hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
-.hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
-.avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
-@media (max-width:640px){ .hero .inner{grid-template-columns:52px 1fr} .avatar{width:52px;height:52px} }
-.h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
-.sub{margin:4px 0 8px;color:#eaf7ff}
-.hero .actions{display:flex;gap:10px;flex-wrap:wrap}
-.pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
-.pill.primary{background:#083663;color:#fff;border-color:#083663}
+  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff}
+  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
+  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
+  @media (max-width:640px){.hero .inner{grid-template-columns:52px 1fr}.avatar{width:52px;height:52px}}
+  .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
+  .sub{margin:4px 0 8px;color:#fffbe7;font-size:14px;line-height:1.4}
+  .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+  .pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-/* Toolbar */
-.toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
-.toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
-.toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
-.search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
-.select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-.ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
+  .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
+  .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
+  .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;gap:8px;padding:10px 14px;box-shadow:0 6px 14px rgba(2,24,43,.06)}
+  .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
+  .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
+  .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
 
-/* Grid */
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-.grid{display:grid;gap:16px;margin:16px 0 36px}
-@media (max-width:599px){ .grid{grid-template-columns:1fr} }
-@media (min-width:600px){ .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))} }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-.media{background:#fff;border-bottom:1px solid #e8eef5;display:flex;justify-content:center;align-items:flex-start;overflow:hidden;padding:10px;height:260px}
-@media (max-width:599px){ .media{height:240px} }
-.media img{max-width:100%;max-height:100%;object-fit:contain}
-.body{padding:12px}
-.title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px}
-.price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-.original-price{color:#999;text-decoration:line-through;font-size:13px}
-.deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-.btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900;text-align:center;padding:12px;border-radius:12px}
-.empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
+  .grid{display:grid;gap:16px;margin:16px 0 36px}
+  @media(max-width:599px){.grid{grid-template-columns:1fr}}
+  @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease, box-shadow .2s ease}
+  .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
+  .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:center;overflow:hidden;padding:10px;height:260px}
+  .media img{max-width:100%;max-height:100%;object-fit:contain}
+  .body{padding:12px}
+  .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px}
+  .deal-price{color:#0c6e53;font-weight:900;font-size:18px}
+  .original-price{color:#999;text-decoration:line-through;font-size:13px;margin-left:8px}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
+  .btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900;text-align:center;padding:12px;border-radius:12px}
+  .empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
+
+  footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
 </style>
 </head>
 
 <body>
+
 <div class="disclosure-bar">
-  Daily Amazon promo codes, coupons & curated finds — As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices may change at any time.
+  Daily Amazon promo codes & curated finds — As an Amazon Associate I earn from qualifying purchases. Promo codes and prices may change anytime.
 </div>
 
 <header class="hero">
   <div class="inner">
-    <img id="logo" class="avatar" src="" alt="Logo" onerror="this.style.display='none'">
+    <img id="logo" class="avatar" src="https://via.placeholder.com/64x64.png?text=BT" alt="Logo">
     <div>
-      <h1 id="headline" class="h1">Daily Deals</h1>
-      <p class="sub" id="subhead">Curated promo codes, updated daily.</p>
+      <h1 id="siteName" class="h1">Loading…</h1>
+      <p class="sub">Curated daily Amazon deals, refreshed automatically.</p>
       <div class="actions">
         <button class="pill primary tab" data-src="today">Today's Deals</button>
-        <button class="pill tab" data-src="yesterday">Yesterday</button>
+        <button class="pill tab" data-src="yesterday">Yesterday's Finds</button>
         <button class="pill tab" data-src="almost">Almost Gone</button>
       </div>
     </div>
@@ -95,7 +92,7 @@ a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
 <div class="toolbar">
   <div class="wrap">
     <div class="toolbar-row">
-      <div class="search"><input id="search" type="search" placeholder="Search deals…" /></div>
+      <div class="search"><input id="search" type="search" placeholder="Search deals…"></div>
       <select id="sort" class="select">
         <option value="newest">Newest</option>
         <option value="pricelow">Price: Low → High</option>
@@ -111,6 +108,64 @@ a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
   <div id="empty" class="empty">No deals found.</div>
 </main>
 
-<script src="/tenant/assets/deals.js"></script>
+<footer>Powered by <b>BagThat</b> • © 2025</footer>
+
+<script>
+(async function(){
+  const CSV_TODAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
+  const CSV_YESTERDAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
+  const CSV_ALMOST="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
+  const SUBSCRIBERS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
+
+  const grid=document.getElementById("grid"),empty=document.getElementById("empty");
+  const money=n=>"$"+parseFloat(n||0).toFixed(2);
+
+  function parseCSV(t){return t.split(/\r?\n/).map(r=>r.split(",")).filter(r=>r.length>1);}
+  function toObj(rows){const h=rows[0];return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k.trim(),r[i]||""])));}
+  async function getCSV(url){const r=await fetch(url);return toObj(parseCSV(await r.text()));}
+
+  async function getTenant(){
+    const sub=location.hostname.split(".")[0].toLowerCase();
+    const rows=await getCSV(SUBSCRIBERS);
+    const me=rows.find(r=>r.subdomain?.toLowerCase()===sub);
+    if(me){
+      document.getElementById("siteName").textContent=me.site_display_name||sub;
+      if(me.color_primary)document.documentElement.style.setProperty("--brand",me.color_primary);
+      if(me.color_secondary)document.documentElement.style.setProperty("--accent",me.color_secondary);
+      if(me.logo_url)document.getElementById("logo").src=me.logo_url;
+      return me.amazon_tag||"";
+    } else {
+      document.getElementById("siteName").textContent="Deals";
+      return "";
+    }
+  }
+
+  function render(list){
+    if(!list.length){grid.innerHTML="";empty.style.display="block";return;}
+    empty.style.display="none";
+    grid.innerHTML=list.map(d=>`
+      <article class="card">
+        <div class="media"><img src="${d.ImageURL_clean||d.ImageURL_raw||'https://via.placeholder.com/200'}"></div>
+        <div class="body">
+          <div class="title-line">${d.Title}</div>
+          <div class="price-box"><span class="deal-price">${money(d.DiscountPrice)}</span><span class="original-price">${money(d.OriginalPrice)}</span></div>
+          <div class="actions">
+            ${d.PromoCode?`<button class="btn-code" onclick="navigator.clipboard.writeText('${d.PromoCode}')">Copy Code</button>`:""}
+            <a class="btn" href="${d.TaggedLink}" target="_blank">Shop</a>
+          </div>
+        </div>
+      </article>`).join("");
+  }
+
+  const all=await Promise.all([getCSV(CSV_TODAY),getCSV(CSV_YESTERDAY),getCSV(CSV_ALMOST)]);
+  const TAG=await getTenant();
+  let current=0;
+
+  function load(i){current=i;document.querySelectorAll(".tab").forEach((b,ix)=>b.classList.toggle("primary",ix===i));render(all[i]);}
+  document.querySelectorAll(".tab").forEach((b,i)=>b.onclick=()=>load(i));
+  document.getElementById("reset").onclick=()=>load(current);
+  load(0);
+})();
+</script>
 </body>
 </html>
