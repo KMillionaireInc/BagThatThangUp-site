@@ -76,7 +76,7 @@
 
 <header class="hero">
   <div class="inner">
-    <img id="logo" class="avatar" src="https://via.placeholder.com/64x64.png?text=BT" alt="Logo">
+    <img id="logo" class="avatar" src="/tenant/assets/basic.png" alt="Site logo">
     <div>
       <h1 id="siteName" class="h1">Loading…</h1>
       <p class="sub">Curated daily Amazon deals, refreshed automatically.</p>
@@ -118,8 +118,6 @@
   const SUBSCRIBERS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
 
   const grid=document.getElementById("grid"),empty=document.getElementById("empty");
-  const money=n=>"$"+parseFloat(n||0).toFixed(2);
-
   function parseCSV(t){return t.split(/\r?\n/).map(r=>r.split(",")).filter(r=>r.length>1);}
   function toObj(rows){const h=rows[0];return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k.trim(),r[i]||""])));}
   async function getCSV(url){const r=await fetch(url);return toObj(parseCSV(await r.text()));}
@@ -135,25 +133,10 @@
       siteEl.textContent=me.site_display_name||sub;
       if(me.color_primary)document.documentElement.style.setProperty("--brand",me.color_primary);
       if(me.color_secondary)document.documentElement.style.setProperty("--accent",me.color_secondary);
-
-      const plan=(me.plan||"").toLowerCase();
-      const hasLogo=me.logo_url&&me.logo_url.trim()!=="";
-      if(hasLogo){
-        logoEl.src=me.logo_url;
-      }else if(plan==="basic"){
-        logoEl.src="/tenant/assets/basic.png";
-      }else if(plan==="custom"){
-        logoEl.src="/tenant/assets/custom.png";
-      }else if(plan==="pro"){
-        logoEl.src="/tenant/assets/custompro.png";
-      }else{
-        logoEl.src="https://via.placeholder.com/64x64.png?text=BT";
-      }
-
+      if(me.logo_url && me.logo_url.trim()!=="") logoEl.src=me.logo_url;
       return me.amazon_tag||"";
-    } else {
-      siteEl.textContent="Deals";
-      logoEl.src="/tenant/assets/basic.png";
+    }else{
+      siteEl.textContent="Daily Deals";
       return "";
     }
   }
@@ -161,24 +144,36 @@
   function render(list){
     if(!list.length){grid.innerHTML="";empty.style.display="block";return;}
     empty.style.display="none";
-    grid.innerHTML=list.map(d=>`
-      <article class="card">
-        <div class="media"><img src="${d.ImageURL_clean||d.ImageURL_raw||'https://via.placeholder.com/200'}"></div>
-        <div class="body">
-          <div class="title-line">${d.Title}</div>
-          <div class="price-box"><span class="deal-price">${money(d.DiscountPrice)}</span><span class="original-price">${money(d.OriginalPrice)}</span></div>
-          <div class="actions">
-            ${d.PromoCode?`<button class="btn-code" onclick="navigator.clipboard.writeText('${d.PromoCode}')">Copy Code</button>`:""}
-            <a class="btn" href="${d.TaggedLink}" target="_blank">Shop</a>
+    grid.innerHTML = list.map(d => {
+      const title = d.Title || "Untitled";
+      const img = d.ImageURL_clean || d.ImageURL_raw || "https://via.placeholder.com/200";
+      const priceNow = (d.PriceNow_$ || d.DiscountPrice || "").replace("$","").trim();
+      const regPrice = (d.RegPrice_$ || d.OriginalPrice || "").replace("$","").trim();
+      const link = d.TaggedLink || "#";
+      const code = d.PromoCode || "";
+
+      return `
+        <article class="card">
+          <div class="media"><img src="${img}" alt="${title}"></div>
+          <div class="body">
+            <div class="title-line">${title}</div>
+            <div class="price-box">
+              ${priceNow ? `<span class="deal-price">$${priceNow}</span>` : ""}
+              ${regPrice ? `<span class="original-price">$${regPrice}</span>` : ""}
+            </div>
+            <div class="actions">
+              ${code ? `<button class="btn-code" onclick="navigator.clipboard.writeText('${code}')">Copy Code</button>` : ""}
+              <a class="btn" href="${link}" target="_blank">Shop</a>
+            </div>
           </div>
-        </div>
-      </article>`).join("");
+        </article>`;
+    }).join("");
   }
 
   const all=await Promise.all([getCSV(CSV_TODAY),getCSV(CSV_YESTERDAY),getCSV(CSV_ALMOST)]);
-  const TAG=await getTenant();
-  let current=0;
+  await getTenant();
 
+  let current=0;
   function load(i){current=i;document.querySelectorAll(".tab").forEach((b,ix)=>b.classList.toggle("primary",ix===i));render(all[i]);}
   document.querySelectorAll(".tab").forEach((b,i)=>b.onclick=()=>load(i));
   document.getElementById("reset").onclick=()=>load(current);
