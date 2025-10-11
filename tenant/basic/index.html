@@ -21,53 +21,20 @@
     --btn-ink:#fff;
     --shadow:0 10px 26px rgba(2,24,43,.12);
   }
-
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
   a{color:inherit;text-decoration:none}
   img{display:block;max-width:100%}
-
-  /* Top disclosure stays pinned */
-  .disclosure-bar{
-    background:#fff8e1;
-    border-bottom:1px solid #f0e0b0;
-    color:#664d03;
-    text-align:center;
-    font-size:13px;
-    font-weight:700;
-    padding:8px 12px;
-  }
-
-  /* Header / hero section */
-  .hero{
-    background:linear-gradient(135deg,var(--brand),var(--accent));
-    color:#fff;
-    border-bottom:1px solid #dff1f3;
-  }
-  .hero .inner{
-    max-width:1200px;
-    margin:0 auto;
-    padding:16px;
-    display:grid;
-    gap:14px;
-    grid-template-columns:64px 1fr;
-  }
-  .avatar{
-    width:64px;height:64px;border-radius:999px;
-    border:2px solid rgba(255,255,255,.9);
-    object-fit:cover;background:#fff;
-  }
-  @media (max-width:640px){
-    .hero .inner{grid-template-columns:52px 1fr}
-    .avatar{width:52px;height:52px}
-  }
+  .disclosure-bar{background:#fff8e1;border-bottom:1px solid #f0e0b0;color:#664d03;text-align:center;font-size:13px;font-weight:700;padding:8px 12px}
+  .hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;border-bottom:1px solid #dff1f3}
+  .hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
+  .avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
+  @media (max-width:640px){.hero .inner{grid-template-columns:52px 1fr}.avatar{width:52px;height:52px}}
   .h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
   .sub{margin:4px 0 8px;color:#fffbe7;font-size:14px;line-height:1.4}
   .actions{display:flex;gap:10px;flex-wrap:wrap}
   .pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
   .pill.primary{background:#083663;color:#fff;border-color:#083663}
-
-  /* Toolbar */
   .toolbar{position:sticky;top:0;z-index:80;background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #e8eef5}
   .toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;display:grid;gap:10px}
   .toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -75,14 +42,10 @@
   .search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
   .select{min-width:170px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
   .ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;border:1px solid #cfeeee;font-weight:800;cursor:pointer}
-
   .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-
-  /* Grid */
   .grid{display:grid;gap:16px;margin:16px 0 36px}
   @media(max-width:599px){.grid{grid-template-columns:1fr}}
   @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
-
   .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .08s ease,box-shadow .2s ease}
   .card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
   .media{background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:center;align-items:center;overflow:hidden;padding:10px;height:260px}
@@ -90,7 +53,6 @@
   .body{padding:12px}
   .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
   .tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-  .cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
   .title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;min-height:38px}
   .stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
   .price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
@@ -98,18 +60,14 @@
   .original-price{color:#999;text-decoration:line-through;font-size:13px}
   .meta2{font-size:13px;color:#0b3d3f;margin-top:6px}
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .btn,.btn-share,.btn-code{
-    text-align:center;padding:12px;border-radius:12px;font-weight:900;text-decoration:none;display:inline-block
-  }
+  .btn,.btn-share,.btn-code{text-align:center;padding:12px;border-radius:12px;font-weight:900;text-decoration:none;display:inline-block}
   .btn{background:var(--btn);color:var(--btn-ink);border:1px solid #0b7247}
   .btn-share{background:#ff8a1f;color:#fff;border:1px solid #ffd7b0}
   .btn-code{background:#fff;color:#083663;border:1px solid #cfeeee}
   .empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
-
   footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
 </style>
 </head>
-
 <body>
   <div class="disclosure-bar">
     Daily Amazon promo codes, coupons & curated finds — As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices may change at any time.
@@ -149,25 +107,24 @@
     <div id="empty" class="empty">No deals found.</div>
   </main>
 
-  <footer>
-    Powered by <b>BagThat</b> • © 2025
-  </footer>
+  <footer>Powered by <b>BagThat</b> • © 2025</footer>
 
 <script>
 (async()=>{
-  const CSV_TODAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
-  const CSV_YESTERDAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
-  const CSV_ALMOST="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
-  const SUBSCRIBERS_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
-
+  const CSV={
+    today:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
+    yesterday:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+    almost:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
+  };
+  const SUBS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
   const grid=document.getElementById("grid"),empty=document.getElementById("empty");
-  let ASSOC_TAG="", SUB="";
+  let TAG="",SUB="",DATA={};
 
   function parseCSV(t){const r=[],l=t.split(/\r?\n/);for(const ln of l){if(!ln.trim())continue;r.push(ln.split(","))}return r}
   function toObj(rows){const h=rows.shift();return rows.map(r=>Object.fromEntries(h.map((x,i)=>[x.trim(),(r[i]||"").trim()])))}
   async function getCSV(u){const res=await fetch(u,{cache:"no-store"});return toObj(parseCSV(await res.text()))}
-  function money(n){return isFinite(n)?`$${parseFloat(n).toFixed(2)}`:""}
   function num(n){const m=String(n||"").replace(/[, $]/g,"").match(/[\d.]+/);return m?parseFloat(m[0]):NaN}
+  function money(n){return isFinite(n)?`$${parseFloat(n).toFixed(2)}`:""}
   function tagLink(u,tag){try{const x=new URL(u.replace(/^http:/,"https:"));if(x.hostname.includes("amazon.com")){x.searchParams.set("tag",tag);return x.toString()}return u}catch(_){return u}}
 
   function cardHTML(d){
@@ -180,31 +137,30 @@
     const orig=num(d.RegPrice_$||d.OriginalPrice);
     const promo=(d.PromoCode||"").trim();
     let link=d.TaggedLink||"";
-    if(ASSOC_TAG){link=link?tagLink(link,ASSOC_TAG):(asin?`https://www.amazon.com/dp/${asin}?tag=${ASSOC_TAG}`:"")}
+    if(TAG){link=link?tagLink(link,TAG):(asin?`https://www.amazon.com/dp/${asin}?tag=${TAG}`:"")}
     const shareURL=`https://${SUB}.bagthatthangup.com/?deal=${asin}`;
-
     return `
-    <article class="card">
-      <div class="media">${img?`<img src="${img}" alt="${title}">`:""}</div>
-      <div class="body">
-        <div class="tags">
-          ${asin?`<span class="tag">ASIN ${asin}</span>`:""}
-          ${cat?`<span class="tag">${cat}</span>`:""}
+      <article class="card">
+        <div class="media">${img?`<img src="${img}" alt="${title}">`:""}</div>
+        <div class="body">
+          <div class="tags">
+            ${asin?`<span class="tag">ASIN ${asin}</span>`:""}
+            ${cat?`<span class="tag">${cat}</span>`:""}
+          </div>
+          ${title?`<div class="title-line">${title}</div>`:""}
+          ${stars?`<div class="stars">${stars} ⭐</div>`:""}
+          <div class="price-box">
+            ${orig>deal?`<span class="original-price">${money(orig)}</span>`:""}
+            ${deal?`<span class="deal-price">${money(deal)}</span>`:""}
+          </div>
+          ${promo?`<div class="meta2">Copy promo code — ${promo}</div>`:""}
+          <div class="actions">
+            <button class="btn-share" onclick="shareDeal('${encodeURIComponent(title)}','${encodeURIComponent(shareURL)}')">Share</button>
+            <button class="btn-code" onclick="navigator.clipboard.writeText('${promo}')">Copy Code</button>
+            <a class="btn" href="${link}" target="_blank" rel="nofollow noopener">Go to Amazon</a>
+          </div>
         </div>
-        ${title?`<div class="title-line">${title}</div>`:""}
-        ${stars?`<div class="stars">${stars} ⭐</div>`:""}
-        <div class="price-box">
-          ${orig>deal?`<span class="original-price">${money(orig)}</span>`:""}
-          ${deal?`<span class="deal-price">${money(deal)}</span>`:""}
-        </div>
-        ${promo?`<div class="meta2">Copy promo code — ${promo}</div>`:""}
-        <div class="actions">
-          <button class="btn-share" onclick="shareDeal('${encodeURIComponent(title)}','${encodeURIComponent(shareURL)}')">Share</button>
-          <button class="btn-code" onclick="navigator.clipboard.writeText('${promo}')">Copy Code</button>
-          <a class="btn" href="${link}" target="_blank" rel="nofollow noopener">Go to Amazon</a>
-        </div>
-      </div>
-    </article>`;
+      </article>`;
   }
 
   window.shareDeal=function(title,url){
@@ -213,14 +169,21 @@
     else{navigator.clipboard.writeText(u);alert("Share link copied!")}
   }
 
+  async function showTab(tab){
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("primary",b.dataset.src===tab));
+    if(!DATA[tab])DATA[tab]=await getCSV(CSV[tab]);
+    const list=DATA[tab];
+    grid.innerHTML=list.length?list.map(cardHTML).join(""):"<p>No deals found.</p>";
+  }
+
   async function init(){
     SUB=location.hostname.split(".")[0];
-    const tenants=await getCSV(SUBSCRIBERS_CSV);
-    const me=tenants.find(x=>x.subdomain.toLowerCase()===SUB);
-    if(me){ASSOC_TAG=me.amazon_tag||"";document.getElementById("headline").textContent=me.site_display_name||"Daily Deals";
+    const subs=await getCSV(SUBS);
+    const me=subs.find(x=>x.subdomain.toLowerCase()===SUB);
+    if(me){TAG=me.amazon_tag||"";document.getElementById("headline").textContent=me.site_display_name||"Daily Deals";
       if(me.logo_url)document.getElementById("logo").src=me.logo_url;}
-    const today=await getCSV(CSV_TODAY);
-    grid.innerHTML=today.map(cardHTML).join("");
+    await showTab("today");
+    document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.src)));
   }
   init();
 })();
