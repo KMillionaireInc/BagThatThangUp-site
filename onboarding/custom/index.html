@@ -12,7 +12,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh
+  height:100vh;
 }
 .card{
   background:#fff;
@@ -22,7 +22,7 @@ body{
   padding:32px;
   text-align:left;
   max-width:460px;
-  width:90%
+  width:90%;
 }
 h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
 label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
@@ -32,7 +32,7 @@ input,select{
   border-radius:10px;
   border:1px solid #cdd8e1;
   margin-top:6px;
-  font-size:15px
+  font-size:15px;
 }
 button{
   width:100%;
@@ -43,13 +43,14 @@ button{
   border-radius:10px;
   border:0;
   font-weight:700;
-  cursor:pointer
+  cursor:pointer;
 }
 button:hover{background:#0c6e45}
 .color-row{display:flex;gap:10px}
 .note{font-size:13px;color:#64727f;margin-top:6px}
 </style>
 </head>
+
 <body>
 <div class="card">
   <h1>Custom Plan Setup</h1>
@@ -67,7 +68,6 @@ button:hover{background:#0c6e45}
     <label>Amazon Associates ID
       <input name="amazon_tag" required>
     </label>
-
     <label>Logo URL
       <input type="url" name="logo_url" placeholder="https://...">
       <div class="note">Upload your logo (e.g. Imgur) and paste the link here.</div>
@@ -104,7 +104,7 @@ button:hover{background:#0c6e45}
 </div>
 
 <script>
-const GAS = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
+const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
 document.getElementById("customForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -123,25 +123,18 @@ document.getElementById("customForm").addEventListener("submit", async e => {
   }
   f.set("subdomain", sub);
 
-  // Build GET request (the GAS script expects parameters)
-  const q = new URLSearchParams([...f.entries()]);
-  q.append("callback", "cb");
-
-  const url = GAS + "?" + q.toString();
+  const payload = Object.fromEntries(f.entries());
 
   try {
-    const r = await fetch(url);
-    const text = await r.text();
+    // POST to GAS using JSON
+    const r = await fetch(GAS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-    // Normalize the response
-    let data = {};
-    try {
-      data = JSON.parse(text.replace(/^cb\(|\);?$/g, '')); // handle JSONP wrapper
-    } catch (err) {
-      data = text.includes('"ok":true') ? { ok: true } : {};
-    }
-
-    if (data.ok === true) {
+    if (r.ok) {
+      // Redirect on success
       const domain = sub + ".bagthatthangup.com";
       const store = f.get("site_display_name");
       const logo = f.get("logo_url") || "";
@@ -153,7 +146,7 @@ document.getElementById("customForm").addEventListener("submit", async e => {
       btn.textContent = "Submit Onboarding";
     }
   } catch (err) {
-    alert("Network error. Please check your connection and try again.");
+    alert("Network error. Please try again.");
     btn.disabled = false;
     btn.textContent = "Submit Onboarding";
   }
