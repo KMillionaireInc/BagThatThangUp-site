@@ -3,122 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat · Custom Tenant</title>
+<title>BagThat · Onboarding</title>
 <style>
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6faf9;margin:0;color:#0b1320}
-  .disclosure{position:fixed;top:0;left:0;width:100%;background:#0f915a;color:#fff;text-align:center;font-size:14px;font-weight:500;padding:6px 10px;z-index:1000}
-  body{margin-top:40px}
-  header{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px}
-  header img{height:42px;border-radius:8px}
-  h1{font-size:20px;margin:0;font-weight:700}
-  .tabs{display:flex;justify-content:center;gap:10px;margin:10px auto}
-  .tabs button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
-  .tabs button.active{background:#0f915a;color:#fff}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;padding:10px;max-width:1100px;margin:0 auto}
-  .card{background:#fff;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:10px;text-align:center}
-  .card img{max-width:100%;border-radius:10px}
-  .title{font-size:14px;font-weight:600;margin:6px 0;color:#0b1320}
-  .price{font-size:14px;color:#0f915a;font-weight:700}
-  .strike{color:#777;text-decoration:line-through;margin-right:4px;font-weight:500}
-  .btn{display:inline-block;margin-top:8px;background:#0f915a;color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:#f6faf9;margin:0;
+  display:flex;justify-content:center;align-items:center;
+  height:100vh
+}
+form{
+  background:#fff;padding:30px;border-radius:16px;
+  box-shadow:0 10px 26px rgba(2,24,43,.12);
+  max-width:420px;width:100%
+}
+input{
+  width:100%;padding:10px;margin:6px 0;
+  border:1px solid #ccc;border-radius:8px
+}
+button{
+  background:#0f915a;color:#fff;border:none;
+  padding:12px;width:100%;border-radius:8px;font-weight:700
+}
 </style>
 </head>
 <body>
-<div class="disclosure">As an Amazon Associate I earn from qualifying purchases.</div>
-<header>
-  <img id="logo" src="" alt="" style="display:none">
-  <h1 id="siteTitle">BagThat Store</h1>
-</header>
 
-<div class="tabs">
-  <button class="active" onclick="showTab('today')">Today's Deals</button>
-  <button onclick="showTab('yesterday')">Yesterday</button>
-  <button onclick="showTab('almostgone')">Almost Gone</button>
-</div>
-
-<div id="dealContainer" class="grid"></div>
+<form id="onboardForm">
+  <h2 id="planTitle">Plan Setup</h2>
+  <input name="site_display_name" placeholder="Store name" required>
+  <input name="email" type="email" placeholder="Contact email" required>
+  <input name="subdomain" placeholder="Subdomain (no spaces)" required>
+  <input name="amazon_tag" placeholder="Amazon Associates ID">
+  <input type="hidden" name="plan" id="planField">
+  <button type="submit">Submit Onboarding</button>
+</form>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
-const params = new URLSearchParams(window.location.search);
-const site = (params.get("site") || location.hostname.split(".")[0] || "").toLowerCase();
-let tenantData = null, currentTab = "today";
+const GAS="https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
 
-// ===== Load Tenant Branding =====
-async function loadTenant() {
-  try {
-    const res = await fetch(`${API_URL}?plan=custom&subdomain=${encodeURIComponent(site)}`);
-    tenantData = await res.json();
-    if (!tenantData || !tenantData.ok) throw new Error("Invalid data");
+// detect plan from URL (from Stripe redirect)
+const p = new URLSearchParams(location.search);
+let planKey = p.get("plan_key") || "";
+let plan = (p.get("plan") || "").toLowerCase();
 
-    const info = tenantData.row || tenantData.data || tenantData;
-    const name = info.site_display_name || "BagThat Store";
-    const logo = info.logo_url || "";
-    const color1 = info.color_primary || "#0f915a";
-    const color2 = info.color_secondary || "#1e90ff";
-    const tag = info.amazon_tag || "";
-
-    document.title = name;
-    document.getElementById("siteTitle").textContent = name;
-
-    if (logo) {
-      const el = document.getElementById("logo");
-      el.src = logo; el.style.display = "block";
-    }
-
-    document.documentElement.style.setProperty("--color-primary", color1);
-    document.querySelector(".disclosure").style.background = color1;
-    document.querySelectorAll(".tabs button.active, .btn").forEach(b=>b.style.background=color1);
-
-    loadDeals(tag);
-  } catch(e){
-    console.error("Tenant load error:", e);
-    loadDeals("");
-  }
+// map plan_key to plan name if needed
+if (!plan && planKey) {
+  if (planKey.startsWith("btb_")) plan = "basic";
+  else if (planKey.startsWith("btc_")) plan = "custom";
+  else if (planKey.startsWith("btp_")) plan = "pro";
 }
 
-// ===== Load Deals =====
-async function loadDeals(tag) {
-  try {
-    const res = await fetch(`${API_URL}?fetch=deals&plan=custom&subdomain=${encodeURIComponent(site)}`);
-    const data = await res.json();
-    const deals = data.deals || data;
+// fallback safety
+if (!plan) plan = "basic";
 
-    renderDeals(deals, tag);
-  } catch(err){
-    console.error("Deal load error:", err);
-  }
-}
+// update form display
+document.getElementById("planField").value = plan;
+document.getElementById("planTitle").textContent = plan.charAt(0).toUpperCase()+plan.slice(1)+" Plan Setup";
 
-function renderDeals(deals, tag){
-  const container=document.getElementById("dealContainer");
-  container.innerHTML="";
-  (deals||[]).forEach(d=>{
-    const cleanLink = d.TaggedLink ? d.TaggedLink.replace(/tag=[^&]*/g,`tag=${tag}`) : "#";
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
-      <img src="${d.ImageURL_clean || d.ImageURL_raw || ''}">
-      <div class="title">${d.Title||''}</div>
-      <div class="price">
-        ${d.OriginalPrice ? `<span class='strike'>$${d.OriginalPrice}</span>`:''}
-        $${d.DiscountPrice||''}
-      </div>
-      <a class="btn" href="${cleanLink}" target="_blank">Shop Now</a>
-    `;
-    container.appendChild(card);
-  });
-}
+document.getElementById("onboardForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const q=new URLSearchParams([...f.entries()]);
+  q.append("callback","cb");
+  const url=GAS+"?"+q.toString();
 
-function showTab(tab){
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.querySelector(`.tabs button[onclick="showTab('${tab}')"]`).classList.add("active");
-  currentTab=tab;
-  loadTenant(); // re-fetch data for selected tab
-}
-
-// === Init ===
-loadTenant();
+  try{
+    const r=await fetch(url);
+    const t=await r.text();
+    if(t.includes('"ok":true')){
+      const domain=f.get("subdomain")+".bagthatthangup.com";
+      const store=f.get("site_display_name");
+      location.href="/stripe/success/index.html?domain="+encodeURIComponent(domain)+"&store="+encodeURIComponent(store);
+    }else alert("Error saving your info.");
+  }catch(_){alert("Network error. Try again.");}
+});
 </script>
 </body>
 </html>
