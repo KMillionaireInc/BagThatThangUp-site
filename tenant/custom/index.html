@@ -1,226 +1,124 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Deals</title>
-<meta name="description" content="Curated Amazon promo codes, coupons & finds — refreshed daily.">
-<link rel="icon" href="/favicon.png" sizes="32x32">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat · Custom Tenant</title>
 <style>
-:root {
-  --brand:#0ea5a6; --accent:#1e90ff; --ink:#0b1320; --muted:#4d6375;
-  --bg:#f6faf9; --surface:#fff; --line:#e8eef5;
-  --btn:#0f915a; --btn-ink:#fff; --shadow:0 10px 26px rgba(2,24,43,.12);
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
-
-.disclosure{background:#fff7e6;color:#4d3b00;
-  font-weight:700;text-align:center;padding:8px 12px;
-  border-bottom:1px solid #ecd9b3;font-size:13px}
-
-.hero{
-  background:linear-gradient(135deg,var(--brand),var(--accent));
-  color:#fff;padding:24px 16px;display:grid;gap:14px;
-  grid-template-columns:72px 1fr;border-bottom:1px solid #dff1f3;
-}
-.hero img{width:72px;height:72px;border-radius:999px;
-  border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
-.h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
-.sub{margin:4px 0 8px;color:#eaf7ff}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.pill{background:#fff;color:#083663;border:1px solid #d9e7ff;
-  padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
-.pill.primary{background:#083663;color:#fff;border-color:#083663}
-.extra-btn{background:#ff8a1f;color:#fff;border:0;padding:9px 14px;
-  border-radius:10px;font-weight:800;cursor:pointer}
-
-.toolbar{background:#f6faf9cc;backdrop-filter:saturate(160%) blur(10px);
-  border-bottom:1px solid #e8eef5;position:sticky;top:0;z-index:80}
-.toolbar .wrap{max-width:1200px;margin:0 auto;padding:10px 16px;
-  display:grid;gap:10px}
-.toolbar-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);
-  border-radius:999px;display:flex;gap:8px;padding:10px 14px;
-  box-shadow:0 6px 14px rgba(2,24,43,.06)}
-.search input{border:0;outline:0;flex:1;font-size:15px;color:#0d2530}
-.select{min-width:170px;background:#fff;border:1px solid var(--line);
-  border-radius:12px;padding:10px 12px;font-weight:700;color:#083663}
-.ghost{padding:10px 12px;border-radius:10px;background:#e9f8f7;
-  border:1px solid #cfeeee;font-weight:800;cursor:pointer}
-.layout-toggle{display:flex;gap:8px;margin-left:auto}
-.toggle-btn{border:1px solid #cfeeee;background:#fff;padding:8px 12px;
-  border-radius:8px;font-weight:800;cursor:pointer}
-.toggle-btn.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-.grid{display:grid;gap:16px;margin:16px 0 36px}
-.grid-view{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.list-view{grid-template-columns:1fr}
-
-.card{background:var(--surface);border:1px solid var(--line);
-  border-radius:16px;box-shadow:var(--shadow);overflow:hidden;
-  display:flex;flex-direction:column;transition:transform .08s ease,box-shadow .2s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(2,24,43,.16)}
-.media{background:#fff;border-bottom:1px solid #e8eef5;display:flex;
-  justify-content:center;align-items:center;overflow:hidden;padding:10px;height:260px}
-.media img{max-width:100%;max-height:100%;object-fit:contain;object-position:center}
-.body{padding:12px}
-.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-.tag{font-size:11px;padding:3px 6px;border-radius:999px;font-weight:700;
-  white-space:nowrap;background:#eef7ff;color:#083663;border:1px solid #cfe6ff}
-.cc{background:#dff5e9;border:1px solid #8edbb7;color:#0b4c2f}
-.title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px;
-  min-height:38px;display:-webkit-box;-webkit-line-clamp:2;
-  -webkit-box-orient:vertical;overflow:hidden}
-.stars{font-size:14px;color:#f39c12;font-weight:700;margin:4px 0}
-.price-box{display:flex;align-items:baseline;gap:8px;margin-top:6px}
-.original-price{color:#999;text-decoration:line-through;font-size:13px}
-.deal-price{color:#0c6e53;font-weight:900;font-size:18px}
-.meta2{font-size:12px;color:#0b3d3f;margin-top:4px}
-.actions2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;
-  border:1px solid #0b7247;background:var(--btn);color:var(--btn-ink);font-weight:900}
-.btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;font-weight:900}
-.btn-share{display:inline-grid;grid-auto-flow:column;place-content:center;gap:8px;
-  padding:12px;border-radius:12px;border:1px solid #ffd7b0;background:#ff8a1f;
-  color:#fff;font-weight:900}
-.empty{text-align:center;color:#4e6a79;padding:40px 16px;display:none}
-footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6faf9;margin:0;color:#0b1320}
+  .disclosure{position:fixed;top:0;left:0;width:100%;background:#0f915a;color:#fff;text-align:center;font-size:14px;font-weight:500;padding:6px 10px;z-index:1000}
+  body{margin-top:40px}
+  header{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px}
+  header img{height:42px;border-radius:8px}
+  h1{font-size:20px;margin:0;font-weight:700}
+  .tabs{display:flex;justify-content:center;gap:10px;margin:10px auto}
+  .tabs button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+  .tabs button.active{background:#0f915a;color:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;padding:10px;max-width:1100px;margin:0 auto}
+  .card{background:#fff;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:10px;text-align:center}
+  .card img{max-width:100%;border-radius:10px}
+  .title{font-size:14px;font-weight:600;margin:6px 0;color:#0b1320}
+  .price{font-size:14px;color:#0f915a;font-weight:700}
+  .strike{color:#777;text-decoration:line-through;margin-right:4px;font-weight:500}
+  .btn{display:inline-block;margin-top:8px;background:#0f915a;color:#fff;padding:8px 10px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600}
 </style>
 </head>
 <body>
-<div class="disclosure">
-  Daily Amazon promo codes, coupons & curated finds — As an Amazon Associate I earn from qualifying purchases. Promo codes, coupons, and prices may change at any time.
-</div>
-
-<header class="hero">
-  <img id="logo" alt="Logo">
-  <div>
-    <h1 id="headline" class="h1">Deals</h1>
-    <p class="sub" id="subhead">Curated promo codes, refreshed daily.</p>
-    <div class="actions">
-      <button class="pill primary tab" data-src="today">Today's Deals</button>
-      <button class="pill tab" data-src="yesterday">Yesterday</button>
-      <button class="pill tab" data-src="almost">Almost Gone</button>
-      <a id="extraBtn" class="extra-btn" target="_blank" rel="noopener" style="display:none"></a>
-    </div>
-  </div>
+<div class="disclosure">As an Amazon Associate I earn from qualifying purchases.</div>
+<header>
+  <img id="logo" src="" alt="" style="display:none">
+  <h1 id="siteTitle">BagThat Store</h1>
 </header>
 
-<div class="toolbar">
-  <div class="wrap">
-    <div class="toolbar-row">
-      <div class="search"><input id="search" type="search" placeholder="Search deals…"></div>
-      <select id="category" class="select"><option value="__all__">All categories</option></select>
-      <select id="sort" class="select">
-        <option value="newest" selected>Newest</option>
-        <option value="pricelow">Price: Low → High</option>
-        <option value="pricehigh">Price: High → Low</option>
-      </select>
-      <div class="layout-toggle">
-        <button class="toggle-btn active" id="gridViewBtn">Grid</button>
-        <button class="toggle-btn" id="listViewBtn">List</button>
-      </div>
-      <button id="reset" class="ghost">Reset</button>
-    </div>
-  </div>
+<div class="tabs">
+  <button class="active" onclick="showTab('today')">Today's Deals</button>
+  <button onclick="showTab('yesterday')">Yesterday</button>
+  <button onclick="showTab('almostgone')">Almost Gone</button>
 </div>
 
-<main id="main" class="wrap">
-  <div id="grid" class="grid grid-view"><p>Loading deals…</p></div>
-  <div id="empty" class="empty">No deals match your search.</div>
-</main>
-
-<footer>
-  <p>© <span id="year"></span> BagThat. All rights reserved.</p>
-</footer>
+<div id="dealContainer" class="grid"></div>
 
 <script>
-(function(){
-  const CSV_TODAY="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv";
-  const CSV_YEST="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv";
-  const CSV_ALMOST="https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv";
-  const SUBS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv";
+const API_URL = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
+const params = new URLSearchParams(window.location.search);
+const site = (params.get("site") || location.hostname.split(".")[0] || "").toLowerCase();
+let tenantData = null, currentTab = "today";
 
-  const $=s=>document.querySelector(s);
-  const grid=$("#grid"), empty=$("#empty"), logo=$("#logo"), headline=$("#headline"), extraBtn=$("#extraBtn");
+// ===== Load Tenant Branding =====
+async function loadTenant() {
+  try {
+    const res = await fetch(`${API_URL}?plan=custom&subdomain=${encodeURIComponent(site)}`);
+    tenantData = await res.json();
+    if (!tenantData || !tenantData.ok) throw new Error("Invalid data");
 
-  function parseCSV(txt){const rows=[];let row=[],cell="",inQ=false;
-    for(let i=0;i<txt.length;i++){const ch=txt[i],nx=txt[i+1];
-      if(inQ){if(ch=='"'&&nx=='"'){cell+='"';i++;}else if(ch=='"'){inQ=false;}else cell+=ch;}
-      else{if(ch=='"'){inQ=true;}else if(ch==','){row.push(cell);cell="";}
-      else if(ch=='\n'){row.push(cell);rows.push(row);row=[];cell="";}
-      else cell+=ch;}
-    }if(cell||row.length){row.push(cell);rows.push(row);}return rows;}
-  function toObjs(rows){const h=rows[0],out=[];for(let r=1;r<rows.length;r++){const o={};h.forEach((x,i)=>o[x]=rows[r][i]);out.push(o);}return out;}
-  async function fetchCSV(url){const t=await fetch(url);return toObjs(parseCSV(await t.text()));}
-  const money=s=>parseFloat((s||"").replace(/[^0-9.]/g,""))||0;
-  const toMoney=n=>isFinite(n)?"$"+n.toFixed(2):"";
+    const info = tenantData.row || tenantData.data || tenantData;
+    const name = info.site_display_name || "BagThat Store";
+    const logo = info.logo_url || "";
+    const color1 = info.color_primary || "#0f915a";
+    const color2 = info.color_secondary || "#1e90ff";
+    const tag = info.amazon_tag || "";
 
-  function buildCard(d,tag){
-    const title=d.Title||"",cat=d.Category||"",stars=d.Stars||"",asin=d.ASIN_Text||"",promo=d.PromoCode||"",img=d.ImageURL_raw||d.ImageURL_clean||d.Image||"",deal=money(d.DiscountPrice||d.Price),orig=money(d.OriginalPrice||d.RegPrice_$);
-    const link=d.TaggedLink||d.Link||"", href=link.includes("amazon.com")?link.replace(/tag=[^&]*/,"tag="+tag):link;
-    return `<article class="card" data-cat="${cat}">
-      <div class="media">${img?`<img src="${img}" alt="">`:""}</div>
-      <div class="body">
-        <div class="tags">${asin?`<span class="tag">ASIN ${asin}</span>`:""}${cat?`<span class="tag">${cat}</span>`:""}</div>
-        <div class="title-line">${title}</div>
-        ${stars?`<div class="stars">${stars} ⭐</div>`:""}
-        <div class="price-box">${orig?`<span class="original-price">${toMoney(orig)}</span>`:""}${deal?`<span class="deal-price">${toMoney(deal)}</span>`:""}</div>
-        ${promo?`<div class="meta2">Copy promo code — ${promo}</div>`:""}
-        <div class="actions2">
-          <button class="btn-code" onclick="navigator.clipboard.writeText('${promo}')">Copy Code</button>
-          <a class="btn" href="${href}" target="_blank">Go to Amazon</a>
-        </div>
-      </div></article>`;
-  }
+    document.title = name;
+    document.getElementById("siteTitle").textContent = name;
 
-  async function init(){
-    const sub=location.host.split(".")[0];
-    const subs=await fetchCSV(SUBS);
-    const me=subs.find(r=>r.subdomain&&r.subdomain.toLowerCase()==sub);
-    if(!me) throw new Error("Tenant not found");
-    document.documentElement.style.setProperty("--brand",me.color_primary||"#0ea5a6");
-    document.documentElement.style.setProperty("--accent",me.color_secondary||"#1e90ff");
-    logo.src=me.logo_url||"/tenant/assets/custom.png";
-    headline.textContent=me.site_display_name||"Deals";
-    if(me.extra_button_label&&me.extra_button_url){
-      extraBtn.textContent=me.extra_button_label;
-      extraBtn.href=me.extra_button_url;
-      extraBtn.style.display="inline-block";
+    if (logo) {
+      const el = document.getElementById("logo");
+      el.src = logo; el.style.display = "block";
     }
 
-    const tag=me.amazon_tag||"";
-    const [today,yest,almost]=await Promise.all([fetchCSV(CSV_TODAY),fetchCSV(CSV_YEST),fetchCSV(CSV_ALMOST)]);
-    let data=today;
-    function render(list){grid.innerHTML=list.map(x=>buildCard(x,tag)).join("");}
-    render(data);
-    document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
-      document.querySelectorAll(".tab").forEach(x=>x.classList.remove("primary"));
-      b.classList.add("primary");
-      data=b.dataset.src=="yesterday"?yest:b.dataset.src=="almost"?almost:today;
-      render(data);
-    });
+    document.documentElement.style.setProperty("--color-primary", color1);
+    document.querySelector(".disclosure").style.background = color1;
+    document.querySelectorAll(".tabs button.active, .btn").forEach(b=>b.style.background=color1);
 
-    // layout toggle
-    const gridBtn=$("#gridViewBtn"), listBtn=$("#listViewBtn");
-    function setLayout(mode){
-      grid.className="grid "+(mode==="list"?"list-view":"grid-view");
-      gridBtn.classList.toggle("active",mode==="grid");
-      listBtn.classList.toggle("active",mode==="list");
-    }
-    gridBtn.onclick=()=>setLayout("grid");
-    listBtn.onclick=()=>setLayout("list");
-
-    $("#year").textContent=new Date().getFullYear();
+    loadDeals(tag);
+  } catch(e){
+    console.error("Tenant load error:", e);
+    loadDeals("");
   }
+}
 
-  init().catch(e=>{grid.innerHTML=`<p style='color:red;text-align:center'>${e.message}</p>`});
-})();
+// ===== Load Deals =====
+async function loadDeals(tag) {
+  try {
+    const res = await fetch(`${API_URL}?fetch=deals&plan=custom&subdomain=${encodeURIComponent(site)}`);
+    const data = await res.json();
+    const deals = data.deals || data;
+
+    renderDeals(deals, tag);
+  } catch(err){
+    console.error("Deal load error:", err);
+  }
+}
+
+function renderDeals(deals, tag){
+  const container=document.getElementById("dealContainer");
+  container.innerHTML="";
+  (deals||[]).forEach(d=>{
+    const cleanLink = d.TaggedLink ? d.TaggedLink.replace(/tag=[^&]*/g,`tag=${tag}`) : "#";
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <img src="${d.ImageURL_clean || d.ImageURL_raw || ''}">
+      <div class="title">${d.Title||''}</div>
+      <div class="price">
+        ${d.OriginalPrice ? `<span class='strike'>$${d.OriginalPrice}</span>`:''}
+        $${d.DiscountPrice||''}
+      </div>
+      <a class="btn" href="${cleanLink}" target="_blank">Shop Now</a>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function showTab(tab){
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  document.querySelector(`.tabs button[onclick="showTab('${tab}')"]`).classList.add("active");
+  currentTab=tab;
+  loadTenant(); // re-fetch data for selected tab
+}
+
+// === Init ===
+loadTenant();
 </script>
 </body>
 </html>
