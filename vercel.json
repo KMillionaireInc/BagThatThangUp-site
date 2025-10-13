@@ -1,35 +1,38 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/onboarding",
-      "destination": "/onboarding/custom/index.html"
+      "has": [
+        { "type": "query", "key": "plan_key", "value": "btb_.*" }
+      ],
+      "destination": "/onboarding/basic/index.html",
+      "permanent": false
     },
     {
-      "source": "/onboarding/basic",
-      "destination": "/onboarding/basic/index.html"
+      "source": "/onboarding",
+      "has": [
+        { "type": "query", "key": "plan_key", "value": "btc_.*" }
+      ],
+      "destination": "/onboarding/custom/index.html",
+      "permanent": false
     },
     {
-      "source": "/onboarding/custom",
-      "destination": "/onboarding/custom/index.html"
-    },
-    {
-      "source": "/onboarding/pro",
-      "destination": "/onboarding/pro/index.html"
-    },
-    {
-      "source": "/onboarding/success",
-      "destination": "/onboarding/success/index.html"
-    },
-    {
-      "has": [{ "type": "host", "value": "bagthatthangup.com" }],
-      "source": "/(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/tenant/index.html"
+      "source": "/onboarding",
+      "has": [
+        { "type": "query", "key": "plan_key", "value": "btp_.*" }
+      ],
+      "destination": "/onboarding/pro/index.html",
+      "permanent": false
     }
+  ],
+  "rewrites": [
+    { "source": "/onboarding/basic", "destination": "/onboarding/basic/index.html" },
+    { "source": "/onboarding/custom", "destination": "/onboarding/custom/index.html" },
+    { "source": "/onboarding/pro", "destination": "/onboarding/pro/index.html" },
+    { "source": "/onboarding/success", "destination": "/onboarding/success/index.html" },
+    { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/tenant/index.html" }
   ]
 }
