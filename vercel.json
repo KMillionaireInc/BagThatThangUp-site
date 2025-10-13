@@ -1,16 +1,24 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [],
   "rewrites": [
-    { "source": "/onboarding/basic", "destination": "/onboarding/basic/index.html" },
-    { "source": "/onboarding/custom", "destination": "/onboarding/custom/index.html" },
-    { "source": "/onboarding/pro", "destination": "/onboarding/pro/index.html" },
-    { "source": "/onboarding/success", "destination": "/onboarding/success/index.html" },
-    { "source": "/onboarding/basic/", "destination": "/onboarding/basic/index.html" },
-    { "source": "/onboarding/custom/", "destination": "/onboarding/custom/index.html" },
-    { "source": "/onboarding/pro/", "destination": "/onboarding/pro/index.html" },
-    { "source": "/onboarding/success/", "destination": "/onboarding/success/index.html" },
-    { "has": [{ "type": "host", "value": "bagthatthangup.com" }], "source": "/(.*)", "destination": "/index.html" },
-    { "source": "/(.*)", "destination": "/tenant/index.html" }
+    {
+      "source": "/onboarding/:path*/",
+      "destination": "/onboarding/:path*/index.html"
+    },
+    {
+      "source": "/onboarding/:path*",
+      "destination": "/onboarding/:path*/index.html"
+    },
+    {
+      "has": [{ "type": "host", "value": "bagthatthangup.com" }],
+      "source": "/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/tenant/index.html"
+    }
   ]
 }
