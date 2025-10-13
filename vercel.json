@@ -1,5 +1,11 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
+    {
+      "source": "/onboarding",
+      "destination": "/onboarding/custom/index.html"
+    },
     {
       "source": "/onboarding/basic",
       "destination": "/onboarding/basic/index.html"
@@ -16,16 +22,8 @@
       "source": "/onboarding/success",
       "destination": "/onboarding/success/index.html"
     },
-
     {
-      "source": "/onboarding",
-      "destination": "/onboarding/custom/index.html"
-    },
-
-    {
-      "has": [
-        { "type": "host", "value": "bagthatthangup.com" }
-      ],
+      "has": [{ "type": "host", "value": "bagthatthangup.com" }],
       "source": "/(.*)",
       "destination": "/index.html"
     },
