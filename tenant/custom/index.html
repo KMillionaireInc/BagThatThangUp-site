@@ -1,175 +1,153 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Custom Deals · BagThat</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Custom Storefront · BagThat</title>
 <style>
-:root {
-  --primary:#0ea5a6;
+:root{
+  --brand:#0ea5a6;
   --accent:#1e90ff;
   --ink:#0b1320;
-  --surface:#fff;
-  --radius:16px;
-  --shadow:0 10px 26px rgba(2,24,43,.08);
+  --muted:#4d6375;
+  --bg:#f6faf9;
+  --btn:#0f915a;
 }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
 
-body {
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:#f6faf9;
-  color:var(--ink);
-}
-
-header {
+/* Disclosure */
+.disclosure-bar{
+  background:#fff8e1;
+  border-bottom:1px solid #f0e0b0;
+  color:#664d03;
   text-align:center;
-  background:var(--primary);
-  color:#fff;
-  padding:16px;
-  box-shadow:var(--shadow);
+  font-size:13px;
+  font-weight:700;
+  padding:8px 12px;
 }
 
-header img {
-  max-height:60px;
-  margin-bottom:8px;
-  border-radius:10px;
-}
+/* Header */
+.hero{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff}
+.hero .inner{max-width:1200px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:64px 1fr}
+.avatar{width:64px;height:64px;border-radius:999px;border:2px solid rgba(255,255,255,.9);object-fit:cover;background:#fff}
+.h1{margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:900}
+.sub{margin:4px 0 8px;color:#fffbe7;font-size:14px;line-height:1.4}
+.hero .actions{display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:#fff;color:#083663;border:1px solid #d9e7ff;padding:8px 12px;border-radius:999px;font-weight:800;cursor:pointer}
+.pill.primary{background:#083663;color:#fff;border-color:#083663}
 
-.deals {
-  display:grid;
-  gap:16px;
-  padding:20px;
-}
-.deal {
-  background:var(--surface);
-  border:1px solid #e8eef5;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  text-align:center;
-  padding:16px;
-}
-.deal img {
-  width:100%;
-  max-height:220px;
-  object-fit:contain;
-}
-.deal h3 { font-size:16px; margin:10px 0; }
-.deal a.btn {
-  display:inline-block;
-  background:var(--primary);
-  color:#fff;
-  padding:10px 14px;
-  border-radius:10px;
-  font-weight:600;
-  text-decoration:none;
-}
-.deal a.btn:hover { background:var(--accent); }
+/* Grid */
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+.grid{display:grid;gap:16px;margin:16px 0 36px}
+@media(max-width:599px){.grid{grid-template-columns:1fr}}
+@media(min-width:600px){.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.12);overflow:hidden;display:flex;flex-direction:column}
+.media{display:flex;justify-content:center;align-items:center;height:240px;background:#fff;border-bottom:1px solid #e8eef5}
+.body{padding:12px}
+.title-line{font-size:15px;font-weight:800;line-height:1.25;margin:2px 0 6px}
+.price-box{display:flex;align-items:center;gap:6px}
+.deal-price{color:#0c6e53;font-weight:900;font-size:18px}
+.original-price{color:#999;text-decoration:line-through;font-size:13px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.btn{display:inline-block;text-align:center;padding:12px;border-radius:12px;background:var(--btn);color:#fff;font-weight:900}
+.btn-code{background:#fff;color:#083663;border:1px solid #cfeeee;border-radius:12px;font-weight:900}
 
-#extraBtns { text-align:center; margin:10px 0; }
-#extraBtns a {
-  display:inline-block;
-  margin:4px;
-  padding:10px 14px;
-  border-radius:10px;
-  background:var(--accent);
-  color:#fff;
-  text-decoration:none;
-  font-weight:600;
-}
-.list .deals { display:block; }
-.list .deal { display:flex; gap:12px; text-align:left; }
-.list .deal img { width:120px; height:120px; }
+/* Footer */
+footer{color:#4e6a79;border-top:1px solid #e8eef5;padding:24px 0;margin-top:20px;text-align:center;font-size:13px}
 </style>
 </head>
 <body>
 
-<header id="siteHeader">
-  <img id="logo" alt="Logo" style="display:none">
-  <h1 id="storeName">Loading...</h1>
-  <div id="extraBtns"></div>
+<div class="disclosure-bar">
+  Daily Amazon promo codes — As an Amazon Associate I earn from qualifying purchases.
+</div>
+
+<header class="hero">
+  <div class="inner">
+    <img id="avatar" class="avatar" src="https://via.placeholder.com/64x64.png?text=Logo" alt="Logo">
+    <div>
+      <h1 id="storeTitle" class="h1">Loading...</h1>
+      <p id="storeSub" class="sub">Refreshed daily.</p>
+      <div id="buttonRow" class="actions"></div>
+    </div>
+  </div>
 </header>
 
-<main id="dealContainer" class="grid">
-  <div style="text-align:center;padding:50px;color:#555;">Loading deals...</div>
+<main class="wrap">
+  <div id="grid" class="grid"><p>Loading deals…</p></div>
 </main>
 
+<footer>© 2025</footer>
+
 <script>
-// ====== CONFIG ======
-const SHEET_ID = "1qn-BIcMQlTs_j7b5oC_tYFQ8DFKzJtZdPD-VmBbcOtg"; // BagThat master
-const FEED_URL = "https://script.google.com/macros/s/AKfycbx_KZ_AzillionairesFeedID/exec"; // placeholder feed endpoint
+// ===== CONFIG =====
+const GAS = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
+const DEALS = {
+  today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hOlderdV0ABENcLrWMZFl8zXEqXii-3TnA55f13uVNMArQJjDw9OskRH1gLLQLIivHl5zOeH0yKb/pub?gid=0&single=true&output=csv"
+};
 
-// ====== HELPERS ======
-function param(name) {
-  return new URLSearchParams(location.search).get(name);
+// ===== GET URL PARAMS =====
+const params = new URLSearchParams(location.search);
+const sub = params.get("site") || location.hostname.split(".")[0];
+const plan = params.get("plan") || "custom";
+
+// ===== LOAD TENANT SETTINGS =====
+async function loadTenant() {
+  const url = `${GAS}?subdomain=${encodeURIComponent(sub)}&plan=${encodeURIComponent(plan)}`;
+  const r = await fetch(url);
+  const t = await r.json();
+  if (!t.ok || !t.tenant) return;
+  const d = t.tenant;
+
+  // Apply theme + title
+  document.documentElement.style.setProperty("--brand", d.color_primary || "#0ea5a6");
+  document.documentElement.style.setProperty("--accent", d.color_secondary || "#1e90ff");
+  document.getElementById("storeTitle").textContent = d["site_display_name"] || sub;
+  if (d.logo_url) document.getElementById("avatar").src = d.logo_url;
+
+  // Buttons
+  const row = document.getElementById("buttonRow");
+  row.innerHTML = `
+    <button class="pill primary" onclick="loadDeals()">Today's Deals</button>
+    ${d.extra_button_label && d.extra_button_url ? `<a class="pill" href="${d.extra_button_url}" target="_blank">${d.extra_button_label}</a>` : ""}
+  `;
 }
 
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Fetch failed: ${url}`);
-  return res.json();
+// ===== LOAD DEALS =====
+async function loadDeals() {
+  const grid = document.getElementById("grid");
+  const r = await fetch(DEALS.today);
+  const txt = await r.text();
+  const rows = txt.split("\n").slice(1).map(r=>r.split(","));
+  grid.innerHTML = rows.map(r=>{
+    const title=r[12]||"Deal";
+    const price=r[2]||"";
+    const orig=r[21]||"";
+    const link=(r[6]||"").replace("tag=kimberlymillionaire-20",`tag=${encodeURIComponent(sub)}-20`);
+    const img=r[9]||"https://via.placeholder.com/300x300?text=Deal";
+    const code=r[3]||"";
+    return `
+      <article class="card">
+        <div class="media"><img src="${img}" alt="${title}"></div>
+        <div class="body">
+          <div class="title-line">${title}</div>
+          <div class="price-box"><span class="deal-price">$${price}</span>${orig?`<span class="original-price">$${orig}</span>`:""}</div>
+          <div class="actions">
+            <button class="btn-code" onclick="navigator.clipboard.writeText('${code}')">Copy Code</button>
+            <a class="btn" href="${link}" target="_blank">Shop</a>
+          </div>
+        </div>
+      </article>`;
+  }).join("");
 }
 
-// ====== LOAD TENANT INFO ======
-(async ()=>{
-  try {
-    const sub = location.hostname.split(".")[0].toLowerCase();
-    const url = `https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec?action=getTenant&plan=custom&subdomain=${encodeURIComponent(sub)}`;
-    const tenant = await fetchJSON(url);
-
-    if (!tenant || !tenant.ok) throw new Error("Tenant not found");
-
-    const { site_display_name, logo_url, color_primary, color_secondary, extra_button_label, extra_button_url, layout, amazon_tag } = tenant;
-
-    // apply branding
-    document.documentElement.style.setProperty("--primary", color_primary || "#0ea5a6");
-    document.documentElement.style.setProperty("--accent", color_secondary || "#1e90ff");
-    document.getElementById("storeName").textContent = site_display_name || sub;
-    if (logo_url) {
-      const logo = document.getElementById("logo");
-      logo.src = logo_url;
-      logo.style.display = "block";
-    }
-    if (extra_button_label && extra_button_url) {
-      const b = document.createElement("a");
-      b.href = extra_button_url;
-      b.textContent = extra_button_label;
-      document.getElementById("extraBtns").appendChild(b);
-    }
-    document.getElementById("dealContainer").className = layout === "list" ? "list" : "grid";
-
-    // ====== LOAD DEALS ======
-    const deals = await fetchJSON(FEED_URL);
-    renderDeals(deals, amazon_tag);
-
-  } catch(err) {
-    document.getElementById("dealContainer").innerHTML = `<div style="text-align:center;padding:50px;color:#a33">Error loading site: ${err.message}</div>`;
-    console.error(err);
-  }
-})();
-
-// ====== RENDER DEALS ======
-function renderDeals(deals, tag) {
-  const wrap = document.getElementById("dealContainer");
-  wrap.innerHTML = "";
-  deals.forEach(d=>{
-    let link = d.TaggedLink || d.ProductLink || "#";
-    link = link.replace(/tag=[^&]+/, "tag=" + encodeURIComponent(tag));
-    if (!link.includes("tag=")) {
-      link += (link.includes("?") ? "&" : "?") + "tag=" + encodeURIComponent(tag);
-    }
-    const el = document.createElement("div");
-    el.className = "deal";
-    el.innerHTML = `
-      <img src="${d.ImageURL_clean||d.ImageURL_raw||''}" alt="">
-      <h3>${d.Title||''}</h3>
-      <a href="${link}" class="btn" target="_blank">View Deal</a>
-    `;
-    wrap.appendChild(el);
-  });
-}
+document.addEventListener("DOMContentLoaded", async()=>{
+  await loadTenant();
+  await loadDeals();
+});
 </script>
-
 </body>
 </html>
