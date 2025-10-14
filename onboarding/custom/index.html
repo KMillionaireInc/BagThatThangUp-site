@@ -1,145 +1,86 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Custom Plan Setup · BagThat</title>
 <style>
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:#f7faf9;
-  margin:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.card{
-  background:#fff;
-  border:1px solid #e8eef5;
-  border-radius:16px;
-  box-shadow:0 10px 26px rgba(2,24,43,.08);
-  padding:32px;
-  text-align:left;
-  max-width:460px;
-  width:90%;
-}
+/* copy your existing styles — kept minimal here */
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7faf9;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;border:1px solid #e8eef5;border-radius:16px;box-shadow:0 10px 26px rgba(2,24,43,.08);padding:32px;text-align:left;max-width:460px;width:90%}
 h1{margin-bottom:16px;font-size:22px;color:#0b1320;text-align:center}
 label{display:block;margin-top:14px;font-weight:600;color:#0b1320;font-size:14px}
-input,select{
-  width:100%;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #cdd8e1;
-  margin-top:6px;
-  font-size:15px;
-}
-button{
-  width:100%;
-  margin-top:24px;
-  background:#0f915a;
-  color:#fff;
-  padding:12px 18px;
-  border-radius:10px;
-  border:0;
-  font-weight:700;
-  cursor:pointer;
-}
-button:hover{background:#0c6e45}
-.color-row{display:flex;gap:10px}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #cdd8e1;margin-top:6px;font-size:15px}
+button{width:100%;margin-top:24px;background:#0f915a;color:#fff;padding:12px 18px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
 .note{font-size:13px;color:#64727f;margin-top:6px}
+.color-row{display:flex;gap:10px}
 </style>
 </head>
 <body>
 <div class="card">
   <h1>Custom Plan Setup</h1>
   <form id="customForm">
-    <label>Store name
-      <input name="site_display_name" required>
-    </label>
-    <label>Contact email
-      <input type="email" name="email" required>
-    </label>
-    <label>Subdomain (no spaces)
-      <input name="subdomain" pattern="[a-z0-9-]+" required>
-      <div class="note">Example: mystore → mystore.bagthatthangup.com</div>
-    </label>
-    <label>Amazon Associates ID
-      <input name="amazon_tag" required>
-    </label>
-    <label>Logo URL
-      <input type="url" name="logo_url" placeholder="https://...">
-      <div class="note">Upload your logo (e.g. Imgur) and paste the link here.</div>
-    </label>
-
+    <label>Store name <input name="site_display_name" required></label>
+    <label>Contact email <input type="email" name="email" required></label>
+    <label>Subdomain (letters/numbers only) <input name="subdomain" pattern="[a-z0-9-]+" required><div class="note">example → mystore.bagthatthangup.com</div></label>
+    <label>Amazon Associates ID <input name="amazon_tag" required></label>
+    <label>Logo URL <input type="url" name="logo_url" placeholder="https://..."><div class="note">Upload logo and paste URL</div></label>
     <div class="color-row">
-      <label style="flex:1">Primary Color
-        <input type="color" name="color_primary" value="#0ea5a6">
-      </label>
-      <label style="flex:1">Accent Color
-        <input type="color" name="color_secondary" value="#1e90ff">
-      </label>
+      <label style="flex:1">Primary Color <input type="color" name="color_primary" value="#0ea5a6"></label>
+      <label style="flex:1">Accent Color <input type="color" name="color_secondary" value="#1e90ff"></label>
     </div>
-
-    <label>Extra Button Label (optional)
-      <input name="extra_button_label" placeholder="Follow Me on Amazon">
-    </label>
-    <label>Extra Button URL
-      <input type="url" name="extra_button_url" placeholder="https://www.amazon.com/shop/...">
-    </label>
-
-    <label>Layout Preference
-      <select name="layout">
-        <option value="grid">Grid</option>
-        <option value="list">List</option>
-      </select>
-    </label>
-
+    <label>Extra button label <input name="extra_button_label" placeholder="My Amazon Store"></label>
+    <label>Extra button URL <input type="url" name="extra_button_url" placeholder="https://..."></label>
+    <label>Layout <select name="layout"><option value="grid">Grid</option><option value="list">List</option></select></label>
     <input type="hidden" name="plan" value="custom">
     <input type="hidden" name="status" value="active">
-
     <button type="submit">Submit Onboarding</button>
   </form>
 </div>
 
 <script>
-// --- Absolute endpoint with protocol lock ---
-const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec"
-  .replace(/^https?:/, window.location.protocol);
+const GAS_URL = "REPLACE_WITH_YOUR_DEPLOYED_GAS_URL"; // <<--- put the Apps Script web app URL here
+const SUCCESS_PAGE = "/stripe/success/index.html";
 
-document.getElementById("customForm").addEventListener("submit", async e => {
+document.getElementById('customForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector("button");
-  btn.disabled = true;
-  btn.textContent = "Submitting...";
+  const btn = e.target.querySelector('button');
+  btn.disabled = true; btn.textContent = 'Submitting...';
 
-  const f = new FormData(form);
-  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
-  if (!sub) {
-    alert("Please enter a valid subdomain (letters/numbers only).");
-    btn.disabled = false;
-    btn.textContent = "Submit Onboarding";
-    return;
-  }
-  f.set("subdomain", sub);
+  const fd = new FormData(e.target);
+  let sub = (fd.get('subdomain') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  if (!sub) { alert('Enter a valid subdomain'); btn.disabled = false; btn.textContent='Submit Onboarding'; return; }
+  fd.set('subdomain', sub);
 
-  const q = new URLSearchParams([...f.entries()]);
-  q.append("callback", "cb");
-
-  const url = GAS + "?" + q.toString();
+  // Build query string (we use GET for simplicity & compatibility)
+  const params = new URLSearchParams();
+  for (const [k,v] of fd.entries()) { if (v !== null && v !== undefined) params.append(k, v); }
+  // request JSON (no callback) — Apps Script will return JSON
+  params.append('plan','custom');
 
   try {
-    // Force absolute external call, skip CORS preflight
-    const r = await fetch(url, { mode: "no-cors" });
-    // Even if response is opaque, assume success path (Apps Script GET)
-    const domain = sub + ".bagthatthangup.com";
-    const store = f.get("site_display_name");
-    location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=custom`;
+    const res = await fetch(GAS_URL + '?' + params.toString(), { method: 'GET', cache: 'no-store' });
+    if (!res.ok) throw new Error('Network response error ' + res.status);
+    const json = await res.json();
+    if (json && json.ok === true) {
+      const domain = `${sub}.bagthatthangup.com`;
+      const store = fd.get('site_display_name') || '';
+      // Pass relevant display params to success page so badge/logo show
+      const q = new URLSearchParams({
+        domain,
+        store,
+        plan: 'Custom',
+        logo_url: fd.get('logo_url') || '',
+        color_primary: fd.get('color_primary') || '',
+        color_secondary: fd.get('color_secondary') || ''
+      }).toString();
+      location.href = SUCCESS_PAGE + '?' + q;
+    } else {
+      alert('Save failed: ' + (json && json.error ? json.error : 'unknown'));
+      btn.disabled = false; btn.textContent='Submit Onboarding';
+    }
   } catch (err) {
-    alert("Network error. Please check your connection and try again.");
-    btn.disabled = false;
-    btn.textContent = "Submit Onboarding";
+    console.error(err);
+    alert('Network or server error. Check console.');
+    btn.disabled = false; btn.textContent='Submit Onboarding';
   }
 });
 </script>
