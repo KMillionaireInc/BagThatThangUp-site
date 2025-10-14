@@ -1,168 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Custom Plan Setup · BagThat</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Custom Plan Setup • BagThat</title>
 <style>
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #f7faf9;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-.card {
-  background: #fff;
-  border: 1px solid #e8eef5;
-  border-radius: 16px;
-  box-shadow: 0 10px 26px rgba(2,24,43,.08);
-  padding: 32px;
-  text-align: left;
-  max-width: 460px;
-  width: 90%;
-}
-h1 {
-  margin-bottom: 16px;
-  font-size: 22px;
-  color: #0b1320;
-  text-align: center;
-}
-label {
-  display: block;
-  margin-top: 14px;
-  font-weight: 600;
-  color: #0b1320;
-  font-size: 14px;
-}
-input, select {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #cdd8e1;
-  margin-top: 6px;
-  font-size: 15px;
-}
-button {
-  width: 100%;
-  margin-top: 24px;
-  background: #0f915a;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 10px;
-  border: 0;
-  font-weight: 700;
-  cursor: pointer;
-}
-button:hover { background: #0c6e45; }
-.color-row { display: flex; gap: 10px; }
-.note { font-size: 13px; color: #64727f; margin-top: 6px; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f6f8fa;margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh}
+form{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.08);width:90%;max-width:400px}
+h2{text-align:center;margin-top:0;color:#222}
+input,select,button{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:15px}
+button{background:#0f915a;color:#fff;font-weight:600;cursor:pointer;border:none}
+button:disabled{background:#a0a0a0;cursor:not-allowed}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>Custom Plan Setup</h1>
-  <form id="customForm">
-    <label>Store name
-      <input name="site_display_name" required>
-    </label>
-    <label>Contact email
-      <input type="email" name="email" required>
-    </label>
-    <label>Subdomain (no spaces)
-      <input name="subdomain" pattern="[a-z0-9-]+" required>
-      <div class="note">Example: mystore → mystore.bagthatthangup.com</div>
-    </label>
-    <label>Amazon Associates ID
-      <input name="amazon_tag" required>
-    </label>
 
-    <label>Logo URL
-      <input type="url" name="logo_url" placeholder="https://...">
-      <div class="note">Upload your logo (e.g., Imgur) and paste the link here.</div>
-    </label>
+<form id="customForm">
+  <h2>Custom Plan Setup</h2>
 
-    <div class="color-row">
-      <label style="flex:1">Primary Color
-        <input type="color" name="color_primary" value="#0ea5a6">
-      </label>
-      <label style="flex:1">Accent Color
-        <input type="color" name="color_secondary" value="#1e90ff">
-      </label>
-    </div>
+  <label>Store name</label>
+  <input name="site_display_name" required>
 
-    <label>Extra Button Label (optional)
-      <input name="extra_button_label" placeholder="Follow Me on Amazon">
-    </label>
-    <label>Extra Button URL
-      <input type="url" name="extra_button_url" placeholder="https://www.amazon.com/shop/...">
-    </label>
+  <label>Contact email</label>
+  <input name="email" type="email" required>
 
-    <label>Layout Preference
-      <select name="layout">
-        <option value="grid">Grid</option>
-        <option value="list">List</option>
-      </select>
-    </label>
+  <label>Subdomain (no spaces)</label>
+  <input name="subdomain" required>
 
-    <input type="hidden" name="plan" value="custom">
-    <input type="hidden" name="status" value="active">
+  <small>Example: mystore → mystore.bagthatthangup.com</small>
 
-    <button type="submit">Submit Onboarding</button>
-  </form>
-</div>
+  <label>Amazon Associates ID</label>
+  <input name="amazon_tag" required>
+
+  <label>Logo URL</label>
+  <input name="logo_url">
+
+  <label>Primary Color</label>
+  <input name="color_primary" placeholder="#0f915a">
+
+  <label>Accent Color</label>
+  <input name="color_secondary" placeholder="#0052cc">
+
+  <label>Extra Button Label (optional)</label>
+  <input name="extra_btn_label" placeholder="Follow me on Amazon">
+
+  <label>Extra Button URL (optional)</label>
+  <input name="extra_btn_url" placeholder="https://amazon.com/shop/...">
+
+  <label>Layout Preference</label>
+  <select name="layout">
+    <option value="Grid">Grid</option>
+    <option value="List">List</option>
+  </select>
+
+  <button type="submit">Submit Onboarding</button>
+</form>
 
 <script>
-// ✅ Correct live Google Apps Script endpoint:
-const GAS = "https://script.google.com/macros/s/AKfycbx3fxXZuoBROs2iYCuugwfTxRRXmX30BCMPZfzyUI8W3jbWK_oQwlvibIVhx9oL87v3/exec";
+const GAS = "https://script.google.com/macros/s/PASTE-YOUR-EXEC-URL-HERE/exec";
 
 document.getElementById("customForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector("button");
+  const btn = e.target.querySelector("button[type=submit]");
   btn.disabled = true;
   btn.textContent = "Submitting...";
 
-  const f = new FormData(form);
-  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
-  if (!sub) {
-    alert("Please enter a valid subdomain (letters/numbers only).");
-    btn.disabled = false;
-    btn.textContent = "Submit Onboarding";
-    return;
-  }
-  f.set("subdomain", sub);
+  const payload = Object.fromEntries(new FormData(e.target));
+  payload.plan = "custom";
+  payload.status = "active";
 
   try {
-    // Send data as JSON instead of querystring for reliability
     const res = await fetch(GAS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(f.entries()))
+      body: JSON.stringify(payload)
     });
-
     const data = await res.json();
-    if (data.ok === true || data.result === "success") {
-      const domain = `${sub}.bagthatthangup.com`;
-      const store = f.get("site_display_name");
-      const logo = f.get("logo_url") || "";
-      const color = f.get("color_primary") || "#0f915a";
 
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=Custom&logo_url=${encodeURIComponent(logo)}&color_primary=${encodeURIComponent(color)}`;
+    if (data.ok) {
+      window.location.href = "/onboarding/success/";
     } else {
-      alert("Error saving your info. Please try again.");
-      btn.disabled = false;
-      btn.textContent = "Submit Onboarding";
+      alert("Server error: " + data.error);
     }
+
   } catch (err) {
-    console.error(err);
-    alert("Network error. Please check your connection and try again.");
+    alert("Network error: " + err.message);
+  } finally {
     btn.disabled = false;
     btn.textContent = "Submit Onboarding";
   }
 });
 </script>
+
 </body>
 </html>
