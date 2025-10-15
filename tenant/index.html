@@ -2,36 +2,181 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat Tenant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BagThat Deals</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:20px;background:#f8faf9}
-h1{text-align:center;color:#0f915a}
-#deals{max-width:900px;margin:40px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.card img{width:100%;border-radius:8px}
+  :root{
+    --bg:#f5f3ef;
+    --card:#fff;
+    --accent:#e6a85a;
+    --text:#222;
+    --muted:#666;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0;
+    font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  header{
+    background:var(--card);
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    text-align:center;
+    padding:1rem;
+  }
+  header h1{
+    font-size:1.6rem;
+    margin:0.2rem 0;
+  }
+  nav{
+    display:flex; justify-content:center; gap:1rem;
+    margin:1rem 0;
+  }
+  nav button{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:0.6rem 1.2rem;
+    border-radius:8px;
+    font-size:1rem;
+    cursor:pointer;
+  }
+  nav button.active{background:#d69749;}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:1rem;
+    padding:1rem;
+  }
+  .card{
+    background:var(--card);
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .card img{width:100%; object-fit:cover;}
+  .card h3{
+    font-size:1rem;
+    padding:0.8rem; margin:0; flex:1;
+  }
+  .card a{
+    display:block;
+    background:var(--accent);
+    color:#fff;
+    text-align:center;
+    padding:0.8rem;
+    text-decoration:none;
+    font-weight:600;
+  }
+  .card a:hover{background:#d69749;}
+  footer{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--muted);
+    padding:2rem 1rem;
+  }
 </style>
 </head>
 <body>
-<h1 id="title">Loading...</h1>
-<div id="deals"></div>
+
+<header>
+  <h1 id="siteTitle">Loading...</h1>
+  <nav>
+    <button id="btnToday" class="active">Today's Deals</button>
+    <button id="btnYesterday">Yesterday</button>
+    <button id="btnGone">Almost Gone</button>
+  </nav>
+</header>
+
+<main id="grid" class="grid"></main>
+
+<footer>
+  <p>© <span id="year"></span> BagThat Deals • Powered by BagThatThangUp.com</p>
+</footer>
+
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec";
-const sub=location.hostname.split('.')[0];
-async function loadSite(){
-  const r=await fetch(`${API_URL}?tenant=${sub}`);
-  const d=await r.json();
-  document.getElementById('title').textContent=d.site_display_name||sub;
-  const wrap=document.getElementById('deals');
-  if(!d.deals?.length){wrap.innerHTML='<p>No deals yet.</p>';return;}
-  wrap.innerHTML=d.deals.map(x=>`
-    <div class="card">
-      <img src="${x.image}" alt="">
-      <p>${x.title}</p>
-      <a href="${x.link}" target="_blank">View Deal</a>
-    </div>`).join('');
+const SHEET_API = "https://script.google.com/macros/s/AKfycbzgBKUJpnNRaTlA11-Nw6bIRpJtf-JLcM63j3xGuJMd39UqJkxyDBORDy1mBnsLsQ6rrw/exec";
+const FEEDS = {
+  today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
+  yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+  gone: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
+};
+
+const grid = document.getElementById('grid');
+const titleEl = document.getElementById('siteTitle');
+const yearEl = document.getElementById('year');
+yearEl.textContent = new Date().getFullYear();
+
+const subdomain = window.location.hostname.split(".")[0].toLowerCase();
+let tenantTag = "", displayName = "";
+
+/* Fetch tenant info from backend */
+async function loadTenant() {
+  try {
+    const res = await fetch(`${SHEET_API}?tenant=${subdomain}`);
+    const data = await res.json();
+    if(data.ok && data.tenant){
+      displayName = data.tenant.site_display_name || "BagThat Deals";
+      tenantTag = data.tenant.amazon_tag || "";
+      titleEl.textContent = displayName;
+      loadDeals("today");
+    } else {
+      titleEl.textContent = "Site Not Found";
+    }
+  } catch(err){
+    titleEl.textContent = "Connection Error";
+  }
 }
-loadSite();
+
+/* Load deals by tab */
+async function loadDeals(type){
+  grid.innerHTML = "Loading deals...";
+  const url = FEEDS[type];
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const rows = text.trim().split("\n").slice(1);
+    const deals = rows.map(r=>r.split(","));
+    renderDeals(deals);
+  } catch(err){
+    grid.innerHTML = "Failed to load deals.";
+  }
+}
+
+/* Render deals grid */
+function renderDeals(deals){
+  grid.innerHTML = "";
+  deals.forEach(r=>{
+    const title = r[12] || "Untitled";
+    const image = r[1] || "";
+    const productLink = (r[6] || "").split("?")[0];
+    const link = tenantTag ? `${productLink}?tag=${tenantTag}` : productLink;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${image}" alt="">
+      <h3>${title}</h3>
+      <a href="${link}" target="_blank">View Deal</a>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* Tab navigation */
+document.getElementById("btnToday").onclick = ()=>switchTab("today");
+document.getElementById("btnYesterday").onclick = ()=>switchTab("yesterday");
+document.getElementById("btnGone").onclick = ()=>switchTab("gone");
+
+function switchTab(type){
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("btn"+type.charAt(0).toUpperCase()+type.slice(1)).classList.add("active");
+  loadDeals(type);
+}
+
+/* Initialize */
+loadTenant();
 </script>
 </body>
 </html>
