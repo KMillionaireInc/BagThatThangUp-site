@@ -48,37 +48,31 @@ button {
   border-radius: 8px;
   cursor: pointer;
 }
-button:hover {
-  background: #0c784b;
-}
+button:hover { background: #0c784b; }
 .msg {
   margin-top: 15px;
   text-align: center;
   font-weight: 500;
 }
-.error {
-  color: #b00020;
-}
-.success {
-  color: #0f915a;
-}
+.error { color: #b00020; }
+.success { color: #0f915a; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>Set Up Your Site</h1>
   <form id="onboardForm">
-    <label>Full Name</label>
-    <input type="text" name="name" required>
+    <label>Display Name (shown on your site)</label>
+    <input type="text" name="site_display" required placeholder="example: Petunia’s Place">
 
-    <label>Desired Site Name (for subdomain)</label>
-    <input type="text" name="site_name" required placeholder="example: silentsavings">
+    <label>Domain Name (for subdomain)</label>
+    <input type="text" name="site_domain" required placeholder="example: petuniasplace">
 
     <label>Your Amazon Associate Tag</label>
     <input type="text" name="tag" required placeholder="exampletag-20">
 
     <label>Email Address</label>
-    <input type="email" name="email" required>
+    <input type="email" name="email" required placeholder="example@email.com">
 
     <button type="submit">Complete Setup</button>
   </form>
@@ -103,7 +97,6 @@ form.addEventListener('submit', async e => {
     });
 
     const json = await res.json();
-
     if (!json.ok) throw new Error(json.error);
 
     msg.textContent = 'Success! Redirecting...';
