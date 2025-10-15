@@ -1,79 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BagThat • Onboarding</title>
-  <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#222}
-    .container{max-width:440px;margin:80px auto;background:#fff;padding:40px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-    h1{text-align:center;margin-bottom:30px;font-size:26px}
-    label{display:block;margin-top:16px;font-weight:600}
-    input{width:100%;padding:10px 12px;margin-top:6px;border:1px solid #ccc;border-radius:6px;font-size:15px}
-    button{width:100%;margin-top:28px;background:#0f915a;color:#fff;border:none;padding:14px;font-size:16px;border-radius:6px;cursor:pointer}
-    button:hover{background:#0c7b4d}
-    .msg{margin-top:16px;text-align:center;font-weight:600}
-    .error{color:#c00}.success{color:#0f915a}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BagThat Setup • Onboarding</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background:#f5f3ef;
+    color:#222;
+    margin:0; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+  }
+  .box {
+    background:#fff;
+    padding:40px 30px;
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    width:100%; max-width:420px;
+  }
+  h1 {font-size:1.6rem; margin-bottom:1rem; text-align:center;}
+  label {display:block; margin-top:1rem; font-weight:600;}
+  input {
+    width:100%; padding:10px; font-size:1rem;
+    border:1px solid #ccc; border-radius:8px;
+    margin-top:4px;
+  }
+  input:focus {outline:none; border-color:#e6a85a;}
+  button {
+    margin-top:1.6rem; width:100%;
+    background:#e6a85a; color:#fff;
+    border:none; border-radius:8px;
+    font-size:1rem; padding:12px;
+    cursor:pointer;
+  }
+  button:hover {background:#d69749;}
+  .msg {margin-top:1rem; font-size:.95rem; text-align:center;}
+  .error {color:#b50000;}
+  .success {color:#047857;}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Set Up Your Site</h1>
-    <form id="onboardForm" novalidate>
-      <label>Display Name (shown on your site)</label>
-      <input type="text" id="displayName" placeholder="Petunia’s Place" required>
-
-      <label>Domain Name (for subdomain)</label>
-      <input type="text" id="domainName" placeholder="petuniasplace" required>
-
-      <label>Your Amazon Associate Tag</label>
-      <input type="text" id="amazonTag" placeholder="petunia-20" required>
-
-      <label>Email Address</label>
-      <input type="email" id="email" placeholder="you@email.com" required>
-
-      <button type="submit">Complete Setup</button>
-      <div id="message" class="msg"></div>
-    </form>
-  </div>
+<div class="box">
+  <h1>Set Up Your BagThat Site</h1>
+  <form id="onboardForm">
+    <label>Display Name (shown on your site)
+      <input type="text" id="display" required maxlength="50">
+    </label>
+    <label>Domain Name (letters/numbers only)
+      <input type="text" id="domain" required maxlength="30">
+    </label>
+    <label>Amazon Associate Tag (must end with -20)
+      <input type="text" id="tag" required maxlength="20">
+    </label>
+    <label>Email Address
+      <input type="email" id="email" required>
+    </label>
+    <button type="submit">Complete Setup</button>
+  </form>
+  <div id="msg" class="msg"></div>
+</div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzgBKUJpnNRaTlA11-Nw6bIRpJtf-JLcM63j3xGuJMd39UqJkxyDBORDy1mBnsLsQ6rrw/exec";
+const msg = document.getElementById('msg');
+const form = document.getElementById('onboardForm');
 
-function sanitizeDomain(v){return v.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,63)}
+// Live domain sanitization
+document.getElementById('domain').addEventListener('input', e=>{
+  e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g,'');
+});
 
-document.getElementById('onboardForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const dName=document.getElementById('displayName').value.trim();
-  const rawSub=document.getElementById('domainName').value.trim();
-  const subdomain=sanitizeDomain(rawSub);
-  const tag=document.getElementById('amazonTag').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const msg=document.getElementById('message');
-  msg.textContent=''; msg.className='msg';
+form.addEventListener('submit', async ev=>{
+  ev.preventDefault();
+  msg.textContent = "Processing...";
+  msg.className = "msg";
 
-  if(!dName||!subdomain||!tag||!email){
-    msg.textContent='Missing required fields.'; msg.classList.add('error'); return;
+  const site_display_name = document.getElementById('display').value.trim();
+  const subdomain = document.getElementById('domain').value.trim();
+  const amazon_tag = document.getElementById('tag').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  // validation
+  if(!site_display_name || !subdomain || !amazon_tag || !email){
+    msg.textContent = "All fields are required.";
+    msg.className = "msg error"; return;
   }
-  if(rawSub!==subdomain){
-    msg.textContent='Domain names can only include letters and numbers (no spaces or punctuation).'; msg.classList.add('error'); return;
+  if(!/^[a-z0-9]+$/.test(subdomain)){
+    msg.textContent = "Domain must contain only letters and numbers.";
+    msg.className = "msg error"; return;
+  }
+  if(!amazon_tag.endsWith("-20")){
+    msg.textContent = "Amazon tag must end with -20.";
+    msg.className = "msg error"; return;
   }
 
-  msg.textContent='Submitting...';
-  try{
-    const res=await fetch(API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({site_display_name:dName,subdomain,amazon_tag:tag,email})
+  try {
+    const res = await fetch(API_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ site_display_name, subdomain, amazon_tag, email })
     });
-    const data=await res.json();
-    if(data.ok){
-      window.location.href=`/success/?s=${encodeURIComponent(subdomain)}`;
-    }else{
-      msg.textContent=data.msg||'Error creating site.'; msg.classList.add('error');
+    const data = await res.json();
+
+    if(!data.ok){
+      msg.textContent = data.msg || "Submission failed.";
+      msg.className = "msg error";
+      return;
     }
-  }catch(err){
-    msg.textContent='Connection error.'; msg.classList.add('error');
+
+    msg.textContent = "Success! Redirecting...";
+    msg.className = "msg success";
+
+    // redirect to success page
+    setTimeout(()=>{
+      window.location.href = `/success/?s=${encodeURIComponent(data.subdomain)}`;
+    },1000);
+
+  } catch(err){
+    msg.textContent = "Connection error. Please try again.";
+    msg.className = "msg error";
   }
 });
 </script>
