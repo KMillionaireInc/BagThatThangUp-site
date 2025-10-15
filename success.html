@@ -3,34 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Success • BagThat</title>
+<title>BagThat • Success</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f0e8;margin:0;text-align:center;padding:60px 20px}
-h1{color:#0f915a;font-size:2rem;margin-bottom:20px}
-p{max-width:500px;margin:10px auto 30px;font-size:1.1rem;line-height:1.6;color:#333}
-a.btn{background:#0f915a;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:1.1rem}
-a.btn:hover{background:#0c784b}
-small{display:block;margin-top:20px;color:#777}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f9fafb;margin:0;text-align:center;padding:80px 20px;color:#222}
+  .card{max-width:520px;margin:auto;background:#fff;padding:40px;border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.08)}
+  h1{color:#0f915a;font-size:28px}
+  a{color:#0f915a;text-decoration:none}
+  .btn{display:inline-block;margin-top:20px;background:#0f915a;color:#fff;padding:12px 28px;border-radius:6px}
+  .btn:hover{background:#0c7b4d}
 </style>
 </head>
 <body>
-<h1>🎉 Success!</h1>
-<p>Your site is being set up and will be live shortly.</p>
-<p id="siteLink"></p>
-<a id="goBtn" class="btn" href="#" target="_blank">Go to My Site</a>
-<small>If your site doesn’t appear right away, wait 1–2 minutes and refresh.</small>
+  <div class="card">
+    <h1>🎉 Success!</h1>
+    <p>Your site is being set up. It’ll be live within a few minutes.</p>
+    <p id="siteLinks"></p>
+  </div>
 
 <script>
-const params=new URLSearchParams(window.location.search);
-const display=params.get('display')||'Your Site';
-const sub=params.get('sub');
-if(sub){
-  const link=`https://${sub}.bagthatthangup.com`;
-  document.getElementById('siteLink').innerHTML=`<strong>${display}</strong> is ready at:<br><a href="${link}" target="_blank">${link}</a>`;
-  document.getElementById('goBtn').href=link;
+const urlParams=new URLSearchParams(location.search);
+const s=urlParams.get('s')||'';
+if(s){
+  const domain=`https://${s}.bagthatthangup.com`;
+  document.getElementById('siteLinks').innerHTML=
+    `<strong>Your Site:</strong><br><a href="${domain}" target="_blank">${domain}</a><br><br><a class="btn" href="${domain}">Go to My Site</a>`;
 }else{
-  document.getElementById('siteLink').textContent='Site setup info missing.';
-  document.getElementById('goBtn').style.display='none';
+  document.getElementById('siteLinks').textContent='Missing subdomain data.';
 }
 </script>
 </body>
