@@ -5,16 +5,63 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BagThat Onboarding</title>
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f0e8;margin:0;color:#222}
-.container{max-width:480px;margin:60px auto;background:#fff;padding:30px 40px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
-h1{text-align:center;margin-top:0;font-size:1.8rem}
-label{display:block;margin-top:15px;font-weight:600}
-input{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-top:5px;font-size:1rem}
-button{width:100%;margin-top:25px;background:#0f915a;color:#fff;border:none;padding:12px;font-size:1.1rem;border-radius:8px;cursor:pointer}
-button:hover{background:#0c784b}
-.msg{margin-top:15px;text-align:center;font-weight:500}
-.error{color:#b00020}
-.success{color:#0f915a}
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f4f0e8;
+  margin: 0;
+  color: #222;
+}
+.container {
+  max-width: 480px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.1);
+}
+h1 {
+  text-align: center;
+  margin-top: 0;
+  font-size: 1.8rem;
+}
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 5px;
+  font-size: 1rem;
+}
+button {
+  width: 100%;
+  margin-top: 25px;
+  background: #0f915a;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover {
+  background: #0c784b;
+}
+.msg {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 500;
+}
+.error {
+  color: #b00020;
+}
+.success {
+  color: #0f915a;
+}
 </style>
 </head>
 <body>
@@ -37,24 +84,41 @@ button:hover{background:#0c784b}
   </form>
   <div id="message" class="msg"></div>
 </div>
+
 <script>
-const form=document.getElementById('onboardForm');
-form.addEventListener('submit',async e=>{
+const form = document.getElementById('onboardForm');
+const msg = document.getElementById('message');
+
+form.addEventListener('submit', async e => {
   e.preventDefault();
-  const data=new FormData(form);
-  const msg=document.getElementById('message');
-  msg.textContent='Processing...';
-  try{
-    const res=await fetch('https://script.google.com/macros/s/AKfycbwv1qMJt7EcVHk7dTlssgWj_gLg53HiltuDfo4Hvadi58cXBuQW5Dw3ygx8cJ5zaPqj/exec',{method:'POST',body:data});
-    const json=await res.json();
-    if(!json.ok) throw new Error(json.error);
-    window.location.href=`/success.html?sub=${encodeURIComponent(json.subdomain)}&launch=${encodeURIComponent(json.launch)}`;
-  }catch(err){
-    msg.textContent=err.message;
-    msg.className='msg error';
+  msg.textContent = 'Processing...';
+  msg.className = 'msg';
+
+  const data = new FormData(form);
+
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec', {
+      method: 'POST',
+      body: data
+    });
+
+    const json = await res.json();
+
+    if (!json.ok) throw new Error(json.error);
+
+    msg.textContent = 'Success! Redirecting...';
+    msg.className = 'msg success';
+    setTimeout(() => {
+      window.location.href = `/success.html?sub=${encodeURIComponent(json.subdomain)}&launch=${encodeURIComponent(json.launch)}`;
+    }, 800);
+
+  } catch (err) {
+    msg.textContent = err.message === 'Failed to fetch'
+      ? 'Connection failed. Please try again.'
+      : err.message;
+    msg.className = 'msg error';
   }
 });
 </script>
 </body>
 </html>
-
