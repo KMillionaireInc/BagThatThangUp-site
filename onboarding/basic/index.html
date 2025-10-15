@@ -57,7 +57,7 @@
 </form>
 
 <script>
-const GAS = "https://script.google.com/macros/s/AKfycbytm-ntU4HHZq4PDXpwr4qoflZUy8Hcg-7GFLT0RFUJGuKIG0Zy3lIDEYTRBt7UVqkK/exec";
+const GAS = "https://script.google.com/macros/s/AKfycby6pNFw6VRj2zbDCD0UWHwmaAlAkLb3hpXTZKB1ynjDbK46UigFm9irIa6fEI-50uMG/exec";
 
 document.getElementById("basicForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -76,24 +76,18 @@ document.getElementById("basicForm").addEventListener("submit", async e => {
   }
   f.set("subdomain", sub);
 
-  const q = new URLSearchParams([...f.entries()]);
-  q.append("plan", "basic");
-  q.append("callback", "cb");
-
-  const url = GAS + "?" + q.toString();
-
+  // Simplified post using no-cors to match the new Apps Script
   try {
-    const r = await fetch(url);
-    const t = await r.text();
-    if (t.includes('"ok":true')) {
-      const domain = sub + ".bagthatthangup.com";
-      const store = f.get("site_display_name");
-      location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=basic`;
-    } else {
-      alert("Error saving your info. Please try again.");
-      btn.disabled = false;
-      btn.textContent = "Submit Onboarding";
-    }
+    await fetch(GAS, {
+      method: "POST",
+      mode: "no-cors",
+      body: f
+    });
+
+    const domain = sub + ".bagthatthangup.com";
+    const store = f.get("site_display_name");
+    location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=basic`;
+
   } catch (err) {
     alert("Network error. Please check your connection and try again.");
     btn.disabled = false;
