@@ -3,61 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat Onboarding</title>
+<title>BagThat • Onboarding</title>
 <style>
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: #f4f0e8;
-  margin: 0;
-  color: #222;
-}
-.container {
-  max-width: 480px;
-  margin: 60px auto;
-  background: #fff;
-  padding: 30px 40px;
-  border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.1);
-}
-h1 {
-  text-align: center;
-  margin-top: 0;
-  font-size: 1.8rem;
-}
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: 600;
-}
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-top: 5px;
-  font-size: 1rem;
-}
-button {
-  width: 100%;
-  margin-top: 25px;
-  background: #0f915a;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-button:hover {
-  background: #0c784b;
-}
-.msg {
-  margin-top: 15px;
-  text-align: center;
-  font-weight: 500;
-}
-.error { color: #b00020; }
-.success { color: #0f915a; }
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f0e8;margin:0;padding:40px}
+.container{max-width:480px;margin:auto;background:#fff;padding:30px 40px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+h1{text-align:center;font-size:1.8rem;margin-top:0}
+label{display:block;margin-top:15px;font-weight:600}
+input{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-top:5px;font-size:1rem}
+button{width:100%;margin-top:25px;background:#0f915a;color:#fff;border:none;padding:12px;font-size:1.1rem;border-radius:8px;cursor:pointer}
+button:hover{background:#0c784b}
+.msg{margin-top:15px;text-align:center;font-weight:500}
+.error{color:#b00020}.success{color:#0f915a}
 </style>
 </head>
 <body>
@@ -65,16 +21,16 @@ button:hover {
   <h1>Set Up Your Site</h1>
   <form id="onboardForm" novalidate>
     <label>Display Name (shown on your site)</label>
-    <input type="text" id="site_display" name="site_display" required placeholder="example: Petunia’s Place">
+    <input type="text" id="site_display" name="site_display" placeholder="Petunia’s Place" required>
 
-    <label>Domain Name (for subdomain)</label>
-    <input type="text" id="site_domain" name="site_domain" required placeholder="example: petuniasplace">
+    <label>Domain Name (no spaces or symbols)</label>
+    <input type="text" id="site_domain" name="site_domain" placeholder="petuniasplace" required>
 
     <label>Your Amazon Associate Tag</label>
-    <input type="text" id="tag" name="tag" required placeholder="exampletag-20">
+    <input type="text" id="tag" name="tag" placeholder="exampletag-20" required>
 
     <label>Email Address</label>
-    <input type="email" id="email" name="email" required placeholder="example@email.com">
+    <input type="email" id="email" name="email" placeholder="you@email.com" required>
 
     <button type="submit">Complete Setup</button>
   </form>
@@ -82,32 +38,26 @@ button:hover {
 </div>
 
 <script>
-const form = document.getElementById('onboardForm');
-const msg = document.getElementById('message');
-const domainInput = document.getElementById('site_domain');
+const validKey='btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7';
+const key=new URLSearchParams(location.search).get('plan_key');
+if(key!==validKey){
+  document.body.innerHTML='<h2 style="text-align:center;margin-top:80px;">Access Denied</h2>';
+}
 
-// auto-clean domain input as user types
-domainInput.addEventListener('input', () => {
-  domainInput.value = domainInput.value.toLowerCase().replace(/[^a-z0-9]/g, '');
-});
+const domainInput=document.getElementById('site_domain');
+domainInput.addEventListener('input',()=>domainInput.value=domainInput.value.toLowerCase().replace(/[^a-z0-9]/g,''));
 
-form.addEventListener('submit', async e => {
+const form=document.getElementById('onboardForm');
+const msg=document.getElementById('message');
+
+form.addEventListener('submit',async e=>{
   e.preventDefault();
-  msg.textContent = '';
-  msg.className = 'msg';
-
-  const display = document.getElementById('site_display').value.trim();
-  const domain  = document.getElementById('site_domain').value.trim();
-  const tag     = document.getElementById('tag').value.trim();
-  const email   = document.getElementById('email').value.trim();
-
-  if (!display || !domain || !tag || !email) {
-    msg.textContent = 'All fields are required.';
-    msg.className = 'msg error';
-    return;
-  }
-
-  msg.textContent = 'Processing...';
-
-  try {
-    const formDat
+  msg.textContent=''; msg.className='msg';
+  const display=site_display.value.trim();
+  const domain=site_domain.value.trim();
+  const tag=tagInput.value.trim();
+  const email=emailInput.value.trim();
+});
+</script>
+</body>
+</html>
