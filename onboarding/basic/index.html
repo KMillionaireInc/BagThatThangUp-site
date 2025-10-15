@@ -24,7 +24,6 @@
   }
   h2 {
     text-align: center;
-    margin-bottom: 20px;
     color: #0b1320;
   }
   input {
@@ -58,15 +57,12 @@
   <input name="email" type="email" placeholder="Contact email" required>
   <input name="subdomain" placeholder="Subdomain (letters/numbers only)" pattern="[a-z0-9-]+" required>
   <input name="amazon_tag" placeholder="Amazon Associates ID" required>
-  <input type="hidden" name="plan" value="basic">
   <button type="submit">Submit Onboarding</button>
 </form>
 
 <script>
-// ===== CONFIG =====
 const GAS = "https://script.google.com/macros/s/AKfycby6pNFw6VRj2zbDCD0UWHwmaAlAkLb3hpXTZKB1ynjDbK46UigFm9irIa6fEI-50uMG/exec";
 
-// ===== FORM HANDLER =====
 document.getElementById("basicForm").addEventListener("submit", async e => {
   e.preventDefault();
   const form = e.target;
@@ -74,32 +70,27 @@ document.getElementById("basicForm").addEventListener("submit", async e => {
   btn.disabled = true;
   btn.textContent = "Submitting...";
 
-  const f = new FormData(form);
-  let sub = f.get("subdomain").toLowerCase().replace(/[^a-z0-9-]/g, "");
-  if (!sub) {
-    alert("Please enter a valid subdomain (letters/numbers only).");
-    btn.disabled = false;
-    btn.textContent = "Submit Onboarding";
-    return;
-  }
-  f.set("subdomain", sub);
-
-  const q = new URLSearchParams([...f.entries()]);
-  const url = GAS + "?" + q.toString();
-
+  const data = new URLSearchParams(new FormData(form));
   try {
-    const res = await fetch(url, { method: "POST", mode: "no-cors", body: f });
-    // Assume success (since Google Apps Script no-cors doesn't return a readable response)
-    const domain = sub + ".bagthatthangup.com";
-    const store = f.get("site_display_name");
-    location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=basic`;
+    const res = await fetch(GAS, { method: "POST", body: data });
+    const json = await res.json();
+
+    if (json.ok) {
+      const sub = form.subdomain.value.toLowerCase();
+      const store = form.site_display_name.value;
+      location.href = `/onboarding/success/index.html?domain=${sub}.bagthatthangup.com&store=${encodeURIComponent(store)}&plan=basic`;
+    } else {
+      alert("Error: " + (json.error || "Failed to save data."));
+      btn.disabled = false;
+      btn.textContent = "Submit Onboarding";
+    }
   } catch (err) {
-    alert("Network error. Please try again.");
+    alert("Network error. Please check your connection and try again.");
     btn.disabled = false;
     btn.textContent = "Submit Onboarding";
   }
 });
 </script>
-
 </body>
 </html>
+
