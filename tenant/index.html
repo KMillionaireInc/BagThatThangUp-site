@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat Tenant</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:20px;background:#f8faf9}
+h1{text-align:center;color:#0f915a}
+#deals{max-width:900px;margin:40px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.card img{width:100%;border-radius:8px}
+</style>
+</head>
+<body>
+<h1 id="title">Loading...</h1>
+<div id="deals"></div>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec";
+const sub=location.hostname.split('.')[0];
+async function loadSite(){
+  const r=await fetch(`${API_URL}?tenant=${sub}`);
+  const d=await r.json();
+  document.getElementById('title').textContent=d.site_display_name||sub;
+  const wrap=document.getElementById('deals');
+  if(!d.deals?.length){wrap.innerHTML='<p>No deals yet.</p>';return;}
+  wrap.innerHTML=d.deals.map(x=>`
+    <div class="card">
+      <img src="${x.image}" alt="">
+      <p>${x.title}</p>
+      <a href="${x.link}" target="_blank">View Deal</a>
+    </div>`).join('');
+}
+loadSite();
+</script>
+</body>
+</html>
