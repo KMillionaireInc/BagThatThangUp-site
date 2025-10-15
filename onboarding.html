@@ -1,62 +1,80 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat • Onboarding</title>
-<style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f0e8;margin:0;padding:40px}
-.container{max-width:480px;margin:auto;background:#fff;padding:30px 40px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
-h1{text-align:center;font-size:1.8rem;margin-top:0}
-label{display:block;margin-top:15px;font-weight:600}
-input{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-top:5px;font-size:1rem}
-button{width:100%;margin-top:25px;background:#0f915a;color:#fff;border:none;padding:12px;font-size:1.1rem;border-radius:8px;cursor:pointer}
-button:hover{background:#0c784b}
-.msg{margin-top:15px;text-align:center;font-weight:500}
-.error{color:#b00020}.success{color:#0f915a}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BagThat • Onboarding</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f8f7;color:#222}
+    .container{max-width:440px;margin:80px auto;background:#fff;padding:40px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    h1{text-align:center;margin-bottom:30px;font-size:26px}
+    label{display:block;margin-top:16px;font-weight:600}
+    input{width:100%;padding:10px 12px;margin-top:6px;border:1px solid #ccc;border-radius:6px;font-size:15px}
+    button{width:100%;margin-top:28px;background:#0f915a;color:#fff;border:none;padding:14px;font-size:16px;border-radius:6px;cursor:pointer}
+    button:hover{background:#0c7b4d}
+    .msg{margin-top:16px;text-align:center;font-weight:600}
+    .error{color:#c00}.success{color:#0f915a}
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>Set Up Your Site</h1>
-  <form id="onboardForm" novalidate>
-    <label>Display Name (shown on your site)</label>
-    <input type="text" id="site_display" name="site_display" placeholder="Petunia’s Place" required>
+  <div class="container">
+    <h1>Set Up Your Site</h1>
+    <form id="onboardForm" novalidate>
+      <label>Display Name (shown on your site)</label>
+      <input type="text" id="displayName" placeholder="Petunia’s Place" required>
 
-    <label>Domain Name (no spaces or symbols)</label>
-    <input type="text" id="site_domain" name="site_domain" placeholder="petuniasplace" required>
+      <label>Domain Name (for subdomain)</label>
+      <input type="text" id="domainName" placeholder="petuniasplace" required>
 
-    <label>Your Amazon Associate Tag</label>
-    <input type="text" id="tag" name="tag" placeholder="exampletag-20" required>
+      <label>Your Amazon Associate Tag</label>
+      <input type="text" id="amazonTag" placeholder="petunia-20" required>
 
-    <label>Email Address</label>
-    <input type="email" id="email" name="email" placeholder="you@email.com" required>
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="you@email.com" required>
 
-    <button type="submit">Complete Setup</button>
-  </form>
-  <div id="message" class="msg"></div>
-</div>
+      <button type="submit">Complete Setup</button>
+      <div id="message" class="msg"></div>
+    </form>
+  </div>
 
 <script>
-const validKey='btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7';
-const key=new URLSearchParams(location.search).get('plan_key');
-if(key!==validKey){
-  document.body.innerHTML='<h2 style="text-align:center;margin-top:80px;">Access Denied</h2>';
-}
+const API_URL = "https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec";
 
-const domainInput=document.getElementById('site_domain');
-domainInput.addEventListener('input',()=>domainInput.value=domainInput.value.toLowerCase().replace(/[^a-z0-9]/g,''));
+function sanitizeDomain(v){return v.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,63)}
 
-const form=document.getElementById('onboardForm');
-const msg=document.getElementById('message');
-
-form.addEventListener('submit',async e=>{
+document.getElementById('onboardForm').addEventListener('submit', async e=>{
   e.preventDefault();
+  const dName=document.getElementById('displayName').value.trim();
+  const rawSub=document.getElementById('domainName').value.trim();
+  const subdomain=sanitizeDomain(rawSub);
+  const tag=document.getElementById('amazonTag').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const msg=document.getElementById('message');
   msg.textContent=''; msg.className='msg';
-  const display=site_display.value.trim();
-  const domain=site_domain.value.trim();
-  const tag=tagInput.value.trim();
-  const email=emailInput.value.trim();
+
+  if(!dName||!subdomain||!tag||!email){
+    msg.textContent='Missing required fields.'; msg.classList.add('error'); return;
+  }
+  if(rawSub!==subdomain){
+    msg.textContent='Domain names can only include letters and numbers (no spaces or punctuation).'; msg.classList.add('error'); return;
+  }
+
+  msg.textContent='Submitting...';
+  try{
+    const res=await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({site_display_name:dName,subdomain,amazon_tag:tag,email})
+    });
+    const data=await res.json();
+    if(data.ok){
+      window.location.href=`/success/?s=${encodeURIComponent(subdomain)}`;
+    }else{
+      msg.textContent=data.msg||'Error creating site.'; msg.classList.add('error');
+    }
+  }catch(err){
+    msg.textContent='Connection error.'; msg.classList.add('error');
+  }
 });
 </script>
 </body>
