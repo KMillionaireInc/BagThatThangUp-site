@@ -22,6 +22,11 @@
     max-width: 420px;
     width: 100%;
   }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0b1320;
+  }
   input {
     width: 100%;
     padding: 10px;
@@ -51,14 +56,17 @@
   <h2>Basic Plan Setup</h2>
   <input name="site_display_name" placeholder="Store name" required>
   <input name="email" type="email" placeholder="Contact email" required>
-  <input name="subdomain" placeholder="Subdomain (letters/numbers only)" required>
-  <input name="amazon_tag" placeholder="Amazon Associates ID">
+  <input name="subdomain" placeholder="Subdomain (letters/numbers only)" pattern="[a-z0-9-]+" required>
+  <input name="amazon_tag" placeholder="Amazon Associates ID" required>
+  <input type="hidden" name="plan" value="basic">
   <button type="submit">Submit Onboarding</button>
 </form>
 
 <script>
+// ===== CONFIG =====
 const GAS = "https://script.google.com/macros/s/AKfycby6pNFw6VRj2zbDCD0UWHwmaAlAkLb3hpXTZKB1ynjDbK46UigFm9irIa6fEI-50uMG/exec";
 
+// ===== FORM HANDLER =====
 document.getElementById("basicForm").addEventListener("submit", async e => {
   e.preventDefault();
   const form = e.target;
@@ -76,24 +84,22 @@ document.getElementById("basicForm").addEventListener("submit", async e => {
   }
   f.set("subdomain", sub);
 
-  // Simplified post using no-cors to match the new Apps Script
-  try {
-    await fetch(GAS, {
-      method: "POST",
-      mode: "no-cors",
-      body: f
-    });
+  const q = new URLSearchParams([...f.entries()]);
+  const url = GAS + "?" + q.toString();
 
+  try {
+    const res = await fetch(url, { method: "POST", mode: "no-cors", body: f });
+    // Assume success (since Google Apps Script no-cors doesn't return a readable response)
     const domain = sub + ".bagthatthangup.com";
     const store = f.get("site_display_name");
     location.href = `/onboarding/success/index.html?domain=${encodeURIComponent(domain)}&store=${encodeURIComponent(store)}&plan=basic`;
-
   } catch (err) {
-    alert("Network error. Please check your connection and try again.");
+    alert("Network error. Please try again.");
     btn.disabled = false;
     btn.textContent = "Submit Onboarding";
   }
 });
 </script>
+
 </body>
 </html>
