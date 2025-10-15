@@ -31,30 +31,41 @@ button {
   border-radius: 8px;
   cursor: pointer;
 }
-button:hover {
-  background: #0c784b;
+button:hover { background: #0c784b; }
+.site-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 20px;
+  color: #333;
 }
 </style>
 </head>
 <body>
+
 <h1>🎉 Success!</h1>
 <p>Your site is being set up. It’ll be live within about 3 minutes.<br>
 If it doesn’t appear right away, refresh or try again shortly.</p>
+
+<div class="site-title" id="siteTitle"></div>
 <div id="linkArea"></div>
 
 <script>
 const url = new URL(window.location.href);
 const sub = url.searchParams.get('sub');
+const display = url.searchParams.get('display') || '';
 
 if (sub) {
+  document.getElementById('siteTitle').textContent = display
+    ? `${display} is ready!`
+    : 'Your new site is ready!';
+  
   document.getElementById('linkArea').innerHTML = `
-    <p><strong>Your Site:</strong><br>
-    <a href="${sub}" target="_blank">${sub}</a></p>
+    <p><a href="${sub}" target="_blank">${sub}</a></p>
     <button onclick="window.open('${sub}','_blank')">Go to My Site</button>
   `;
 }
 
-// Confetti animation (same as before)
+// Confetti animation
 const c = document.createElement('canvas');
 document.body.appendChild(c);
 const ctx = c.getContext('2d');
@@ -66,5 +77,6 @@ function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle="rgba(15,145,90,0.8)";parti
 function update(){particles.forEach(p=>{p.y+=Math.cos(p.d)+1+p.r/2;p.x+=Math.sin(p.d);if(p.y>H){p.y=-10;p.x=Math.random()*W;p.d=Math.random()*W;}});}
 setInterval(draw,33);
 </script>
+
 </body>
 </html>
