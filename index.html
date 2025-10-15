@@ -1,1 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThatThangUp — Create Your Own Deals Site</title>
+<meta name="description" content="Launch your own daily deals site powered by Amazon. Fully automated. Fully yours.">
+<style>
+:root {
+  --tan:#e6ddcf; --ink:#2a2a2a; --accent:#0f915a; --white:#fff;
+}
+body {
+  margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--tan); color:var(--ink); text-align:center;
+}
+header {
+  padding:40px 20px;
+}
+h1 {font-size:2.2rem;margin:0;color:var(--ink);}
+p {max-width:600px;margin:15px auto;font-size:1.1rem;}
+button {
+  background:var(--accent); color:var(--white);
+  border:none; border-radius:8px; padding:14px 32px;
+  font-size:1.1rem; cursor:pointer; margin-top:20px;
+  transition:background .3s;
+}
+button:hover {background:#0c784b;}
+footer {
+  margin-top:60px; font-size:.9rem; color:#555;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Start Your Own Amazon Deals Site</h1>
+  <p>BagThat automates everything — your site refreshes daily with new deals, all linked to your Amazon Associate ID. You keep the commissions.</p>
+  <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000">
+    <button>Get Started — Basic Plan</button>
+  </a>
+</header>
+<footer>
+  © <span id="year"></span> BagThatThangUp.com. All rights reserved.
+</footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
 
