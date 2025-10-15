@@ -63,18 +63,18 @@ button:hover {
 <body>
 <div class="container">
   <h1>Set Up Your Site</h1>
-  <form id="onboardForm">
+  <form id="onboardForm" novalidate>
     <label>Display Name (shown on your site)</label>
-    <input type="text" name="site_display" required placeholder="example: Petunia’s Place">
+    <input type="text" id="site_display" name="site_display" required placeholder="example: Petunia’s Place">
 
     <label>Domain Name (for subdomain)</label>
-    <input type="text" name="site_domain" required placeholder="example: petuniasplace">
+    <input type="text" id="site_domain" name="site_domain" required placeholder="example: petuniasplace">
 
     <label>Your Amazon Associate Tag</label>
-    <input type="text" name="tag" required placeholder="exampletag-20">
+    <input type="text" id="tag" name="tag" required placeholder="exampletag-20">
 
     <label>Email Address</label>
-    <input type="email" name="email" required placeholder="example@email.com">
+    <input type="email" id="email" name="email" required placeholder="example@email.com">
 
     <button type="submit">Complete Setup</button>
   </form>
@@ -84,41 +84,30 @@ button:hover {
 <script>
 const form = document.getElementById('onboardForm');
 const msg = document.getElementById('message');
+const domainInput = document.getElementById('site_domain');
+
+// auto-clean domain input as user types
+domainInput.addEventListener('input', () => {
+  domainInput.value = domainInput.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+});
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  msg.textContent = 'Processing...';
+  msg.textContent = '';
   msg.className = 'msg';
 
-  const data = new FormData(form);
-  const displayName = data.get('site_display') || '';
+  const display = document.getElementById('site_display').value.trim();
+  const domain  = document.getElementById('site_domain').value.trim();
+  const tag     = document.getElementById('tag').value.trim();
+  const email   = document.getElementById('email').value.trim();
+
+  if (!display || !domain || !tag || !email) {
+    msg.textContent = 'All fields are required.';
+    msg.className = 'msg error';
+    return;
+  }
+
+  msg.textContent = 'Processing...';
 
   try {
-    const res = await fetch('https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec', {
-      method: 'POST',
-      body: data
-    });
-
-    const json = await res.json();
-
-    if (!json.ok) throw new Error(json.error);
-
-    msg.textContent = 'Success! Redirecting...';
-    msg.className = 'msg success';
-
-    // Pass both display name and subdomain to success page
-    setTimeout(() => {
-      const target = `/success.html?display=${encodeURIComponent(displayName)}&sub=${encodeURIComponent(json.subdomain)}`;
-      window.location.href = target;
-    }, 800);
-
-  } catch (err) {
-    msg.textContent = err.message === 'Failed to fetch'
-      ? 'Connection failed. Please try again.'
-      : err.message;
-    msg.className = 'msg error';
-  }
-});
-</script>
-</body>
-</html>
+    const formDat
