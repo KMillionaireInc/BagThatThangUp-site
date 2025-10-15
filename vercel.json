@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/onboarding/basic", "destination": "/onboarding/basic/index.html" },
-    { "source": "/onboarding/custom", "destination": "/onboarding/custom/index.html" },
-    { "source": "/onboarding/pro", "destination": "/onboarding/pro/index.html" },
-    { "source": "/onboarding/success", "destination": "/onboarding/success/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
-}
