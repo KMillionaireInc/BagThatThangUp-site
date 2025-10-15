@@ -48,7 +48,9 @@ button {
   border-radius: 8px;
   cursor: pointer;
 }
-button:hover { background: #0c784b; }
+button:hover {
+  background: #0c784b;
+}
 .msg {
   margin-top: 15px;
   text-align: center;
@@ -89,6 +91,7 @@ form.addEventListener('submit', async e => {
   msg.className = 'msg';
 
   const data = new FormData(form);
+  const displayName = data.get('site_display') || '';
 
   try {
     const res = await fetch('https://script.google.com/macros/s/AKfycby5XpSNdY9Cwb42EoOosPwcWwhBzSARgeZC4FEQJohbbSLUP0ocVYjj9v3qa2EHZWLZ/exec', {
@@ -97,12 +100,16 @@ form.addEventListener('submit', async e => {
     });
 
     const json = await res.json();
+
     if (!json.ok) throw new Error(json.error);
 
     msg.textContent = 'Success! Redirecting...';
     msg.className = 'msg success';
+
+    // Pass both display name and subdomain to success page
     setTimeout(() => {
-      window.location.href = `/success.html?sub=${encodeURIComponent(json.subdomain)}&launch=${encodeURIComponent(json.launch)}`;
+      const target = `/success.html?display=${encodeURIComponent(displayName)}&sub=${encodeURIComponent(json.subdomain)}`;
+      window.location.href = target;
     }, 800);
 
   } catch (err) {
