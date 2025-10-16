@@ -2,6 +2,9 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/success", "destination": "/success.html" }
-  ]
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/tenant", "destination": "/tenant.html" }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
