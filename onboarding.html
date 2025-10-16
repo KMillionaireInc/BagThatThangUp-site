@@ -1,128 +1,99 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BagThat Setup • Onboarding</title>
-<style>
-  body {
-    font-family: system-ui, -apple-system, Roboto, Arial, sans-serif;
-    background:#f5f3ef;
-    color:#222;
-    margin:0; padding:0;
-    display:flex; align-items:center; justify-content:center;
-    min-height:100vh;
-  }
-  .box {
-    background:#fff;
-    padding:40px 30px;
-    border-radius:16px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.08);
-    width:100%; max-width:420px;
-  }
-  h1 {font-size:1.6rem; margin-bottom:1rem; text-align:center;}
-  label {display:block; margin-top:1rem; font-weight:600;}
-  input {
-    width:100%; padding:10px; font-size:1rem;
-    border:1px solid #ccc; border-radius:8px;
-    margin-top:4px;
-  }
-  input:focus {outline:none; border-color:#e6a85a;}
-  button {
-    margin-top:1.6rem; width:100%;
-    background:#e6a85a; color:#fff;
-    border:none; border-radius:8px;
-    font-size:1rem; padding:12px;
-    cursor:pointer;
-  }
-  button:hover {background:#d69749;}
-  .msg {margin-top:1rem; font-size:.95rem; text-align:center;}
-  .error {color:#b50000;}
-  .success {color:#047857;}
-</style>
-</head>
-<body>
-<div class="box">
-  <h1>Set Up Your BagThat Site</h1>
-  <form id="onboardForm">
-    <label>Display Name (shown on your site)
-      <input type="text" id="display" required maxlength="50">
-    </label>
-    <label>Domain Name (letters/numbers only)
-      <input type="text" id="domain" required maxlength="30">
-    </label>
-    <label>Amazon Associate Tag (must end with -20)
-      <input type="text" id="tag" required maxlength="20">
-    </label>
-    <label>Email Address
-      <input type="email" id="email" required>
-    </label>
-    <button type="submit">Complete Setup</button>
-  </form>
-  <div id="msg" class="msg"></div>
-</div>
-
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzgBKUJpnNRaTlA11-Nw6bIRpJtf-JLcM63j3xGuJMd39UqJkxyDBORDy1mBnsLsQ6rrw/exec";
-const msg = document.getElementById('msg');
-const form = document.getElementById('onboardForm');
-
-// Live domain sanitization
-document.getElementById('domain').addEventListener('input', e=>{
-  e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g,'');
-});
-
-form.addEventListener('submit', async ev=>{
-  ev.preventDefault();
-  msg.textContent = "Processing...";
-  msg.className = "msg";
-
-  const site_display_name = document.getElementById('display').value.trim();
-  const subdomain = document.getElementById('domain').value.trim();
-  const amazon_tag = document.getElementById('tag').value.trim();
-  const email = document.getElementById('email').value.trim();
-
-  // validation
-  if(!site_display_name || !subdomain || !amazon_tag || !email){
-    msg.textContent = "All fields are required.";
-    msg.className = "msg error"; return;
-  }
-  if(!/^[a-z0-9]+$/.test(subdomain)){
-    msg.textContent = "Domain must contain only letters and numbers.";
-    msg.className = "msg error"; return;
-  }
-  if(!amazon_tag.endsWith("-20")){
-    msg.textContent = "Amazon tag must end with -20.";
-    msg.className = "msg error"; return;
-  }
-
+function doPost(e) {
   try {
-    const res = await fetch(API_URL, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ site_display_name, subdomain, amazon_tag, email })
-    });
-    const data = await res.json();
-
-    if(!data.ok){
-      msg.textContent = data.msg || "Submission failed.";
-      msg.className = "msg error";
-      return;
+    // Parse incoming data (handles both JSON and form data)
+    let data;
+    if (e.postData && e.postData.type === 'application/json') {
+      data = JSON.parse(e.postData.contents);
+    } else {
+      data = e.parameter;
     }
-
-    msg.textContent = "Success! Redirecting...";
-    msg.className = "msg success";
-
-    // redirect to success page
-    setTimeout(()=>{
-      window.location.href = `/success/?s=${encodeURIComponent(data.subdomain)}`;
-    },1000);
-
-  } catch(err){
-    msg.textContent = "Connection error. Please try again.";
-    msg.className = "msg error";
+    
+    // Open the spreadsheet and get the Basic sheet
+    const ss = SpreadsheetApp.openById('1YqMpo0L4tjHKq0gvGXmPQOu_iw5QkppFzy4HtdrD1Eo');
+    const sheet = ss.getSheetByName('Basic');
+    
+    // Get the domain name being submitted
+    const newDomainName = (data.subdomain || '').toLowerCase().trim();
+    
+    if (!newDomainName) {
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          ok: false,
+          msg: 'Domain name is required'
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Check for duplicate domain names (column D is subdomain)
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1) {
+      const existingDomains = sheet.getRange(2, 4, lastRow - 1, 1).getValues();
+      const domainExists = existingDomains.some(row => 
+        row[0] && row[0].toString().toLowerCase().trim() === newDomainName
+      );
+      
+      if (domainExists) {
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            ok: false,
+            msg: 'That domain name is not available. Please try a different name.'
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // Generate timestamp and tenant_id
+    const timestamp = new Date();
+    const tenantId = 'tenant_' + timestamp.getTime();
+    
+    // Map form fields to spreadsheet columns
+    const rowData = [
+      timestamp,                        // timestamp
+      tenantId,                         // tenant_id
+      data.site_display_name || '',     // site_display_name
+      newDomainName,                    // subdomain
+      data.amazon_tag || '',            // amazon_tag
+      data.email || ''                  // email
+    ];
+    
+    // Append the data to the sheet
+    sheet.appendRow(rowData);
+    
+    // Return success response
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        ok: true,
+        msg: 'Data saved successfully',
+        subdomain: newDomainName,
+        tenantId: tenantId
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    // Return error response
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        ok: false,
+        msg: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
-});
-</script>
-</body>
-</html>
+}
+
+// Test function to verify the script works
+function testDoPost() {
+  const testData = {
+    postData: {
+      type: 'application/json',
+      contents: JSON.stringify({
+        site_display_name: 'Test Site',
+        subdomain: 'testsite',
+        amazon_tag: 'testag-20',
+        email: 'test@example.com'
+      })
+    }
+  };
+  
+  const result = doPost(testData);
+  Logger.log(result.getContent());
+}
