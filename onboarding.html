@@ -1,117 +1,100 @@
-<!-- 
-  This HTML/JavaScript file demonstrates how to correctly submit form data 
-  as JSON using the modern 'fetch' API, which is the preferred method for 
-  talking to a GAS Web App endpoint. 
--->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onboarding Form</title>
-    <!-- Load Tailwind CSS for quick styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .container {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>BagThat Onboarding</title>
+  <meta name="description" content="Start your BagThat site setup in under 60 seconds."/>
+  <style>
+    body {font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:#f5f9f9; margin:0; padding:0;}
+    .wrap {max-width:420px; margin:60px auto; background:#fff; border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,.08); padding:32px;}
+    h1 {font-size:1.5rem; margin-top:0; text-align:center; color:#0b1320;}
+    p {color:#4d6375; font-size:0.95rem; line-height:1.4;}
+    label {display:block; margin:16px 0 6px; font-weight:600; color:#0b1320;}
+    input {width:100%; padding:10px 12px; border:1px solid #d6e0e6; border-radius:8px; font-size:0.95rem;}
+    button {margin-top:20px; width:100%; background:#0b8b8b; color:#fff; border:none; padding:12px; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;}
+    button:disabled {opacity:0.6; cursor:not-allowed;}
+    .msg {margin-top:16px; font-size:0.95rem; text-align:center;}
+    .success {color:#008f5d;}
+    .error {color:#c0392b;}
+    .fallback {display:none; margin-top:10px; text-align:center;}
+    .fallback a {color:#0b8b8b; text-decoration:none; font-weight:600;}
+  </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen">
-    <div class="container w-full max-w-md bg-white p-8 rounded-xl shadow-2xl">
-        <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">New Client Onboarding</h2>
-        <form id="onboardingForm" class="space-y-4">
-            <div>
-                <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
-                <input type="text" id="companyName" required
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="contactEmail" class="block text-sm font-medium text-gray-700">Contact Email</label>
-                <input type="email" id="contactEmail" required
-                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="serviceTier" class="block text-sm font-medium text-gray-700">Service Tier</label>
-                <select id="serviceTier" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="">Select a tier</option>
-                    <option value="Basic">Basic</option>
-                    <option value="Pro">Pro</option>
-                    <option value="Enterprise">Enterprise</option>
-                </select>
-            </div>
-            <button type="submit" id="submitButton"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                Submit Onboarding
-            </button>
-            <p id="message" class="text-center text-sm mt-4 hidden"></p>
-        </form>
-    </div>
+<body>
+  <div class="wrap">
+    <h1>Welcome to BagThat</h1>
+    <p>Complete your quick setup to activate your storefront.</p>
+    <form id="onboardForm">
+      <label for="name">Your Name</label>
+      <input id="name" name="name" type="text" placeholder="e.g. Kimberly Millionaire" required />
 
-    <script>
-        // *** IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GAS WEB APP URL ***
-        const GAS_WEB_APP_URL = 'YOUR_DEPLOYED_GAS_WEB_APP_URL_HERE';
+      <label for="email">Email Address</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" required />
 
-        const form = document.getElementById('onboardingForm');
-        const messageEl = document.getElementById('message');
-        const submitButton = document.getElementById('submitButton');
+      <label for="subdomain">Store Name (subdomain)</label>
+      <input id="subdomain" name="subdomain" type="text" placeholder="e.g. myshop" pattern="[a-zA-Z0-9-]{3,63}" required />
 
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            submitButton.disabled = true;
-            messageEl.textContent = 'Submitting data...';
-            messageEl.classList.remove('hidden', 'text-red-500', 'text-green-500');
-            messageEl.classList.add('text-blue-500');
+      <input id="plan_key" name="plan_key" type="hidden" />
+      <button type="submit">Activate My Store</button>
+      <div id="msg" class="msg"></div>
+      <div id="fallback" class="fallback"></div>
+    </form>
+  </div>
 
-            // 1. Collect form data into a plain JavaScript object
-            const formData = {
-                companyName: document.getElementById('companyName').value,
-                contactEmail: document.getElementById('contactEmail').value,
-                serviceTier: document.getElementById('serviceTier').value,
-                timestamp: new Date().toISOString()
-            };
+  <script>
+    const form = document.getElementById('onboardForm');
+    const msg = document.getElementById('msg');
+    const fallback = document.getElementById('fallback');
+    const planField = document.getElementById('plan_key');
 
-            try {
-                // 2. Use fetch to send the data
-                const response = await fetch(GAS_WEB_APP_URL, {
-                    method: 'POST',
-                    // 3. CRITICAL: Send the data as JSON
-                    headers: {
-                        'Content-Type': 'application/json' 
-                    },
-                    body: JSON.stringify(formData) // Convert JS object to JSON string
-                });
+    // Extract plan_key from URL
+    const params = new URLSearchParams(window.location.search);
+    const plan_key = params.get('plan_key') || '';
+    planField.value = plan_key;
 
-                // 4. Check for successful response status
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.status === 'SUCCESS') {
-                        messageEl.textContent = 'Success! Client data recorded.';
-                        messageEl.classList.replace('text-blue-500', 'text-green-500');
-                        form.reset();
-                        // You would typically redirect the user to Stripe checkout here
-                        // window.location.href = '/checkout-page?tier=' + formData.serviceTier; 
-                    } else {
-                        // Handle success status but application-level error (e.g., validation fail)
-                         messageEl.textContent = 'Submission failed: ' + (result.message || 'Unknown server error.');
-                         messageEl.classList.replace('text-blue-500', 'text-red-500');
-                    }
-                } else {
-                    // Handle HTTP error statuses (400s, 500s)
-                    throw new Error(`Server returned status: ${response.status} ${response.statusText}`);
-                }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = 'Submitting...';
+      msg.className = 'msg';
+      fallback.style.display = 'none';
+      const btn = form.querySelector('button');
+      btn.disabled = true;
 
-            } catch (error) {
-                console.error('Submission Error:', error);
-                messageEl.textContent = 'Connection Error: Could not reach the server or invalid response. Check console for details.';
-                messageEl.classList.replace('text-blue-500', 'text-red-500');
-            } finally {
-                submitButton.disabled = false;
-                messageEl.classList.remove('hidden');
-            }
+      const data = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        subdomain: form.subdomain.value.trim().toLowerCase(),
+        plan_key: plan_key
+      };
+
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbxbAn0Lat0Mr31nk7LIEvgTkaEguQ0VbkYAdnxfteh6MIBkkuC7oge5vRlpFK8-SYqjEw/exec', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
         });
-    </script>
+        const json = await res.json();
+
+        if (json.status === 'success') {
+          const url = `https://${data.subdomain}.bagthatthangup.com`;
+          msg.innerHTML = `✅ Your site is being set up: <strong>${url}</strong><br/>Redirecting in 5 seconds...`;
+          msg.className = 'msg success';
+          fallback.innerHTML = `<a href="${url}" target="_blank">Click here if not redirected</a>`;
+          fallback.style.display = 'block';
+          form.reset();
+          setTimeout(() => window.location.href = url, 5000);
+        } else {
+          msg.textContent = json.message || 'Error: site name may already exist.';
+          msg.className = 'msg error';
+        }
+      } catch (err) {
+        msg.textContent = 'Connection error. Please try again.';
+        msg.className = 'msg error';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
