@@ -2,9 +2,8 @@
   This HTML file contains the frontend form and JavaScript logic to submit data 
   to the Google Apps Script endpoint using your NEWLY GENERATED WEB APP URL.
   
-  **IMPORTANT FIX:** The submission logic has been changed from 'fetch' to 
-  'XMLHttpRequest' (XHR) to bypass stubborn browser CORS security checks 
-  that are failing the pre-flight request.
+  **CRITICAL FIX:** Added xhr.withCredentials = false; to prevent Google's 
+  network filters from closing the connection immediately.
 -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -68,6 +67,9 @@
     const xhr = new XMLHttpRequest();
     xhr.open('POST', GAS_WEB_APP_URL, true); // true for asynchronous
     
+    // CRITICAL FIX: Ensures no cookies or session data are sent, which avoids the ERR_CONNECTION_CLOSED by GAS firewall.
+    xhr.withCredentials = false;
+    
     // CRITICAL: Set the content type for GAS to recognize the JSON payload
     xhr.setRequestHeader('Content-Type', 'application/json');
     
@@ -78,6 +80,7 @@
         
         if (xhr.status >= 200 && xhr.status < 300) {
             try {
+                // If successful, check server response status
                 const result = JSON.parse(xhr.responseText);
                 
                 if (result.status === 'success') {
@@ -87,23 +90,23 @@
                     showMessage(`Submission Failed: ${result.message}`, true);
                 }
             } catch (e) {
-                // Should not happen if GAS script is correct, but handles corrupted response
-                console.error('JSON Parse Error:', e);
-                showMessage("Server returned non-JSON response. Check GAS log.", true);
+                // Catches if the response isn't clean JSON (e.g., Google's "Redirecting..." HTML)
+                console.error('JSON Parse Error or unexpected response:', xhr.responseText);
+                showMessage("Server returned an unexpected response. Check GAS log for runtime errors.", true);
             }
         } else {
-            // This catches non-200 errors (like 401, 403) that sometimes happen
+            // Catches non-200 errors (like 401, 403)
             console.error('XHR Load Error - Status:', xhr.status);
             showMessage("Connection Error! (HTTP Status " + xhr.status + "). Check GAS deployment.", true);
         }
     };
 
     xhr.onerror = function() {
-        // This catches true network failures (like domain not found or blocked network request)
+        // Catches true network failures (like ERR_CONNECTION_CLOSED)
         button.textContent = originalButtonText;
         button.disabled = false;
         console.error('XHR Network Error');
-        showMessage("Connection Error! Please check your network and ensure the GAS script is deployed correctly.", true);
+        showMessage("Network Error! The connection was closed prematurely. Please try again.", true);
     };
 
     // Send the request
