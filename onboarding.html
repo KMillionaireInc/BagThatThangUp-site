@@ -4,95 +4,188 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>BagThat Onboarding</title>
-  <meta name="description" content="Start your BagThat site setup in under 60 seconds."/>
+  <meta name="description" content="Set up your BagThat storefront quickly and easily."/>
   <style>
-    body {font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:#f5f9f9; margin:0; padding:0;}
-    .wrap {max-width:420px; margin:60px auto; background:#fff; border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,.08); padding:32px;}
-    h1 {font-size:1.5rem; margin-top:0; text-align:center; color:#0b1320;}
-    p {color:#4d6375; font-size:0.95rem; line-height:1.4;}
-    label {display:block; margin:16px 0 6px; font-weight:600; color:#0b1320;}
-    input {width:100%; padding:10px 12px; border:1px solid #d6e0e6; border-radius:8px; font-size:0.95rem;}
-    button {margin-top:20px; width:100%; background:#0b8b8b; color:#fff; border:none; padding:12px; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;}
-    button:disabled {opacity:0.6; cursor:not-allowed;}
-    .msg {margin-top:16px; font-size:0.95rem; text-align:center;}
-    .success {color:#008f5d;}
-    .error {color:#c0392b;}
-    .fallback {display:none; margin-top:10px; text-align:center;}
-    .fallback a {color:#0b8b8b; text-decoration:none; font-weight:600;}
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: #fdfaf5;
+      color: #3a2e1a;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      background-color: #f3e7d2;
+      padding: 30px 0 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #5a4526;
+    }
+    .wrap {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fffdf8;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      padding: 36px;
+    }
+    label {
+      display:block;
+      margin:18px 0 6px;
+      font-weight:600;
+    }
+    input {
+      width:100%;
+      padding:10px 12px;
+      border:1px solid #d8c9a7;
+      border-radius:8px;
+      font-size:0.95rem;
+      background:#fffaf2;
+    }
+    small {
+      color:#6b5c44;
+      font-size:0.85rem;
+    }
+    .error {
+      color:#b33a3a;
+      font-size:0.9rem;
+      margin-top:4px;
+    }
+    button {
+      margin-top:24px;
+      width:100%;
+      background:#b07a42;
+      color:#fff;
+      border:none;
+      padding:14px;
+      border-radius:8px;
+      font-size:1rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.2s ease-in-out;
+    }
+    button:hover { background:#9c6e3a; }
+    button:disabled {
+      opacity:0.6;
+      cursor:not-allowed;
+    }
+    .preview {
+      margin-top:6px;
+      font-size:0.9rem;
+      color:#5c4b2f;
+    }
   </style>
 </head>
 <body>
+  <header><h1>BagThat</h1></header>
   <div class="wrap">
-    <h1>Welcome to BagThat</h1>
-    <p>Complete your quick setup to activate your storefront.</p>
     <form id="onboardForm">
-      <label for="name">Your Name</label>
-      <input id="name" name="name" type="text" placeholder="e.g. Kimberly Millionaire" required />
+      <label for="siteName">Desired Site Name</label>
+      <input id="siteName" name="site_display_name" type="text" placeholder="Porky's Palace" required/>
+
+      <label for="subdomain">Desired Site Domain</label>
+      <input id="subdomain" name="subdomain" type="text"
+        placeholder="porkyspalace"
+        pattern="[a-z0-9-]{3,63}"
+        required/>
+      <div class="preview" id="domainPreview"></div>
+      <div class="error" id="subError"></div>
+
+      <label for="amazonTag">Amazon Store ID</label>
+      <input id="amazonTag" name="amazon_tag" type="text" placeholder="example-20" pattern="^[A-Za-z0-9-]+-20$" required/>
+      <div class="error" id="tagError"></div>
 
       <label for="email">Email Address</label>
-      <input id="email" name="email" type="email" placeholder="you@example.com" required />
+      <input id="email" name="email" type="email" placeholder="you@example.com" required/>
 
-      <label for="subdomain">Store Name (subdomain)</label>
-      <input id="subdomain" name="subdomain" type="text" placeholder="e.g. myshop" pattern="[a-zA-Z0-9-]{3,63}" required />
-
-      <input id="plan_key" name="plan_key" type="hidden" />
-      <button type="submit">Activate My Store</button>
-      <div id="msg" class="msg"></div>
-      <div id="fallback" class="fallback"></div>
+      <button id="submitBtn" type="submit">Activate My Store</button>
+      <div class="error" id="formError"></div>
     </form>
   </div>
 
   <script>
     const form = document.getElementById('onboardForm');
-    const msg = document.getElementById('msg');
-    const fallback = document.getElementById('fallback');
-    const planField = document.getElementById('plan_key');
+    const subInput = document.getElementById('subdomain');
+    const domainPreview = document.getElementById('domainPreview');
+    const subError = document.getElementById('subError');
+    const tagError = document.getElementById('tagError');
+    const formError = document.getElementById('formError');
+    const submitBtn = document.getElementById('submitBtn');
 
-    // Extract plan_key from URL
-    const params = new URLSearchParams(window.location.search);
-    const plan_key = params.get('plan_key') || '';
-    planField.value = plan_key;
+    // Live domain preview
+    subInput.addEventListener('input', async () => {
+      const sub = subInput.value.trim().toLowerCase();
+      domainPreview.textContent = sub ? `Your site will appear at https://${sub}.bagthatthangup.com` : '';
+      subError.textContent = '';
+      submitBtn.disabled = false;
+      if (!sub.match(/^[a-z0-9-]{3,63}$/)) {
+        subError.textContent = 'Only lowercase letters, numbers, and hyphens (3–63 chars).';
+        submitBtn.disabled = true;
+        return;
+      }
+      // Live duplicate check
+      if (sub.length >= 3) {
+        try {
+          const res = await fetch("https://hook.us2.make.com/2zkh1r427cenx1c3pvr9r3qv0debes8u", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({check_subdomain: sub})
+          });
+          const json = await res.json();
+          if (json.status === "taken") {
+            subError.textContent = 'That subdomain is already in use.';
+            submitBtn.disabled = true;
+          } else if (json.status === "available") {
+            subError.textContent = '';
+            submitBtn.disabled = false;
+          }
+        } catch {
+          subError.textContent = 'Unable to verify subdomain right now.';
+        }
+      }
+    });
 
+    // Form submit
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      msg.textContent = 'Submitting...';
-      msg.className = 'msg';
-      fallback.style.display = 'none';
-      const btn = form.querySelector('button');
-      btn.disabled = true;
+      formError.textContent = '';
+      tagError.textContent = '';
+      submitBtn.disabled = true;
 
       const data = {
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
+        site_display_name: form.siteName.value.trim(),
         subdomain: form.subdomain.value.trim().toLowerCase(),
-        plan_key: plan_key
+        amazon_tag: form.amazonTag.value.trim(),
+        email: form.email.value.trim()
       };
 
+      // Amazon tag validation
+      if (!/^[A-Za-z0-9-]+-20$/.test(data.amazon_tag)) {
+        tagError.textContent = 'Amazon tag must end with "-20".';
+        submitBtn.disabled = false;
+        return;
+      }
+
       try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbxbAn0Lat0Mr31nk7LIEvgTkaEguQ0VbkYAdnxfteh6MIBkkuC7oge5vRlpFK8-SYqjEw/exec', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+        const res = await fetch("https://hook.us2.make.com/2zkh1r427cenx1c3pvr9r3qv0debes8u", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
           body: JSON.stringify(data)
         });
         const json = await res.json();
-
-        if (json.status === 'success') {
-          const url = `https://${data.subdomain}.bagthatthangup.com`;
-          msg.innerHTML = `✅ Your site is being set up: <strong>${url}</strong><br/>Redirecting in 5 seconds...`;
-          msg.className = 'msg success';
-          fallback.innerHTML = `<a href="${url}" target="_blank">Click here if not redirected</a>`;
-          fallback.style.display = 'block';
-          form.reset();
-          setTimeout(() => window.location.href = url, 5000);
+        if (json.status === "success") {
+          window.location.href = "/onboarding/success.html";
         } else {
-          msg.textContent = json.message || 'Error: site name may already exist.';
-          msg.className = 'msg error';
+          formError.textContent = json.message || "An error occurred. Please try again.";
+          submitBtn.disabled = false;
         }
-      } catch (err) {
-        msg.textContent = 'Connection error. Please try again.';
-        msg.className = 'msg error';
-      } finally {
-        btn.disabled = false;
+      } catch {
+        formError.textContent = "Network error. Please try again.";
+        submitBtn.disabled = false;
       }
     });
   </script>
