@@ -1,99 +1,150 @@
-function doPost(e) {
-  try {
-    // Parse incoming data (handles both JSON and form data)
-    let data;
-    if (e.postData && e.postData.type === 'application/json') {
-      data = JSON.parse(e.postData.contents);
-    } else {
-      data = e.parameter;
-    }
-    
-    // Open the spreadsheet and get the Basic sheet
-    const ss = SpreadsheetApp.openById('1YqMpo0L4tjHKq0gvGXmPQOu_iw5QkppFzy4HtdrD1Eo');
-    const sheet = ss.getSheetByName('Basic');
-    
-    // Get the domain name being submitted
-    const newDomainName = (data.subdomain || '').toLowerCase().trim();
-    
-    if (!newDomainName) {
-      return ContentService
-        .createTextOutput(JSON.stringify({
-          ok: false,
-          msg: 'Domain name is required'
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // Check for duplicate domain names (column D is subdomain)
-    const lastRow = sheet.getLastRow();
-    if (lastRow > 1) {
-      const existingDomains = sheet.getRange(2, 4, lastRow - 1, 1).getValues();
-      const domainExists = existingDomains.some(row => 
-        row[0] && row[0].toString().toLowerCase().trim() === newDomainName
-      );
-      
-      if (domainExists) {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            ok: false,
-            msg: 'That domain name is not available. Please try a different name.'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    
-    // Generate timestamp and tenant_id
-    const timestamp = new Date();
-    const tenantId = 'tenant_' + timestamp.getTime();
-    
-    // Map form fields to spreadsheet columns
-    const rowData = [
-      timestamp,                        // timestamp
-      tenantId,                         // tenant_id
-      data.site_display_name || '',     // site_display_name
-      newDomainName,                    // subdomain
-      data.amazon_tag || '',            // amazon_tag
-      data.email || ''                  // email
-    ];
-    
-    // Append the data to the sheet
-    sheet.appendRow(rowData);
-    
-    // Return success response
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        ok: true,
-        msg: 'Data saved successfully',
-        subdomain: newDomainName,
-        tenantId: tenantId
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    // Return error response
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        ok: false,
-        msg: error.toString()
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+<!-- 
+  This file is designed to be hosted on Vercel or any public web server.
+  It collects the four required fields and securely sends them as JSON to 
+  your Google Apps Script (GAS) Web App endpoint.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Client Onboarding</title>
+    <!-- Load Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-lg bg-white p-8 md:p-10 rounded-xl shadow-2xl transition-all duration-300">
+        <h2 class="text-4xl font-extrabold mb-4 text-gray-900">SaaS Onboarding</h2>
+        <p class="text-gray-600 mb-8">Enter your site details to register and proceed to payment.</p>
 
-// Test function to verify the script works
-function testDoPost() {
-  const testData = {
-    postData: {
-      type: 'application/json',
-      contents: JSON.stringify({
-        site_display_name: 'Test Site',
-        subdomain: 'testsite',
-        amazon_tag: 'testag-20',
-        email: 'test@example.com'
-      })
-    }
-  };
-  
-  const result = doPost(testData);
-  Logger.log(result.getContent());
-}
+        <form id="onboardingForm" class="space-y-6">
+            <!-- Site Name -->
+            <div>
+                <label for="displayName" class="block text-sm font-medium text-gray-700">1. Site Name (e.g., "The Best Gadgets")</label>
+                <input type="text" id="displayName" name="displayName" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+            </div>
+            
+            <!-- Domain Name -->
+            <div>
+                <label for="domainName" class="block text-sm font-medium text-gray-700">2. Desired Subdomain (e.g., "bestgadgets" for bestgadgets.saas.com)</label>
+                <!-- Only allow characters that are safe for a URL subdomain -->
+                <input type="text" id="domainName" name="domainName" required pattern="[a-z0-9-]+" title="Only lowercase letters, numbers, and hyphens"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+            </div>
+
+            <!-- Amazon Associate ID -->
+            <div>
+                <label for="amazonTag" class="block text-sm font-medium text-gray-700">3. Amazon Associate ID (e.g., yourtag-20)</label>
+                <input type="text" id="amazonTag" name="amazonTag" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+            </div>
+
+            <!-- Email Address -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">4. Contact Email Address</label>
+                <input type="email" id="email" name="email" required
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+            </div>
+
+            <button type="submit" id="submitButton"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out disabled:opacity-50">
+                Register Site & Proceed to Stripe
+            </button>
+            <div id="messageBox" class="p-3 mt-4 text-center rounded-lg hidden"></div>
+        </form>
+    </div>
+
+    <script>
+        // *** CRITICAL: YOUR CONFIRMED DEPLOYED GAS WEB APP URL IS HERE ***
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwJuuIRZtsy2rshiTX44GcgjKfnunjoA-aKH_7OtbLUY2rQLgfszNN6JCS73GsGILJ7kA/exec'; 
+
+        const form = document.getElementById('onboardingForm');
+        const submitButton = document.getElementById('submitButton');
+        const messageBox = document.getElementById('messageBox');
+
+        function displayMessage(text, type) {
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800');
+            
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-800');
+            } else if (type === 'loading') {
+                messageBox.classList.add('bg-yellow-100', 'text-yellow-800');
+            }
+        }
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // 1. Collect Data
+            const formData = {
+                displayName: document.getElementById('displayName').value.trim(),
+                domainName: document.getElementById('domainName').value.toLowerCase().trim(),
+                amazonTag: document.getElementById('amazonTag').value.trim(),
+                email: document.getElementById('email').value.trim()
+            };
+
+            // 2. Lock button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+            displayMessage('Sending data to server...', 'loading');
+
+            try {
+                // 3. Make the API Call to GAS
+                const response = await fetch(GAS_WEB_APP_URL, {
+                    method: 'POST',
+                    // CRITICAL: Set headers to tell GAS the data is JSON
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(formData) // Send data as JSON string
+                });
+
+                // Check if the network request itself was successful (e.g., status 200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP Error Status: ${response.status} - Could not connect to GAS endpoint.`);
+                }
+
+                // 4. Parse the GAS response (which is JSON)
+                const result = await response.json();
+
+                // 5. Handle Application Logic (Success or GAS-level Error)
+                if (result.status === 'success') {
+                    displayMessage(result.message, 'success');
+                    
+                    // --- SUCCESS ACTION: REDIRECT TO STRIPE ---
+                    // This is where you would call your Stripe logic (e.g., fetch a Checkout Session ID)
+                    // For now, we'll log the success and keep the form visible.
+                    console.log('New Tenant ID for Stripe:', result.tenantId);
+                    
+                    // You would replace the next line with your actual Stripe redirect logic:
+                    // window.location.href = `/api/create-stripe-session?tenantId=${result.tenantId}&tier=Basic`;
+                    
+                    form.reset(); 
+
+                } else if (result.status === 'error') {
+                    // This handles errors like duplicate domain or missing fields (as defined in your GAS script)
+                    displayMessage(`Registration Failed: ${result.message}`, 'error');
+                } else {
+                     displayMessage('An unexpected response format was received from the server.', 'error');
+                }
+
+            } catch (error) {
+                console.error('Connection/Fetch Error:', error);
+                // This catches network issues or CORS failure (if GAS isn't deployed right)
+                displayMessage('Connection Error! Please check your network and ensure the GAS script is deployed correctly.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Register Site & Proceed to Stripe';
+            }
+        });
+    </script>
+</body>
+</html>
