@@ -1,65 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Your Site is Ready!</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Your Site is Ready! • BagThat</title>
 <style>
   body {
-    background-color: #f9f5f0;
-    font-family: system-ui, sans-serif;
-    color: #3a2e1f;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    background: #faf9f7;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #222;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100vh; text-align: center;
   }
+  h1 { font-size: 2.2rem; color: #3a6b68; margin-bottom: .5rem; }
+  p { font-size: 1rem; margin: .5rem 0; }
   .card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    padding: 40px 50px;
-    text-align: center;
-    max-width: 500px;
+    background: #fff; padding: 2rem 3rem; border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.07); max-width: 480px;
   }
-  h1 {
-    color: #7b552e;
+  a.link {
+    display: inline-block;
+    background: #3a6b68; color: #fff;
+    padding: .75rem 1.25rem; border-radius: 12px;
+    text-decoration: none; font-weight: 600;
+    margin: 1rem 0;
   }
-  p {
-    font-size: 16px;
-    margin-top: 10px;
-    color: #4a3d2c;
+  .tips {
+    text-align: left; font-size: .95rem;
+    margin-top: 1.5rem;
   }
-  a {
-    color: #b47b48;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
+  .tips li { margin-bottom: .5rem; }
 </style>
 </head>
 <body>
   <div class="card">
-    <h1>🎉 Your Site is Ready!</h1>
-    <p id="siteInfo"></p>
-    <p>If your site doesn’t open right away, give it a minute and try again.</p>
+    <h1>🎉 Your Site Is Live!</h1>
+    <p>Congratulations — your affiliate storefront has been created!</p>
+    <p><strong>Your link:</strong><br>
+      <a id="liveLink" class="link" href="#" target="_blank">Loading...</a>
+    </p>
+
+    <ul class="tips">
+      <li>Share your link in your Instagram bio, TikTok, and Facebook posts.</li>
+      <li>Bookmark it for easy updates to your deals and tags.</li>
+      <li>Drive traffic by adding your link to every short video caption.</li>
+      <li>Need to edit your store name or tag? Just resubmit the form anytime.</li>
+    </ul>
   </div>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const subdomain = params.get("subdomain");
-const site = params.get("site");
-const baseDomain = "bagthatthangup.com";
-
-if (subdomain) {
-  document.getElementById("siteInfo").innerHTML =
-    `${site ? `<b>${site}</b> is live at:` : "Your site is live at:"}<br><a href="https://${subdomain}.${baseDomain}" target="_blank">https://${subdomain}.${baseDomain}</a>`;
-} else {
-  document.getElementById("siteInfo").textContent = "No site information found.";
-}
-</script>
+  <script>
+    // Auto-fill the live link from the URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const subdomain = params.get("subdomain");
+    if (subdomain) {
+      const liveLink = `https://${subdomain}.bagthatthangup.com`;
+      document.getElementById("liveLink").href = liveLink;
+      document.getElementById("liveLink").textContent = liveLink;
+    } else {
+      document.getElementById("liveLink").textContent = "Site not detected.";
+    }
+  </script>
 </body>
 </html>
