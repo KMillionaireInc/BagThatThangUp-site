@@ -1,72 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BagThat • Setup Complete</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Site is Ready!</title>
 <style>
-  body{
-    margin:0;
-    font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;
-    background:#f5f3ef;
-    color:#222;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:100vh;
+  body {
+    background-color: #f9f5f0;
+    font-family: system-ui, sans-serif;
+    color: #3a2e1f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
   }
-  .card{
-    background:#fff;
-    padding:40px 30px;
-    border-radius:16px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.08);
-    width:100%; max-width:480px;
-    text-align:center;
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    padding: 40px 50px;
+    text-align: center;
+    max-width: 500px;
   }
-  h1{font-size:1.8rem; margin-bottom:0.5rem;}
-  p{margin:0.6rem 0; line-height:1.4;}
-  a.button{
-    display:inline-block;
-    margin-top:1.4rem;
-    background:#e6a85a;
-    color:#fff;
-    padding:12px 24px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:600;
+  h1 {
+    color: #7b552e;
   }
-  a.button:hover{background:#d69749;}
-  .note{margin-top:1rem; font-size:0.9rem; color:#666;}
+  p {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #4a3d2c;
+  }
+  a {
+    color: #b47b48;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>🎉 Your Site is Ready!</h1>
-  <p id="summary">Generating your link...</p>
-  <a id="siteLink" href="#" class="button" style="display:none;">Visit Your Site</a>
-  <p class="note">If your site doesn’t open right away, give it a minute and try again.</p>
-</div>
+  <div class="card">
+    <h1>🎉 Your Site is Ready!</h1>
+    <p id="siteInfo"></p>
+    <p>If your site doesn’t open right away, give it a minute and try again.</p>
+  </div>
 
 <script>
-(function(){
-  const params = new URLSearchParams(window.location.search);
-  const s = params.get('s');
-  const summary = document.getElementById('summary');
-  const link = document.getElementById('siteLink');
+const params = new URLSearchParams(window.location.search);
+const subdomain = params.get("subdomain");
+const site = params.get("site");
+const baseDomain = "bagthatthangup.com";
 
-  if(!s){
-    summary.textContent = "No site information found.";
-    return;
-  }
-
-  const sub = s.toLowerCase().replace(/[^a-z0-9]/g,'');
-  const url = `https://${sub}.bagthatthangup.com`;
-
-  summary.textContent = `Your custom BagThat site has been created:`;
-  link.href = url;
-  link.textContent = url;
-  link.style.display = "inline-block";
-})();
+if (subdomain) {
+  document.getElementById("siteInfo").innerHTML =
+    `${site ? `<b>${site}</b> is live at:` : "Your site is live at:"}<br><a href="https://${subdomain}.${baseDomain}" target="_blank">https://${subdomain}.${baseDomain}</a>`;
+} else {
+  document.getElementById("siteInfo").textContent = "No site information found.";
+}
 </script>
 </body>
 </html>
