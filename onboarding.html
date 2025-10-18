@@ -69,7 +69,9 @@ const form = document.getElementById("onboardForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(form));
-  const webhookUrl = "https://hook.us2.make.com/YOUR_MAIN_WEBHOOK_URL"; // replace with your actual Make webhook
+
+  // ✅ Your actual Make webhook (main scenario)
+  const webhookUrl = "https://hook.us2.make.com/2zkh1r427cenx1c3pvr9r3qv0debes8u";
 
   try {
     const res = await fetch(webhookUrl, {
