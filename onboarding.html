@@ -1,163 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BagThat — Onboarding</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat – Activate Your Store</title>
 <style>
   body {
-    font-family: system-ui, sans-serif;
-    background-color: #f9f5f0;
-    color: #3a2e1f;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    background:#f8f4ef; color:#4a3728; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    display:flex; align-items:center; justify-content:center; height:100vh; margin:0;
   }
-  .container {
-    background: #fffaf5;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    width: 360px;
+  form {
+    background:#fffaf6; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08);
+    width:360px; text-align:center;
   }
-  h1 {
-    text-align: center;
-    color: #7b552e;
-    margin-bottom: 24px;
-  }
-  label {
-    font-weight: 600;
-    display: block;
-    margin: 8px 0 4px;
-  }
+  h1 { color:#8b5e3c; font-size:1.8rem; margin-bottom:1.5rem; }
+  label { display:block; font-weight:600; text-align:left; margin:10px 0 5px; }
   input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d8c7b5;
-    border-radius: 8px;
-    font-size: 15px;
-  }
-  input:focus {
-    border-color: #b68a5e;
-    outline: none;
-  }
-  .note {
-    font-size: 13px;
-    color: #7b552e;
-    margin-top: 4px;
-  }
-  .error {
-    color: #b33;
-    font-size: 13px;
-    margin-top: 4px;
+    width:100%; padding:10px 12px; border:1px solid #d7c6b5; border-radius:8px;
+    font-size:15px; margin-bottom:10px;
   }
   button {
-    background-color: #b47b48;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 16px;
+    background:#b37a4c; color:#fff; font-weight:600; font-size:1rem;
+    border:none; border-radius:10px; padding:12px 20px; width:100%;
+    cursor:pointer; transition:.2s;
   }
-  button:hover {
-    background-color: #a06c3c;
-  }
-  .success {
-    color: #2a662a;
-    font-size: 14px;
-    margin-top: 8px;
-  }
+  button:hover { background:#9a653b; }
+  small { display:block; font-size:.85rem; color:#8b5e3c; margin-bottom:15px; }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>BagThat</h1>
-    <form id="onboardingForm">
-      <label>Desired Site Name</label>
-      <input type="text" id="site_name" required />
 
-      <label>Desired Site Domain</label>
-      <input type="text" id="subdomain" required pattern="[a-z0-9-]+" />
-      <div class="note" id="domainPreview">Your site will appear at:</div>
-      <div class="error" id="domainError"></div>
+<form id="bagthatForm" action="https://hook.us2.make.com/YOUR_MAIN_ONBOARDING_WEBHOOK" method="POST">
+  <h1>BagThat</h1>
 
-      <label>Amazon Store ID</label>
-      <input type="text" id="amazon_tag" required />
+  <label>Desired Site Name</label>
+  <input type="text" name="site_display_name" required>
 
-      <label>Email Address</label>
-      <input type="email" id="email" required />
+  <label>Desired Site Domain</label>
+  <input type="text" name="subdomain" required>
+  <small>Your site will appear at: <strong>sitename.bagthatthangup.com</strong></small>
 
-      <button type="submit">Activate My Store</button>
-      <div class="error" id="networkError"></div>
-    </form>
-  </div>
+  <label>Amazon Store ID</label>
+  <input type="text" name="amazon_tag" required>
+
+  <label>Email Address</label>
+  <input type="email" name="email" required>
+
+  <button type="submit">Activate My Store</button>
+</form>
 
 <script>
-const form = document.getElementById('onboardingForm');
-const subdomainField = document.getElementById('subdomain');
-const domainPreview = document.getElementById('domainPreview');
-const domainError = document.getElementById('domainError');
-const networkError = document.getElementById('networkError');
-
-const WEBHOOK_URL = "https://hook.us2.make.com/2zkh1r427cenx1c3pvr9r3qv0debes8u";
-const BASE_DOMAIN = "bagthatthangup.com";
-
-subdomainField.addEventListener('input', () => {
-  const raw = subdomainField.value.toLowerCase().trim();
-  const clean = raw.replace(/[^a-z0-9-]/g, '');
-  subdomainField.value = clean;
-  domainPreview.textContent = `Your site will appear at https://${clean || 'yoursite'}.${BASE_DOMAIN}`;
-  domainError.textContent = '';
-});
-
-form.addEventListener('submit', async (e) => {
+document.getElementById("bagthatForm").addEventListener("submit", async function(e) {
   e.preventDefault();
-  networkError.textContent = '';
-  domainError.textContent = '';
 
-  const site_display_name = document.getElementById('site_name').value.trim();
-  const subdomain = subdomainField.value.trim();
-  const amazon_tag = document.getElementById('amazon_tag').value.trim();
-  const email = document.getElementById('email').value.trim();
+  const form = e.target;
+  const subdomainField = form.querySelector("input[name='subdomain']");
+  const subdomain = subdomainField.value.trim().toLowerCase();
 
-  if (!subdomain.match(/^[a-z0-9-]+$/)) {
-    domainError.textContent = "Invalid subdomain (letters, numbers, and hyphens only).";
+  if (!subdomain) {
+    alert("Please enter a domain name.");
     return;
   }
 
-  // Auto-generate tenant_id
-  const tenant_id = "tenant_" + Date.now();
-
-  const payload = {
-    site_display_name,
-    subdomain,
-    amazon_tag,
-    email,
-    tenant_id,
-    timestamp: new Date().toISOString()
-  };
+  // *** CHANGE THIS URL to your Make domain-check webhook ***
+  const checkUrl = "https://hook.us2.make.com/YOUR_DOMAIN_CHECK_WEBHOOK";
 
   try {
-    const response = await fetch(WEBHOOK_URL, {
+    const res = await fetch(checkUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ subdomain })
     });
 
-    if (response.ok) {
-      window.location.href = "success.html";
-    } else {
-      networkError.textContent = "Unable to verify subdomain right now.";
+    const result = await res.json();
+
+    if (result.exists) {
+      alert(`The domain name "${subdomain}" is already taken. Please choose another.`);
+      subdomainField.focus();
+      return;
     }
+
+    // if unique, submit to main webhook
+    form.submit();
+
   } catch (err) {
-    networkError.textContent = "Network error. Please try again.";
+    alert("Something went wrong checking the domain. Please try again.");
+    console.error(err);
   }
 });
 </script>
+
 </body>
 </html>
