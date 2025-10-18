@@ -6,44 +6,40 @@
 <title>BagThat — Onboarding</title>
 <style>
   body {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    background: #f6faf9;
-    color: #0b1320;
-    margin: 0;
-    padding: 0;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:#f6faf9;
+    color:#0b1320;
+    margin:0;
+    padding:0;
   }
   main {
-    max-width: 480px;
-    margin: 60px auto;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 26px rgba(2,24,43,0.12);
-    padding: 32px;
+    max-width:480px;
+    margin:60px auto;
+    background:white;
+    border-radius:16px;
+    box-shadow:0 10px 26px rgba(2,24,43,.12);
+    padding:32px;
   }
-  h1 { font-size: 1.5rem; text-align: center; margin-bottom: 1rem; }
-  form { display: flex; flex-direction: column; gap: 12px; }
-  label { font-weight: 600; font-size: 0.9rem; }
-  input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
+  h1 { text-align:center; margin-bottom:1rem; }
+  label { font-weight:600; font-size:0.9rem; display:block; margin-top:12px; }
+  input, button {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:1rem;
   }
   button {
-    background: #1f6f63;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    cursor: pointer;
-    margin-top: 8px;
+    background:#1f6f63;
+    color:white;
+    margin-top:16px;
+    border:none;
+    cursor:pointer;
   }
-  button:hover { background: #15554b; }
+  button:hover { background:#15554b; }
 </style>
 </head>
 <body>
-
 <main>
   <h1>Set Up Your BagThat Storefront</h1>
   <form id="onboardForm">
@@ -70,31 +66,38 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(form));
 
-  // ✅ Your actual Make webhook (main scenario)
+  // ✅ Main Make webhook (already active)
   const webhookUrl = "https://hook.us2.make.com/2zkh1r427cenx1c3pvr9r3qv0debes8u";
 
   try {
     const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
 
-    const result = await res.json().catch(() => ({}));
+    // Expect structured JSON from Make response
+    const result = await res.json();
 
+    // If Make returns an error flag (duplicate subdomain, etc)
     if (result.error) {
-      alert(result.message || "That site name is already taken. Please try another.");
+      alert(result.message || "That subdomain name is already taken. Please choose another.");
       return;
     }
 
-    // redirect to success page
-    window.location.href = `https://bagthatthangup.com/success?subdomain=${encodeURIComponent(data.subdomain)}`;
+    // If success, redirect to confirmation page with subdomain
+    if (!result.error && result.subdomain) {
+      window.location.href = `https://bagthatthangup.com/success?subdomain=${encodeURIComponent(result.subdomain)}`;
+      return;
+    }
+
+    // If result malformed
+    alert("Unexpected response. Please try again.");
   } catch (err) {
-    alert("Something went wrong. Please try again.");
     console.error(err);
+    alert("Something went wrong while creating your storefront. Please try again.");
   }
 });
 </script>
-
 </body>
 </html>
