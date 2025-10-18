@@ -1,90 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat – Activate Your Store</title>
+<title>BagThat — Onboarding</title>
 <style>
   body {
-    background:#f8f4ef; color:#4a3728; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    display:flex; align-items:center; justify-content:center; height:100vh; margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #f6faf9;
+    color: #0b1320;
+    margin: 0;
+    padding: 0;
   }
-  form {
-    background:#fffaf6; padding:40px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.08);
-    width:360px; text-align:center;
+  main {
+    max-width: 480px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(2,24,43,0.12);
+    padding: 32px;
   }
-  h1 { color:#8b5e3c; font-size:1.8rem; margin-bottom:1.5rem; }
-  label { display:block; font-weight:600; text-align:left; margin:10px 0 5px; }
+  h1 { font-size: 1.5rem; text-align: center; margin-bottom: 1rem; }
+  form { display: flex; flex-direction: column; gap: 12px; }
+  label { font-weight: 600; font-size: 0.9rem; }
   input {
-    width:100%; padding:10px 12px; border:1px solid #d7c6b5; border-radius:8px;
-    font-size:15px; margin-bottom:10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
   }
   button {
-    background:#b37a4c; color:#fff; font-weight:600; font-size:1rem;
-    border:none; border-radius:10px; padding:12px 20px; width:100%;
-    cursor:pointer; transition:.2s;
+    background: #1f6f63;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    margin-top: 8px;
   }
-  button:hover { background:#9a653b; }
-  small { display:block; font-size:.85rem; color:#8b5e3c; margin-bottom:15px; }
+  button:hover { background: #15554b; }
 </style>
 </head>
 <body>
 
-<form id="bagthatForm" action="https://hook.us2.make.com/YOUR_MAIN_ONBOARDING_WEBHOOK" method="POST">
-  <h1>BagThat</h1>
+<main>
+  <h1>Set Up Your BagThat Storefront</h1>
+  <form id="onboardForm">
+    <label>Store Display Name</label>
+    <input name="site_display_name" required>
 
-  <label>Desired Site Name</label>
-  <input type="text" name="site_display_name" required>
+    <label>Subdomain (store name)</label>
+    <input name="subdomain" required placeholder="yourstorename">
 
-  <label>Desired Site Domain</label>
-  <input type="text" name="subdomain" required>
-  <small>Your site will appear at: <strong>sitename.bagthatthangup.com</strong></small>
+    <label>Amazon Associate Tag</label>
+    <input name="amazon_tag" required placeholder="example-20">
 
-  <label>Amazon Store ID</label>
-  <input type="text" name="amazon_tag" required>
+    <label>Email Address</label>
+    <input name="email" type="email" required>
 
-  <label>Email Address</label>
-  <input type="email" name="email" required>
-
-  <button type="submit">Activate My Store</button>
-</form>
+    <button type="submit">Create My Storefront</button>
+  </form>
+</main>
 
 <script>
-document.getElementById("bagthatForm").addEventListener("submit", async function(e) {
+const form = document.getElementById("onboardForm");
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const form = e.target;
-  const subdomainField = form.querySelector("input[name='subdomain']");
-  const subdomain = subdomainField.value.trim().toLowerCase();
-
-  if (!subdomain) {
-    alert("Please enter a domain name.");
-    return;
-  }
-
-  // *** CHANGE THIS URL to your Make domain-check webhook ***
-  const checkUrl = "https://hook.us2.make.com/YOUR_DOMAIN_CHECK_WEBHOOK";
+  const data = Object.fromEntries(new FormData(form));
+  const webhookUrl = "https://hook.us2.make.com/YOUR_MAIN_WEBHOOK_URL"; // replace with your actual Make webhook
 
   try {
-    const res = await fetch(checkUrl, {
+    const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subdomain })
+      body: JSON.stringify(data),
     });
 
-    const result = await res.json();
+    const result = await res.json().catch(() => ({}));
 
-    if (result.exists) {
-      alert(`The domain name "${subdomain}" is already taken. Please choose another.`);
-      subdomainField.focus();
+    if (result.error) {
+      alert(result.message || "That site name is already taken. Please try another.");
       return;
     }
 
-    // if unique, submit to main webhook
-    form.submit();
-
+    // redirect to success page
+    window.location.href = `https://bagthatthangup.com/success?subdomain=${encodeURIComponent(data.subdomain)}`;
   } catch (err) {
-    alert("Something went wrong checking the domain. Please try again.");
+    alert("Something went wrong. Please try again.");
     console.error(err);
   }
 });
