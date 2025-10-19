@@ -7,19 +7,32 @@
 </head>
 <body>
   <h1>Choose Your Site Name</h1>
-
-  <form id="checkForm">
-    <label for="sitename">Desired site name:</label>
-    <input type="text" id="sitename" required>
-    <button type="submit">Check</button>
-  </form>
-
-  <div id="result"></div>
+  <div id="gate"></div>
+  <div id="content" style="display:none;">
+    <form id="checkForm">
+      <label for="sitename">Desired site name:</label>
+      <input type="text" id="sitename" required>
+      <button type="submit">Check</button>
+    </form>
+    <div id="result"></div>
+  </div>
 
   <script>
+    // --- Gatekeeping ---
+    const REQUIRED_KEY = "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7"; // your plan key
+    const params = new URLSearchParams(window.location.search);
+    const planKey = params.get("plan_key");
+
+    if (planKey !== REQUIRED_KEY) {
+      document.getElementById("gate").innerHTML = "<h2>Access denied. Please subscribe first.</h2>";
+    } else {
+      document.getElementById("content").style.display = "block";
+    }
+
+    // --- Name Checker ---
     const CHECK_URL = "https://script.google.com/macros/s/AKfycbxdqdThRkMX8sgiCXM86pNnoLgspfZUeYKzNRyWKBCmx8A5p4mZRGcl0Gktoi7eEBZpEA/exec";
 
-    document.getElementById("checkForm").addEventListener("submit", async (e) => {
+    document.getElementById("checkForm")?.addEventListener("submit", async (e) => {
       e.preventDefault();
       const sitename = document.getElementById("sitename").value.trim().toLowerCase();
       if (!sitename) return;
@@ -31,7 +44,9 @@
       if (data.available) {
         resultDiv.innerHTML = `
           <p style="color:green;">🎉 ${sitename}.bagthatthangup.com is available!</p>
-          <a href="index.html?name=${encodeURIComponent(sitename)}">Continue to Onboarding</a>
+          <a href="index.html?name=${encodeURIComponent(sitename)}&plan_key=${encodeURIComponent(planKey)}">
+            Continue to Onboarding
+          </a>
         `;
       } else {
         resultDiv.innerHTML = `<p style="color:red;">Sorry, that name is already taken.</p>`;
