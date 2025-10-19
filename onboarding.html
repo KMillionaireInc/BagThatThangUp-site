@@ -1,44 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BagThat — Onboarding</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; }
-    form { max-width: 500px; margin:auto; }
-    label { display:block; margin-top:1rem; font-weight:600; }
-    input, button { width:100%; padding:0.6rem; margin-top:0.35rem; }
-    button { margin-top:1.25rem; background:#0066cc; color:#fff; border:none; cursor:pointer; }
-    button:hover { background:#004999; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat Onboarding</title>
+<style>
+body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
+form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+label{font-weight:600;margin-top:1rem;display:block}
+input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
+button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
+button:hover{background:#aa875c}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 <body>
-  <h1>Complete Your Onboarding</h1>
+<h1>Set Up Your Storefront</h1>
+<form id="onboard-form">
+  <label>First Name</label>
+  <input name="first_name" required>
+  <label>Last Name</label>
+  <input name="last_name" required>
+  <label>Store Name</label>
+  <input name="site_display_name" required>
+  <label>Desired Domain (no spaces or symbols)</label>
+  <input name="subdomain" required>
+  <label>Amazon Store ID</label>
+  <input name="amazon_tag" required>
+  <label>Email Address</label>
+  <input name="email" type="email" required>
+  <button type="submit">Bag That</button>
+</form>
 
-  <form method="POST" action="https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec" autocomplete="on">
-    <label for="first_name">First Name</label>
-    <input id="first_name" name="first_name" type="text" required>
+<script>
+const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
 
-    <label for="last_name">Last Name</label>
-    <input id="last_name" name="last_name" type="text" required>
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    <label for="site_display_name">Branded Site Name</label>
-    <input id="site_display_name" name="site_display_name" type="text" placeholder="e.g., Porky's Place" required>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("onboard-form");
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = {
+      first_name: form.first_name.value.trim(),
+      last_name: form.last_name.value.trim(),
+      site_display_name: form.site_display_name.value.trim(),
+      subdomain: form.subdomain.value.trim().toLowerCase(),
+      amazon_tag: form.amazon_tag.value.trim(),
+      email: form.email.value.trim()
+    };
 
-    <label for="subdomain">Desired Subdomain</label>
-    <input id="subdomain" name="subdomain" type="text" placeholder="porkysplace" required>
-
-    <label for="amazon_tag">Amazon Associate Tag</label>
-    <input id="amazon_tag" name="amazon_tag" type="text" placeholder="yourtag-20" pattern="^[A-Za-z0-9-]+-20$" required>
-
-    <label for="email">Email Address</label>
-    <input id="email" name="email" type="email" required>
-
-    <!-- Honeypot (spam trap) -->
-    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
-
-    <button type="submit">Finish Setup</button>
-  </form>
+    const { error } = await supabase.from('users').insert([data]);
+    if (error) {
+      document.body.innerHTML = `<h2 style="text-align:center;">Error: ${error.message}</h2>`;
+    } else {
+      document.body.innerHTML = `<div style="text-align:center;padding:3rem;">
+        <h1>🎉 Your Site Is Live!</h1>
+        <p>Your BagThat storefront signup is complete!</p>
+        <p>Share your link to start earning!</p>
+      </div>`;
+    }
+  });
+});
+</script>
 </body>
 </html>
