@@ -29,14 +29,14 @@ button:hover{background:#aa875c}
   <input name="amazon_tag" required>
   <label>Email Address</label>
   <input name="email" type="email" required>
-  <button type="submit">Bag That</button>
+  <button type="submit">Submit</button>
 </form>
 
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
 
-// Correct way to create client
+// Create Supabase client
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,18 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = {
       first_name: form.first_name.value.trim(),
       last_name: form.last_name.value.trim(),
-      site_display_name: form.site_display_name.value.trim(),
+      site_name: form.site_display_name.value.trim(),
       subdomain: form.subdomain.value.trim().toLowerCase(),
-      amazon_tag: form.amazon_tag.value.trim(),
+      amazon_id: form.amazon_tag.value.trim(),
       email: form.email.value.trim()
     };
 
-    const { error } = await client.from('users').insert([data]);
+    const { error } = await client.from('Users').insert([data]);
 
     if (error) {
       document.body.innerHTML = `<h2 style="text-align:center;color:#b00020;">Error: ${error.message}</h2>`;
     } else {
-      // Redirect to success page
       window.location.href = "success.html";
     }
   });
