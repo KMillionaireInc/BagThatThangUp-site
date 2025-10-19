@@ -1,60 +1,121 @@
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("form");
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bag That Thang Up — Onboarding</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f9fafc;
+      margin: 0;
+      padding: 2rem;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #0b1320;
+    }
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    button {
+      background: #00a37a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #009167;
+    }
+  </style>
+</head>
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+<body>
+  <h1>Bag That Thang Up — Site Setup</h1>
+  <form>
+    <label>Display Name</label>
+    <input name="site_display_name" placeholder="My Amazon Deals"/>
 
-    const data = {
-      tenant_id: crypto.randomUUID(),
-      site_display_name: form.querySelector("[name='site_display_name']").value.trim(),
-      subdomain: form.querySelector("[name='subdomain']").value.trim().toLowerCase(),
-      amazon_tag: form.querySelector("[name='amazon_tag']").value.trim(),
-      email: form.querySelector("[name='email']").value.trim(),
-    };
+    <label>Subdomain</label>
+    <input name="subdomain" placeholder="myshop"/>
 
-    const webhookUrl = "https://hook.us2.make.com/yg89x1wsy0stc70m6jqgrbtllz9e6x80"; // your Make webhook
+    <label>Amazon Tag</label>
+    <input name="amazon_tag" placeholder="yourtag-20"/>
 
-    try {
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+    <label>Email</label>
+    <input name="email" placeholder="you@email.com"/>
 
-      const result = await response.json();
-      console.log("Webhook response:", result);
+    <button type="submit">Create My Site</button>
+  </form>
 
-      if (result.error) {
-        document.body.innerHTML = `
-          <div style="text-align:center;padding:3rem;font-family:sans-serif">
-            <h2>That site name is already taken.</h2>
-            <p>Please choose another subdomain.</p>
-            <button onclick="window.history.back()">Go Back</button>
-          </div>`;
-      } else {
-        const liveLink = result.subdomain
-          ? \`https://\${result.subdomain}.bagthatthangup.com\`
-          : null;
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      // Collect form data
+      const data = {
+        tenant_id: crypto.randomUUID(),
+        site_display_name: form.querySelector("[name='site_display_name']").value.trim(),
+        subdomain: form.querySelector("[name='subdomain']").value.trim().toLowerCase(),
+        amazon_tag: form.querySelector("[name='amazon_tag']").value.trim(),
+        email: form.querySelector("[name='email']").value.trim(),
+      };
+
+      // 👇 Live API hosted on Vercel
+      const apiUrl = "https://bagthat-vercel-api-3.vercel.app/api";
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        console.log("API response:", result);
 
         document.body.innerHTML = `
           <div style="text-align:center;padding:3rem;font-family:sans-serif">
             <h1>🎉 Your Site Is Live!</h1>
-            <p>Congratulations — your affiliate storefront has been created!</p>
-            <p><strong>Your link:</strong></p>
-            <a href="\${liveLink || '#'}" target="_blank">
-              \${liveLink ? liveLink : 'Site not detected'}
-            </a>
-            <p>Share your link across your platforms to start earning!</p>
+            <p>Your information was sent successfully to the BagThat API.</p>
+            <p>We'll handle the rest from here — check your inbox soon!</p>
+          </div>`;
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = `
+          <div style="text-align:center;padding:3rem;font-family:sans-serif">
+            <h2>Server error — please try again later.</h2>
           </div>`;
       }
-    } catch (err) {
-      console.error(err);
-      document.body.innerHTML = `
-        <div style="text-align:center;padding:3rem;font-family:sans-serif">
-          <h2>Server error — please try again.</h2>
-        </div>`;
-    }
+    });
   });
-});
-</script>
+  </script>
+</body>
+</html>
+
