@@ -25,7 +25,7 @@
   <h1>Complete Your Onboarding</h1>
   <div id="notice"></div>
 
-  <form id="onboardingForm" method="POST">
+  <form id="onboardingForm" method="POST" action="https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec">
     <label for="first_name">First Name</label>
     <input type="text" id="first_name" name="first_name" required>
 
@@ -62,8 +62,7 @@
       document.getElementById("subdomain").value = chosenName;
     }
 
-    const FORM_URL = "https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec";
-
+    // Submit handler
     document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = {
@@ -76,7 +75,7 @@
       };
 
       try {
-        const res = await fetch(FORM_URL, {
+        const res = await fetch(e.target.action, {
           method: "POST",
           body: JSON.stringify(formData)
         });
