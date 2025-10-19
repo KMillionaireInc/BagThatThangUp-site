@@ -6,90 +6,39 @@
   <title>BagThat — Onboarding</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 2rem; }
-    form { max-width: 500px; }
-    label { display: block; margin-top: 1rem; font-weight: bold; }
-    input, button { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
-    button { margin-top: 1.5rem; background:#0066cc; color:#fff; border:none; cursor:pointer; }
+    form { max-width: 500px; margin:auto; }
+    label { display:block; margin-top:1rem; font-weight:600; }
+    input, button { width:100%; padding:0.6rem; margin-top:0.35rem; }
+    button { margin-top:1.25rem; background:#0066cc; color:#fff; border:none; cursor:pointer; }
     button:hover { background:#004999; }
-    .notice {
-      padding: 1rem;
-      margin-bottom: 1rem;
-      background: #eafbea;
-      border: 1px solid #88cc88;
-      color: #225522;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
   <h1>Complete Your Onboarding</h1>
-  <div id="notice"></div>
 
-  <form id="onboardingForm" method="POST" action="https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec">
+  <form method="POST" action="https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec" autocomplete="on">
     <label for="first_name">First Name</label>
-    <input type="text" id="first_name" name="first_name" required>
+    <input id="first_name" name="first_name" type="text" required>
 
     <label for="last_name">Last Name</label>
-    <input type="text" id="last_name" name="last_name" required>
+    <input id="last_name" name="last_name" type="text" required>
 
     <label for="site_display_name">Branded Site Name</label>
-    <input type="text" id="site_display_name" name="site_display_name" placeholder="e.g. Porky's Place" required>
+    <input id="site_display_name" name="site_display_name" type="text" placeholder="e.g., Porky's Place" required>
+
+    <label for="subdomain">Desired Subdomain</label>
+    <input id="subdomain" name="subdomain" type="text" placeholder="porkysplace" required>
 
     <label for="amazon_tag">Amazon Associate Tag</label>
-    <input type="text" id="amazon_tag" name="amazon_tag" placeholder="yourtag-20" pattern=".*-20$" required>
+    <input id="amazon_tag" name="amazon_tag" type="text" placeholder="yourtag-20" pattern="^[A-Za-z0-9-]+-20$" required>
 
     <label for="email">Email Address</label>
-    <input type="email" id="email" name="email" required>
+    <input id="email" name="email" type="email" required>
 
-    <!-- Hidden fields injected from URL -->
-    <input type="hidden" id="subdomain" name="subdomain">
+    <!-- Honeypot (spam trap) -->
+    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
 
     <button type="submit">Finish Setup</button>
   </form>
-
-  <script>
-    // Get ?name=subdomain from URL
-    const params = new URLSearchParams(window.location.search);
-    const chosenName = params.get("name");
-
-    if (chosenName) {
-      // Show notice
-      const notice = document.getElementById("notice");
-      notice.innerHTML = "You reserved: <strong>" + chosenName + ".bagthatthangup.com</strong>";
-      notice.classList.add("notice");
-
-      // Populate hidden subdomain field
-      document.getElementById("subdomain").value = chosenName;
-    }
-
-    // Submit handler
-    document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = {
-        first_name: document.getElementById("first_name").value,
-        last_name: document.getElementById("last_name").value,
-        site_display_name: document.getElementById("site_display_name").value,
-        amazon_tag: document.getElementById("amazon_tag").value,
-        email: document.getElementById("email").value,
-        subdomain: document.getElementById("subdomain").value
-      };
-
-      try {
-        const res = await fetch(e.target.action, {
-          method: "POST",
-          body: JSON.stringify(formData)
-        });
-        const data = await res.json();
-
-        if (data.ok) {
-          window.location.href = "success.html";
-        } else {
-          alert("Error: " + (data.error || "Unknown error"));
-        }
-      } catch (err) {
-        alert("Submission failed: " + err.message);
-      }
-    });
-  </script>
 </body>
 </html>
