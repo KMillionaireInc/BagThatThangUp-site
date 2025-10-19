@@ -25,7 +25,7 @@
   <h1>Complete Your Onboarding</h1>
   <div id="notice"></div>
 
-  <form id="onboardingForm" method="POST" action="#">
+  <form id="onboardingForm" method="POST">
     <label for="first_name">First Name</label>
     <input type="text" id="first_name" name="first_name" required>
 
@@ -48,12 +48,12 @@
   </form>
 
   <script>
-    // Get ?name=subdomain from URL (passed from namecheck.html)
+    // Get ?name=subdomain from URL
     const params = new URLSearchParams(window.location.search);
     const chosenName = params.get("name");
 
     if (chosenName) {
-      // Show notice at top
+      // Show notice
       const notice = document.getElementById("notice");
       notice.innerHTML = "You reserved: <strong>" + chosenName + ".bagthatthangup.com</strong>";
       notice.classList.add("notice");
@@ -62,10 +62,34 @@
       document.getElementById("subdomain").value = chosenName;
     }
 
-    // TODO: Hook up form submission to Apps Script endpoint
-    document.getElementById("onboardingForm").addEventListener("submit", (e) => {
+    const FORM_URL = "https://script.google.com/macros/s/AKfycbyuSdeSOHeNE6oYJR9BS94a5Xu458SdPQ0E8LLE8w80BlRKTTpxLQUmh8qXOOrWNa15Yg/exec";
+
+    document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      alert("Form ready to submit to Google Sheet. (Next step: wire to Apps Script)");
+      const formData = {
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        site_display_name: document.getElementById("site_display_name").value,
+        amazon_tag: document.getElementById("amazon_tag").value,
+        email: document.getElementById("email").value,
+        subdomain: document.getElementById("subdomain").value
+      };
+
+      try {
+        const res = await fetch(FORM_URL, {
+          method: "POST",
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          window.location.href = "success.html";
+        } else {
+          alert("Error: " + (data.error || "Unknown error"));
+        }
+      } catch (err) {
+        alert("Submission failed: " + err.message);
+      }
     });
   </script>
 </body>
