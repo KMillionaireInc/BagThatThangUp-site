@@ -3,117 +3,18 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Your Store Is Live! • BagThat</title>
-  <meta name="description" content="Congratulations! Your affiliate storefront has been created and is now live. Share and start earning!"/>
+  <title>BagThat — Success</title>
   <style>
-    :root {
-      --ink: #2b2b2b;
-      --teal: #1e4d4f;
-      --accent: #d4a373;
-      --bg: #f9f6f2;
-      --card-bg: #fff;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 2.5rem;
-      max-width: 540px;
-      text-align: center;
-      animation: fadeIn 0.8s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    h1 {
-      color: var(--teal);
-      font-size: 1.9rem;
-      margin-bottom: 0.5rem;
-    }
-    .emoji {
-      font-size: 2rem;
-    }
-    p {
-      margin: 0.4rem 0;
-      line-height: 1.5;
-    }
-    .link-box {
-      background: var(--teal);
-      color: #fff;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      display: inline-block;
-      margin: 1rem 0;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-    .link-box:hover {
-      background: #153b3c;
-    }
-    ul {
-      text-align: left;
-      margin: 1.2rem auto 0;
-      padding: 0 1.2rem;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-    ul li {
-      margin-bottom: 0.6rem;
-    }
-    footer {
-      font-size: 0.8rem;
-      color: #777;
-      margin-top: 1.5rem;
-    }
+    body { font-family: Arial, sans-serif; text-align:center; padding:4rem; }
+    h1 { color:#0066cc; }
+    p { margin-top:1rem; font-size:1.1rem; }
+    a { display:inline-block; margin-top:2rem; padding:0.75rem 1.5rem; background:#0066cc; color:#fff; text-decoration:none; border-radius:6px; }
+    a:hover { background:#004999; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="emoji">🎉</div>
-    <h1>Your Site Is Live!</h1>
-    <p>Congratulations — your affiliate storefront has been created!</p>
-    <p><strong>Your link:</strong></p>
-    <a id="siteLink" href="#" class="link-box">Loading...</a>
-
-    <ul>
-      <li>Share your link in your Instagram bio, TikTok, and Facebook posts.</li>
-      <li>Bookmark it to easily update your deals and tags.</li>
-      <li>Drop your link in every short video caption — it drives instant traffic.</li>
-      <li>Need to edit your store name or tag? Just resubmit the form anytime.</li>
-    </ul>
-
-    <footer>© 2025 BagThatThangUp.com — Powered by K Millionaire Inc.</footer>
-  </div>
-
-  <script>
-    // Extract subdomain from URL parameters
-    const params = new URLSearchParams(window.location.search);
-    const subdomain = params.get('subdomain');
-
-    const siteLink = document.getElementById('siteLink');
-    if (subdomain) {
-      const fullUrl = `https://${subdomain}.bagthatthangup.com`;
-      siteLink.href = fullUrl;
-      siteLink.textContent = fullUrl;
-    } else {
-      siteLink.textContent = "Site not detected.";
-      siteLink.removeAttribute('href');
-    }
-  </script>
+  <h1>Success! Your details have been saved.</h1>
+  <p>We’ll notify you when your tenant site is provisioned at your chosen subdomain.</p>
+  <a href="/">Back to Home</a>
 </body>
 </html>
