@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Choose Your Site Name</title>
+</head>
+<body>
+  <h1>Choose Your Site Name</h1>
+
+  <form id="checkForm">
+    <label for="sitename">Desired site name:</label>
+    <input type="text" id="sitename" required>
+    <button type="submit">Check</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const CHECK_URL = "https://script.google.com/macros/s/AKfycbxdqdThRkMX8sgiCXM86pNnoLgspfZUeYKzNRyWKBCmx8A5p4mZRGcl0Gktoi7eEBZpEA/exec";
+
+    document.getElementById("checkForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const sitename = document.getElementById("sitename").value.trim().toLowerCase();
+      if (!sitename) return;
+
+      const res = await fetch(CHECK_URL + "?name=" + encodeURIComponent(sitename));
+      const data = await res.json();
+
+      const resultDiv = document.getElementById("result");
+      if (data.available) {
+        resultDiv.innerHTML = `
+          <p style="color:green;">🎉 ${sitename}.bagthatthangup.com is available!</p>
+          <a href="index.html?name=${encodeURIComponent(sitename)}">Continue to Onboarding</a>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style="color:red;">Sorry, that name is already taken.</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
