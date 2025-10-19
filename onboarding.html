@@ -36,7 +36,8 @@ button:hover{background:#aa875c}
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Correct way to create client
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("onboard-form");
@@ -51,15 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
       email: form.email.value.trim()
     };
 
-    const { error } = await supabase.from('users').insert([data]);
+    const { error } = await client.from('users').insert([data]);
+
     if (error) {
-      document.body.innerHTML = `<h2 style="text-align:center;">Error: ${error.message}</h2>`;
+      document.body.innerHTML = `<h2 style="text-align:center;color:#b00020;">Error: ${error.message}</h2>`;
     } else {
-      document.body.innerHTML = `<div style="text-align:center;padding:3rem;">
-        <h1>🎉 Your Site Is Live!</h1>
-        <p>Your BagThat storefront signup is complete!</p>
-        <p>Share your link to start earning!</p>
-      </div>`;
+      // Redirect to success page
+      window.location.href = "success.html";
     }
   });
 });
