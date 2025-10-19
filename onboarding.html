@@ -1,139 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BagThat — Storefront Onboarding</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BagThat — Onboarding</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f9f6ef;
-      color: #222;
-      padding: 2rem;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    h1 {
-      text-align: center;
-      color: #533b2f;
-    }
-    form {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: 600;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      margin-top: 1.5rem;
-      width: 100%;
-      padding: 0.8rem;
-      background: #d9b382;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #c59b6e;
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    form { max-width: 500px; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input, button { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+    button { margin-top: 1.5rem; background:#0066cc; color:#fff; border:none; cursor:pointer; }
+    button:hover { background:#004999; }
+    .notice {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #eafbea;
+      border: 1px solid #88cc88;
+      color: #225522;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Set Up Your Storefront</h1>
-  <form id="onboard-form">
-    <label>Store Name</label>
-    <input name="site_display_name" placeholder="Example: Porky’s Palace" required />
+  <h1>Complete Your Onboarding</h1>
+  <div id="notice"></div>
 
-    <label>Desired Domain (no spaces or symbols)</label>
-    <input name="subdomain" placeholder="example: porkyspalace" required />
+  <form id="onboardingForm" method="POST" action="#">
+    <label for="first_name">First Name</label>
+    <input type="text" id="first_name" name="first_name" required>
 
-    <label>Amazon Store ID</label>
-    <input name="amazon_tag" placeholder="example: test-20" required />
+    <label for="last_name">Last Name</label>
+    <input type="text" id="last_name" name="last_name" required>
 
-    <label>Email Address</label>
-    <input name="email" type="email" placeholder="you@example.com" required />
+    <label for="site_display_name">Branded Site Name</label>
+    <input type="text" id="site_display_name" name="site_display_name" placeholder="e.g. Porky's Place" required>
 
-    <button type="submit">Bag That</button>
+    <label for="amazon_tag">Amazon Associate Tag</label>
+    <input type="text" id="amazon_tag" name="amazon_tag" placeholder="yourtag-20" pattern=".*-20$" required>
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" name="email" required>
+
+    <!-- Hidden fields injected from URL -->
+    <input type="hidden" id="subdomain" name="subdomain">
+
+    <button type="submit">Finish Setup</button>
   </form>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("onboard-form");
+    // Get ?name=subdomain from URL (passed from namecheck.html)
+    const params = new URLSearchParams(window.location.search);
+    const chosenName = params.get("name");
 
-    form.addEventListener("submit", async (e) => {
+    if (chosenName) {
+      // Show notice at top
+      const notice = document.getElementById("notice");
+      notice.innerHTML = "You reserved: <strong>" + chosenName + ".bagthatthangup.com</strong>";
+      notice.classList.add("notice");
+
+      // Populate hidden subdomain field
+      document.getElementById("subdomain").value = chosenName;
+    }
+
+    // TODO: Hook up form submission to Apps Script endpoint
+    document.getElementById("onboardingForm").addEventListener("submit", (e) => {
       e.preventDefault();
-
-      const data = {
-        tenant_id: crypto.randomUUID(),
-        site_display_name: form.site_display_name.value.trim(),
-        subdomain: form.subdomain.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, ""),
-        amazon_tag: form.amazon_tag.value.trim(),
-        email: form.email.value.trim(),
-      };
-
-      if (!data.site_display_name || !data.subdomain || !data.amazon_tag || !data.email) {
-        alert("All fields are required.");
-        return;
-      }
-
-      const apiUrl = "https://bagthat-vercel-api-3.vercel.app/api";
-
-      try {
-        const res = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        if (result.error === "duplicate_subdomain") {
-          document.body.innerHTML = `
-            <div style="text-align:center;padding:3rem;background:#fff3f3">
-              <h2>That domain is already taken.</h2>
-              <p>Please choose another.</p>
-              <button onclick="window.location.reload()">Try Again</button>
-            </div>`;
-          return;
-        }
-
-        if (result.success) {
-          const liveLink = \`https://\${data.subdomain}.bagthatthangup.com\`;
-          document.body.innerHTML = `
-            <div style="text-align:center;padding:3rem;background:#f8fff9;">
-              <h1>🎉 Success!</h1>
-              <p>Your BagThat storefront is live!</p>
-              <a href="\${liveLink}" target="_blank" style="display:block;font-size:1.2rem;margin-top:1rem;color:#008060;">
-                \${liveLink}
-              </a>
-              <p style="margin-top:1.5rem;">Share this link on your socials to start earning!</p>
-            </div>`;
-        } else {
-          throw new Error("No success response from API");
-        }
-      } catch (err) {
-        console.error(err);
-        document.body.innerHTML = `
-          <div style="text-align:center;padding:3rem;background:#fff3f3">
-            <h2>Something went wrong.</h2>
-            <p>Please try again later.</p>
-          </div>`;
-      }
+      alert("Form ready to submit to Google Sheet. (Next step: wire to Apps Script)");
     });
-  });
   </script>
 </body>
 </html>
