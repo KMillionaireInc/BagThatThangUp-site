@@ -4,52 +4,53 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Choose Your Site Name</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    form { max-width: 400px; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input, button { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+    button { margin-top: 1.5rem; background:#0066cc; color:#fff; border:none; cursor:pointer; }
+    button:hover { background:#004999; }
+    #result { margin-top: 1.5rem; }
+  </style>
 </head>
 <body>
   <h1>Choose Your Site Name</h1>
-  <div id="gate"></div>
-  <div id="content" style="display:none;">
-    <form id="checkForm">
-      <label for="sitename">Desired site name:</label>
-      <input type="text" id="sitename" required>
-      <button type="submit">Check</button>
-    </form>
-    <div id="result"></div>
-  </div>
+
+  <form id="checkForm">
+    <label for="sitename">Desired site name:</label>
+    <input type="text" id="sitename" required>
+    <button type="submit">Check Availability</button>
+  </form>
+
+  <div id="result"></div>
 
   <script>
-    // --- Gatekeeping ---
-    const REQUIRED_KEY = "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7"; // your plan key
-    const params = new URLSearchParams(window.location.search);
-    const planKey = params.get("plan_key");
-
-    if (planKey !== REQUIRED_KEY) {
-      document.getElementById("gate").innerHTML = "<h2>Access denied. Please subscribe first.</h2>";
-    } else {
-      document.getElementById("content").style.display = "block";
-    }
-
-    // --- Name Checker ---
+    // YOUR live NameCheck GAS endpoint
     const CHECK_URL = "https://script.google.com/macros/s/AKfycbxdqdThRkMX8sgiCXM86pNnoLgspfZUeYKzNRyWKBCmx8A5p4mZRGcl0Gktoi7eEBZpEA/exec";
 
-    document.getElementById("checkForm")?.addEventListener("submit", async (e) => {
+    document.getElementById("checkForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const sitename = document.getElementById("sitename").value.trim().toLowerCase();
       if (!sitename) return;
 
-      const res = await fetch(CHECK_URL + "?name=" + encodeURIComponent(sitename));
-      const data = await res.json();
+      try {
+        const res = await fetch(CHECK_URL + "?name=" + encodeURIComponent(sitename));
+        const data = await res.json();
 
-      const resultDiv = document.getElementById("result");
-      if (data.available) {
-        resultDiv.innerHTML = `
-          <p style="color:green;">🎉 ${sitename}.bagthatthangup.com is available!</p>
-          <a href="index.html?name=${encodeURIComponent(sitename)}&plan_key=${encodeURIComponent(planKey)}">
-            Continue to Onboarding
-          </a>
-        `;
-      } else {
-        resultDiv.innerHTML = `<p style="color:red;">Sorry, that name is already taken.</p>`;
+        const resultDiv = document.getElementById("result");
+        if (data.available) {
+          resultDiv.innerHTML = `
+            <p style="color:green;">🎉 ${sitename}.bagthatthangup.com is available!</p>
+            <a href="onboarding/index.html?name=${encodeURIComponent(sitename)}">
+              Continue to Onboarding
+            </a>
+          `;
+        } else {
+          resultDiv.innerHTML = `<p style="color:red;">Sorry, that name is already taken.</p>`;
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
       }
     });
   </script>
