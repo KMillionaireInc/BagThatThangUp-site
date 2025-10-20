@@ -16,8 +16,8 @@ a.store-link:hover{background:#aa875c}
 <body>
 <div class="container">
   <h1>🎉 Success!</h1>
-  <p>Your storefront has been created and is ready to visit.</p>
-  <div id="storeLinkMessage"></div>
+  <p>Your storefront has been created.</p>
+  <div id="storeLinkMessage">Loading your link...</div>
   <p style="margin-top:2rem;">Check your email for setup details and next steps.</p>
   <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
 </div>
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <p style="margin-top:1rem;">Click above to visit your store now.</p>
     `;
   } else {
-    document.getElementById("storeLinkMessage").innerHTML = 
+    document.getElementById("storeLinkMessage").innerHTML =
       "<p style='color:#b00020;'>We could not find your store link. Please check your email or contact support.</p>";
   }
 });
