@@ -1,93 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>BagThat Onboarding</title>
 <style>
-body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
-form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-label{font-weight:600;margin-top:1rem;display:block}
-input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
-button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
-button:hover{background:#aa875c}
-.error{color:red;font-size:.9rem;margin-top:.5rem}
+  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
+  form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+  label{font-weight:600;margin-top:1rem;display:block}
+  input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
+  button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:#fff;font-size:1rem;cursor:pointer}
+  button:hover{background:#aa875c}
+  .error{color:#c62828;font-size:.9rem;margin-top:.5rem}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 <h1>Set Up Your Storefront</h1>
+
 <form id="onboard-form">
   <label>First Name</label>
-  <input name="first_name" required>
+  <input name="first_name" required />
   <label>Last Name</label>
-  <input name="last_name" required>
+  <input name="last_name" required />
   <label>Store Name</label>
-  <input name="site_display_name" required>
+  <input name="site_name" required />
   <label>Desired Domain (letters and numbers only)</label>
-  <input name="subdomain" required>
+  <input name="subdomain" required />
   <div id="domain-error" class="error"></div>
   <label>Amazon Store ID</label>
-  <input name="amazon_tag" required>
+  <input name="amazon_id" required />
   <label>Email Address</label>
-  <input name="email" type="email" required>
+  <input name="email" type="email" required />
   <button type="submit">Submit</button>
 </form>
 
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("onboard-form");
-  const subdomainInput = form.subdomain;
-  const domainError = document.getElementById("domain-error");
-  const regex = /^[a-zA-Z0-9]+$/; // letters + numbers only
+const form = document.getElementById("onboard-form");
+const subInput = form.subdomain;
+const err = document.getElementById("domain-error");
+const ALNUM = /^[a-zA-Z0-9]+$/; // letters + numbers only
 
-  // Live validation as user types
-  subdomainInput.addEventListener("input", () => {
-    if (!regex.test(subdomainInput.value)) {
-      domainError.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
-    } else {
-      domainError.textContent = "";
-    }
-  });
+subInput.addEventListener("input", () => {
+  err.textContent = ALNUM.test(subInput.value) ? "" :
+    "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
+});
 
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const subdomain = subdomainInput.value.trim();
-    if (!regex.test(subdomain)) {
-      domainError.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
-      return;
-    }
+  const subdomainRaw = subInput.value.trim();
+  if (!ALNUM.test(subdomainRaw)) {
+    err.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
+    return;
+  }
+  const subdomain = subdomainRaw.toLowerCase();
 
-    const data = {
-      first_name: form.first_name.value.trim(),
-      last_name: form.last_name.value.trim(),
-      site_name: form.site_display_name.value.trim(),
-      subdomain: subdomain.toLowerCase(),
-      amazon_id: form.amazon_tag.value.trim(),
-      email: form.email.value.trim()
-    };
+  const payload = {
+    first_name: form.first_name.value.trim(),
+    last_name:  form.last_name.value.trim(),
+    site_name:  form.site_name.value.trim(),
+    subdomain,
+    amazon_id:  form.amazon_id.value.trim(),
+    email:      form.email.value.trim()
+  };
 
-    const { error } = await supabase.from('Users').insert([data]);
+  // Insert and SELECT back the new row's id in one round-trip
+  const { data, error } = await db.from('Users')
+    .insert([payload])
+    .select('id')
+    .single();
 
-    if (error) {
-      document.body.innerHTML = `<h2 style="text-align:center;color:red;">Error: ${error.message}</h2>`;
-    } else {
-      const tenantLink = `https://${data.subdomain}.bagthatthangup.com`;
-      document.body.innerHTML = `
-        <div style="text-align:center;padding:3rem;">
-          <h1>🎉 Success!</h1>
-          <p>Your storefront has been created.</p>
-          <p><a href="${tenantLink}" style="color:#0073e6;font-weight:bold;">Visit your storefront</a></p>
-          <p>Check your email for setup details and next steps.</p>
-          <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
-        </div>`;
-    }
-  });
+  if (error) {
+    document.body.innerHTML = `<h2 style="text-align:center;color:#c62828;">Error: ${error.message}</h2>`;
+    return;
+  }
+
+  // Persist for fallback and redirect with a stable identifier
+  sessionStorage.setItem('bagthat_tenant_id', String(data.id));
+  sessionStorage.setItem('bagthat_sub', subdomain);
+
+  window.location.href = `/success?tenant_id=${encodeURIComponent(String(data.id))}`;
 });
 </script>
 </body>
