@@ -1,78 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat Onboarding</title>
-<style>
-body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
-form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-label{font-weight:600;margin-top:1rem;display:block}
-input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
-button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
-button:hover{background:#aa875c}
-</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Set Up Your Storefront</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f7f5f0;color:#222;margin:0}
+  .wrap{max-width:520px;margin:48px auto;padding:0 16px}
+  form{background:#fff;padding:24px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  h1{margin:0 0 20px 0}
+  label{display:block;font-weight:600;margin-top:14px}
+  input{width:100%;padding:10px;margin-top:6px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+  button{margin-top:18px;width:100%;padding:12px;background:#c19a6b;border:none;border-radius:8px;color:#fff;font-size:16px;cursor:pointer}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  .error{color:#b00020;margin-top:8px}
+</style>
 </head>
 <body>
-<h1>Set Up Your Storefront</h1>
-<form id="onboard-form">
-  <label>First Name</label>
-  <input name="first_name" required>
-  <label>Last Name</label>
-  <input name="last_name" required>
-  <label>Store Name</label>
-  <input name="site_display_name" required>
-  <label>Desired Domain (letters + numbers only)</label>
-  <input name="subdomain" required>
-  <label>Amazon Store ID</label>
-  <input name="amazon_tag" required>
-  <label>Email Address</label>
-  <input name="email" type="email" required>
-  <button type="submit">Submit</button>
-</form>
+<div class="wrap">
+  <h1>Set Up Your Storefront</h1>
+
+  <form id="onboard-form" novalidate>
+    <label>First Name
+      <input name="first_name" required />
+    </label>
+
+    <label>Last Name
+      <input name="last_name" required />
+    </label>
+
+    <label>Store Name
+      <input name="site_name" required />
+    </label>
+
+    <label>Desired Domain (letters and numbers only)
+      <input name="subdomain" inputmode="latin" autocomplete="off"
+             pattern="[A-Za-z0-9]+"
+             placeholder="e.g. myshop123" required />
+    </label>
+
+    <label>Amazon Store ID
+      <input name="amazon_id" required />
+    </label>
+
+    <label>Email Address
+      <input name="email" type="email" required />
+    </label>
+
+    <div id="err" class="error"></div>
+    <button type="submit" id="submitBtn">Submit</button>
+  </form>
+</div>
 
 <script>
-const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Supabase
+  const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.getElementById("onboard-form").addEventListener("submit", async e => {
-  e.preventDefault();
-  const form = e.target;
+  const form = document.getElementById("onboard-form");
+  const errEl = document.getElementById("err");
+  const btn = document.getElementById("submitBtn");
+  const ALNUM = /^[a-zA-Z0-9]+$/;
 
-  // sanitize subdomain (letters + numbers only)
-  let raw = form.subdomain.value.trim().toLowerCase();
-  let clean = raw.replace(/[^a-z0-9]/g, "");
-  if (clean !== raw || clean.length === 0) {
-    alert("Subdomain must contain only letters and numbers.");
-    return;
-  }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errEl.textContent = "";
 
-  const payload = {
-    first_name: form.first_name.value.trim(),
-    last_name: form.last_name.value.trim(),
-    site_display_name: form.site_display_name.value.trim(),
-    subdomain: clean,
-    amazon_tag: form.amazon_tag.value.trim(),
-    email: form.email.value.trim()
-  };
+    const f = new FormData(form);
+    const subRaw = (f.get("subdomain") || "").trim();
+    const subClean = subRaw.replace(/[^a-z0-9]/gi, "").toLowerCase();
 
-  const { data: inserted, error } = await supabase
-    .from("Users")
-    .insert([payload])
-    .select("id,subdomain")
-    .single();
+    // Hard block invalid subdomains
+    if (!subClean || !ALNUM.test(subClean) || subClean !== subRaw.toLowerCase()) {
+      errEl.textContent = "Subdomain must contain only letters and numbers (no spaces or symbols).";
+      form.subdomain.focus();
+      return;
+    }
 
-  if (error) {
-    alert("Error: " + error.message);
-  } else {
-    // store for success page
-    sessionStorage.setItem("tenant_id", inserted.id);
-    sessionStorage.setItem("subdomain", inserted.subdomain);
-    window.location.href = "success.html?id=" + inserted.id;
-  }
-});
+    // Build payload using column names that exist in your table
+    const payload = {
+      first_name: (f.get("first_name") || "").trim(),
+      last_name:  (f.get("last_name") || "").trim(),
+      site_name:  (f.get("site_name") || "").trim(),
+      subdomain:  subClean,
+      amazon_id:  (f.get("amazon_id") || "").trim(),
+      email:      (f.get("email") || "").trim()
+    };
+
+    // Basic required checks
+    for (const [k,v] of Object.entries(payload)) {
+      if (!v) { errEl.textContent = "All fields are required."; return; }
+    }
+
+    btn.disabled = true;
+
+    const { data, error } = await db.from("Users")
+      .insert([payload])
+      .select("id, subdomain")
+      .single();
+
+    btn.disabled = false;
+
+    if (error) {
+      errEl.textContent = "Error: " + error.message;
+      return;
+    }
+
+    // Persist + redirect
+    sessionStorage.setItem("tenant_id", data.id);
+    sessionStorage.setItem("subdomain", data.subdomain);
+    window.location.href = "/success?id=" + encodeURIComponent(data.id);
+  });
 </script>
 </body>
 </html>
