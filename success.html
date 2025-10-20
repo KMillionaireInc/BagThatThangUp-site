@@ -1,55 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Success – BagThat</title>
-<style>
-  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:600px;margin:auto;text-align:center}
-  .card{background:#fff;padding:2.5rem;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.1)}
-  h1{color:#2e7d32;margin-bottom:1rem}
-  p{margin:.75rem 0}
-  a.store-link{display:inline-block;margin-top:1.5rem;padding:1rem 2rem;background:#c19a6b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:1.1rem}
-  a.store-link:hover{background:#aa875c}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Success • BagThat</title>
+  <style>
+    body {
+      margin: 0; font-family: system-ui, sans-serif;
+      background: #fafafa; display: flex;
+      justify-content: center; align-items: center; height: 100vh;
+    }
+    .card {
+      background: #fff; padding: 2rem; border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 500px; text-align: center;
+    }
+    h1 { color: #2e7d32; margin-bottom: 0.5rem; }
+    p { margin: 0.5rem 0; }
+    .link {
+      display: inline-block; margin-top: 1rem;
+      padding: 0.75rem 1.25rem; background: #1976d2; color: #fff;
+      text-decoration: none; border-radius: 6px; font-weight: bold;
+    }
+    .link:hover { background: #0d47a1; }
+    .error { color: #c62828; margin-top: 1rem; }
+  </style>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="card">
-  <h1>🎉 Success!</h1>
-  <p>Your storefront has been created.</p>
-  <div id="storeLinkMessage">Loading your link...</div>
-  <p style="margin-top:2rem;">Check your email for setup details and next steps.</p>
-  <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
-</div>
+  <div class="card">
+    <h1>🎉 Success!</h1>
+    <p>Your storefront has been created.</p>
+    <p id="status">Loading your link...</p>
+    <div id="storeLink"></div>
+    <p style="margin-top:1rem;">Check your email for setup details and next steps.</p>
+    <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
+  </div>
 
-<script>
-function readCookie(name){
-  const m = document.cookie.match(new RegExp('(?:^|; )'+name.replace(/([.$?*|{}()\\[\\]\\\\\\/\\+^])/g,'\\$1')+'=([^;]*)'));
-  return m ? decodeURIComponent(m[1]) : null;
-}
+  <script>
+    // Init Supabase
+    const supabaseUrl = "https://YOUR-PROJECT-REF.supabase.co"; // replace with your project ref
+    const supabaseKey = "YOUR-ANON-KEY"; // replace with anon key
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(location.search);
-  let sub = params.get("subdomain")
-           || sessionStorage.getItem("bagthat_sub")
-           || localStorage.getItem("bagthat_sub")
-           || readCookie("bagthat_sub");
+    async function loadTenant() {
+      try {
+        // Grab params (email or subdomain passed in querystring)
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get("email");
+        const subdomain = params.get("subdomain");
 
-  // simple sanitize
-  if (sub && !/^[a-z0-9-]+$/.test(sub)) sub = null;
+        let query;
+        if (subdomain) {
+          query = supabase.from("Users").select("subdomain").eq("subdomain", subdomain).single();
+        } else if (email) {
+          query = supabase.from("Users").select("subdomain").eq("email", email).single();
+        } else {
+          document.getElementById("status").innerHTML = "We could not find your details.";
+          return;
+        }
 
-  if (sub) {
-    const url = `https://${sub}.bagthatthangup.com`;
-    document.getElementById("storeLinkMessage").innerHTML = `
-      <p><strong>Your storefront is live at:</strong></p>
-      <a href="${url}" class="store-link" target="_blank" rel="noopener">${url}</a>
-      <p style="margin-top:1rem;">Click above to visit your store now.</p>
-    `;
-  } else {
-    document.getElementById("storeLinkMessage").innerHTML =
-      "<p style='color:#b00020;'>We could not find your store link. Please check your email or contact support.</p>";
-  }
-});
-</script>
+        const { data, error } = await query;
+        if (error || !data) {
+          document.getElementById("status").innerHTML = "We could not find your store link. Please check your email or contact support.";
+          return;
+        }
+
+        const tenantUrl = `https://${data.subdomain}.bagthatthangup.com`;
+        document.getElementById("status").innerHTML = "Your store is ready:";
+        document.getElementById("storeLink").innerHTML = `<a class="link" href="${tenantUrl}" target="_blank">Visit Your Storefront</a>`;
+      } catch (err) {
+        document.getElementById("status").innerHTML = "Something went wrong. Please check your email or contact support.";
+        console.error(err);
+      }
+    }
+
+    loadTenant();
+  </script>
 </body>
 </html>
