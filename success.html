@@ -1,79 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Success – BagThat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat – Success</title>
 <style>
-  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:600px;margin:auto;text-align:center}
-  .card{background:#fff;padding:2.5rem;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.1)}
-  h1{color:#2e7d32;margin-bottom:1rem}
-  p{margin:.75rem 0}
-  a.store-link{display:inline-block;margin-top:1.5rem;padding:1rem 2rem;background:#c19a6b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:1.1rem}
-  a.store-link:hover{background:#aa875c}
-  .error{color:#c62828}
+body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:600px;margin:auto;text-align:center}
+.card{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+h1{color:#2d6a4f}
+a.btn{display:inline-block;margin-top:1.5rem;padding:.8rem 1.2rem;background:#c19a6b;color:#fff;border-radius:6px;text-decoration:none}
+a.btn:hover{background:#aa875c}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="card">
-  <h1>🎉 Success!</h1>
-  <p>Your storefront has been created.</p>
-  <div id="storeLinkMessage">Loading your link...</div>
-  <p style="margin-top:2rem;">Check your email for setup details and next steps.</p>
-  <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
+  <h1>🎉 Success! Your store setup is underway.</h1>
+  <p id="next"></p>
+  <p><strong>Your storefront link:</strong></p>
+  <p id="link">Loading your link…</p>
+  <a id="cta" class="btn" style="display:none;" target="_blank">Visit Your Storefront</a>
+  <p style="margin-top:2rem;font-size:.9rem;color:#666">
+    Need help? <a href="mailto:support@bagthatthangup.com">Contact support</a>.
+  </p>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function readParamOrSession() {
-  const p = new URLSearchParams(location.search);
-  let id = p.get('tenant_id') || sessionStorage.getItem('bagthat_tenant_id');
-  if (id && /^\d+$/.test(id)) return id;
-  return null;
-}
+// get ID from query string
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get("id") || sessionStorage.getItem("tenant_id");
 
-function isValidSubdomain(s) {
-  return /^[a-z0-9]+$/.test(s); // we only allow letters+numbers in onboarding
-}
-
-async function renderLink() {
-  const el = document.getElementById('storeLinkMessage');
-
-  // 1) Prefer the id we just inserted
-  const tenantId = readParamOrSession();
-
-  if (tenantId) {
-    const { data, error } = await db.from('Users')
-      .select('subdomain')
-      .eq('id', tenantId)
-      .single();
-
-    if (!error && data && isValidSubdomain(data.subdomain)) {
-      const url = `https://${data.subdomain}.bagthatthangup.com`;
-      el.innerHTML = `<p><strong>Your storefront is live at:</strong></p>
-        <a href="${url}" class="store-link" target="_blank" rel="noopener">${url}</a>`;
-      return;
-    }
-  }
-
-  // 2) Fallback: if we at least have the subdomain in session, use it
-  const sub = sessionStorage.getItem('bagthat_sub');
-  if (sub && isValidSubdomain(sub)) {
-    const url = `https://${sub}.bagthatthangup.com`;
-    el.innerHTML = `<p><strong>Your storefront is live at:</strong></p>
-      <a href="${url}" class="store-link" target="_blank" rel="noopener">${url}</a>`;
+async function loadTenant() {
+  if (!id) {
+    document.getElementById("link").innerText = "Error: No tenant ID found.";
     return;
   }
+  const { data, error } = await supabase.from("Users").select("subdomain").eq("id", id).single();
 
-  // 3) Final fallback
-  el.innerHTML = `<p class="error">We could not find your store link. Please check your email or contact support.</p>`;
+  if (error || !data) {
+    document.getElementById("link").innerText = "Error loading your storefront link.";
+  } else {
+    const subdomain = data.subdomain;
+    const url = `https://${subdomain}.bagthatthangup.com`;
+    document.getElementById("link").innerText = url;
+    document.getElementById("cta").href = url;
+    document.getElementById("cta").style.display = "inline-block";
+    document.getElementById("next").innerText = "Your store is being provisioned. You can bookmark or share this link now.";
+  }
 }
 
-renderLink();
+loadTenant();
 </script>
 </body>
 </html>
