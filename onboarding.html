@@ -70,7 +70,6 @@ form.addEventListener("submit", async (e) => {
   const f = new FormData(form);
   const subRaw = (f.get("subdomain") || "").trim();
 
-  // Only allow letters and numbers (no spaces or symbols)
   if (!ALNUM.test(subRaw)) {
     errEl.textContent = "Subdomain must contain only letters and numbers (no spaces or symbols).";
     form.subdomain.focus();
@@ -92,22 +91,30 @@ form.addEventListener("submit", async (e) => {
 
   btn.disabled = true;
 
-  const { data, error } = await db.from("Users")
-    .insert([payload])
-    .select("id, subdomain")
-    .single();
+  try {
+    const { data, error } = await db.from("Users")
+      .insert([payload])
+      .select("id, subdomain")
+      .single();
 
-  btn.disabled = false;
+    btn.disabled = false;
 
-  if (error || !data) {
-    errEl.textContent = "Error: " + (error ? error.message : "Insert failed");
-    return;
+    if (error || !data) {
+      errEl.textContent = "Error: " + (error ? error.message : "Insert failed");
+      console.error("Supabase error:", error);
+      return;
+    }
+
+    sessionStorage.setItem("tenant_id", data.id);
+    sessionStorage.setItem("subdomain", data.subdomain);
+
+    window.location.href = "/success?id=" + encodeURIComponent(data.id);
+
+  } catch (ex) {
+    btn.disabled = false;
+    errEl.textContent = "Unexpected error: " + ex.message;
+    console.error("Unexpected error:", ex);
   }
-
-  sessionStorage.setItem("tenant_id", data.id);
-  sessionStorage.setItem("subdomain", data.subdomain);
-
-  window.location.href = "/success?id=" + encodeURIComponent(data.id);
 });
 </script>
 </body>
