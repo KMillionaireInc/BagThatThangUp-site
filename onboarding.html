@@ -41,19 +41,26 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("onboard-form");
+  const subdomainInput = form.subdomain;
   const domainError = document.getElementById("domain-error");
+  const regex = /^[a-zA-Z0-9]+$/; // letters + numbers only
+
+  // Live validation as user types
+  subdomainInput.addEventListener("input", () => {
+    if (!regex.test(subdomainInput.value)) {
+      domainError.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
+    } else {
+      domainError.textContent = "";
+    }
+  });
 
   form.addEventListener("submit", async e => {
     e.preventDefault();
 
-    const subdomain = form.subdomain.value.trim();
-    const regex = /^[a-zA-Z0-9]+$/; // only letters + numbers
-
+    const subdomain = subdomainInput.value.trim();
     if (!regex.test(subdomain)) {
       domainError.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
       return;
-    } else {
-      domainError.textContent = "";
     }
 
     const data = {
