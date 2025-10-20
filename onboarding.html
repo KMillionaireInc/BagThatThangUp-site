@@ -1,65 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>BagThat Onboarding</title>
 <style>
-body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
-form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-label{font-weight:600;margin-top:1rem;display:block}
-input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
-button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
-button:hover{background:#aa875c}
+  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
+  form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+  label{font-weight:600;margin-top:1rem;display:block}
+  input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
+  button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:#fff;font-size:1rem;cursor:pointer}
+  button:hover{background:#aa875c}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 <h1>Set Up Your Storefront</h1>
+
 <form id="onboard-form">
   <label>First Name</label>
-  <input name="first_name" required>
+  <input name="first_name" required />
   <label>Last Name</label>
-  <input name="last_name" required>
+  <input name="last_name" required />
   <label>Store Name</label>
-  <input name="site_name" required>
+  <input name="site_name" required />
   <label>Desired Domain (no spaces or symbols)</label>
-  <input name="subdomain" required>
+  <input name="subdomain" required />
   <label>Amazon Store ID</label>
-  <input name="amazon_id" required>
+  <input name="amazon_id" required />
   <label>Email Address</label>
-  <input name="email" type="email" required>
+  <input name="email" type="email" required />
   <button type="submit">Submit</button>
 </form>
 
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // your anon key
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
 
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("onboard-form");
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-    const data = {
-      first_name: form.first_name.value.trim(),
-      last_name: form.last_name.value.trim(),
-      site_name: form.site_name.value.trim(),
-      subdomain: form.subdomain.value.trim().toLowerCase(),
-      amazon_id: form.amazon_id.value.trim(),
-      email: form.email.value.trim()
-    };
+document.getElementById("onboard-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget;
 
-    const { error } = await client.from('Users').insert([data]);
+  const subdomain = f.subdomain.value.trim().toLowerCase();
+  const data = {
+    first_name: f.first_name.value.trim(),
+    last_name:  f.last_name.value.trim(),
+    site_name:  f.site_name.value.trim(),
+    subdomain,
+    amazon_id:  f.amazon_id.value.trim(),
+    email:      f.email.value.trim()
+  };
 
-    if (error) {
-      document.body.innerHTML = `<h2 style="text-align:center;color:#b00020;">Error: ${error.message}</h2>`;
-    } else {
-      // redirect to success with subdomain in query string
-      window.location.href = "success.html?subdomain=" + encodeURIComponent(data.subdomain);
-    }
-  });
+  const { error } = await client.from('Users').insert([data]);
+
+  if (error) {
+    document.body.innerHTML = `<h2 style="text-align:center;color:#b00020;">Error: ${error.message}</h2>`;
+    return;
+  }
+
+  // Persist subdomain for the success page (even if query string gets dropped)
+  sessionStorage.setItem('bagthat_sub', subdomain);
+  localStorage.setItem('bagthat_sub', subdomain);
+  document.cookie = `bagthat_sub=${encodeURIComponent(subdomain)};path=/;max-age=1800`;
+
+  // Redirect (works for /success or /success.html)
+  window.location.href = `/success?subdomain=${encodeURIComponent(subdomain)}`;
 });
 </script>
 </body>
