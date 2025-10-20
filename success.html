@@ -1,80 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Success • BagThat</title>
-  <style>
-    body {
-      margin: 0; font-family: system-ui, sans-serif;
-      background: #fafafa; display: flex;
-      justify-content: center; align-items: center; height: 100vh;
-    }
-    .card {
-      background: #fff; padding: 2rem; border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 500px; text-align: center;
-    }
-    h1 { color: #2e7d32; margin-bottom: 0.5rem; }
-    p { margin: 0.5rem 0; }
-    .link {
-      display: inline-block; margin-top: 1rem;
-      padding: 0.75rem 1.25rem; background: #1976d2; color: #fff;
-      text-decoration: none; border-radius: 6px; font-weight: bold;
-    }
-    .link:hover { background: #0d47a1; }
-    .error { color: #c62828; margin-top: 1rem; }
-  </style>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Success – BagThat</title>
+<style>
+  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:600px;margin:auto;text-align:center}
+  .card{background:#fff;padding:2.5rem;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.1)}
+  h1{color:#2e7d32;margin-bottom:1rem}
+  p{margin:.75rem 0}
+  a.store-link{display:inline-block;margin-top:1.5rem;padding:1rem 2rem;background:#c19a6b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:1.1rem}
+  a.store-link:hover{background:#aa875c}
+  .error{color:#c62828}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 </head>
 <body>
-  <div class="card">
-    <h1>🎉 Success!</h1>
-    <p>Your storefront has been created.</p>
-    <p id="status">Loading your link...</p>
-    <div id="storeLink"></div>
-    <p style="margin-top:1rem;">Check your email for setup details and next steps.</p>
-    <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
-  </div>
+<div class="card">
+  <h1>🎉 Success!</h1>
+  <p>Your storefront has been created.</p>
+  <div id="storeLinkMessage">Loading your link...</div>
+  <p style="margin-top:2rem;">Check your email for setup details and next steps.</p>
+  <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
+</div>
 
-  <script>
-    // Init Supabase
-    const supabaseUrl = "https://YOUR-PROJECT-REF.supabase.co"; // replace with your project ref
-    const supabaseKey = "YOUR-ANON-KEY"; // replace with anon key
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+<script>
+const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function loadTenant() {
-      try {
-        // Grab params (email or subdomain passed in querystring)
-        const params = new URLSearchParams(window.location.search);
-        const email = params.get("email");
-        const subdomain = params.get("subdomain");
+function readParamOrSession() {
+  const p = new URLSearchParams(location.search);
+  let id = p.get('tenant_id') || sessionStorage.getItem('bagthat_tenant_id');
+  if (id && /^\d+$/.test(id)) return id;
+  return null;
+}
 
-        let query;
-        if (subdomain) {
-          query = supabase.from("Users").select("subdomain").eq("subdomain", subdomain).single();
-        } else if (email) {
-          query = supabase.from("Users").select("subdomain").eq("email", email).single();
-        } else {
-          document.getElementById("status").innerHTML = "We could not find your details.";
-          return;
-        }
+function isValidSubdomain(s) {
+  return /^[a-z0-9]+$/.test(s); // we only allow letters+numbers in onboarding
+}
 
-        const { data, error } = await query;
-        if (error || !data) {
-          document.getElementById("status").innerHTML = "We could not find your store link. Please check your email or contact support.";
-          return;
-        }
+async function renderLink() {
+  const el = document.getElementById('storeLinkMessage');
 
-        const tenantUrl = `https://${data.subdomain}.bagthatthangup.com`;
-        document.getElementById("status").innerHTML = "Your store is ready:";
-        document.getElementById("storeLink").innerHTML = `<a class="link" href="${tenantUrl}" target="_blank">Visit Your Storefront</a>`;
-      } catch (err) {
-        document.getElementById("status").innerHTML = "Something went wrong. Please check your email or contact support.";
-        console.error(err);
-      }
+  // 1) Prefer the id we just inserted
+  const tenantId = readParamOrSession();
+
+  if (tenantId) {
+    const { data, error } = await db.from('Users')
+      .select('subdomain')
+      .eq('id', tenantId)
+      .single();
+
+    if (!error && data && isValidSubdomain(data.subdomain)) {
+      const url = `https://${data.subdomain}.bagthatthangup.com`;
+      el.innerHTML = `<p><strong>Your storefront is live at:</strong></p>
+        <a href="${url}" class="store-link" target="_blank" rel="noopener">${url}</a>`;
+      return;
     }
+  }
 
-    loadTenant();
-  </script>
+  // 2) Fallback: if we at least have the subdomain in session, use it
+  const sub = sessionStorage.getItem('bagthat_sub');
+  if (sub && isValidSubdomain(sub)) {
+    const url = `https://${sub}.bagthatthangup.com`;
+    el.innerHTML = `<p><strong>Your storefront is live at:</strong></p>
+      <a href="${url}" class="store-link" target="_blank" rel="noopener">${url}</a>`;
+    return;
+  }
+
+  // 3) Final fallback
+  el.innerHTML = `<p class="error">We could not find your store link. Please check your email or contact support.</p>`;
+}
+
+renderLink();
+</script>
 </body>
 </html>
