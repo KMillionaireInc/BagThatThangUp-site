@@ -22,11 +22,11 @@ button:hover{background:#aa875c}
   <label>Last Name</label>
   <input name="last_name" required>
   <label>Store Name</label>
-  <input name="site_display_name" required>
+  <input name="site_name" required>
   <label>Desired Domain (no spaces or symbols)</label>
   <input name="subdomain" required>
   <label>Amazon Store ID</label>
-  <input name="amazon_tag" required>
+  <input name="amazon_id" required>
   <label>Email Address</label>
   <input name="email" type="email" required>
   <button type="submit">Submit</button>
@@ -46,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = {
       first_name: form.first_name.value.trim(),
       last_name: form.last_name.value.trim(),
-      site_name: form.site_display_name.value.trim(),
+      site_name: form.site_name.value.trim(),
       subdomain: form.subdomain.value.trim().toLowerCase(),
-      amazon_id: form.amazon_tag.value.trim(),
+      amazon_id: form.amazon_id.value.trim(),
       email: form.email.value.trim()
     };
 
