@@ -1,43 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Success – BagThat</title>
-<style>
-body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:600px;margin:auto;text-align:center}
-.container{background:#fff;padding:2.5rem;border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.1)}
-h1{color:#2e7d32;margin-bottom:1rem}
-p{margin:.75rem 0}
-a.store-link{display:inline-block;margin-top:1.5rem;padding:1rem 2rem;background:#c19a6b;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:1.1rem}
-a.store-link:hover{background:#aa875c}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>BagThat Success</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#faf9f7;color:#222;text-align:center;padding:40px;}
+    .card{background:#fff;padding:40px;border-radius:16px;max-width:600px;margin:40px auto;box-shadow:0 10px 20px rgba(0,0,0,.08);}
+    h1{color:#2e7d32;font-size:28px;margin-bottom:16px;}
+    p{font-size:16px;line-height:1.6;}
+    a.btn{display:inline-block;margin-top:20px;padding:12px 24px;background:#0070f3;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;}
+    .error{color:#d32f2f;margin-top:12px;}
+  </style>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    const supabase = createClient("https://YOUR_PROJECT.supabase.co", "YOUR_PUBLIC_ANON_KEY");
+
+    async function loadTenant() {
+      // pull latest user (or match by email passed in querystring if available)
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("email");
+
+      let { data, error } = email
+        ? await supabase.from("Users").select("subdomain").eq("email", email).single()
+        : await supabase.from("Users").select("subdomain").order("created_at", { ascending: false }).limit(1).single();
+
+      let html = "";
+      if (data && data.subdomain) {
+        const url = `https://${data.subdomain}.bagthatthangup.com`;
+        html = `<p>Your storefront is ready:</p>
+                <a class="btn" href="${url}">Visit Your Store</a>`;
+      } else {
+        html = `<p class="error">We could not find your store link. Please check your email or contact support.</p>`;
+      }
+      document.getElementById("storeLink").innerHTML = html;
+    }
+
+    loadTenant();
+  </script>
 </head>
 <body>
-<div class="container">
-  <h1>🎉 Success!</h1>
-  <p>Your storefront has been created.</p>
-  <div id="storeLinkMessage">Loading your link...</div>
-  <p style="margin-top:2rem;">Check your email for setup details and next steps.</p>
-  <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const subdomain = params.get("subdomain");
-  if (subdomain) {
-    const url = `https://${subdomain}.bagthatthangup.com`;
-    document.getElementById("storeLinkMessage").innerHTML = `
-      <p><strong>Your storefront is live at:</strong></p>
-      <a href="${url}" class="store-link" target="_blank">${url}</a>
-      <p style="margin-top:1rem;">Click above to visit your store now.</p>
-    `;
-  } else {
-    document.getElementById("storeLinkMessage").innerHTML =
-      "<p style='color:#b00020;'>We could not find your store link. Please check your email or contact support.</p>";
-  }
-});
-</script>
+  <div class="card">
+    <h1>🎉 Success!</h1>
+    <p>Your storefront has been created.</p>
+    <div id="storeLink"></div>
+    <p>Check your email for setup details and next steps.</p>
+    <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
+  </div>
 </body>
 </html>
