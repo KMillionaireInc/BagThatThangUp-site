@@ -1,119 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BagThatThangUp Onboarding</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background: #fafafa; text-align: center; }
-    form { max-width: 400px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 8px; }
-    input, button { width: 100%; padding: 10px; margin: 10px 0; }
-    .error { color: red; }
-    .store-link { font-weight: bold; color: blue; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BagThat Onboarding</title>
+<style>
+body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
+form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+label{font-weight:600;margin-top:1rem;display:block}
+input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
+button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
+button:hover{background:#aa875c}
+</style>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
-<!-- ================== ONBOARDING FORM ================== -->
-<div id="onboarding">
-  <h2>Tenant Onboarding</h2>
-  <form id="onboardForm">
-    <input type="text" id="first_name" placeholder="First Name" required />
-    <input type="text" id="last_name" placeholder="Last Name" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="text" id="subdomain" placeholder="Choose your subdomain" required />
-    <p id="error" class="error"></p>
-    <button type="submit">Submit</button>
-  </form>
-</div>
-
-<!-- ================== SUCCESS PAGE ================== -->
-<div id="successPage" style="display:none;">
-  <div style="max-width:600px; margin:40px auto; padding:20px; background:#fff; border-radius:12px;">
-    <h2>🎉 <span style="color:green;">Success!</span></h2>
-    <p>Your storefront has been created.</p>
-    <div id="storeLinkMessage">Loading your link...</div>
-    <p>Check your email for setup details and next steps.</p>
-    <p>If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a></p>
-  </div>
-</div>
+<h1>Set Up Your Storefront</h1>
+<form id="onboard-form">
+  <label>First Name</label>
+  <input name="first_name" required>
+  <label>Last Name</label>
+  <input name="last_name" required>
+  <label>Store Name</label>
+  <input name="site_display_name" required>
+  <label>Desired Domain (letters + numbers only)</label>
+  <input name="subdomain" required>
+  <label>Amazon Store ID</label>
+  <input name="amazon_tag" required>
+  <label>Email Address</label>
+  <input name="email" type="email" required>
+  <button type="submit">Submit</button>
+</form>
 
 <script>
-  // ===== Supabase init =====
-  const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co"; // replace
-  const SUPABASE_KEY = "YOUR-ANON-KEY"; // replace
-  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // ====== ALLOWED SUBDOMAIN RULES ======
-  const ALNUM = /^[a-zA-Z0-9]+$/; // only letters + numbers
+document.getElementById("onboard-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.target;
 
-  // ====== Onboarding Form Logic ======
-  const form = document.getElementById("onboardForm");
-  const err = document.getElementById("error");
-  const subInput = document.getElementById("subdomain");
-
-  subInput.addEventListener("input", () => {
-    if (!ALNUM.test(subInput.value)) {
-      err.textContent = "Subdomain may only contain letters and numbers (no spaces, dashes, or symbols).";
-    } else {
-      err.textContent = "";
-    }
-  });
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const subRaw = subInput.value.trim();
-    if (!ALNUM.test(subRaw)) {
-      err.textContent = "Invalid subdomain: only letters and numbers are allowed.";
-      return;
-    }
-
-    const subdomain = subRaw.toLowerCase();
-
-    const { data, error } = await db.from("Users").insert([{
-      first_name: document.getElementById("first_name").value,
-      last_name: document.getElementById("last_name").value,
-      email: document.getElementById("email").value,
-      subdomain: subdomain
-    }]).select("id");
-
-    if (error) {
-      err.textContent = "Error saving details: " + error.message;
-      return;
-    }
-
-    const tenantId = data[0].id;
-    sessionStorage.setItem("tenant_id", tenantId);
-
-    // Show success page
-    document.getElementById("onboarding").style.display = "none";
-    document.getElementById("successPage").style.display = "block";
-    renderLink();
-  });
-
-  // ====== Success Page Logic ======
-  async function renderLink() {
-    const el = document.getElementById("storeLinkMessage");
-    const tenantId = sessionStorage.getItem("tenant_id");
-
-    if (tenantId) {
-      const { data, error } = await db.from("Users")
-        .select("subdomain")
-        .eq("id", tenantId)
-        .single();
-
-      if (!error && data && ALNUM.test(data.subdomain)) {
-        const url = `https://${data.subdomain}.bagthatthangup.com`;
-        el.innerHTML = `<p><strong>Your storefront is live at:</strong></p>
-          <a href="${url}" class="store-link" target="_blank">${url}</a>`;
-        return;
-      }
-    }
-
-    el.innerHTML = `<p class="error">We could not find your store link. Please check your email or contact support.</p>`;
+  // sanitize subdomain (letters + numbers only)
+  let raw = form.subdomain.value.trim().toLowerCase();
+  let clean = raw.replace(/[^a-z0-9]/g, "");
+  if (clean !== raw || clean.length === 0) {
+    alert("Subdomain must contain only letters and numbers.");
+    return;
   }
+
+  const payload = {
+    first_name: form.first_name.value.trim(),
+    last_name: form.last_name.value.trim(),
+    site_display_name: form.site_display_name.value.trim(),
+    subdomain: clean,
+    amazon_tag: form.amazon_tag.value.trim(),
+    email: form.email.value.trim()
+  };
+
+  const { data: inserted, error } = await supabase
+    .from("Users")
+    .insert([payload])
+    .select("id,subdomain")
+    .single();
+
+  if (error) {
+    alert("Error: " + error.message);
+  } else {
+    // store for success page
+    sessionStorage.setItem("tenant_id", inserted.id);
+    sessionStorage.setItem("subdomain", inserted.subdomain);
+    window.location.href = "success.html?id=" + inserted.id;
+  }
+});
 </script>
 </body>
 </html>
