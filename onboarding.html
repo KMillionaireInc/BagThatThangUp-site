@@ -1,73 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>BagThat Onboarding</title>
-<style>
-  body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
-  form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-  label{font-weight:600;margin-top:1rem;display:block}
-  input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
-  button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:#fff;font-size:1rem;cursor:pointer}
-  button:hover{background:#aa875c}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BagThat Onboarding</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; background: #fafafa; }
+    form { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 500px; margin:auto; }
+    label { display: block; margin: 0.5rem 0 0.25rem; font-weight: 600; }
+    input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+    button { background: #1976d2; color: #fff; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #0d47a1; }
+  </style>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<h1>Set Up Your Storefront</h1>
+  <form id="onboardingForm">
+    <h2>Set Up Your Storefront</h2>
+    <label>First Name</label>
+    <input type="text" name="first_name" required>
+    <label>Last Name</label>
+    <input type="text" name="last_name" required>
+    <label>Site Name</label>
+    <input type="text" name="site_name" required>
+    <label>Subdomain (example: mystore)</label>
+    <input type="text" name="subdomain" required>
+    <label>Email</label>
+    <input type="email" name="email" required>
+    <label>Amazon ID</label>
+    <input type="text" name="amazon_id" required>
+    <button type="submit">Submit</button>
+  </form>
 
-<form id="onboard-form">
-  <label>First Name</label>
-  <input name="first_name" required />
-  <label>Last Name</label>
-  <input name="last_name" required />
-  <label>Store Name</label>
-  <input name="site_name" required />
-  <label>Desired Domain (no spaces or symbols)</label>
-  <input name="subdomain" required />
-  <label>Amazon Store ID</label>
-  <input name="amazon_id" required />
-  <label>Email Address</label>
-  <input name="email" type="email" required />
-  <button type="submit">Submit</button>
-</form>
+  <script>
+    const supabaseUrl = "https://YOUR-PROJECT-REF.supabase.co"; // replace with your Supabase project ref
+    const supabaseKey = "YOUR-ANON-KEY"; // replace with anon key
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-<script>
-const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
+    document.getElementById("onboardingForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const form = e.target;
+      const formData = Object.fromEntries(new FormData(form).entries());
 
-document.getElementById("onboard-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const f = e.currentTarget;
+      // Insert into Supabase
+      const { error } = await supabase.from("Users").insert([formData]);
 
-  const subdomain = f.subdomain.value.trim().toLowerCase();
-  const data = {
-    first_name: f.first_name.value.trim(),
-    last_name:  f.last_name.value.trim(),
-    site_name:  f.site_name.value.trim(),
-    subdomain,
-    amazon_id:  f.amazon_id.value.trim(),
-    email:      f.email.value.trim()
-  };
+      if (error) {
+        alert("There was an error saving your details. Please try again.");
+        console.error(error);
+        return;
+      }
 
-  const { error } = await client.from('Users').insert([data]);
-
-  if (error) {
-    document.body.innerHTML = `<h2 style="text-align:center;color:#b00020;">Error: ${error.message}</h2>`;
-    return;
-  }
-
-  // Persist subdomain for the success page (even if query string gets dropped)
-  sessionStorage.setItem('bagthat_sub', subdomain);
-  localStorage.setItem('bagthat_sub', subdomain);
-  document.cookie = `bagthat_sub=${encodeURIComponent(subdomain)};path=/;max-age=1800`;
-
-  // Redirect (works for /success or /success.html)
-  window.location.href = `/success?subdomain=${encodeURIComponent(subdomain)}`;
-});
-</script>
+      // Redirect to success page with subdomain param
+      window.location.href = `/success?subdomain=${encodeURIComponent(formData.subdomain)}`;
+    });
+  </script>
 </body>
 </html>
