@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     { "source": "/success", "destination": "/success.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
@@ -6,9 +8,17 @@
     {
       "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "([a-z0-9]+)\\.bagthatthangup\\.com" }
+        { "type": "host", "value": "([^\\.]+)\\.bagthatthangup\\.com" }
       ],
       "destination": "/tenant/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
     }
   ]
 }
