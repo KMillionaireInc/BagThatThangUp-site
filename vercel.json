@@ -1,24 +1,18 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/namecheck", "destination": "/namecheck.html" },
+    { "source": "/success",     "destination": "/success.html" },
+    { "source": "/onboarding",  "destination": "/onboarding.html" },
+    { "source": "/namecheck",   "destination": "/namecheck.html" },
+
     {
-      "source": "/(.*)",
-      "has": [
-        { "type": "host", "value": "([^\\.]+)\\.bagthatthangup\\.com" }
-      ],
+      "source": "/",
+      "has": [{ "type": "host", "value": "^(?<sub>[a-z0-9]+)\\.bagthatthangup\\.com$" }],
       "destination": "/tenant/index.html"
-    }
-  ],
-  "headers": [
+    },
     {
       "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store" }
-      ]
+      "has": [{ "type": "host", "value": "^(?<sub>[a-z0-9]+)\\.bagthatthangup\\.com$" }],
+      "destination": "/tenant/$1"
     }
   ]
 }
