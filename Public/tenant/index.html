@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Storefront - BagThatThangUp</title>
+    <link rel="stylesheet" href="/tenant/style/store.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="storeTitle">Welcome to Your Store</h1>
+      <p>Powered by BagThatThangUp</p>
+    </header>
+
+    <main>
+      <p>This is the default storefront for your subdomain.</p>
+      <p>You can customize this page to display your products, categories, or branding.</p>
+    </main>
+
+    <footer>
+      <a href="https://bagthatthangup.com">Return to Main Site</a>
+    </footer>
+
+    <script>
+      // Get subdomain name dynamically to personalize the page
+      const hostname = window.location.hostname;
+      const match = hostname.match(/^([a-z0-9-]+)\.bagthatthangup\.com$/i);
+      const tenant = match ? match[1] : null;
+
+      if (tenant) {
+        document.getElementById("storeTitle").textContent =
+          `Welcome to ${tenant}'s Store`;
+      }
+    </script>
+  </body>
+</html>
