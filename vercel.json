@@ -16,5 +16,17 @@
       "source": "/namecheck",
       "destination": "/namecheck.html"
     }
+  ],
+  "routes": [
+    {
+      "src": ".*",
+      "dest": "/tenant/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "*.bagthatthangup.com"
+        }
+      ]
+    }
   ]
 }
