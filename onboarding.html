@@ -105,10 +105,10 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    sessionStorage.setItem("tenant_id", data.id);
-    sessionStorage.setItem("subdomain", data.subdomain);
+    const tenantUrl = `https://${data.subdomain}.bagthatthangup.com`;
 
-    window.location.href = "/success?id=" + encodeURIComponent(data.id);
+    // Redirect with tenantUrl
+    window.location.href = "/success?tenantUrl=" + encodeURIComponent(tenantUrl);
 
   } catch (ex) {
     btn.disabled = false;
