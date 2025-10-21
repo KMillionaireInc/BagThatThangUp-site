@@ -63,11 +63,11 @@
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const ALNUM_LOWER = /^[a-z0-9]+$/;
 
-    function linkFrom(sub) { 
+    function tenantUrl(sub){ 
       return `https://${sub}.bagthatthangup.com`; 
     }
 
-    async function load() {
+    async function load(){
       const qs = new URLSearchParams(location.search);
       const id = qs.get("id") || sessionStorage.getItem("tenant_id");
       let sub = sessionStorage.getItem("subdomain");
@@ -83,7 +83,7 @@
       }
 
       if (sub && ALNUM_LOWER.test(sub)) {
-        const url = linkFrom(sub);
+        const url = tenantUrl(sub);
         document.getElementById("msg").textContent = url;
         const visitBtn = document.getElementById("visit");
         visitBtn.href = url;
