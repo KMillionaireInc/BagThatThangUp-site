@@ -1,113 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BagThat Onboarding</title>
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #f7f5f0;
-    color: #333;
-    max-width: 480px;
-    margin: 3rem auto;
-    padding: 1rem;
-  }
-  form {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  label {
-    display: block;
-    margin-top: 1rem;
-    font-weight: 600;
-  }
-  input {
-    width: 100%;
-    padding: 0.6rem;
-    margin-top: 0.3rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  button {
-    margin-top: 1.5rem;
-    width: 100%;
-    padding: 0.8rem;
-    background: #c19a6b;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  button:hover { background: #a38459; }
-</style>
-</head>
-
-<body>
-<h1>Set Up Your Storefront</h1>
-
-<form id="onboard-form">
-  <label>First Name</label>
-  <input name="first_name" required>
-
-  <label>Last Name</label>
-  <input name="last_name" required>
-
-  <label>Store Name</label>
-  <input name="site_display_name" required>
-
-  <label>Desired Subdomain</label>
-  <input name="subdomain" required>
-
-  <label>Amazon Tag</label>
-  <input name="amazon_tag" required>
-
-  <label>Email Address</label>
-  <input name="email" type="email" required>
-
-  <button type="submit">Create Storefront</button>
-</form>
-
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-//  BagThatThangUp Supabase project credentials
 const supabaseUrl = "https://bagthatthangup.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY5MzY0MDAwMCwiZXhwIjoyMDE5Mzg0MDAwfQ.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"; // your actual anon key
-
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-document.getElementById("onboard-form").addEventListener("submit", async e => {
-  e.preventDefault();
-  const f = e.target;
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("onboard-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target;
 
-  const data = {
-    first_name: f.first_name.value.trim(),
-    last_name: f.last_name.value.trim(),
-    site_display_name: f.site_display_name.value.trim(),
-    subdomain: f.subdomain.value.trim().toLowerCase(),
-    amazon_tag: f.amazon_tag.value.trim(),
-    email: f.email.value.trim(),
-    plan_key: new URLSearchParams(window.location.search).get("plan_key")
-  };
+    const data = {
+      first_name: f.first_name.value.trim(),
+      last_name: f.last_name.value.trim(),
+      site_display_name: f.site_display_name.value.trim(),
+      subdomain: f.subdomain.value.trim().toLowerCase(),
+      amazon_tag: f.amazon_tag.value.trim(),
+      email: f.email.value.trim(),
+    };
 
-  try {
-    const { error } = await supabase.from("tenants").insert(data);
-    if (error) throw error;
-
-    // Redirect user directly to their live storefront
-    window.location.href = `https://${data.subdomain}.bagthatthangup.com/`;
-  } catch (err) {
-    console.error(err);
-    document.body.innerHTML =
-      `<h2 style="text-align:center;color:red;">${err.message}</h2>`;
-  }
+    try {
+      const { data: inserted, error } = await supabase
+        .from("tenants")
+        .insert(data)
+        .select(); 
+      if (error) throw error;
+      const tenant = inserted[0];
+      sessionStorage.setItem("subdomain", tenant.subdomain);
+      sessionStorage.setItem("tenant_id", tenant.id);
+      window.location.href = "/success.html?id=" + tenant.id;
+    } catch (err) {
+      alert("Onboarding failed: " + err.message);
+    }
+  });
 });
 </script>
-
+</head>
+<body>
+<h1>Set Up Your Storefront</h1>
+<form id="onboard-form">
+  <label>First Name</label>
+  <input name="first_name" required />
+  <label>Last Name</label>
+  <input name="last_name" required />
+  <label>Store Name</label>
+  <input name="site_display_name" required />
+  <label>Desired Subdomain</label>
+  <input name="subdomain" required />
+  <label>Amazon Tag</label>
+  <input name="amazon_tag" required />
+  <label>Email</label>
+  <input name="email" type="email" required />
+  <button type="submit">Create Storefront</button>
+</form>
 </body>
 </html>
