@@ -1,87 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Account Created • BagThatThangUp</title>
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #f8f8f8;
-    color: #222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 2rem;
-    text-align: center;
-    max-width: 420px;
-  }
-  h1 {
-    color: #2e7d32;
-  }
-  a {
-    display: inline-block;
-    padding: 14px 28px;
-    margin-top: 20px;
-    background: #28a745;
-    color: #fff;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-  }
-  a:hover {
-    background: #218838;
-  }
-</style>
-</head>
-<body>
-<div class="card">
-  <h1>🎉 Success!</h1>
-  <p>Your storefront is ready.</p>
-  <p id="msg"></p>
-  <a id="visitBtn" href="#" target="_blank">Go to My Storefront</a>
-</div>
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Success - BagThatThangUp</title>
+    <link rel="stylesheet" href="/style/success.css" />
+  </head>
+  <body>
+    <h1>Tenant Created Successfully!</h1>
+    <p>Your store is ready.</p>
+    <a id="openTenant" href="#">Go to Your Store</a>
 
-const supabaseUrl = "https://bagthatthangup.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-async function init() {
-  const sub = sessionStorage.getItem("subdomain");
-  const idParam = new URLSearchParams(location.search).get("id");
-  let subdomain = sub;
-
-  if (!subdomain && idParam) {
-    const { data, error } = await supabase
-      .from("tenants")
-      .select("subdomain")
-      .eq("id", idParam)
-      .single();
-    if (!error && data) subdomain = data.subdomain;
-  }
-
-  const msg = document.getElementById("msg");
-  const visitBtn = document.getElementById("visitBtn");
-  if (subdomain) {
-    const fullUrl = `https://${subdomain}.bagthatthangup.com/`;
-    msg.textContent = fullUrl;
-    visitBtn.href = fullUrl;
-  } else {
-    msg.textContent = "We couldn’t find your new store’s URL.";
-  }
-}
-
-init();
-</script>
-</body>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const tenant = urlParams.get("tenant");
+      const subdomain = tenant ? tenant.toLowerCase() : "store1";
+      const link = document.getElementById("openTenant");
+      link.href = `https://${subdomain}.bagthatthangup.com/tenant/index.html`;
+    </script>
+  </body>
 </html>
