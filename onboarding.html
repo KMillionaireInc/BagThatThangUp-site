@@ -60,7 +60,7 @@ form.addEventListener("submit", async (e) => {
   errEl.textContent = "";
 
   const f = new FormData(form);
-  const subRaw = (f.get("subdomain") || "").trim();
+  const subRaw = (f.get("subdomain") || "").trim().toLowerCase();
 
   if (!ALNUM.test(subRaw)) {
     errEl.textContent = "Subdomain must contain only letters and numbers (no spaces or symbols).";
@@ -68,13 +68,12 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const subdomainLower = subRaw.toLowerCase();
-
-  // Check for duplicate subdomain
   btn.disabled = true;
-  const { data: subCheck, error: subError } = await db.from("Users")
+  // Block duplicate subdomains (case insensitive)
+  const { data: subCheck } = await db.from("Users")
     .select("id")
-    .eq("subdomain", subdomainLower);
+    .eq("subdomain", subRaw);
+
   if (subCheck && subCheck.length > 0) {
     errEl.textContent = "This subdomain is already taken. Please choose another.";
     form.subdomain.focus();
@@ -86,7 +85,7 @@ form.addEventListener("submit", async (e) => {
     first_name: (f.get("first_name") || "").trim(),
     last_name:  (f.get("last_name") || "").trim(),
     site_name:  (f.get("site_name") || "").trim(),
-    subdomain:  subdomainLower,
+    subdomain:  subRaw,
     amazon_id:  (f.get("amazon_id") || "").trim(),
     email:      (f.get("email") || "").trim()
   };
@@ -105,7 +104,6 @@ form.addEventListener("submit", async (e) => {
 
     if (error || !data) {
       errEl.textContent = "Error: " + (error ? error.message : "Insert failed");
-      console.error("Supabase error:", error);
       return;
     }
 
@@ -117,9 +115,8 @@ form.addEventListener("submit", async (e) => {
   } catch (ex) {
     btn.disabled = false;
     errEl.textContent = "Unexpected error: " + ex.message;
-    console.error("Unexpected error:", ex);
   }
 });
 </script>
 </body>
-</html>
+</html
