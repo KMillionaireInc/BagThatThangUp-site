@@ -1,8 +1,23 @@
 {
   "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/namecheck", "destination": "/namecheck.html" },
-    { "source": "/(.*)", "destination": "/tenant/index.html" }
+    {
+      "source": "/success",
+      "destination": "/success.html"
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/onboarding.html"
+    },
+    {
+      "source": "/namecheck",
+      "destination": "/namecheck.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "*.bagthatthangup.com" }
+      ],
+      "destination": "/tenant/index.html"
+    }
   ]
 }
