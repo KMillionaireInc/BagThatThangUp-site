@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BagThat Deals</title>
+<title id="pageTitle">BagThat Deals</title>
 <style>
   :root{
     --bg:#f5f3ef;
@@ -25,58 +25,30 @@
     text-align:center;
     padding:1rem;
   }
-  header h1{
-    font-size:1.6rem;
-    margin:0.2rem 0;
-  }
-  nav{
-    display:flex; justify-content:center; gap:1rem;
-    margin:1rem 0;
-  }
+  header h1{font-size:1.6rem;margin:0.2rem 0;}
+  nav{display:flex; justify-content:center; gap:1rem; margin:1rem 0;}
   nav button{
-    background:var(--accent);
-    color:#fff;
-    border:none;
-    padding:0.6rem 1.2rem;
-    border-radius:8px;
-    font-size:1rem;
-    cursor:pointer;
+    background:var(--accent); color:#fff; border:none;
+    padding:0.6rem 1.2rem; border-radius:8px; font-size:1rem; cursor:pointer;
   }
   nav button.active{background:#d69749;}
   .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:1rem;
-    padding:1rem;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:1rem; padding:1rem;
   }
   .card{
-    background:var(--card);
-    border-radius:12px;
+    background:var(--card); border-radius:12px;
     box-shadow:0 2px 8px rgba(0,0,0,0.06);
-    overflow:hidden;
-    display:flex; flex-direction:column;
+    overflow:hidden; display:flex; flex-direction:column;
   }
   .card img{width:100%; object-fit:cover;}
-  .card h3{
-    font-size:1rem;
-    padding:0.8rem; margin:0; flex:1;
-  }
+  .card h3{font-size:1rem; padding:0.8rem; margin:0; flex:1;}
   .card a{
-    display:block;
-    background:var(--accent);
-    color:#fff;
-    text-align:center;
-    padding:0.8rem;
-    text-decoration:none;
-    font-weight:600;
+    display:block; background:var(--accent); color:#fff; text-align:center;
+    padding:0.8rem; text-decoration:none; font-weight:600;
   }
   .card a:hover{background:#d69749;}
-  footer{
-    text-align:center;
-    font-size:0.85rem;
-    color:var(--muted);
-    padding:2rem 1rem;
-  }
+  footer{text-align:center;font-size:0.85rem;color:var(--muted);padding:2rem 1rem;}
 </style>
 </head>
 <body>
@@ -93,7 +65,7 @@
 <main id="grid" class="grid"></main>
 
 <footer>
-  <p>© <span id="year"></span> BagThat Deals • Powered by BagThatThangUp.com</p>
+  <p>© <span id="year"></span> <span id="footerName">BagThat Deals</span> • Powered by BagThatThangUp.com</p>
 </footer>
 
 <script>
@@ -106,24 +78,29 @@ const FEEDS = {
 
 const grid = document.getElementById('grid');
 const titleEl = document.getElementById('siteTitle');
+const footerName = document.getElementById('footerName');
+const pageTitle = document.getElementById('pageTitle');
 const yearEl = document.getElementById('year');
 yearEl.textContent = new Date().getFullYear();
 
 const subdomain = window.location.hostname.split(".")[0].toLowerCase();
 let tenantTag = "", displayName = "";
 
-/* Fetch tenant info from backend */
+/* Fetch tenant info */
 async function loadTenant() {
   try {
     const res = await fetch(`${SHEET_API}?tenant=${subdomain}`);
     const data = await res.json();
     if(data.ok && data.tenant){
-      displayName = data.tenant.site_display_name || "BagThat Deals";
-      tenantTag = data.tenant.amazon_tag || "";
+      displayName = data.tenant.site_name || "BagThat Deals";
+      tenantTag = data.tenant.amazon_id || "";
       titleEl.textContent = displayName;
+      footerName.textContent = displayName;
+      pageTitle.textContent = displayName + " • Deals";
       loadDeals("today");
     } else {
       titleEl.textContent = "Site Not Found";
+      footerName.textContent = "Unknown";
     }
   } catch(err){
     titleEl.textContent = "Connection Error";
@@ -145,7 +122,7 @@ async function loadDeals(type){
   }
 }
 
-/* Render deals grid */
+/* Render deals */
 function renderDeals(deals){
   grid.innerHTML = "";
   deals.forEach(r=>{
@@ -164,7 +141,7 @@ function renderDeals(deals){
   });
 }
 
-/* Tab navigation */
+/* Tab nav */
 document.getElementById("btnToday").onclick = ()=>switchTab("today");
 document.getElementById("btnYesterday").onclick = ()=>switchTab("yesterday");
 document.getElementById("btnGone").onclick = ()=>switchTab("gone");
@@ -175,7 +152,7 @@ function switchTab(type){
   loadDeals(type);
 }
 
-/* Initialize */
+/* Init */
 loadTenant();
 </script>
 </body>
