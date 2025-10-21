@@ -45,7 +45,7 @@
       const { data, error } = await db.from("Users").select("subdomain").eq("id", id).single();
       if (!error && data && ALNUM_LOWER.test(data.subdomain)) {
         const url = linkFrom(data.subdomain);
-        msg.textContent = url;
+        msg.innerHTML = `Your store is live: <br><a href="${url}" target="_blank">${url}</a>`;
         visit.href = url;
         visit.style.display = "inline-block";
         return;
@@ -54,7 +54,7 @@
     const sub = sessionStorage.getItem("subdomain");
     if (sub && ALNUM_LOWER.test(sub)) {
       const url = linkFrom(sub);
-      msg.textContent = url;
+      msg.innerHTML = `Your store is live: <br><a href="${url}" target="_blank">${url}</a>`;
       visit.href = url;
       visit.style.display = "inline-block";
       return;
