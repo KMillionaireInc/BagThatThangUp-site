@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Success - BagThatThangUp</title>
+    <link rel="stylesheet" href="/style/success.css" />
+  </head>
+  <body>
+    <h1>Store Setup Complete!</h1>
+    <p>Your store is ready to view.</p>
+    <button id="openTenant">Open My Storefront</button>
+
+    <script>
+      // Read "tenant" query parameter from the URL (?tenant=store1)
+      const params = new URLSearchParams(window.location.search);
+      const tenant = params.get("tenant")?.toLowerCase().trim();
+
+      // Validate tenant name format
+      const isValid = tenant && /^[a-z0-9-]+$/.test(tenant);
+
+      // Button click logic
+      document.getElementById("openTenant").onclick = () => {
+        if (isValid) {
+          // Redirect to subdomain storefront
+          window.location.href = `https://${tenant}.bagthatthangup.com/tenant/index.html`;
+        } else {
+          // Return to onboarding if tenant parameter missing or invalid
+          alert("Invalid tenant information – returning to onboarding.");
+          window.location.href = "/onboarding.html";
+        }
+      };
+    </script>
+  </body>
+</html>
