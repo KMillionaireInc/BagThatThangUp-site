@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/$1"
+    },
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/onboarding", "destination": "/onboarding.html" },
+    { "source": "/", "destination": "/index.html" }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}
