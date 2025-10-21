@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title id="pageTitle">BagThat Deals</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#f5f3ef;
@@ -69,7 +70,10 @@
 </footer>
 
 <script>
-const SHEET_API = "https://script.google.com/macros/s/AKfycbzgBKUJpnNRaTlA11-Nw6bIRpJtf-JLcM63j3xGuJMd39UqJkxyDBORDy1mBnsLsQ6rrw/exec";
+const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const FEEDS = {
   today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
   yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
@@ -86,14 +90,18 @@ yearEl.textContent = new Date().getFullYear();
 const subdomain = window.location.hostname.split(".")[0].toLowerCase();
 let tenantTag = "", displayName = "";
 
-/* Fetch tenant info */
+/* Fetch tenant info from Supabase */
 async function loadTenant() {
   try {
-    const res = await fetch(`${SHEET_API}?tenant=${subdomain}`);
-    const data = await res.json();
-    if(data.ok && data.tenant){
-      displayName = data.tenant.site_name || "BagThat Deals";
-      tenantTag = data.tenant.amazon_id || "";
+    const { data, error } = await db
+      .from("Users")
+      .select("site_name, amazon_id")
+      .eq("subdomain", subdomain)
+      .single();
+
+    if (!error && data) {
+      displayName = data.site_name || "BagThat Deals";
+      tenantTag   = data.amazon_id || "";
       titleEl.textContent = displayName;
       footerName.textContent = displayName;
       pageTitle.textContent = displayName + " • Deals";
@@ -102,7 +110,7 @@ async function loadTenant() {
       titleEl.textContent = "Site Not Found";
       footerName.textContent = "Unknown";
     }
-  } catch(err){
+  } catch(err) {
     titleEl.textContent = "Connection Error";
   }
 }
