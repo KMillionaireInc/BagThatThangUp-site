@@ -1,64 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>BagThat Onboarding</title>
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding - BagThatThangUp</title>
+    <link rel="stylesheet" href="/style/onboarding.css" />
+  </head>
+  <body>
+    <h1>Welcome to BagThatThangUp</h1>
+    <form id="tenantForm">
+      <label>Tenant Name:</label>
+      <input type="text" id="tenantName" placeholder="store1" required />
+      <button type="submit">Create Tenant</button>
+    </form>
 
-const supabaseUrl = "https://bagthatthangup.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("onboard-form");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const f = e.target;
-
-    const data = {
-      first_name: f.first_name.value.trim(),
-      last_name: f.last_name.value.trim(),
-      site_display_name: f.site_display_name.value.trim(),
-      subdomain: f.subdomain.value.trim().toLowerCase(),
-      amazon_tag: f.amazon_tag.value.trim(),
-      email: f.email.value.trim(),
-    };
-
-    try {
-      const { data: inserted, error } = await supabase
-        .from("tenants")
-        .insert(data)
-        .select(); 
-      if (error) throw error;
-      const tenant = inserted[0];
-      sessionStorage.setItem("subdomain", tenant.subdomain);
-      sessionStorage.setItem("tenant_id", tenant.id);
-      window.location.href = "/success.html?id=" + tenant.id;
-    } catch (err) {
-      alert("Onboarding failed: " + err.message);
-    }
-  });
-});
-</script>
-</head>
-<body>
-<h1>Set Up Your Storefront</h1>
-<form id="onboard-form">
-  <label>First Name</label>
-  <input name="first_name" required />
-  <label>Last Name</label>
-  <input name="last_name" required />
-  <label>Store Name</label>
-  <input name="site_display_name" required />
-  <label>Desired Subdomain</label>
-  <input name="subdomain" required />
-  <label>Amazon Tag</label>
-  <input name="amazon_tag" required />
-  <label>Email</label>
-  <input name="email" type="email" required />
-  <button type="submit">Create Storefront</button>
-</form>
-</body>
+    <script>
+      document
+        .getElementById("tenantForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const tenant = document.getElementById("tenantName").value.trim();
+          if (!tenant) return alert("Enter a tenant name.");
+          const subdomain = tenant.toLowerCase().replace(/\s+/g, "-");
+          window.location.href = `https://${subdomain}.bagthatthangup.com/tenant/index.html`;
+        });
+    </script>
+  </body>
 </html>
+
