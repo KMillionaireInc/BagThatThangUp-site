@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tenant Storefront - BagThatThangUp</title>
+    <link rel="stylesheet" href="/tenant/style/store.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="storeName">Welcome to Your Store</h1>
+      <p>Powered by BagThatThangUp</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Your Products</h2>
+        <p>This is the default storefront. Add your items or details here.</p>
+      </section>
+      <button id="backHome">Back to Main Site</button>
+    </main>
+
+    <footer>
+      <p>© 2025 BagThatThangUp</p>
+    </footer>
+
+    <script>
+      // Detect the subdomain (example: store1.bagthatthangup.com)
+      const host = window.location.hostname;
+      const match = host.match(/^([a-z0-9-]+)\.bagthatthangup\.com$/i);
+
+      // Personalize based on tenant
+      if (match && match[1]) {
+        const tenant = match[1];
+        document.getElementById("storeName").textContent =
+          `Welcome to ${tenant}'s Store`;
+      }
+
+      // "Back to main site" button
+      document.getElementById("backHome").onclick = () => {
+        window.location.href = "https://bagthatthangup.com";
+      };
+    </script>
+  </body>
+</html>
