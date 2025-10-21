@@ -8,71 +8,46 @@
 <style>
   :root {
     --bg:#f5f3ef; --card:#fff; --accent:#e6a85a;
-    --text:#222; --muted:#777;
+    --text:#222; --muted:#666;
   }
-  * { box-sizing:border-box; }
-  body {
+  *{box-sizing:border-box;}
+  body{
     margin:0; padding:0;
-    font-family: system-ui, -apple-system, Roboto, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family:system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
   }
-  header {
-    background: var(--card);
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  header{
+    background:var(--card);
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
     text-align:center;
     padding:1rem;
   }
-  header h1 { margin:0.3rem 0; font-size:1.6rem; }
-  nav {
-    display:flex;
-    justify-content:center;
-    gap:1rem;
-    margin:1rem 0;
+  header h1{font-size:1.6rem;margin:0.2rem 0;}
+  nav{display:flex;justify-content:center;gap:1rem;margin:1rem 0;}
+  nav button{
+    background:var(--accent);color:#fff;border:none;
+    padding:0.6rem 1.2rem;border-radius:8px;font-size:1rem;cursor:pointer;
   }
-  nav button {
-    background:var(--accent);
-    color:#fff;
-    border:none;
-    padding:0.6rem 1.2rem;
-    border-radius:8px;
-    font-size:1rem;
-    cursor:pointer;
-    transition:background 0.2s;
-  }
-  nav button.active { background:#d19346; }
-  main.grid {
+  nav button.active{background:#d69749;}
+  .grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:1rem;
-    padding:1rem;
+    gap:1rem;padding:1rem;
   }
-  .card {
+  .card{
     background:var(--card);
     border-radius:12px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.05);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    overflow:hidden;display:flex;flex-direction:column;
   }
-  .card img { width:100%; object-fit:cover; }
-  .card h3 { font-size:1rem; padding:0.8rem; margin:0; flex:1; }
-  .card a {
-    display:block;
-    background:var(--accent);
-    color:#fff;
-    text-align:center;
-    padding:0.8rem;
-    text-decoration:none;
-    font-weight:600;
+  .card img{width:100%;object-fit:cover;}
+  .card h3{font-size:1rem;padding:0.8rem;margin:0;flex:1;}
+  .card a{
+    display:block;background:var(--accent);color:#fff;text-align:center;
+    padding:0.8rem;text-decoration:none;font-weight:600;
   }
-  .card a:hover { background:#c7893e; }
-  footer {
-    text-align:center;
-    font-size:0.9rem;
-    color:var(--muted);
-    padding:2rem 1rem;
-  }
+  .card a:hover{background:#d69749;}
+  footer{text-align:center;font-size:0.85rem;color:var(--muted);padding:2rem 1rem;}
 </style>
 </head>
 <body>
@@ -89,26 +64,25 @@
 <main id="grid" class="grid"></main>
 
 <footer>
-  © <span id="year"></span> <span id="footerName">BagThat Deals</span> • Powered by BagThatThangUp.com
+  <p>© <span id="year"></span> <span id="footerName">BagThat Deals</span> • Powered by BagThatThangUp.com</p>
 </footer>
 
 <script>
   const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const FEED_SOURCES = {
-    today: "https://bagthatthangup.nyc3.digitaloceanspaces.com/data/today.json",
-    yesterday: "https://bagthatthangup.nyc3.digitaloceanspaces.com/data/yesterday.json",
-    gone: "https://bagthatthangup.nyc3.digitaloceanspaces.com/data/gone.json"
+  const FEEDS = {
+    today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
+    yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+    gone: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
   };
 
-  const grid = document.getElementById("grid");
-  const titleEl = document.getElementById("siteTitle");
-  const footerName = document.getElementById("footerName");
-  const pageTitle = document.getElementById("pageTitle");
-  const yearEl = document.getElementById("year");
+  const grid = document.getElementById('grid');
+  const titleEl = document.getElementById('siteTitle');
+  const footerName = document.getElementById('footerName');
+  const pageTitle = document.getElementById('pageTitle');
+  const yearEl = document.getElementById('year');
   yearEl.textContent = new Date().getFullYear();
 
   const subdomain = window.location.hostname.split(".")[0].toLowerCase();
@@ -130,7 +104,8 @@
       }
 
       displayName = data.site_display_name || "BagThat Deals";
-      tenantTag = data.amazon_tag || "";
+      tenantTag   = data.amazon_tag || "";
+
       titleEl.textContent = displayName;
       footerName.textContent = displayName;
       pageTitle.textContent = displayName + " • Deals";
@@ -142,50 +117,48 @@
     }
   }
 
-  async function loadDeals(type) {
-    grid.innerHTML = "<p>Loading deals...</p>";
-    const url = FEED_SOURCES[type];
+  async function loadDeals(type){
+    grid.innerHTML = "Loading deals...";
+    const url = FEEDS[type];
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error("Feed fetch failed");
-      const deals = await res.json();
+      const text = await res.text();
+      const rows = text.trim().split("\n").slice(1);
+      const deals = rows.map(r=>r.split(","));
       renderDeals(deals);
-    } catch {
-      grid.innerHTML = "<p>We couldn't load the deals at this time.</p>";
+    } catch(err){
+      grid.innerHTML = "Failed to load deals.";
     }
   }
 
-  function renderDeals(deals) {
+  function renderDeals(deals){
     grid.innerHTML = "";
-    deals.forEach(item => {
-      const link = tenantTag ? `${item.link}?tag=${tenantTag}` : item.link;
+    deals.forEach(r=>{
+      const title = r[12] || "Untitled";
+      const image = r[1] || "";
+      const productLink = (r[6] || "").split("?")[0];
+      const link = tenantTag ? `${productLink}?tag=${tenantTag}` : productLink;
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <img src="${item.image}" alt="">
-        <h3>${item.title}</h3>
+        <img src="${image}" alt="">
+        <h3>${title}</h3>
         <a href="${link}" target="_blank">View Deal</a>
       `;
       grid.appendChild(card);
     });
   }
 
-  // Navigation tabs
-  const buttons = {
-    today: document.getElementById("btnToday"),
-    yesterday: document.getElementById("btnYesterday"),
-    gone: document.getElementById("btnGone")
-  };
+  document.getElementById("btnToday").onclick = ()=>switchTab("today");
+  document.getElementById("btnYesterday").onclick = ()=>switchTab("yesterday");
+  document.getElementById("btnGone").onclick = ()=>switchTab("gone");
 
-  Object.keys(buttons).forEach(type => {
-    buttons[type].onclick = () => {
-      Object.values(buttons).forEach(b => b.classList.remove("active"));
-      buttons[type].classList.add("active");
-      loadDeals(type);
-    };
-  });
+  function switchTab(type){
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+    document.getElementById("btn"+type.charAt(0).toUpperCase()+type.slice(1)).classList.add("active");
+    loadDeals(type);
+  }
 
-  // Initialize
   loadTenant();
 </script>
 </body>
