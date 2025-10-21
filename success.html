@@ -1,57 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Success • BagThat</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<style>
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7f5f0;color:#222;margin:0;padding:2rem;text-align:center}
-  .card{background:#fff;max-width:560px;margin:2rem auto;padding:2rem;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-  h1{font-size:1.8rem;margin-bottom:1rem}
-  p{margin:0.5rem 0;font-size:1.1rem}
-  a.button{display:inline-block;margin-top:1.5rem;padding:0.9rem 1.6rem;border-radius:8px;background:#28a745;color:#fff;text-decoration:none;font-weight:600}
-  a.button:hover{background:#218838}
-  .error{color:#b00020;margin-top:1rem}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Success • BagThatThangUp</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Roboto, Arial, sans-serif;
+      background: #f8f8f8;
+      color: #222;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+      padding: 2rem;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+    }
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+    p { margin: 0.5rem 0; }
+    .error { color: #c62828; }
+    #visit {
+      display: none;
+      padding: 14px 28px;
+      margin-top: 20px;
+      background: #28a745;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    #visit:hover { background: #218838; }
+  </style>
 </head>
 <body>
-<div class="card">
-  <h1>🎉 Success! Your store setup is underway.</h1>
-  <p id="next">We’re preparing your BagThat storefront now.</p>
-  <p><strong>Your link:</strong> <span id="storeLink">Loading…</span></p>
-  <a id="visitBtn" class="button" href="#" style="display:none">Visit My Store</a>
-  <div id="err" class="error"></div>
-</div>
+  <div class="card">
+    <h1>🎉 Success!</h1>
+    <p>Your storefront has been created.</p>
+    <p id="msg">Loading your link...</p>
+    <a id="visit" href="#">Go to My Storefront</a>
+    <p style="margin-top:20px;font-size:0.9rem;">
+      Check your email for setup details and next steps.<br>
+      If you need help, contact <a href="mailto:support@bagthatthangup.com">support@bagthatthangup.com</a>
+    </p>
+  </div>
 
-<script>
-const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <script>
+    const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const ALNUM_LOWER = /^[a-z0-9]+$/;
 
-function tenantUrl(sub){ return `https://${sub}.bagthatthangup.com`; }
+    function linkFrom(sub) { 
+      return `https://${sub}.bagthatthangup.com`; 
+    }
 
-async function load(){
-  const qs = new URLSearchParams(location.search);
-  const id = qs.get("id") || sessionStorage.getItem("tenant_id");
+    async function load() {
+      const qs = new URLSearchParams(location.search);
+      const id = qs.get("id") || sessionStorage.getItem("tenant_id");
+      let sub = sessionStorage.getItem("subdomain");
 
-  if(!id){ document.getElementById("err").textContent="No tenant ID found."; return; }
+      if (!sub && id) {
+        const { data, error } = await db.from("Users")
+          .select("subdomain")
+          .eq("id", id)
+          .single();
+        if (!error && data && data.subdomain) {
+          sub = data.subdomain.toLowerCase();
+        }
+      }
 
-  const { data, error } = await db.from("Users").select("subdomain").eq("id", id).single();
-  if(error || !data){
-    document.getElementById("err").textContent="Could not retrieve your site info.";
-    return;
-  }
+      if (sub && ALNUM_LOWER.test(sub)) {
+        const url = linkFrom(sub);
+        document.getElementById("msg").textContent = url;
+        const visitBtn = document.getElementById("visit");
+        visitBtn.href = url;
+        visitBtn.style.display = "inline-block";
+      } else {
+        document.getElementById("msg").textContent =
+          "We could not find your store link. Please check your email or contact support.";
+        document.getElementById("msg").className = "error";
+      }
+    }
 
-  const sub = data.subdomain;
-  const url = tenantUrl(sub);
-  document.getElementById("storeLink").textContent = url;
-  const btn = document.getElementById("visitBtn");
-  btn.href = url;
-  btn.style.display = "inline-block";
-}
-
-load();
-</script>
+    load();
+  </script>
 </body>
 </html>
