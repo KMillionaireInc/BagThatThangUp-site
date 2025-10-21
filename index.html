@@ -3,73 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BagThat Onboarding</title>
+<title>BagThat — Earn from Amazon Deals</title>
 <style>
-body{font-family:sans-serif;background:#f7f5f0;color:#333;padding:2rem;max-width:480px;margin:auto}
-form{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-label{font-weight:600;margin-top:1rem;display:block}
-input{width:100%;padding:.6rem;margin-top:.3rem;border:1px solid #ccc;border-radius:6px}
-button{margin-top:1.5rem;width:100%;padding:.8rem;background:#c19a6b;border:none;border-radius:6px;color:white;font-size:1rem;cursor:pointer}
-button:hover{background:#aa875c}
+  :root {
+    --accent: #c19a6b;
+    --light-bg: #faf7f2;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, Roboto, Arial, sans-serif;
+    color: #222;
+    background-color: var(--light-bg);
+    text-align: center;
+  }
+  header {
+    padding: 3rem 1rem 1rem;
+  }
+  header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  header p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-top: 0.3rem;
+  }
+  main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  button {
+    padding: 0.9rem 2rem;
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+  }
+  button:hover {
+    background-color: #a68350;
+  }
+  footer {
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+    color: #777;
+  }
 </style>
 </head>
 <body>
-<h1>Set Up Your Storefront</h1>
-<form id="onboard-form">
-  <label>Store Name</label>
-  <input name="site_display_name" required>
-  <label>Desired Domain (no spaces or symbols)</label>
-  <input name="subdomain" required>
-  <label>Amazon Store ID</label>
-  <input name="amazon_tag" required>
-  <label>Email Address</label>
-  <input name="email" type="email" required>
-  <button type="submit">Bag That</button>
-</form>
+
+<header>
+  <h1>Welcome to BagThat</h1>
+  <p>Turn amazing Amazon deals into your own branded storefront.</p>
+</header>
+
+<main>
+  <p>Start your own BagThat storefront in minutes. Share curated Amazon finds, earn commissions, and join our growing network of deal creators.</p>
+  <button onclick="window.location.href='/onboarding.html'">Create My Storefront</button>
+</main>
+
+<footer>
+  <p>© <span id="year"></span> BagThat • Powered by BagThatThangUp.com</p>
+</footer>
 
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
-  const form=document.getElementById("onboard-form");
-  form.addEventListener("submit",async e=>{
-    e.preventDefault();
-    const data={
-      site_display_name:form.site_display_name.value.trim(),
-      subdomain:form.subdomain.value.trim().toLowerCase(),
-      amazon_tag:form.amazon_tag.value.trim(),
-      email:form.email.value.trim()
-    };
-    const webhookUrl="https://script.google.com/macros/s/AKfycbxbAn0Lat0Mr31nk7LIEvgTkaEguQ0VbkYAdnxfteh6MIBkkuC7oge5vRlpFK8-SYqjEw/exec";
-
-    try{
-      const res=await fetch(webhookUrl,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(data)
-      });
-      const result=await res.json();
-      if(result.error==="duplicate_subdomain"){
-        document.body.innerHTML=`
-        <div style="text-align:center;padding:3rem;">
-          <h2>That domain name is already taken.</h2>
-          <button onclick="window.location.reload()">Try Again</button>
-        </div>`;
-      }else if(result.success){
-        document.body.innerHTML=`
-        <div style="text-align:center;padding:3rem;">
-          <h1>🎉 Your Site Is Live!</h1>
-          <p>Your BagThat storefront is ready!</p>
-          <a href="${result.link}" target="_blank">${result.link}</a>
-          <p>Share your link to start earning!</p>
-        </div>`;
-      }else{
-        document.body.innerHTML=`<h2 style="text-align:center;">Error: ${result.error}</h2>`;
-      }
-    }catch(err){
-      console.error(err);
-      document.body.innerHTML=`<h2 style="text-align:center;">Server error. Try again later.</h2>`;
-    }
-  });
-});
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
 </body>
 </html>
