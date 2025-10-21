@@ -1,32 +1,8 @@
 {
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/tenant/index.html"
-    },
-    {
-      "source": "/onboarding",
-      "destination": "/onboarding.html"
-    },
-    {
-      "source": "/success",
-      "destination": "/success.html"
-    },
-    {
-      "source": "/namecheck",
-      "destination": "/namecheck.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": ".*",
-      "dest": "/tenant/index.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "*.bagthatthangup.com"
-        }
-      ]
-    }
+    { "source": "/onboarding", "destination": "/onboarding.html" },
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/namecheck", "destination": "/namecheck.html" },
+    { "source": "/(.*)", "destination": "/tenant/index.html" }
   ]
 }
