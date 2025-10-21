@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Success - BagThatThangUp</title>
+    <link rel="stylesheet" href="/style/success.css" />
+  </head>
+  <body>
+    <h1>Tenant Created Successfully!</h1>
+    <p>Your store is ready and live.</p>
+    <button id="viewStore">Open My Store</button>
+
+    <script>
+      // Get the tenant name from query string, e.g. ?tenant=store1
+      const params = new URLSearchParams(window.location.search);
+      const tenant = params.get("tenant")?.toLowerCase().trim();
+
+      // Validate and build destination
+      if (tenant && /^[a-z0-9-]+$/.test(tenant)) {
+        document.getElementById("viewStore").onclick = () => {
+          window.location.href = `https://${tenant}.bagthatthangup.com/tenant/index.html`;
+        };
+      } else {
+        // If tenant param missing, return to onboarding
+        document.getElementById("viewStore").onclick = () => {
+          window.location.href = "/onboarding.html";
+        };
+      }
+    </script>
+  </body>
+</html>
