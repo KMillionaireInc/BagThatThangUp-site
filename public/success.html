@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Success - BagThatThangUp</title>
+    <link rel="stylesheet" href="/style/success.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Tenant Created Successfully!</h1>
+      <p>Your store is ready to go live.</p>
+    </header>
+
+    <main>
+      <p>Click below to open your new storefront.</p>
+      <button id="openStoreBtn">Open My Store</button>
+    </main>
+
+    <footer>
+      <p>© 2025 BagThatThangUp</p>
+    </footer>
+
+    <script>
+      // Extract ?tenant=storeName from the URL
+      const params = new URLSearchParams(window.location.search);
+      const tenant = params.get("tenant")?.toLowerCase().trim();
+
+      // Validate allowed characters
+      const isValid = tenant && /^[a-z0-9-]+$/.test(tenant);
+
+      document.getElementById("openStoreBtn").onclick = () => {
+        if (isValid) {
+          // Go to the tenant’s subdomain storefront
+          window.location.href = `https://${tenant}.bagthatthangup.com/tenant/index.html`;
+        } else {
+          alert("Missing or invalid tenant name.");
+          window.location.href = "/onboarding.html";
+        }
+      };
+    </script>
+  </body>
+</html>
