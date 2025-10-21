@@ -20,39 +20,31 @@
 <body>
 <div class="wrap">
   <h1>Set Up Your Storefront</h1>
-
   <form id="onboard-form" novalidate>
     <label>First Name
       <input name="first_name" required />
     </label>
-
     <label>Last Name
       <input name="last_name" required />
     </label>
-
     <label>Store Name
       <input name="site_name" required />
     </label>
-
     <label>Desired Domain (letters and numbers only)
       <input name="subdomain" inputmode="latin" autocomplete="off"
              pattern="[A-Za-z0-9]+"
              placeholder="e.g. myshop123" required />
     </label>
-
     <label>Amazon Store ID
       <input name="amazon_id" required />
     </label>
-
     <label>Email Address
       <input name="email" type="email" required />
     </label>
-
     <div id="err" class="error"></div>
     <button type="submit" id="submitBtn">Submit</button>
   </form>
 </div>
-
 <script>
 const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
@@ -76,20 +68,32 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
+  const subdomainLower = subRaw.toLowerCase();
+
+  // Check for duplicate subdomain
+  btn.disabled = true;
+  const { data: subCheck, error: subError } = await db.from("Users")
+    .select("id")
+    .eq("subdomain", subdomainLower);
+  if (subCheck && subCheck.length > 0) {
+    errEl.textContent = "This subdomain is already taken. Please choose another.";
+    form.subdomain.focus();
+    btn.disabled = false;
+    return;
+  }
+
   const payload = {
     first_name: (f.get("first_name") || "").trim(),
     last_name:  (f.get("last_name") || "").trim(),
     site_name:  (f.get("site_name") || "").trim(),
-    subdomain:  subRaw.toLowerCase(),
+    subdomain:  subdomainLower,
     amazon_id:  (f.get("amazon_id") || "").trim(),
     email:      (f.get("email") || "").trim()
   };
 
   for (const [k, v] of Object.entries(payload)) {
-    if (!v) { errEl.textContent = "All fields are required."; return; }
+    if (!v) { errEl.textContent = "All fields are required."; btn.disabled = false; return; }
   }
-
-  btn.disabled = true;
 
   try {
     const { data, error } = await db.from("Users")
@@ -105,10 +109,10 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    const tenantUrl = `https://${data.subdomain}.bagthatthangup.com`;
+    sessionStorage.setItem("tenant_id", data.id);
+    sessionStorage.setItem("subdomain", data.subdomain);
 
-    // Redirect with tenantUrl
-    window.location.href = "/success?tenantUrl=" + encodeURIComponent(tenantUrl);
+    window.location.href = "/success?id=" + encodeURIComponent(data.id);
 
   } catch (ex) {
     btn.disabled = false;
