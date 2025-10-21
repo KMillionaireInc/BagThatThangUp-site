@@ -1,10 +1,20 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/tenant", "destination": "/tenant.html" }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+    {
+      "source": "/",
+      "destination": "/tenant/index.html"
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/onboarding.html"
+    },
+    {
+      "source": "/success",
+      "destination": "/success.html"
+    },
+    {
+      "source": "/namecheck",
+      "destination": "/namecheck.html"
+    }
+  ]
 }
