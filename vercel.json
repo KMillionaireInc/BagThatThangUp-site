@@ -6,7 +6,7 @@
       "has": [
         { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
-      "destination": "/public/tenant/index.html"
+      "destination": "/tenant/index.html"
     },
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/success", "destination": "/success/index.html" },
