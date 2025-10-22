@@ -31,16 +31,8 @@
       max-width: 520px;
       text-align: center;
     }
-    h1 {
-      font-size: 1.9rem;
-      color: var(--accent);
-      margin-bottom: 0.5em;
-    }
-    p {
-      color: #444;
-      margin-bottom: 2em;
-      font-size: 1rem;
-    }
+    h1 { font-size: 1.9rem; color: var(--accent); margin-bottom: 0.5em; }
+    p { color: #444; margin-bottom: 2em; font-size: 1rem; }
     button {
       background: var(--accent);
       color: white;
@@ -52,15 +44,8 @@
       cursor: pointer;
       transition: background 0.25s;
     }
-    button:hover {
-      background: #115e59;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 30px;
-    }
+    button:hover { background: #115e59; }
+    footer { text-align: center; font-size: 0.8rem; color: #666; margin-top: 30px; }
   </style>
 </head>
 <body>
@@ -72,8 +57,7 @@
   </div>
 
   <script>
-    // When the real subdomain system is active, we’ll redirect dynamically.
-    // For now, this will simply send users to the homepage.
+    // Temporary redirect placeholder
     document.getElementById("viewSite").addEventListener("click", () => {
       window.location.href = "https://bagthatthangup.com";
     });
