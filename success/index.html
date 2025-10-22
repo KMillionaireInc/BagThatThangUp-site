@@ -95,12 +95,15 @@
 
       if (sub) {
         const fullUrl = `https://${sub}.bagthatthangup.com`;
-        domainLine.innerHTML = `Your site has been created at<br><strong>${fullUrl}</strong>`;
+
+        // ✅ Updated line: clickable domain link
+        domainLine.innerHTML = `Your site has been created at<br><a href="${fullUrl}" target="_blank" style="color:#0b615e;font-weight:600;">${fullUrl}</a>`;
+
         visitBtn.href = fullUrl;
         visitBtn.style.display = "inline-block";
         nextSteps.style.display = "block";
 
-        // Optional: clear stored value after showing it
+        // Optional cleanup
         localStorage.removeItem("bagthat_subdomain");
       }
     })();
