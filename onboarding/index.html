@@ -7,15 +7,13 @@
   <style>
     :root {
       --teal: #0b615e;
-      --light: #f6faf9;
-      --surface: rgba(255, 255, 255, 0.9);
       --accent: #0f766e;
       --radius: 18px;
       --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url('../assets/images/freedom.jpg') center/cover no-repeat fixed;
+      background: url('../assets/images/hero.jpg') center/cover no-repeat fixed;
       margin: 0;
       display: flex;
       justify-content: center;
@@ -24,8 +22,8 @@
       color: #123;
     }
     .wrapper {
-      background: var(--surface);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
       padding: 40px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -34,7 +32,7 @@
       text-align: center;
     }
     h1 {
-      color: var(--accent);
+      color: var(--teal);
       font-size: 1.8rem;
       margin-bottom: 0.5em;
     }
@@ -83,7 +81,7 @@
 <body>
   <div class="wrapper">
     <h1>Set Up Your Storefront</h1>
-    <p class="subtext">Start your journey by creating your personalized BagThat storefront below.</p>
+    <p class="subtext">Turn your Amazon finds into a branded storefront with BagThat.</p>
 
     <form id="storeForm">
       <input type="text" id="first_name" placeholder="First Name" required />
@@ -102,14 +100,15 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const form = document.getElementById("storeForm");
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
 
-    // Check subdomain availability in real-time
+    // Check subdomain availability live
     subInput.addEventListener("input", async () => {
       const val = subInput.value.trim().toLowerCase();
       if (!val) {
@@ -121,8 +120,10 @@
         .select("id")
         .eq("subdomain", val)
         .maybeSingle();
+
       if (data) {
-        subErr.textContent = "This subdomain is already taken. Please choose another.";
+        subErr.textContent =
+          "This subdomain is already taken. Please choose another.";
       } else {
         subErr.textContent = "";
       }
@@ -133,7 +134,7 @@
       e.preventDefault();
       const subdomain = subInput.value.trim().toLowerCase();
 
-      if (subErr.textContent) return; // block duplicates
+      if (subErr.textContent) return;
 
       const payload = {
         first_name: document.getElementById("first_name").value.trim(),
