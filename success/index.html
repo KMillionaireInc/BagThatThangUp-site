@@ -11,18 +11,29 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #004d46;
-      color: #fff;
+      background: url("../assets/images/freedom.jpg") center/cover no-repeat fixed;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
     .box {
-      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.15);
       padding: 3rem;
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
       width: 90%;
       max-width: 420px;
+      color: #fff;
+      backdrop-filter: blur(6px);
     }
     h1 {
       font-size: 1.8rem;
@@ -49,6 +60,7 @@
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
   <div class="box">
     <h1>🎉 Your Storefront Is Ready!</h1>
     <p>Your storefront has been set up successfully.</p>
