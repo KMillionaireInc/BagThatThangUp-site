@@ -5,76 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Storefront Is Ready • BagThat</title>
   <style>
-    :root {
-      --teal: #0b615e;
-      --radius: 20px;
-      --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url("../assets/images/freedom.jpg") center/cover no-repeat fixed;
+      background: url("../assets/images/freedom.jpg") no-repeat center center/cover;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      text-align: center;
-      color: #123;
+      margin: 0;
     }
     .card {
-      background: rgba(255, 255, 255, 0.93);
-      backdrop-filter: blur(6px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 50px 40px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
       width: 90%;
-      max-width: 520px;
+      text-align: center;
     }
     h1 {
-      color: var(--teal);
-      margin-bottom: 0.5em;
+      color: #0b3b32;
+      font-size: 1.7rem;
+      margin-bottom: 0.5rem;
     }
     p {
       color: #333;
-      margin-bottom: 1.2em;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
     }
     a.button {
-      display: inline-block;
-      background: var(--teal);
+      background: #0b3b32;
       color: #fff;
       text-decoration: none;
-      padding: 12px 22px;
-      border-radius: 10px;
-      margin-top: 10px;
-      transition: background 0.25s;
+      padding: 0.9rem 1.4rem;
+      border-radius: 8px;
+      display: inline-block;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      transition: background 0.3s;
     }
     a.button:hover {
-      background: #094c4b;
+      background: #075247;
     }
     ul {
-      list-style: disc;
       text-align: left;
-      margin: 20px auto;
-      padding-left: 25px;
-      max-width: 400px;
-      color: #222;
-      line-height: 1.5em;
+      margin: 1rem 0 0 0;
+      padding: 0 1.2rem;
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.5;
     }
     footer {
-      margin-top: 25px;
+      text-align: center;
       font-size: 0.8rem;
-      color: #555;
+      color: #444;
+      margin-top: 1.5rem;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>🎉 Your Storefront Is Ready!</h1>
-    <p id="domainLine">Your storefront setup is complete.</p>
-    <a id="visitBtn" href="#" class="button" style="display:none;">Visit My Storefront</a>
+    <p id="siteLink">Your storefront setup is complete.</p>
+    <a id="visitBtn" class="button" href="#" target="_blank">Visit My Storefront</a>
 
-    <div id="nextSteps" style="display:none;">
-      <h3 style="margin-top: 25px; color:#0b615e;">Next Steps:</h3>
+    <div class="next-steps">
+      <h3 style="color:#0b3b32; text-align:left;">Next Steps:</h3>
       <ul>
         <li>Bookmark your storefront link above for quick access.</li>
         <li>Share your site link on your social media and bio.</li>
@@ -87,26 +83,19 @@
   </div>
 
   <script>
-    (function() {
-      const sub = localStorage.getItem("bagthat_subdomain");
-      const domainLine = document.getElementById("domainLine");
-      const visitBtn = document.getElementById("visitBtn");
-      const nextSteps = document.getElementById("nextSteps");
+    const params = new URLSearchParams(window.location.search);
+    const sub = params.get("sub");
 
-      if (sub) {
-        const fullUrl = `https://${sub}.bagthatthangup.com`;
-
-        // ✅ Updated line: clickable domain link
-        domainLine.innerHTML = `Your site has been created at<br><a href="${fullUrl}" target="_blank" style="color:#0b615e;font-weight:600;">${fullUrl}</a>`;
-
-        visitBtn.href = fullUrl;
-        visitBtn.style.display = "inline-block";
-        nextSteps.style.display = "block";
-
-        // Optional cleanup
-        localStorage.removeItem("bagthat_subdomain");
-      }
-    })();
+    if (sub) {
+      const domain = `https://${sub}.bagthatthangup.com`;
+      document.getElementById("siteLink").innerHTML =
+        `Your site has been created at <br><strong>${domain}</strong>`;
+      document.getElementById("visitBtn").href = domain;
+    } else {
+      document.getElementById("siteLink").textContent =
+        "Your storefront setup is complete.";
+      document.getElementById("visitBtn").style.display = "none";
+    }
   </script>
 </body>
 </html>
