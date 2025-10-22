@@ -14,7 +14,7 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url('/assets/images/freedom.jpg') center/cover no-repeat fixed;
+      background: url('../assets/images/freedom.jpg') center/cover no-repeat fixed;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -65,7 +65,7 @@
   <div class="box">
     <h1>🎉 Your Storefront Is Ready!</h1>
     <p id="msg">Loading your storefront...</p>
-    <a id="tenantLink" href="#" class="btn">Go to My Storefront</a>
+    <a id="tenantLink" href="#" class="btn">Visit My Storefront</a>
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
@@ -76,7 +76,7 @@
 
     if (sub) {
       const liveURL = `https://${sub}.bagthatthangup.com`;
-      msg.textContent = `Your storefront is live at: ${liveURL}`;
+      msg.textContent = `Your site has been created at ${liveURL}`;
       link.href = liveURL;
       link.style.display = "inline-block";
     } else {
@@ -84,7 +84,7 @@
       link.style.display = "none";
     }
 
-    // Clear storage after displaying
+    // clear local storage
     localStorage.removeItem("bagthat_subdomain");
   </script>
 </body>
