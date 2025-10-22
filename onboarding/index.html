@@ -15,7 +15,7 @@
       min-height: 100vh;
     }
     .form-wrapper {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border-radius: 18px;
       padding: 2.5rem 3rem;
       width: 100%;
@@ -78,7 +78,7 @@
 <body>
   <div class="form-wrapper">
     <h1>Set Up Your Storefront</h1>
-    <p class="subtext">Create your own deal site with your Amazon links — in minutes.</p>
+    <p class="subtext">Create your own Amazon deal site — ready in minutes.</p>
     <form id="onboardingForm">
       <label>First Name</label>
       <input type="text" id="firstName" required />
@@ -106,6 +106,7 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+    // Supabase credentials
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
@@ -129,8 +130,8 @@
         const { error } = await supabase.from("Users").insert([formData]);
         if (error) throw error;
 
-        // ✅ Hardcoded absolute redirect (guaranteed to bypass any routing issue)
-        window.location.assign("https://bagthatthangup.com/success/?sub=" + encodeURIComponent(formData.subdomain));
+        // ✅ Redirect to success page with subdomain parameter
+        window.location.href = `https://bagthatthangup.com/success/?sub=${encodeURIComponent(formData.subdomain)}`;
       } catch (err) {
         alert("Error creating storefront: " + err.message);
       }
