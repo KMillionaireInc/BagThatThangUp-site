@@ -1,6 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    { "source": "/success", "destination": "/success/index.html" },
+    { "source": "/onboarding", "destination": "/onboarding.html" },
     {
       "source": "/",
       "has": [
@@ -15,8 +17,6 @@
       ],
       "destination": "/tenant/$1"
     },
-    { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/", "destination": "/index.html" }
   ],
   "cleanUrls": true,
