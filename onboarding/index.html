@@ -68,6 +68,9 @@
     small.error {
       color: #b91c1c;
       font-weight: 500;
+      display: block;
+      margin-top: -8px;
+      min-height: 18px;
     }
     footer {
       text-align: center;
@@ -110,37 +113,32 @@
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
 
-    // Check subdomain availability as user types
+    async function checkSubdomainAvailable(sub) {
+      const { data: existing, error } = await supabase
+        .from("Users")
+        .select("id")
+        .eq("subdomain", sub)
+        .maybeSingle();
+      if (error) return true;
+      return !existing;
+    }
+
+    // Validate on input
     subInput.addEventListener("input", async () => {
       const val = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
       if (!val) return;
-
-      const { data: existing } = await supabase
-        .from("Users")
-        .select("id")
-        .eq("subdomain", val)
-        .maybeSingle();
-
-      if (existing) {
-        subErr.textContent = "This subdomain is already taken. Please choose another.";
-      }
+      const available = await checkSubdomainAvailable(val);
+      if (!available) subErr.textContent = "This subdomain is already taken. Please choose another.";
     });
 
     // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      subErr.textContent = "";
       const subdomain = subInput.value.trim().toLowerCase();
-      if (!subdomain) return;
-
-      // Double-check availability before inserting
-      const { data: existing } = await supabase
-        .from("Users")
-        .select("id")
-        .eq("subdomain", subdomain)
-        .maybeSingle();
-
-      if (existing) {
+      const available = await checkSubdomainAvailable(subdomain);
+      if (!available) {
         subErr.textContent = "That subdomain is already registered. Please choose another.";
         return;
       }
@@ -155,9 +153,7 @@
         created_at: new Date().toISOString(),
       };
 
-      // Insert user record
       const { error } = await supabase.from("Users").insert(payload);
-
       if (error) {
         alert("There was an error saving your storefront. Please try again.");
       } else {
@@ -167,4 +163,3 @@
   </script>
 </body>
 </html>
-
