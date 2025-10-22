@@ -100,6 +100,7 @@
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
+  <!-- Supabase -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
@@ -113,28 +114,32 @@
     const subErr = document.getElementById("subErr");
     const submitBtn = document.getElementById("submitBtn");
 
+    // Check if subdomain exists
     async function checkSubdomain(sub) {
       const { data, error } = await supabase
         .from("Users")
         .select("id")
         .eq("subdomain", sub)
         .limit(1);
-      if (error) return false;
-      return data.length > 0;
+
+      if (error) {
+        console.error("Error checking subdomain:", error);
+        return true; // block on error
+      }
+
+      return Array.isArray(data) && data.length > 0;
     }
 
+    // Validate when user leaves the field
     subInput.addEventListener("blur", async () => {
       const sub = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
       if (!sub) return;
       const exists = await checkSubdomain(sub);
-      if (exists) {
-        subErr.textContent = "This subdomain is already taken. Please choose another.";
-      } else {
-        subErr.textContent = "";
-      }
+      if (exists) subErr.textContent = "This subdomain is already taken. Please choose another.";
     });
 
+    // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
@@ -162,8 +167,8 @@
       const { error } = await supabase.from("Users").insert(payload);
 
       if (error) {
+        console.error("Insert failed:", error);
         subErr.textContent = "Unexpected error saving storefront. Please try again.";
-        console.error(error);
         submitBtn.disabled = false;
         return;
       }
