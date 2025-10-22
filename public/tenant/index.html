@@ -1,18 +1,111 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "public",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
-      ],
-      "destination": "/tenant/index.html"
-    },
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/", "destination": "/index.html" }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BagThat Storefront</title>
+  <meta name="description" content="Your personal Amazon deals storefront powered by BagThat.">
+  <style>
+    body {margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6faf9;color:#0b1320;}
+    header {background:#0b403b;color:#fff;text-align:center;padding:1.5rem;}
+    h1 {margin:0;font-size:1.8rem;}
+    nav {display:flex;justify-content:center;gap:1rem;margin-top:.5rem;}
+    nav button {background:#fff;color:#0b403b;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-weight:600;}
+    nav button.active {background:#0b403b;color:#fff;}
+    .grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;padding:2rem;}
+    .card {background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.08);overflow:hidden;display:flex;flex-direction:column;}
+    .card img {width:100%;height:220px;object-fit:cover;}
+    .card-content {padding:1rem;flex:1;display:flex;flex-direction:column;}
+    .title {font-weight:600;margin-bottom:.5rem;flex:1;}
+    .price {font-size:1.1rem;color:#0b403b;font-weight:bold;}
+    .promo {font-size:.9rem;color:#e53935;margin-bottom:.75rem;}
+    .btn {text-align:center;margin-top:auto;background:#0b403b;color:#fff;padding:.5rem;border-radius:6px;text-decoration:none;font-weight:600;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="storeName">BagThat Storefront</h1>
+    <nav>
+      <button class="active" data-tab="today">Today’s Deals</button>
+      <button data-tab="yesterday">Yesterday</button>
+      <button data-tab="almost">Almost Gone</button>
+    </nav>
+  </header>
+  <main>
+    <div id="dealGrid" class="grid"></div>
+  </main>
+
+  <script type="module">
+    const supabaseUrl = "https://gmsjqunfsffjiksffvem.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Get subdomain
+    const host = window.location.hostname;
+    const subdomain = host.split('.')[0];
+
+    // CSV sources
+    const sources = {
+      today: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv',
+      yesterday: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv',
+      almost: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv'
+    };
+
+    let amazonId = "azillionaires-20"; // fallback tag
+
+    async function loadTenant() {
+      try {
+        const { data, error } = await supabase.from("Users").select("*").eq("subdomain", subdomain).single();
+        if (data) {
+          document.getElementById("storeName").textContent = data.site_name || "BagThat Storefront";
+          amazonId = data.amazon_id || amazonId;
+        }
+      } catch (err) {
+        console.warn("Tenant not found, using default tag.");
+      }
+    }
+
+    async function fetchDeals(tab) {
+      const grid = document.getElementById("dealGrid");
+      grid.innerHTML = "<p>Loading deals...</p>";
+      const url = sources[tab];
+      const res = await fetch(url);
+      const text = await res.text();
+      const rows = text.split("\n").slice(1);
+      grid.innerHTML = "";
+      rows.forEach(row => {
+        const cols = row.split(",");
+        const [img, , price, promo, , , link, , , , , , title, category] = cols;
+        if (!title) return;
+        const tagged = link.includes("tag=")
+          ? link
+          : link + (link.includes("?") ? "&tag=" : "?tag=") + amazonId;
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${img || '/assets/images/feature1.jpg'}" alt="${title}">
+          <div class="card-content">
+            <div class="title">${title}</div>
+            <div class="price">${price || ''}</div>
+            <div class="promo">${promo || ''}</div>
+            <a class="btn" href="${tagged}" target="_blank">Go to Amazon</a>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    // Tab switching
+    document.querySelectorAll("nav button").forEach(btn => {
+      btn.addEventListener("click", e => {
+        document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        fetchDeals(e.target.dataset.tab);
+      });
+    });
+
+    await loadTenant();
+    fetchDeals("today");
+  </script>
+</body>
+</html>
