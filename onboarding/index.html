@@ -10,21 +10,19 @@
       background: url("assets/images/hero.jpg") center/cover no-repeat;
       margin: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      color: #1a1a1a;
+      min-height: 100vh;
     }
 
     form {
       background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(8px);
       border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       padding: 3rem;
       width: 90%;
       max-width: 540px;
-      backdrop-filter: blur(8px);
     }
 
     h1 {
@@ -100,26 +98,26 @@
 <body>
   <form id="onboard-form">
     <h1>Set Up Your Storefront</h1>
-    <p>Join hundreds of creators turning their Amazon finds into beautiful, branded storefronts.</p>
+    <p>Turn your Amazon finds into a beautiful, branded BagThat site.</p>
 
-    <label for="first">First Name</label>
-    <input type="text" id="first" name="first" required />
+    <label>First Name</label>
+    <input type="text" id="first" required />
 
-    <label for="last">Last Name</label>
-    <input type="text" id="last" name="last" required />
+    <label>Last Name</label>
+    <input type="text" id="last" required />
 
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required />
+    <label>Email</label>
+    <input type="email" id="email" required />
 
-    <label for="store">Store Name</label>
-    <input type="text" id="store" name="store" placeholder="Ex: My Finds Boutique" required />
+    <label>Store Name</label>
+    <input type="text" id="store" placeholder="Ex: My Finds Boutique" required />
 
-    <label for="subdomain">Preferred Subdomain</label>
-    <input type="text" id="subdomain" name="subdomain" placeholder="Ex: shopwithalex" required />
+    <label>Preferred Subdomain</label>
+    <input type="text" id="subdomain" placeholder="Ex: shopwithalex" required />
     <small id="subdomain-status"></small>
 
-    <label for="associate">Amazon Associates ID</label>
-    <input type="text" id="associate" name="associate" placeholder="Ex: myfinds-20" required />
+    <label>Amazon Associates ID</label>
+    <input type="text" id="associate" placeholder="Ex: myfinds-20" required />
 
     <button type="submit">Launch My Storefront</button>
   </form>
@@ -128,13 +126,11 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
-    // Supabase project details
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const form = document.getElementById("onboard-form");
     const subdomainInput = document.getElementById("subdomain");
     const status = document.getElementById("subdomain-status");
@@ -160,7 +156,7 @@
       }
     });
 
-    // Handle form submission
+    // Handle submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -174,12 +170,12 @@
         created_at: new Date().toISOString(),
       };
 
-      const { data, error } = await supabaseClient.from("Users").insert([formData]);
+      const { error } = await supabaseClient.from("Users").insert([formData]);
 
       if (error) {
         alert("Error creating storefront: " + error.message);
       } else {
-        window.location.href = `https://${formData.subdomain}.bagthatthangup.com`;
+        window.location.href = `/success.html?sub=${formData.subdomain}`;
       }
     });
   </script>
