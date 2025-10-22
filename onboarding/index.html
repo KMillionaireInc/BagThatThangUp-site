@@ -108,37 +108,39 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const form = document.getElementById("storeForm");
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
 
-    async function checkSubdomainAvailable(sub) {
-      const { data: existing, error } = await supabase
+    async function subdomainExists(sub) {
+      const { data, error } = await supabase
         .from("Users")
         .select("id")
-        .eq("subdomain", sub)
-        .maybeSingle();
-      if (error) return true;
-      return !existing;
+        .eq("subdomain", sub.toLowerCase());
+      if (error) {
+        console.error(error);
+        return false;
+      }
+      return data && data.length > 0;
     }
 
-    // Validate on input
     subInput.addEventListener("input", async () => {
       const val = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
       if (!val) return;
-      const available = await checkSubdomainAvailable(val);
-      if (!available) subErr.textContent = "This subdomain is already taken. Please choose another.";
+      const exists = await subdomainExists(val);
+      if (exists) {
+        subErr.textContent = "This subdomain is already taken. Please choose another.";
+      }
     });
 
-    // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      subErr.textContent = "";
       const subdomain = subInput.value.trim().toLowerCase();
-      const available = await checkSubdomainAvailable(subdomain);
-      if (!available) {
+      subErr.textContent = "";
+
+      const exists = await subdomainExists(subdomain);
+      if (exists) {
         subErr.textContent = "That subdomain is already registered. Please choose another.";
         return;
       }
@@ -154,8 +156,10 @@
       };
 
       const { error } = await supabase.from("Users").insert(payload);
+
       if (error) {
-        alert("There was an error saving your storefront. Please try again.");
+        alert("Unexpected error — please try again.");
+        console.error(error);
       } else {
         window.location.href = "/success/";
       }
