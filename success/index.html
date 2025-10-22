@@ -64,14 +64,13 @@
 <body>
   <div class="box">
     <h1>🎉 Your Storefront Is Ready!</h1>
-    <p id="msg">Your storefront has been set up successfully.</p>
+    <p id="msg">Loading your storefront...</p>
     <a id="tenantLink" href="#" class="btn">Go to My Storefront</a>
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const sub = params.get("sub")?.trim().toLowerCase();
+    const sub = localStorage.getItem("bagthat_subdomain");
     const msg = document.getElementById("msg");
     const link = document.getElementById("tenantLink");
 
@@ -84,6 +83,9 @@
       msg.textContent = "Your storefront setup is complete.";
       link.style.display = "none";
     }
+
+    // Clear storage after displaying
+    localStorage.removeItem("bagthat_subdomain");
   </script>
 </body>
 </html>
