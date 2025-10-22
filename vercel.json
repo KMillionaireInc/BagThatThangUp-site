@@ -6,16 +6,9 @@
       "has": [
         { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
-      "destination": "/tenant/$1"
-    },
-    {
-      "source": "/",
-      "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
-      ],
       "destination": "/tenant/index.html"
     },
-    { "source": "/success", "destination": "/success.html" },
+    { "source": "/success", "destination": "/success/index.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/", "destination": "/index.html" }
   ],
