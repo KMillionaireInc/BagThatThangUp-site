@@ -7,14 +7,13 @@
   <style>
     :root {
       --teal: #0b615e;
-      --accent: #0f766e;
       --radius: 20px;
       --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url('../assets/images/freedom.jpg') center/cover no-repeat fixed;
+      background: url("../assets/images/freedom.jpg") center/cover no-repeat fixed;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -22,69 +21,60 @@
       text-align: center;
       color: #123;
     }
-    .box {
-      background: rgba(255, 255, 255, 0.92);
+    .card {
+      background: rgba(255, 255, 255, 0.93);
       backdrop-filter: blur(6px);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 60px 40px;
+      padding: 50px 40px;
       width: 90%;
       max-width: 520px;
     }
     h1 {
       color: var(--teal);
-      margin-bottom: 0.3em;
+      margin-bottom: 0.5em;
     }
     p {
-      margin-bottom: 1.4em;
-      font-size: 1.05rem;
       color: #333;
+      margin-bottom: 1.2em;
     }
-    .link {
-      font-weight: 600;
-      color: var(--accent);
-      word-break: break-all;
-    }
-    a.btn {
+    a.button {
       display: inline-block;
-      background: var(--accent);
+      background: var(--teal);
       color: #fff;
-      padding: 14px 28px;
-      border-radius: 10px;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: background 0.25s;
+      padding: 12px 22px;
+      border-radius: 10px;
       margin-top: 10px;
+      transition: background 0.25s;
     }
-    a.btn:hover {
-      background: #115e59;
+    a.button:hover {
+      background: #094c4b;
+    }
+    ul {
+      list-style: disc;
+      text-align: left;
+      margin: 20px auto;
+      padding-left: 25px;
+      max-width: 400px;
+      color: #222;
+      line-height: 1.5em;
     }
     footer {
       margin-top: 25px;
       font-size: 0.8rem;
       color: #555;
     }
-    .next {
-      text-align: left;
-      margin-top: 1.8em;
-      font-size: 0.95rem;
-      color: #444;
-    }
-    .next ul {
-      margin: 0.8em 0 0;
-      padding-left: 1.2em;
-    }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="card">
     <h1>🎉 Your Storefront Is Ready!</h1>
-    <p id="msg">Loading your storefront...</p>
-    <a id="tenantLink" href="#" class="btn">Visit My Storefront</a>
+    <p id="domainLine">Your storefront setup is complete.</p>
+    <a id="visitBtn" href="#" class="button" style="display:none;">Visit My Storefront</a>
 
-    <div class="next">
-      <strong>Next Steps:</strong>
+    <div id="nextSteps" style="display:none;">
+      <h3 style="margin-top: 25px; color:#0b615e;">Next Steps:</h3>
       <ul>
         <li>Bookmark your storefront link above for quick access.</li>
         <li>Share your site link on your social media and bio.</li>
@@ -97,23 +87,23 @@
   </div>
 
   <script>
-    // Retrieve the subdomain from localStorage (set by onboarding)
-    const sub = localStorage.getItem("bagthat_subdomain");
-    const msg = document.getElementById("msg");
-    const link = document.getElementById("tenantLink");
+    (function() {
+      const sub = localStorage.getItem("bagthat_subdomain");
+      const domainLine = document.getElementById("domainLine");
+      const visitBtn = document.getElementById("visitBtn");
+      const nextSteps = document.getElementById("nextSteps");
 
-    if (sub) {
-      const liveURL = `https://${sub}.bagthatthangup.com`;
-      msg.innerHTML = `Your site has been created at <br><span class="link">${liveURL}</span>`;
-      link.href = liveURL;
-      link.style.display = "inline-block";
-    } else {
-      msg.textContent = "Your storefront setup is complete.";
-      link.style.display = "none";
-    }
+      if (sub) {
+        const fullUrl = `https://${sub}.bagthatthangup.com`;
+        domainLine.innerHTML = `Your site has been created at<br><strong>${fullUrl}</strong>`;
+        visitBtn.href = fullUrl;
+        visitBtn.style.display = "inline-block";
+        nextSteps.style.display = "block";
 
-    // Remove the subdomain from localStorage once shown
-    localStorage.removeItem("bagthat_subdomain");
+        // Optional: clear stored value after showing it
+        localStorage.removeItem("bagthat_subdomain");
+      }
+    })();
   </script>
 </body>
 </html>
