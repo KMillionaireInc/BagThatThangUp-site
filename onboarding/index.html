@@ -6,8 +6,8 @@
   <title>Set Up Your Storefront • BagThat</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: url('assets/images/hero.jpg') center/cover no-repeat;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: url("assets/images/hero.jpg") center/cover no-repeat;
       margin: 0;
       display: flex;
       flex-direction: column;
@@ -16,81 +16,81 @@
       height: 100vh;
       color: #1a1a1a;
     }
-    header {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    header img {
-      height: 48px;
-      margin-bottom: 0.5rem;
-    }
-    header h1 {
-      font-size: 1.8rem;
-      color: #11635b;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+
     form {
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 20px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       padding: 3rem;
-      width: 100%;
+      width: 90%;
       max-width: 540px;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
     }
-    form h2 {
+
+    h1 {
       text-align: center;
-      color: #11635b;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #10635a;
+      margin-bottom: 0.5rem;
     }
-    form p {
+
+    p {
       text-align: center;
       color: #444;
       margin-bottom: 2rem;
+      font-size: 1rem;
     }
+
     label {
       display: block;
       font-weight: 600;
       margin-top: 1rem;
       color: #333;
     }
+
     input {
       width: 100%;
-      padding: 0.7rem;
+      padding: 0.75rem;
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-top: 0.4rem;
       font-size: 1rem;
     }
+
     input:focus {
-      border-color: #11635b;
+      border-color: #10635a;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(17, 99, 91, 0.15);
+      box-shadow: 0 0 0 3px rgba(16, 99, 90, 0.15);
     }
-    small {
-      color: red;
-      font-size: 0.85rem;
-    }
+
     button {
       width: 100%;
       padding: 0.9rem;
       border: none;
-      background-color: #11635b;
+      background-color: #10635a;
       color: white;
       border-radius: 8px;
       font-size: 1.1rem;
+      font-weight: 600;
       margin-top: 2rem;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
     }
+
     button:hover {
-      background-color: #0d4f49;
+      background-color: #0b504a;
     }
+
+    #subdomain-status {
+      display: block;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
     footer {
       text-align: center;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       font-size: 0.9rem;
       color: #666;
     }
@@ -98,12 +98,8 @@
 </head>
 
 <body>
-  <header>
-    <img src="assets/custompro.png" alt="BagThat Logo">
-    <h1>Set Up Your Storefront</h1>
-  </header>
-
   <form id="onboard-form">
+    <h1>Set Up Your Storefront</h1>
     <p>Join hundreds of creators turning their Amazon finds into beautiful, branded storefronts.</p>
 
     <label for="first">First Name</label>
@@ -116,14 +112,14 @@
     <input type="email" id="email" name="email" required />
 
     <label for="store">Store Name</label>
-    <input type="text" id="store" name="store" required placeholder="Ex: My Finds Store" />
+    <input type="text" id="store" name="store" placeholder="Ex: My Finds Boutique" required />
 
     <label for="subdomain">Preferred Subdomain</label>
     <input type="text" id="subdomain" name="subdomain" placeholder="Ex: shopwithalex" required />
     <small id="subdomain-status"></small>
 
     <label for="associate">Amazon Associates ID</label>
-    <input type="text" id="associate" name="associate" required placeholder="Ex: myfinds-20" />
+    <input type="text" id="associate" name="associate" placeholder="Ex: myfinds-20" required />
 
     <button type="submit">Launch My Storefront</button>
   </form>
@@ -132,40 +128,54 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script>
+    // Supabase project details
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const form = document.getElementById("onboard-form");
     const subdomainInput = document.getElementById("subdomain");
     const status = document.getElementById("subdomain-status");
 
+    // Check subdomain availability
     subdomainInput.addEventListener("input", async () => {
       const value = subdomainInput.value.trim().toLowerCase();
       if (!value) return (status.textContent = "");
       status.textContent = "Checking...";
       const { data, error } = await supabaseClient
-        .from("tenants")
+        .from("Users")
         .select("subdomain")
         .eq("subdomain", value)
         .maybeSingle();
+
       if (error) status.textContent = "Error checking name.";
-      else if (data) status.textContent = "Name already taken.";
-      else status.textContent = "Available!";
+      else if (data) {
+        status.textContent = "Name already taken.";
+        status.style.color = "red";
+      } else {
+        status.textContent = "Available!";
+        status.style.color = "green";
+      }
     });
 
+    // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const formData = {
-        first: form.first.value.trim(),
-        last: form.last.value.trim(),
+        first_name: form.first.value.trim(),
+        last_name: form.last.value.trim(),
         email: form.email.value.trim(),
-        store: form.store.value.trim(),
+        site_name: form.store.value.trim(),
         subdomain: form.subdomain.value.trim().toLowerCase(),
-        associate: form.associate.value.trim(),
+        amazon_id: form.associate.value.trim(),
+        created_at: new Date().toISOString(),
       };
 
-      const { data, error } = await supabaseClient.from("tenants").insert([formData]);
+      const { data, error } = await supabaseClient.from("Users").insert([formData]);
+
       if (error) {
         alert("Error creating storefront: " + error.message);
       } else {
