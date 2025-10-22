@@ -23,13 +23,13 @@
       color: #123;
     }
     .box {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(6px);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 60px 40px;
       width: 90%;
-      max-width: 480px;
+      max-width: 520px;
     }
     h1 {
       color: var(--teal);
@@ -37,8 +37,13 @@
     }
     p {
       margin-bottom: 1.4em;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: #333;
+    }
+    .link {
+      font-weight: 600;
+      color: var(--accent);
+      word-break: break-all;
     }
     a.btn {
       display: inline-block;
@@ -50,6 +55,7 @@
       font-weight: 600;
       font-size: 1rem;
       transition: background 0.25s;
+      margin-top: 10px;
     }
     a.btn:hover {
       background: #115e59;
@@ -59,6 +65,16 @@
       font-size: 0.8rem;
       color: #555;
     }
+    .next {
+      text-align: left;
+      margin-top: 1.8em;
+      font-size: 0.95rem;
+      color: #444;
+    }
+    .next ul {
+      margin: 0.8em 0 0;
+      padding-left: 1.2em;
+    }
   </style>
 </head>
 <body>
@@ -66,18 +82,29 @@
     <h1>🎉 Your Storefront Is Ready!</h1>
     <p id="msg">Loading your storefront...</p>
     <a id="tenantLink" href="#" class="btn">Visit My Storefront</a>
+
+    <div class="next">
+      <strong>Next Steps:</strong>
+      <ul>
+        <li>Bookmark your storefront link above for quick access.</li>
+        <li>Share your site link on your social media and bio.</li>
+        <li>Start adding your favorite Amazon deals and products.</li>
+        <li>Need help? Reply to your BagThat setup email.</li>
+      </ul>
+    </div>
+
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
   <script>
-    // Pull subdomain from localStorage (saved by onboarding)
+    // Retrieve the subdomain from localStorage (set by onboarding)
     const sub = localStorage.getItem("bagthat_subdomain");
     const msg = document.getElementById("msg");
     const link = document.getElementById("tenantLink");
 
     if (sub) {
       const liveURL = `https://${sub}.bagthatthangup.com`;
-      msg.textContent = `Your site has been created at ${liveURL}`;
+      msg.innerHTML = `Your site has been created at <br><span class="link">${liveURL}</span>`;
       link.href = liveURL;
       link.style.display = "inline-block";
     } else {
@@ -85,7 +112,7 @@
       link.style.display = "none";
     }
 
-    // clear local storage
+    // Remove the subdomain from localStorage once shown
     localStorage.removeItem("bagthat_subdomain");
   </script>
 </body>
