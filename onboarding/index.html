@@ -108,31 +108,33 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const form = document.getElementById("storeForm");
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
     const submitBtn = document.getElementById("submitBtn");
 
-    async function checkSubdomain(sub) {
+    // Reliable Supabase v2 check for duplicates
+    async function checkSubdomainExists(sub) {
+      const cleanSub = sub.trim().toLowerCase();
       const { data, error } = await supabase
         .from("Users")
         .select("id")
-        .eq("subdomain", sub.toLowerCase())
-        .maybeSingle();
+        .eq("subdomain", cleanSub)
+        .limit(1);
 
-      if (error && error.code !== "PGRST116") {
-        console.error("Error checking subdomain:", error);
-        return true; // block submission if query fails
+      if (error) {
+        console.error("Check failed:", error);
+        return true; // block if uncertain
       }
-      return data !== null;
+
+      return Array.isArray(data) && data.length > 0;
     }
 
     subInput.addEventListener("blur", async () => {
       const sub = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
       if (!sub) return;
-      const exists = await checkSubdomain(sub);
+      const exists = await checkSubdomainExists(sub);
       if (exists) subErr.textContent = "This subdomain is already taken. Please choose another.";
     });
 
@@ -142,7 +144,7 @@
       subErr.textContent = "";
 
       const sub = subInput.value.trim().toLowerCase();
-      const exists = await checkSubdomain(sub);
+      const exists = await checkSubdomainExists(sub);
 
       if (exists) {
         subErr.textContent = "That subdomain is already registered. Please choose another.";
