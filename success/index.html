@@ -11,29 +11,29 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: url("../assets/images/freedom.jpg") center/cover no-repeat fixed;
+      background-image: url("/assets/images/freedom.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
     .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
     }
-    .box {
+    .card {
       position: relative;
       z-index: 2;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255,255,255,0.15);
       padding: 3rem;
       border-radius: 20px;
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
       width: 90%;
       max-width: 420px;
-      color: #fff;
-      backdrop-filter: blur(6px);
     }
     h1 {
       font-size: 1.8rem;
@@ -54,14 +54,12 @@
       transition: 0.25s;
       width: 100%;
     }
-    button:hover {
-      background: #009180;
-    }
+    button:hover { background: #009180; }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
-  <div class="box">
+  <div class="card">
     <h1>🎉 Your Storefront Is Ready!</h1>
     <p>Your storefront has been set up successfully.</p>
     <button id="goToStorefront">Go to My Storefront</button>
@@ -70,13 +68,9 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
-
     document.getElementById("goToStorefront").addEventListener("click", () => {
-      if (sub) {
-        window.location.href = `https://${sub}.bagthatthangup.com`;
-      } else {
-        alert("Storefront subdomain not found.");
-      }
+      if (sub) window.location.href = `https://${sub}.bagthatthangup.com`;
+      else alert("Storefront subdomain not found.");
     });
   </script>
 </body>
