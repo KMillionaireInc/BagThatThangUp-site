@@ -3,226 +3,106 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BagThat — Launch Your Own Amazon Deals Site</title>
-  <meta name="description" content="BagThat automates your Amazon deal sharing. Launch your own branded deals site in minutes — no code, no algorithm battles."/>
-  <link rel="icon" type="image/png" href="./custompro.png" />
+  <title>BagThat — Automate Your Deal Storefront</title>
+  <meta name="description" content="Turn your Amazon promo links into a branded, automated storefront. No coding. No daily posting. Just plug in and profit.">
+  <link rel="icon" type="image/png" href="custompro.png" />
   <style>
     :root {
-      --gold: #f5b800;
       --teal: #008080;
-      --charcoal: #1f2937;
-      --offwhite: #f9fafb;
       --coral: #ff6b6b;
+      --gold: #f5cba7;
+      --offwhite: #f9fafb;
+      --charcoal: #1f2937;
+      --radius: 16px;
+      --shadow: 0 10px 24px rgba(0,0,0,0.1);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {box-sizing:border-box;margin:0;padding:0}
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background: var(--offwhite);
       color: var(--charcoal);
       line-height: 1.6;
     }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 2rem;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header img {
-      height: 48px;
-    }
-    header nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      color: var(--charcoal);
-      font-weight: 500;
-    }
-    header nav a:hover {
-      color: var(--teal);
-    }
-    .hero {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5rem 2rem;
-      background: linear-gradient(135deg, var(--offwhite), #ffffff);
-    }
-    .hero-content {
-      flex: 1 1 480px;
-      padding-right: 2rem;
-    }
-    .hero h1 {
-      font-size: 2.8rem;
-      color: var(--charcoal);
-      line-height: 1.2;
-    }
-    .hero p {
-      margin: 1.5rem 0;
-      font-size: 1.2rem;
-      color: #374151;
-    }
+    header,section {max-width:1100px;margin:auto;padding:60px 20px;}
+    header{text-align:center;padding-top:60px;}
+    header img{width:80px;height:auto;margin-bottom:20px;}
+    header h1{font-size:2.6rem;color:var(--teal);margin-bottom:1rem;}
+    header p{font-size:1.2rem;color:#374151;max-width:650px;margin:auto;}
+    .hero img{width:100%;max-width:760px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:40px;}
+    .section{display:flex;flex-wrap:wrap;align-items:center;gap:40px;margin-top:60px;}
+    .section img{flex:1 1 420px;width:100%;border-radius:var(--radius);box-shadow:var(--shadow);}
+    .section div{flex:1 1 400px;}
+    .section h2{font-size:2rem;margin-bottom:1rem;color:var(--teal);}
+    .section p{font-size:1.1rem;color:#374151;}
     .cta {
-      display: inline-block;
-      background: var(--teal);
-      color: white;
-      padding: 0.9rem 1.6rem;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: 0.3s;
+      display:inline-block;background:var(--teal);color:white;
+      padding:14px 30px;border-radius:8px;font-weight:600;text-decoration:none;
+      transition:background .3s;
     }
-    .cta:hover { background: var(--coral); }
-    .hero img {
-      flex: 1 1 420px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 500px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    }
-    section {
-      padding: 4rem 2rem;
-      max-width: 1100px;
-      margin: auto;
-    }
-    section h2 {
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 2rem;
-      color: var(--charcoal);
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-    .feature {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .feature h3 { color: var(--teal); margin-bottom: 1rem; }
-    .feature p { color: #4b5563; }
-    .problem {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: center;
-    }
-    .problem img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    }
-    .problem-text h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--charcoal); }
-    .problem-text p { color: #374151; font-size: 1.1rem; }
-    .testimonials {
-      background: var(--teal);
-      color: white;
-      text-align: center;
-      padding: 5rem 2rem;
-    }
-    .testimonials blockquote {
-      font-size: 1.3rem;
-      font-style: italic;
-      max-width: 700px;
-      margin: 2rem auto;
-    }
-    .pricing {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      padding: 3rem;
-      text-align: center;
-    }
-    .pricing h3 { color: var(--charcoal); margin-bottom: 1rem; }
-    .pricing p { color: #374151; margin-bottom: 1rem; }
-    footer {
-      background: var(--charcoal);
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-    }
+    .cta:hover{background:var(--coral);}
+    .pricing{text-align:center;background:white;border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:60px 20px;margin:100px 20px;}
+    .pricing h2{font-size:2rem;margin-bottom:10px;color:var(--charcoal);}
+    .pricing .price{font-size:3rem;color:var(--teal);margin:20px 0;}
+    .pricing p{color:#374151;margin-bottom:20px;}
+    footer{text-align:center;padding:40px 20px;background:var(--charcoal);color:white;font-size:.9rem;}
     @media(max-width:800px){
-      .problem { grid-template-columns: 1fr; }
-      .hero { flex-direction: column; text-align: center; }
-      .hero-content { padding-right: 0; }
+      .section{flex-direction:column;}
+      header h1{font-size:2rem;}
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="./custompro.png" alt="BagThat Logo" />
-    <nav>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#get-started">Get Started</a>
-    </nav>
-  </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Turn Your Deals Into a Branded Storefront — Automatically</h1>
-      <p>Stop battling the algorithm and wasting hours posting deals manually. BagThat builds your own shoppable Amazon deals site that updates itself — using your affiliate ID.</p>
-      <a href="#pricing" class="cta">Launch Your Site</a>
-    </div>
-    <img src="https://images.unsplash.com/photo-1616469829934-446cc270dfb5?auto=format&fit=crop&w=900&q=80" alt="Shopping deals" />
-  </section>
+<header>
+  <img src="custompro.png" alt="BagThat Logo">
+  <h1>Automate Your Amazon Deal Storefront</h1>
+  <p>Stop wasting hours fighting the algorithm and posting deals manually. BagThat gives you a branded, automated storefront that updates itself — using your own affiliate ID.</p>
+  <img src="assets/images/hero.jpg" alt="Happy creator working" class="hero">
+</header>
 
-  <section id="problem">
-    <div class="problem">
-      <img src="https://images.unsplash.com/photo-1612831455548-1d64b28c3c28?auto=format&fit=crop&w=900&q=80" alt="Frustrated marketer" />
-      <div class="problem-text">
-        <h3>Creators Are Tired of Fighting the Algorithm</h3>
-        <p>You spend your day converting links, posting codes, and trying to beat the feed. Every post disappears in hours. Your reach is throttled. Your time’s gone. That ends today.</p>
-      </div>
-    </div>
-  </section>
+<section class="section" id="frustration">
+  <div>
+    <h2>You're Tired of the Grind</h2>
+    <p>Every day feels like a race — converting links, fighting the feed, chasing clicks. You work hard but the algorithm wins. Your time and effort vanish into the scroll.</p>
+  </div>
+  <img src="assets/images/frustrated.jpg" alt="Frustrated creator at desk">
+</section>
 
-  <section id="features">
-    <h2>What You Get with BagThat</h2>
-    <div class="features">
-      <div class="feature">
-        <h3>Instant Setup</h3>
-        <p>Your personalized deal site is ready in minutes — just pick your subdomain and connect your Amazon ID.</p>
-      </div>
-      <div class="feature">
-        <h3>Auto-Refreshing Deals</h3>
-        <p>Your site updates itself daily with new promo codes. No more manual uploads or spreadsheets.</p>
-      </div>
-      <div class="feature">
-        <h3>Your Branding</h3>
-        <p>Show your logo, your colors, your name — not Amazon’s. Turn deal-hunting into your brand’s storefront.</p>
-      </div>
-    </div>
-  </section>
+<section class="section" id="freedom">
+  <img src="assets/images/freedom.jpg" alt="Relaxed creator enjoying freedom">
+  <div>
+    <h2>Finally, Freedom from Manual Posting</h2>
+    <p>With BagThat, your deals auto-update daily. Your site works while you sleep — no code, no spreadsheets, no burnout. Just your brand, your deals, your income.</p>
+  </div>
+</section>
 
-  <section class="testimonials">
-    <h2>Loved by Deal Creators</h2>
-    <blockquote>
-      “BagThat freed up my entire day. I don’t have to copy and paste links anymore. My group clicks my site, and I still earn commissions.”
-    </blockquote>
-    <p>— Jasmine L., Deal Group Admin</p>
-  </section>
+<section class="section" id="features">
+  <div>
+    <h2>Build Once. Earn Daily.</h2>
+    <p>BagThat connects to your Amazon affiliate data, formats your promos beautifully, and hosts them under your own subdomain. Everything is automated — image pulls, coupon updates, and link tracking.</p>
+  </div>
+  <img src="assets/images/feature1.jpg" alt="Automated storefront feature">
+</section>
 
-  <section id="pricing">
-    <div class="pricing">
-      <h3>Get Started Today</h3>
-      <p>Launch your branded deal site for less than a night out.</p>
-      <p><strong>$29/month — Cancel anytime</strong></p>
-      <a id="get-started" href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Start Your Storefront</a>
-    </div>
-  </section>
+<section class="section" id="testimonials">
+  <img src="assets/images/testimonial.jpg" alt="Smiling creator testimonial">
+  <div>
+    <h2>“I Took Back My Time”</h2>
+    <p>“BagThat freed me from the constant posting cycle. I upload once and my deals refresh every morning. My followers trust my brand again — and my commissions doubled.”</p>
+  </div>
+</section>
 
-  <footer>
-    © 2025 BagThat™ — Built for Creators Who Deal. All rights reserved.
-  </footer>
+<section class="pricing" id="pricing">
+  <h2>Start Your Storefront</h2>
+  <div class="price">$19<span style="font-size:1.2rem;color:#666;">/month</span></div>
+  <p>Everything you need — automation, branding, and updates that run themselves. Cancel anytime.</p>
+  <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch for $19</a>
+</section>
+
+<footer>
+  © 2025 BagThat — Your Deals. Your Brand. Your Freedom.
+</footer>
+
 </body>
 </html>
