@@ -113,7 +113,6 @@
     const subErr = document.getElementById("subErr");
     const submitBtn = document.getElementById("submitBtn");
 
-    // Reliable Supabase v2 check for duplicate subdomains only
     async function checkSubdomainExists(sub) {
       const cleanSub = sub.trim().toLowerCase();
       const { data, error } = await supabase
@@ -124,7 +123,7 @@
 
       if (error) {
         console.error("Check failed:", error);
-        return true; // block if uncertain
+        return true;
       }
 
       return Array.isArray(data) && data.length > 0;
@@ -146,19 +145,19 @@
       subErr.textContent = "";
 
       const sub = subInput.value.trim().toLowerCase();
-      const exists = await checkSubdomainExists(sub);
+      const exists = await checkSubdomainExists(sub); // <-- ensured await
 
       if (exists) {
         subErr.textContent = "That subdomain is already registered. Please choose another.";
         submitBtn.disabled = false;
-        return;
+        return; // don't insert or refresh if duplicate
       }
 
       const payload = {
         first_name: document.getElementById("first_name").value.trim(),
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        site_name: document.getElementById("site_name").value.trim(), // site_name does not have to be unique
+        site_name: document.getElementById("site_name").value.trim(),
         subdomain: sub,
         amazon_id: document.getElementById("amazon_id").value.trim(),
         created_at: new Date().toISOString(),
