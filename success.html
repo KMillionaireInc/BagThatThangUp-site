@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Storefront Ready • BagThat</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: url("assets/images/freedom.jpg") center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #fff;
+      text-align: center;
+      background-color: #0b504a;
+      backdrop-filter: blur(8px);
+    }
+
+    .card {
+      background: rgba(16, 99, 90, 0.85);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 540px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    a {
+      background: #fff;
+      color: #0b504a;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      background: #f3f3f3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>🎉 Your Storefront Is Ready!</h1>
+    <p id="success-message">Loading your link...</p>
+    <a id="visit-link" href="#">Visit My Storefront</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sub = params.get("sub");
+    const visitLink = document.getElementById("visit-link");
+    const message = document.getElementById("success-message");
+
+    if (sub) {
+      const fullURL = `https://${sub}.bagthatthangup.com`;
+      message.textContent = `Your site has been created at ${fullURL}`;
+      visitLink.href = fullURL;
+    } else {
+      message.textContent = "Your storefront has been set up successfully.";
+      visitLink.style.display = "none";
+    }
+  </script>
+</body>
+</html>
