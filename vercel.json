@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -8,7 +9,7 @@
       ],
       "destination": "/tenant/index.html"
     },
-    { "source": "/success", "destination": "/success/index.html" },
+    { "source": "/success", "destination": "/success.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/", "destination": "/index.html" }
   ],
