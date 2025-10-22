@@ -107,30 +107,27 @@
     const SUPABASE_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const form = document.getElementById("storeForm");
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
     const submitBtn = document.getElementById("submitBtn");
 
-    // Check if subdomain exists
     async function checkSubdomain(sub) {
       const { data, error } = await supabase
         .from("Users")
         .select("id")
-        .eq("subdomain", sub)
-        .limit(1);
+        .eq("subdomain", sub.toLowerCase())
+        .maybeSingle();
 
-      if (error) {
+      if (error && error.code !== "PGRST116") {
         console.error("Error checking subdomain:", error);
-        return true; // block on error
+        return true; // block submission if query fails
       }
-
-      return Array.isArray(data) && data.length > 0;
+      return data !== null;
     }
 
-    // Validate when user leaves the field
     subInput.addEventListener("blur", async () => {
       const sub = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
@@ -139,7 +136,6 @@
       if (exists) subErr.textContent = "This subdomain is already taken. Please choose another.";
     });
 
-    // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       submitBtn.disabled = true;
@@ -168,7 +164,10 @@
 
       if (error) {
         console.error("Insert failed:", error);
-        subErr.textContent = "Unexpected error saving storefront. Please try again.";
+        subErr.textContent =
+          error.code === "23505"
+            ? "That subdomain is already in use. Please choose another."
+            : "Unexpected error saving storefront. Please try again.";
         submitBtn.disabled = false;
         return;
       }
