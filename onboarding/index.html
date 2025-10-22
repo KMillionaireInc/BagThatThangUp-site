@@ -90,48 +90,52 @@
   </div>
 
   <script>
-    const form = document.getElementById("onboardForm");
+    const SUPA_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
+    const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("onboardForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const first = document.getElementById("first").value.trim();
       const last = document.getElementById("last").value.trim();
       const email = document.getElementById("email").value.trim();
       const store = document.getElementById("store").value.trim();
-      const subdomain = document.getElementById("subdomain").value.trim().toLowerCase();
+      const sub = document.getElementById("subdomain").value.trim().toLowerCase();
       const amazon = document.getElementById("amazon").value.trim();
 
-      if (!first || !last || !email || !store || !subdomain || !amazon) {
+      if (!first || !last || !email || !store || !sub || !amazon) {
         alert("Please fill in all fields.");
         return;
       }
 
       try {
-        const res = await fetch("https://bagthat-api.vercel.app/api/createTenant", {
+        const res = await fetch(`${SUPA_URL}/rest/v1/Users`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPA_KEY,
+            "Authorization": `Bearer ${SUPA_KEY}`,
+            "Prefer": "return=representation"
+          },
           body: JSON.stringify({
-            first,
-            last,
-            email,
-            store,
-            subdomain,
-            amazon
+            first_name: first,
+            last_name: last,
+            email: email,
+            site_name: store,
+            subdomain: sub,
+            amazon_id: amazon
           })
         });
 
-        const data = await res.json();
-
         if (res.ok) {
-          // ✅ Keep this single fix line
-          localStorage.setItem("bagthat_subdomain", subdomain);
+          localStorage.setItem("bagthat_subdomain", sub);
           window.location.href = "/success";
         } else {
-          alert("Error creating storefront: " + (data.error || data.message || "Unknown error"));
+          const err = await res.json();
+          alert("Error creating storefront: " + (err.message || JSON.stringify(err)));
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
         alert("Something went wrong. Please try again.");
       }
     });
