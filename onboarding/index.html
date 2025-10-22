@@ -6,176 +6,134 @@
   <title>Set Up Your Storefront • BagThat</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: url("assets/images/hero.jpg") center/cover no-repeat;
       margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: url('../assets/images/hero.jpg') center/cover no-repeat fixed;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       min-height: 100vh;
     }
-
-    form {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      padding: 3rem;
-      width: 90%;
-      max-width: 540px;
+    .form-wrapper {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 16px;
+      padding: 2rem 3rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-
     h1 {
       text-align: center;
-      font-size: 1.9rem;
-      font-weight: 700;
-      color: #10635a;
+      color: #00665c;
+      font-size: 1.8rem;
       margin-bottom: 0.5rem;
     }
-
-    p {
+    p.subtext {
       text-align: center;
-      color: #444;
-      margin-bottom: 2rem;
-      font-size: 1rem;
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
-
     label {
-      display: block;
       font-weight: 600;
-      margin-top: 1rem;
-      color: #333;
+      color: #222;
+      display: block;
+      margin-bottom: 0.4rem;
     }
-
     input {
       width: 100%;
       padding: 0.75rem;
-      border-radius: 8px;
       border: 1px solid #ccc;
-      margin-top: 0.4rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
       font-size: 1rem;
     }
-
     input:focus {
-      border-color: #10635a;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(16, 99, 90, 0.15);
+      border-color: #00665c;
     }
-
     button {
       width: 100%;
-      padding: 0.9rem;
+      background: #00665c;
+      color: #fff;
       border: none;
-      background-color: #10635a;
-      color: white;
       border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-top: 2rem;
+      padding: 0.9rem;
+      font-size: 1.05rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.2s;
     }
-
     button:hover {
-      background-color: #0b504a;
+      background: #004d44;
     }
-
-    #subdomain-status {
-      display: block;
-      font-size: 0.85rem;
-      margin-top: 0.3rem;
-    }
-
     footer {
       text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      color: #666;
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 1rem;
     }
   </style>
 </head>
-
 <body>
-  <form id="onboard-form">
+  <div class="form-wrapper">
     <h1>Set Up Your Storefront</h1>
-    <p>Turn your Amazon finds into a beautiful, branded BagThat site.</p>
+    <p class="subtext">Join hundreds of creators turning their Amazon finds into branded storefronts.</p>
+    <form id="onboardingForm">
+      <label>First Name</label>
+      <input type="text" id="firstName" required />
 
-    <label>First Name</label>
-    <input type="text" id="first" required />
+      <label>Last Name</label>
+      <input type="text" id="lastName" required />
 
-    <label>Last Name</label>
-    <input type="text" id="last" required />
+      <label>Email</label>
+      <input type="email" id="email" required />
 
-    <label>Email</label>
-    <input type="email" id="email" required />
+      <label>Store Name</label>
+      <input type="text" id="storeName" placeholder="Ex: My Favorite Finds" required />
 
-    <label>Store Name</label>
-    <input type="text" id="store" placeholder="Ex: My Finds Boutique" required />
+      <label>Preferred Subdomain</label>
+      <input type="text" id="subdomain" placeholder="Ex: myfinds" required />
 
-    <label>Preferred Subdomain</label>
-    <input type="text" id="subdomain" placeholder="Ex: shopwithalex" required />
-    <small id="subdomain-status"></small>
+      <label>Amazon Associates ID</label>
+      <input type="text" id="amazonId" placeholder="Ex: mytag-20" required />
 
-    <label>Amazon Associates ID</label>
-    <input type="text" id="associate" placeholder="Ex: myfinds-20" required />
+      <button type="submit">Launch My Storefront</button>
+    </form>
+    <footer>© 2025 BagThat. All rights reserved.</footer>
+  </div>
 
-    <button type="submit">Launch My Storefront</button>
-  </form>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  <footer>© 2025 BagThat. All rights reserved.</footer>
-
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script>
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const form = document.getElementById("onboard-form");
-    const subdomainInput = document.getElementById("subdomain");
-    const status = document.getElementById("subdomain-status");
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Check subdomain availability
-    subdomainInput.addEventListener("input", async () => {
-      const value = subdomainInput.value.trim().toLowerCase();
-      if (!value) return (status.textContent = "");
-      status.textContent = "Checking...";
-      const { data, error } = await supabaseClient
-        .from("Users")
-        .select("subdomain")
-        .eq("subdomain", value)
-        .maybeSingle();
-
-      if (error) status.textContent = "Error checking name.";
-      else if (data) {
-        status.textContent = "Name already taken.";
-        status.style.color = "red";
-      } else {
-        status.textContent = "Available!";
-        status.style.color = "green";
-      }
-    });
-
-    // Handle submission
+    const form = document.getElementById("onboardingForm");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const formData = {
-        first_name: form.first.value.trim(),
-        last_name: form.last.value.trim(),
-        email: form.email.value.trim(),
-        site_name: form.store.value.trim(),
-        subdomain: form.subdomain.value.trim().toLowerCase(),
-        amazon_id: form.associate.value.trim(),
-        created_at: new Date().toISOString(),
+        first_name: document.getElementById("firstName").value.trim(),
+        last_name: document.getElementById("lastName").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        site_name: document.getElementById("storeName").value.trim(),
+        subdomain: document.getElementById("subdomain").value.trim().toLowerCase(),
+        amazon_id: document.getElementById("amazonId").value.trim(),
       };
 
-      const { error } = await supabaseClient.from("Users").insert([formData]);
+      try {
+        const { data, error } = await supabase
+          .from("Users")
+          .insert([formData]);
 
-      if (error) {
-        alert("Error creating storefront: " + error.message);
-      } else {
-        window.location.href = `/success.html?sub=${formData.subdomain}`;
+        if (error) throw error;
+
+        // redirect to success page
+        window.location.href = `/success/?sub=${formData.subdomain}`;
+      } catch (err) {
+        alert("Error creating storefront: " + err.message);
       }
     });
   </script>
