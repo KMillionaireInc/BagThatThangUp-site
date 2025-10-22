@@ -1,16 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/(.*)",
       "has": [
         { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
-      "destination": "/tenant/index.html"
+      "destination": "/public/tenant/index.html"
     },
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/onboarding", "destination": "/onboarding.html" },
+    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    { "source": "/success", "destination": "/success/index.html" },
     { "source": "/", "destination": "/index.html" }
   ],
   "cleanUrls": true,
