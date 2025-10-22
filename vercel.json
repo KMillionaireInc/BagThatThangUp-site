@@ -15,7 +15,7 @@
       ],
       "destination": "/tenant/$1"
     },
-    { "source": "/success", "destination": "/success.html" },
+    { "source": "/success", "destination": "/success/index.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/", "destination": "/index.html" }
   ],
