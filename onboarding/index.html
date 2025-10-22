@@ -7,184 +7,198 @@
   <link rel="icon" href="../custompro.png"/>
   <style>
     :root {
-      --teal:#008080;
-      --coral:#ff6b6b;
-      --gold:#f5cba7;
-      --offwhite:#f9fafb;
-      --charcoal:#1f2937;
-      --radius:16px;
-      --shadow:0 10px 24px rgba(0,0,0,0.1);
+      --teal:#007b7f;
+      --gold:#f5c77a;
+      --white:#ffffff;
+      --ink:#1f2937;
+      --bg:#f8f9f9;
+      --shadow:0 20px 40px rgba(0,0,0,.08);
+      --radius:22px;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--offwhite);
-      color:var(--charcoal);
-      line-height:1.6;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
-      padding:40px 20px;
+      background:linear-gradient(to bottom right,rgba(0,123,127,.08),rgba(245,199,122,.12)),url("../assets/images/hero.jpg") center/cover no-repeat fixed;
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      min-height:100vh;padding:60px 20px;color:var(--ink);
     }
-    .wrapper{
-      background:white;
-      box-shadow:var(--shadow);
+    .container{
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:blur(10px);
       border-radius:var(--radius);
-      max-width:700px;
-      width:100%;
-      padding:60px 50px;
+      box-shadow:var(--shadow);
+      max-width:760px;width:100%;
+      padding:60px 70px;
+      position:relative;
     }
     h1{
       text-align:center;
       color:var(--teal);
-      margin-bottom:20px;
-      font-size:2rem;
+      font-size:2.4rem;
+      margin-bottom:12px;
+      font-weight:700;
+    }
+    .underline{
+      width:80px;height:4px;
+      background:var(--gold);
+      border-radius:2px;
+      margin:10px auto 40px;
     }
     p.desc{
       text-align:center;
-      color:#555;
-      margin-bottom:40px;
+      color:#4b5563;
       font-size:1.1rem;
+      margin-bottom:40px;
     }
     form{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:20px;
+      gap:24px;
     }
     label{
+      display:block;
       font-weight:600;
-      font-size:.95rem;
+      margin-bottom:6px;
+      font-size:0.95rem;
+      color:#374151;
     }
     input{
       width:100%;
-      padding:12px;
-      margin-top:6px;
-      border:1px solid #ccc;
-      border-radius:8px;
+      padding:14px 12px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
       font-size:1rem;
-      transition:border .2s;
+      background:#fff;
+      transition:all .2s ease;
     }
-    input:focus{outline:none;border-color:var(--teal);}
+    input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(0,123,127,.15);}
     .full{grid-column:1/3;}
-    .status{
-      grid-column:1/3;
-      text-align:center;
-      font-weight:600;
-      margin:10px 0;
-    }
+    .status{grid-column:1/3;text-align:center;margin:10px 0;font-weight:600;}
     button{
       grid-column:1/3;
-      padding:15px;
+      padding:16px;
       font-size:1.1rem;
-      background:var(--teal);
-      color:white;
+      font-weight:600;
+      color:var(--white);
       border:none;
-      border-radius:8px;
+      border-radius:10px;
       cursor:pointer;
-      transition:background .3s;
+      background:linear-gradient(90deg,var(--teal),#009999);
+      transition:transform .2s ease,box-shadow .2s ease;
     }
-    button:hover{background:var(--coral);}
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 20px rgba(0,0,0,.15);
+    }
     footer{
       text-align:center;
-      font-size:.9rem;
-      color:#666;
-      margin-top:30px;
+      font-size:0.9rem;
+      color:#6b7280;
+      margin-top:40px;
     }
+    .visual-top, .visual-bottom{
+      position:absolute;width:120px;height:120px;border-radius:50%;overflow:hidden;opacity:.25;
+    }
+    .visual-top{top:-50px;left:-50px;}
+    .visual-bottom{bottom:-50px;right:-50px;}
+    .visual-top img, .visual-bottom img{width:100%;height:100%;object-fit:cover;}
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="visual-top"><img src="../assets/images/frustrated.jpg" alt="Frustrated creator"/></div>
 
-<div class="wrapper">
-  <h1>Set Up Your Storefront</h1>
-  <p class="desc">Enter your details below to generate your branded BagThat site.</p>
-  <form id="onboardForm">
-    <div>
-      <label>First Name</label>
-      <input type="text" id="first_name" required />
-    </div>
-    <div>
-      <label>Last Name</label>
-      <input type="text" id="last_name" required />
-    </div>
-    <div class="full">
-      <label>Email</label>
-      <input type="email" id="email" required />
-    </div>
-    <div class="full">
-      <label>Store Name</label>
-      <input type="text" id="store_name" placeholder="Ex: Keisha’s Finds" required />
-    </div>
-    <div class="full">
-      <label>Preferred Subdomain</label>
-      <input type="text" id="subdomain" placeholder="Ex: keishasfinds" required />
-      <small id="domainStatus" style="color:#666;font-size:.9rem;"></small>
-    </div>
-    <div class="full">
-      <label>Amazon Associates ID</label>
-      <input type="text" id="amz_id" placeholder="Ex: keisha-20" required />
-    </div>
-    <input type="hidden" id="plan" value="basic" />
-    <div id="status" class="status"></div>
-    <button type="submit">Launch My Storefront</button>
-  </form>
-  <footer>© 2025 BagThat. All rights reserved.</footer>
-</div>
+    <h1>Set Up Your Storefront</h1>
+    <div class="underline"></div>
+    <p class="desc">Join hundreds of creators turning their Amazon finds into beautiful, branded storefronts.</p>
 
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+    <form id="onboardForm">
+      <div>
+        <label>First Name</label>
+        <input type="text" id="first_name" required />
+      </div>
+      <div>
+        <label>Last Name</label>
+        <input type="text" id="last_name" required />
+      </div>
+      <div class="full">
+        <label>Email</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="full">
+        <label>Store Name</label>
+        <input type="text" id="store_name" placeholder="Ex: Keisha’s Finds" required />
+      </div>
+      <div class="full">
+        <label>Preferred Subdomain</label>
+        <input type="text" id="subdomain" placeholder="Ex: keishasfinds" required />
+        <small id="domainStatus" style="color:#666;font-size:.9rem;"></small>
+      </div>
+      <div class="full">
+        <label>Amazon Associates ID</label>
+        <input type="text" id="amz_id" placeholder="Ex: keisha-20" required />
+      </div>
+      <input type="hidden" id="plan" value="basic" />
+      <div id="status" class="status"></div>
+      <button type="submit">Launch My Storefront</button>
+    </form>
 
-  // TODO: Replace these with your real Supabase values
-  const supabaseUrl = "https://YOURPROJECT.supabase.co"
-  const supabaseAnonKey = "YOUR_ANON_KEY"
-  const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    <footer>© 2025 BagThat. All rights reserved.</footer>
+    <div class="visual-bottom"><img src="../assets/images/freedom.jpg" alt="Freedom creator"/></div>
+  </div>
 
-  const form = document.getElementById("onboardForm")
-  const domainStatus = document.getElementById("domainStatus")
-  const statusBox = document.getElementById("status")
-  const subdomainInput = document.getElementById("subdomain")
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
 
-  // Check subdomain availability in real time
-  subdomainInput.addEventListener("input", async e => {
-    const val = e.target.value.trim().toLowerCase()
-    if (!val) return domainStatus.textContent = ""
-    const { data, error } = await supabase.from("tenants").select("subdomain").eq("subdomain", val)
-    if (error) {
-      domainStatus.textContent = "Error checking name."
-      domainStatus.style.color = "red"
-    } else if (data.length > 0) {
-      domainStatus.textContent = "This subdomain is already taken."
-      domainStatus.style.color = "red"
-    } else {
-      domainStatus.textContent = "Available ✓"
-      domainStatus.style.color = "green"
-    }
-  })
+    // Replace with your real Supabase credentials
+    const supabaseUrl = "https://gmsjqunfsffjiksffvem.supabase.co"
+    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault()
-    statusBox.textContent = "Submitting..."
-    const record = {
-      first_name: form.first_name.value.trim(),
-      last_name: form.last_name.value.trim(),
-      email: form.email.value.trim(),
-      store_name: form.store_name.value.trim(),
-      subdomain: form.subdomain.value.trim().toLowerCase(),
-      amz_id: form.amz_id.value.trim(),
-      plan: form.plan.value
-    }
-    const { data, error } = await supabase.from("tenants").insert([record])
-    if (error) {
-      statusBox.textContent = "Error: " + error.message
-      statusBox.style.color = "red"
-    } else {
-      statusBox.textContent = "Success! Redirecting..."
-      statusBox.style.color = "green"
-      setTimeout(()=>{
-        window.location.href = `/success/?subdomain=${record.subdomain}`
-      }, 1200)
-    }
-  })
-</script>
+    const form = document.getElementById("onboardForm")
+    const domainStatus = document.getElementById("domainStatus")
+    const statusBox = document.getElementById("status")
+    const subdomainInput = document.getElementById("subdomain")
+
+    subdomainInput.addEventListener("input", async e => {
+      const val = e.target.value.trim().toLowerCase()
+      if (!val) return domainStatus.textContent = ""
+      const { data, error } = await supabase.from("tenants").select("subdomain").eq("subdomain", val)
+      if (error) {
+        domainStatus.textContent = "Error checking name."
+        domainStatus.style.color = "red"
+      } else if (data.length > 0) {
+        domainStatus.textContent = "This subdomain is already taken."
+        domainStatus.style.color = "red"
+      } else {
+        domainStatus.textContent = "Available ✓"
+        domainStatus.style.color = "green"
+      }
+    })
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault()
+      statusBox.textContent = "Submitting..."
+      const record = {
+        first_name: form.first_name.value.trim(),
+        last_name: form.last_name.value.trim(),
+        email: form.email.value.trim(),
+        store_name: form.store_name.value.trim(),
+        subdomain: form.subdomain.value.trim().toLowerCase(),
+        amz_id: form.amz_id.value.trim(),
+        plan: form.plan.value
+      }
+      const { data, error } = await supabase.from("tenants").insert([record])
+      if (error) {
+        statusBox.textContent = "Error: " + error.message
+        statusBox.style.color = "red"
+      } else {
+        statusBox.textContent = "Success! Redirecting..."
+        statusBox.style.color = "green"
+        setTimeout(()=>{
+          window.location.href = `/success/?subdomain=${record.subdomain}`
+        }, 1200)
+      }
+    })
+  </script>
 </body>
 </html>
