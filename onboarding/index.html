@@ -69,7 +69,6 @@
       color: #b91c1c;
       font-weight: 500;
       display: block;
-      margin-top: -8px;
       min-height: 18px;
     }
     footer {
@@ -95,7 +94,7 @@
       <input type="text" id="subdomain" placeholder="Preferred Subdomain (e.g. myfinds)" required />
       <small id="subErr" class="error"></small>
       <input type="text" id="amazon_id" placeholder="Amazon Associates ID (e.g. myfinds-20)" required />
-      <button type="submit">Launch My Storefront</button>
+      <button type="submit" id="submitBtn">Launch My Storefront</button>
     </form>
 
     <footer>© 2025 BagThat. All rights reserved.</footer>
@@ -108,40 +107,45 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const form = document.getElementById("storeForm");
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
+    const submitBtn = document.getElementById("submitBtn");
 
-    async function subdomainExists(sub) {
+    async function checkSubdomain(sub) {
       const { data, error } = await supabase
         .from("Users")
         .select("id")
-        .eq("subdomain", sub.toLowerCase());
-      if (error) {
-        console.error(error);
-        return false;
-      }
-      return data && data.length > 0;
+        .eq("subdomain", sub)
+        .limit(1);
+      if (error) return false;
+      return data.length > 0;
     }
 
-    subInput.addEventListener("input", async () => {
-      const val = subInput.value.trim().toLowerCase();
+    subInput.addEventListener("blur", async () => {
+      const sub = subInput.value.trim().toLowerCase();
       subErr.textContent = "";
-      if (!val) return;
-      const exists = await subdomainExists(val);
+      if (!sub) return;
+      const exists = await checkSubdomain(sub);
       if (exists) {
         subErr.textContent = "This subdomain is already taken. Please choose another.";
+      } else {
+        subErr.textContent = "";
       }
     });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const subdomain = subInput.value.trim().toLowerCase();
+      submitBtn.disabled = true;
       subErr.textContent = "";
 
-      const exists = await subdomainExists(subdomain);
+      const sub = subInput.value.trim().toLowerCase();
+      const exists = await checkSubdomain(sub);
+
       if (exists) {
         subErr.textContent = "That subdomain is already registered. Please choose another.";
+        submitBtn.disabled = false;
         return;
       }
 
@@ -150,7 +154,7 @@
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
         site_name: document.getElementById("site_name").value.trim(),
-        subdomain,
+        subdomain: sub,
         amazon_id: document.getElementById("amazon_id").value.trim(),
         created_at: new Date().toISOString(),
       };
@@ -158,11 +162,13 @@
       const { error } = await supabase.from("Users").insert(payload);
 
       if (error) {
-        alert("Unexpected error — please try again.");
+        subErr.textContent = "Unexpected error saving storefront. Please try again.";
         console.error(error);
-      } else {
-        window.location.href = "/success/";
+        submitBtn.disabled = false;
+        return;
       }
+
+      window.location.href = "/success/";
     });
   </script>
 </body>
