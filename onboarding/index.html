@@ -113,7 +113,7 @@
     const subErr = document.getElementById("subErr");
     const submitBtn = document.getElementById("submitBtn");
 
-    // Reliable Supabase v2 check for duplicates
+    // Reliable Supabase v2 check for duplicate subdomains only
     async function checkSubdomainExists(sub) {
       const cleanSub = sub.trim().toLowerCase();
       const { data, error } = await supabase
@@ -135,7 +135,9 @@
       subErr.textContent = "";
       if (!sub) return;
       const exists = await checkSubdomainExists(sub);
-      if (exists) subErr.textContent = "This subdomain is already taken. Please choose another.";
+      if (exists) {
+        subErr.textContent = "This subdomain is already taken. Please choose another.";
+      }
     });
 
     form.addEventListener("submit", async (e) => {
@@ -156,7 +158,7 @@
         first_name: document.getElementById("first_name").value.trim(),
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        site_name: document.getElementById("site_name").value.trim(),
+        site_name: document.getElementById("site_name").value.trim(), // site_name does not have to be unique
         subdomain: sub,
         amazon_id: document.getElementById("amazon_id").value.trim(),
         created_at: new Date().toISOString(),
@@ -166,10 +168,14 @@
 
       if (error) {
         console.error("Insert failed:", error);
-        subErr.textContent =
-          error.code === "23505"
-            ? "That subdomain is already in use. Please choose another."
-            : "Unexpected error saving storefront. Please try again.";
+        if (
+          error.code === "23505" ||
+          (error.message && error.message.toLowerCase().includes("duplicate"))
+        ) {
+          subErr.textContent = "That subdomain is already in use. Please choose another.";
+        } else {
+          subErr.textContent = "Unexpected error saving storefront. Please try again.";
+        }
         submitBtn.disabled = false;
         return;
       }
