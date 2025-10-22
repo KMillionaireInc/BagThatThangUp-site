@@ -1,0 +1,16 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "routes": [
+    { "src": "^/success$", "dest": "/success/index.html" },
+    { "src": "^/onboarding$", "dest": "/onboarding/index.html" },
+    { "src": "^/$", "dest": "/index.html" },
+    {
+      "src": "^(.*)$",
+      "has": [
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "dest": "/tenant$1"
+    }
+  ]
+}
