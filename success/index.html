@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Storefront Created • BagThat</title>
+  <title>Your Storefront Is Ready • BagThat</title>
   <style>
     :root {
       --teal: #0b615e;
@@ -14,10 +14,10 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url('https://www.bagthatthangup.com/assets/images/hero.jpg') center/cover no-repeat fixed;
+      background: url('/assets/images/freedom.jpg') center/cover no-repeat fixed;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
       text-align: center;
       color: #123;
@@ -25,28 +25,20 @@
     .box {
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(6px);
-      padding: 60px 40px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      max-width: 480px;
+      padding: 60px 40px;
       width: 90%;
+      max-width: 480px;
     }
     h1 {
       color: var(--teal);
       margin-bottom: 0.3em;
     }
     p {
-      font-size: 1.05rem;
-      color: #333;
       margin-bottom: 1.4em;
-    }
-    .instruction {
-      background: #e0f2f2;
-      color: #166;
-      border-radius: 8px;
-      padding: 12px 18px;
-      margin-bottom: 1.2em;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      color: #333;
     }
     a.btn {
       display: inline-block;
@@ -63,43 +55,34 @@
       background: #115e59;
     }
     footer {
+      margin-top: 25px;
       font-size: 0.8rem;
       color: #555;
-      margin-top: 30px;
     }
   </style>
 </head>
 <body>
   <div class="box">
-    <h1>Success!</h1>
-    <p>Your storefront has been created successfully.</p>
-    <div id="tenantInfo"></div>
-    <div class="instruction">
-      <strong>Promote Your Store:</strong><br>
-      Share your storefront link on social media, bios, and emails to get more visits and sales!
-    </div>
-    <a id="tenantLink" href="#" class="btn" style="display:none;">Go to My Storefront</a>
+    <h1>🎉 Your Storefront Is Ready!</h1>
+    <p id="msg">Your storefront has been set up successfully.</p>
+    <a id="tenantLink" href="#" class="btn">Go to My Storefront</a>
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
+
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const sub = urlParams.get('sub')?.trim().toLowerCase();
-    const tenantInfo = document.getElementById('tenantInfo');
-    const linkEl = document.getElementById('tenantLink');
+    const params = new URLSearchParams(window.location.search);
+    const sub = params.get("sub")?.trim().toLowerCase();
+    const msg = document.getElementById("msg");
+    const link = document.getElementById("tenantLink");
 
     if (sub) {
-      const tenantURL = `https://${sub}.bagthatthangup.com`;
-      tenantInfo.innerHTML = `
-        <strong>Your storefront URL:</strong><br>
-        <a href="${tenantURL}" target="_blank" style="color:var(--accent);text-decoration:underline;">
-          ${tenantURL}
-        </a>
-      `;
-      linkEl.href = tenantURL;
-      linkEl.style.display = "inline-block";
+      const liveURL = `https://${sub}.bagthatthangup.com`;
+      msg.textContent = `Your storefront is live at: ${liveURL}`;
+      link.href = liveURL;
+      link.style.display = "inline-block";
     } else {
-      tenantInfo.innerHTML = "<strong>Your storefront is live!</strong> You can access it from your dashboard.";
-      linkEl.style.display = "none";
+      msg.textContent = "Your storefront setup is complete.";
+      link.style.display = "none";
     }
   </script>
 </body>
