@@ -3,106 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set Up Your Storefront | BagThat</title>
+  <title>Set Up Your Storefront • BagThat</title>
   <style>
+    :root {
+      --teal: #0b615e;
+      --light: #f6faf9;
+      --surface: rgba(255, 255, 255, 0.9);
+      --accent: #0f766e;
+      --radius: 18px;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
     body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: url('../assets/images/freedom.jpg') center/cover no-repeat fixed;
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: url("../assets/images/freedom.jpg") center/cover no-repeat fixed;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      color: #0b1320;
+      min-height: 100vh;
+      color: #123;
     }
-    .container {
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: 20px;
-      padding: 2.5rem;
+    .wrapper {
+      background: var(--surface);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       width: 100%;
-      max-width: 500px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      max-width: 480px;
       text-align: center;
     }
     h1 {
-      color: #0d4d4d;
+      color: var(--accent);
       font-size: 1.8rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.5em;
     }
-    p {
-      font-size: 0.95rem;
-      color: #333;
-      margin-bottom: 1.8rem;
+    p.subtext {
+      color: #444;
+      margin-bottom: 1.5em;
+      font-size: 1rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
     input {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.4rem 0 1rem;
-      border: 1px solid #dcdcdc;
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
     }
     button {
-      width: 100%;
-      background: #0d4d4d;
+      background: var(--accent);
       color: white;
       border: none;
-      padding: 0.9rem;
-      font-size: 1rem;
       border-radius: 10px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.25s;
+      transition: background 0.25s;
     }
     button:hover {
-      background: #107272;
+      background: #115e59;
     }
-    .footer {
-      margin-top: 1.5rem;
+    small.error {
+      color: #b91c1c;
+      font-weight: 500;
+    }
+    footer {
+      text-align: center;
       font-size: 0.8rem;
-      color: #555;
+      color: #666;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrapper">
     <h1>Set Up Your Storefront</h1>
-    <p>Enter your details below to generate your branded BagThat site.</p>
-    <form id="onboardForm">
+    <p class="subtext">Start your journey by creating your personalized BagThat storefront below.</p>
+
+    <form id="storeForm">
       <input type="text" id="first_name" placeholder="First Name" required />
       <input type="text" id="last_name" placeholder="Last Name" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="text" id="site_name" placeholder="Store Name" required />
-      <input type="text" id="subdomain" placeholder="Preferred Subdomain (no spaces)" required />
-      <input type="text" id="amazon_id" placeholder="Amazon Associates ID (ex: yourname-20)" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="text" id="site_name" placeholder="Store Name (e.g. Keisha’s Finds)" required />
+      <input type="text" id="subdomain" placeholder="Preferred Subdomain (e.g. keishafinds)" required />
+      <small id="subErr" class="error"></small>
+      <input type="text" id="amazon_id" placeholder="Amazon Associates ID (e.g. keisha-20)" required />
       <button type="submit">Launch My Storefront</button>
     </form>
-    <p class="footer">© 2025 BagThat. All rights reserved.</p>
+
+    <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    document.getElementById("onboardForm").addEventListener("submit", async (e) => {
+    const form = document.getElementById("storeForm");
+    const subInput = document.getElementById("subdomain");
+    const subErr = document.getElementById("subErr");
+
+    // Check subdomain availability in real-time
+    subInput.addEventListener("input", async () => {
+      const val = subInput.value.trim().toLowerCase();
+      if (!val) {
+        subErr.textContent = "";
+        return;
+      }
+      const { data, error } = await supabase
+        .from("Users")
+        .select("id")
+        .eq("subdomain", val)
+        .maybeSingle();
+      if (data) {
+        subErr.textContent = "This subdomain is already taken. Please choose another.";
+      } else {
+        subErr.textContent = "";
+      }
+    });
+
+    // Handle form submission
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const subdomain = subInput.value.trim().toLowerCase();
 
-      const formData = {
+      if (subErr.textContent) return; // block duplicates
+
+      const payload = {
         first_name: document.getElementById("first_name").value.trim(),
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
         site_name: document.getElementById("site_name").value.trim(),
-        subdomain: document.getElementById("subdomain").value.trim().toLowerCase(),
+        subdomain: subdomain,
         amazon_id: document.getElementById("amazon_id").value.trim(),
+        created_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase.from("Users").insert([formData]);
-
+      const { error } = await supabase.from("Users").insert(payload);
       if (error) {
         alert("Error creating storefront: " + error.message);
       } else {
-        window.location.href = "https://bagthatthangup.com/success/index.html?sub=" + encodeURIComponent(formData.subdomain);
+        window.location.href = "/success/";
       }
     });
   </script>
