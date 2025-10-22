@@ -2,21 +2,21 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/",
-      "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
-      ],
-      "destination": "/tenant/index.html"
-    },
-    {
       "source": "/(.*)",
       "has": [
         { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/$1"
     },
+    {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/index.html"
+    },
+    { "source": "/success", "destination": "/success.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
-    { "source": "/success", "destination": "/success/index.html" },
     { "source": "/", "destination": "/index.html" }
   ],
   "cleanUrls": true,
