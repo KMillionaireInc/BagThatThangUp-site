@@ -3,78 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Storefront is Ready • BagThat</title>
+  <title>Your Storefront Is Ready | BagThat</title>
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: url("../assets/images/success-bg.jpg") center/cover no-repeat fixed;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      color: #003b34;
+      background: #004d46;
+      color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
-    .card {
-      background: rgba(255, 255, 255, 0.94);
+    .box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3rem;
       border-radius: 20px;
-      padding: 2.5rem 3rem;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
       text-align: center;
-      max-width: 540px;
-      backdrop-filter: blur(6px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      width: 90%;
+      max-width: 420px;
     }
     h1 {
-      color: #00665c;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
     }
     p {
-      font-size: 1.05rem;
-      color: #333;
-      margin-bottom: 1.8rem;
-    }
-    a.button {
-      display: inline-block;
-      background: #00665c;
-      color: white;
-      padding: 0.9rem 2rem;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
       font-size: 1rem;
-      transition: all 0.25s ease;
+      margin-bottom: 2rem;
     }
-    a.button:hover {
-      background: #004d44;
-      transform: translateY(-2px);
+    button {
+      background: #00a693;
+      color: #fff;
+      border: none;
+      padding: 0.9rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.25s;
+      width: 100%;
     }
-    footer {
-      margin-top: 1.5rem;
-      font-size: 0.85rem;
-      color: #666;
+    button:hover {
+      background: #009180;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🎉 Your Storefront is Ready!</h1>
-    <p>Everything’s set up and live. You can open your site now or bookmark it for later.</p>
-    <a id="storeLink" class="button" target="_blank">View My Storefront</a>
-    <footer>© 2025 BagThat. All rights reserved.</footer>
+  <div class="box">
+    <h1>🎉 Your Storefront Is Ready!</h1>
+    <p>Your storefront has been set up successfully.</p>
+    <button id="goToStorefront">Go to My Storefront</button>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
-    const link = document.getElementById("storeLink");
 
-    if (sub) {
-      link.href = `https://${sub}.bagthatthangup.com`;
-    } else {
-      link.href = "/";
-      link.textContent = "Return to Home";
-    }
+    document.getElementById("goToStorefront").addEventListener("click", () => {
+      if (sub) {
+        window.location.href = `https://${sub}.bagthatthangup.com`;
+      } else {
+        alert("Storefront subdomain not found.");
+      }
+    });
   </script>
 </body>
 </html>
