@@ -31,58 +31,24 @@
       max-width: 480px;
       text-align: center;
     }
-    h1 {
-      color: var(--teal);
-      font-size: 1.8rem;
-      margin-bottom: 0.5em;
-    }
-    p.subtext {
-      color: #444;
-      margin-bottom: 1.5em;
-      font-size: 1rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    input {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
+    h1 { color: var(--teal); margin-bottom: 0.5em; }
+    p.subtext { color: #444; margin-bottom: 1.5em; font-size: 1rem; }
+    form { display: flex; flex-direction: column; gap: 14px; }
+    input { padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
     button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
+      background: var(--accent); color: white; border: none;
+      border-radius: 10px; padding: 14px; font-size: 1rem; font-weight: 600; cursor: pointer;
       transition: background 0.25s;
     }
-    button:hover {
-      background: #115e59;
-    }
-    small.error {
-      color: #b91c1c;
-      font-weight: 500;
-    }
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 20px;
-    }
+    button:hover { background: #115e59; }
+    small.error { color: #b91c1c; font-weight: 500; }
+    footer { text-align: center; font-size: 0.8rem; color: #666; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <h1>Set Up Your Storefront</h1>
-    <p class="subtext">Turn your Amazon finds into a branded storefront with BagThat.</p>
-
+    <p class="subtext">Create your own deal site with your Amazon links — in minutes.</p>
     <form id="storeForm">
       <input type="text" id="first_name" placeholder="First Name" required />
       <input type="text" id="last_name" placeholder="Last Name" required />
@@ -93,7 +59,6 @@
       <input type="text" id="amazon_id" placeholder="Amazon Associates ID (e.g. keisha-20)" required />
       <button type="submit">Launch My Storefront</button>
     </form>
-
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
@@ -108,32 +73,16 @@
     const subInput = document.getElementById("subdomain");
     const subErr = document.getElementById("subErr");
 
-    // Check subdomain availability live
     subInput.addEventListener("input", async () => {
       const val = subInput.value.trim().toLowerCase();
-      if (!val) {
-        subErr.textContent = "";
-        return;
-      }
-      const { data, error } = await supabase
-        .from("Users")
-        .select("id")
-        .eq("subdomain", val)
-        .maybeSingle();
+      if (!val) { subErr.textContent = ""; return; }
 
-      if (data) {
-        subErr.textContent =
-          "This subdomain is already taken. Please choose another.";
-      } else {
-        subErr.textContent = "";
-      }
+      const { data } = await supabase.from("Users").select("id").eq("subdomain", val).maybeSingle();
+      subErr.textContent = data ? "This subdomain is already taken. Please choose another." : "";
     });
 
-    // Handle form submission
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const subdomain = subInput.value.trim().toLowerCase();
-
       if (subErr.textContent) return;
 
       const payload = {
@@ -141,10 +90,22 @@
         last_name: document.getElementById("last_name").value.trim(),
         email: document.getElementById("email").value.trim(),
         site_name: document.getElementById("site_name").value.trim(),
-        subdomain: subdomain,
+        subdomain: document.getElementById("subdomain").value.trim().toLowerCase(),
         amazon_id: document.getElementById("amazon_id").value.trim(),
         created_at: new Date().toISOString(),
       };
+
+      // Double-check availability right before inserting
+      const { data: existing } = await supabase
+        .from("Users")
+        .select("id")
+        .eq("subdomain", payload.subdomain)
+        .maybeSingle();
+
+      if (existing) {
+        subErr.textContent = "That subdomain is already registered. Please choose another.";
+        return;
+      }
 
       const { error } = await supabase.from("Users").insert(payload);
       if (error) {
