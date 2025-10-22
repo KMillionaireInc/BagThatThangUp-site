@@ -1,88 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Set Up Your Storefront • BagThat</title>
   <style>
-    :root {
-      --teal: #0b615e;
-      --accent: #0f766e;
-      --radius: 20px;
-      --shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: url('./assets/images/hero.jpg') center/cover no-repeat fixed;
+      background: url("../assets/images/hero.jpg") no-repeat center center/cover;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      text-align: center;
-      color: #123;
+      margin: 0;
     }
-    .box {
-      background: rgba(255, 255, 255, 0.93);
-      backdrop-filter: blur(6px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 60px 40px;
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      max-width: 420px;
       width: 90%;
-      max-width: 520px;
+      text-align: center;
     }
     h1 {
-      color: var(--teal);
-      margin-bottom: 0.4em;
+      color: #0b3b32;
+      font-size: 1.7rem;
+      margin-bottom: 0.25rem;
     }
     p {
-      margin-bottom: 1.5em;
       color: #333;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
     form {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 1rem;
+      text-align: left;
+    }
+    label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #0b3b32;
+      margin-bottom: 0.25rem;
+      display: block;
     }
     input {
-      padding: 12px;
-      border-radius: 10px;
+      padding: 0.75rem;
       border: 1px solid #ccc;
+      border-radius: 8px;
       font-size: 1rem;
       width: 100%;
     }
     button {
-      background: var(--accent);
+      background: #0b3b32;
       color: #fff;
       border: none;
-      padding: 14px;
-      border-radius: 10px;
+      border-radius: 8px;
+      padding: 0.9rem;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.25s;
+      margin-top: 1rem;
+      transition: background 0.3s;
     }
     button:hover {
-      background: #115e59;
+      background: #075247;
     }
     footer {
-      margin-top: 25px;
+      text-align: center;
       font-size: 0.8rem;
-      color: #555;
+      color: #444;
+      margin-top: 1.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="card">
     <h1>Set Up Your Storefront</h1>
     <p>Create your own deal site with your Amazon links — in minutes.</p>
 
     <form id="onboardForm">
-      <input id="first" type="text" placeholder="First Name" required />
-      <input id="last" type="text" placeholder="Last Name" required />
-      <input id="email" type="email" placeholder="Email" required />
-      <input id="store" type="text" placeholder="Store Name" required />
-      <input id="subdomain" type="text" placeholder="Preferred Subdomain" required />
-      <input id="amazon" type="text" placeholder="Amazon Associates ID" required />
+      <div>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" required>
+      </div>
+      <div>
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" required>
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+      <div>
+        <label for="storeName">Store Name</label>
+        <input type="text" id="storeName" required>
+      </div>
+      <div>
+        <label for="subdomain">Preferred Subdomain</label>
+        <input type="text" id="subdomain" required>
+      </div>
+      <div>
+        <label for="associateId">Amazon Associates ID</label>
+        <input type="text" id="associateId" required>
+      </div>
       <button type="submit">Launch My Storefront</button>
     </form>
 
@@ -90,53 +112,38 @@
   </div>
 
   <script>
-    const SUPA_URL = "https://gmsjqunfsffjiksffvem.supabase.co";
-    const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
-
     document.getElementById("onboardForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const first = document.getElementById("first").value.trim();
-      const last = document.getElementById("last").value.trim();
+      const first = document.getElementById("firstName").value.trim();
+      const last = document.getElementById("lastName").value.trim();
       const email = document.getElementById("email").value.trim();
-      const store = document.getElementById("store").value.trim();
-      const sub = document.getElementById("subdomain").value.trim().toLowerCase();
-      const amazon = document.getElementById("amazon").value.trim();
+      const store = document.getElementById("storeName").value.trim();
+      const sub = document.getElementById("subdomain").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+      const assoc = document.getElementById("associateId").value.trim();
 
-      if (!first || !last || !email || !store || !sub || !amazon) {
-        alert("Please fill in all fields.");
+      if (!sub) {
+        alert("Please enter a valid subdomain name.");
         return;
       }
 
+      const planKey = new URLSearchParams(window.location.search).get("plan_key");
+      const payload = { first, last, email, store, subdomain: sub, associate_id: assoc, plan_key: planKey };
+
       try {
-        const res = await fetch(`${SUPA_URL}/rest/v1/Users`, {
+        const res = await fetch("https://bagthatthangup.com/api/createTenant", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPA_KEY,
-            "Authorization": `Bearer ${SUPA_KEY}`,
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify({
-            first_name: first,
-            last_name: last,
-            email: email,
-            site_name: store,
-            subdomain: sub,
-            amazon_id: amazon
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
 
-        if (res.ok) {
-          localStorage.setItem("bagthat_subdomain", sub);
-          window.location.href = "/success";
-        } else {
-          const err = await res.json();
-          alert("Error creating storefront: " + (err.message || JSON.stringify(err)));
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Something went wrong. Please try again.");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Error creating storefront");
+
+        // redirect to success page with subdomain
+        window.location.href = `https://bagthatthangup.com/success/?sub=${sub}`;
+      } catch (err) {
+        alert(err.message || "Something went wrong. Please try again.");
       }
     });
   </script>
