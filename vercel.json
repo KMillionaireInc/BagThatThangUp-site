@@ -2,11 +2,11 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/success(.*)", "destination": "/success/index.html" },
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    { "source": "/onboarding(.*)", "destination": "/onboarding/index.html" },
     {
       "source": "/(.*)",
-      "destination": "/tenant/index.html",
-      "has": [{ "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }]
+      "has": [{ "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }],
+      "destination": "/tenant/index.html"
     },
     { "source": "/", "destination": "/index.html" }
   ]
