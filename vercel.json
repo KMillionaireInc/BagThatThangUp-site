@@ -4,7 +4,7 @@
     { "source": "/success(.*)", "destination": "/success/index.html" },
     { "source": "/onboarding(.*)", "destination": "/onboarding/index.html" },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [{ "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }],
       "destination": "/tenant/index.html"
     },
