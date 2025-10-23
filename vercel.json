@@ -2,11 +2,18 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+        { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/$1"
     },
     { "source": "/onboarding(.*)", "destination": "/onboarding/index.html" },
     { "source": "/success(.*)", "destination": "/success/index.html" },
