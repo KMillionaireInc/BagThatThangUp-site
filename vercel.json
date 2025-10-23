@@ -7,10 +7,14 @@
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
-      "destination": "/tenant/index.html"
+      "destination": "/tenant/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "((?!www|bagthatthangup)\\.bagthatthangup\\.com)"
+        }
+      ]
     },
     { "source": "/", "destination": "/index.html" }
   ]
 }
-
