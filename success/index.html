@@ -109,6 +109,14 @@
       message.textContent = "Setup complete, but no subdomain was provided.";
       button.style.display = "none";
     }
+
+    // Prevent unwanted redirect back to landing
+    const subParam = new URLSearchParams(window.location.search).get('sub');
+    if (!subParam) {
+      window.stop();
+    } else {
+      history.pushState(null, '', window.location.href);
+    }
   </script>
 </body>
 </html>
