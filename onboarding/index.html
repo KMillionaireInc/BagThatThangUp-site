@@ -127,29 +127,30 @@
       };
 
       try {
-        const response = await fetch(
-          "https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users",
-          {
-            method: "POST",
-            headers: {
-              "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc",
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-            body: JSON.stringify(userData)
-          }
-        );
+        const apiKey =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc";
+
+        const endpoint =
+          "https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?apikey=" + apiKey;
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(userData)
+        });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Failed to submit data");
+          const errText = await response.text();
+          throw new Error(errText);
         }
 
-        // ✅ Redirect to success page on success
         window.location.href = `/success?sub=${encodeURIComponent(userData.subdomain)}`;
 
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error submitting form:", error);
         alert("Connection issue. Please retry in a few moments.");
       }
     });
