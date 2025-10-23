@@ -1,7 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/success", "destination": "/success/index.html" },
+    { "source": "/success(.*)", "destination": "/success/index.html" },
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     {
       "source": "/(.*)",
