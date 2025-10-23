@@ -16,14 +16,13 @@
       min-height: 100vh;
     }
     .card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 16px;
       padding: 32px;
       box-shadow: 0 10px 26px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 420px;
       text-align: center;
-      backdrop-filter: blur(4px);
     }
     h2 {
       color: #004a43;
@@ -44,8 +43,6 @@
       font-weight: 600;
       font-size: 14px;
       color: #333;
-      margin-bottom: 4px;
-      display: block;
     }
     input {
       padding: 10px;
@@ -111,9 +108,9 @@
   </div>
 
   <script>
-    const form = document.getElementById("onboardingForm");
+    const form = document.getElementById('onboardingForm');
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const userData = {
@@ -134,16 +131,14 @@
         });
 
         if (!response.ok) {
-          const error = await response.text();
-          console.error("Submit error:", error);
-          alert("Submission failed. Please try again.");
-          return;
+          const err = await response.text();
+          throw new Error(err);
         }
 
         window.location.href = `/success?sub=${encodeURIComponent(userData.subdomain)}`;
       } catch (err) {
-        console.error("Network error:", err);
         alert("Connection issue. Please retry in a few moments.");
+        console.error(err);
       }
     });
   </script>
