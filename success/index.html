@@ -3,79 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Storefront Is Ready • BagThat</title>
+  <title>Success • BagThat</title>
+  <link rel="icon" href="/custompro.png" />
   <style>
     body {
-      background: url("../assets/images/freedom.jpg") no-repeat center center/cover;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background: url('../assets/images/freedom.jpg') center/cover no-repeat;
       margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #003731;
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 0;
     }
     .card {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 2.5rem;
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      width: 90%;
+      padding: 40px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+      width: 100%;
+      max-width: 480px;
       text-align: center;
     }
-    h1 {
-      color: #0b3b32;
-      font-size: 1.7rem;
-      margin-bottom: 0.5rem;
+    h2 {
+      margin-top: 0;
+      color: #004a43;
     }
     p {
-      color: #333;
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    a.button {
-      background: #0b3b32;
-      color: #fff;
-      text-decoration: none;
-      padding: 0.9rem 1.4rem;
-      border-radius: 8px;
-      display: inline-block;
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      transition: background 0.3s;
-    }
-    a.button:hover {
-      background: #075247;
-    }
-    ul {
-      text-align: left;
-      margin: 1rem 0 0 0;
-      padding: 0 1.2rem;
-      font-size: 0.95rem;
-      color: #333;
+      color: #444;
+      font-size: 15px;
       line-height: 1.5;
     }
+    a.button {
+      display: inline-block;
+      background: #004a43;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-top: 18px;
+    }
+    a.button:hover {
+      background: #036b60;
+    }
+    .tips {
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .tips h3 {
+      margin-top: 0;
+      color: #004a43;
+      font-size: 16px;
+    }
     footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #444;
-      margin-top: 1.5rem;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555;
     }
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
   <div class="card">
-    <h1>🎉 Your Storefront Is Ready!</h1>
-    <p id="siteLink">Your storefront setup is complete.</p>
-    <a id="visitBtn" class="button" href="#" target="_blank">Visit My Storefront</a>
+    <h2>Your Storefront Is Ready!</h2>
+    <p id="message">We’re getting everything ready for you...</p>
+    <a id="goButton" class="button" href="#">Go to My Storefront</a>
 
-    <div class="next-steps">
-      <h3 style="color:#0b3b32; text-align:left;">Next Steps:</h3>
+    <div class="tips">
+      <h3>Next Steps</h3>
       <ul>
-        <li>Bookmark your storefront link above for quick access.</li>
-        <li>Share your site link on your social media and bio.</li>
-        <li>Start adding your favorite Amazon deals and products.</li>
-        <li>Need help? Reply to your BagThat setup email.</li>
+        <li>Bookmark your storefront link for easy access.</li>
+        <li>Start sharing your unique site link to drive sales.</li>
+        <li>Check back daily — your deals update automatically.</li>
       </ul>
     </div>
 
@@ -83,18 +94,24 @@
   </div>
 
   <script>
+    // Get subdomain from URL
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
 
+    // Elements
+    const message = document.getElementById("message");
+    const button = document.getElementById("goButton");
+
     if (sub) {
-      const domain = `https://${sub}.bagthatthangup.com`;
-      document.getElementById("siteLink").innerHTML =
-        `Your site has been created at <br><strong>${domain}</strong>`;
-      document.getElementById("visitBtn").href = domain;
+      const url = `https://${sub}.bagthatthangup.com`;
+      message.innerHTML = `Your site has been created successfully!<br><strong>${url}</strong>`;
+      button.href = url;
+
+      // Clean the ?sub= param from the address bar without reload
+      window.history.replaceState({}, document.title, "/success");
     } else {
-      document.getElementById("siteLink").textContent =
-        "Your storefront setup is complete.";
-      document.getElementById("visitBtn").style.display = "none";
+      message.textContent = "Setup complete, but no subdomain was provided.";
+      button.style.display = "none";
     }
   </script>
 </body>
