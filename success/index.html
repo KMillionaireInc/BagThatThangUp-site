@@ -15,17 +15,18 @@
       justify-content: center;
       min-height: 100vh;
       color: #003731;
+      position: relative;
     }
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.6); /* slightly stronger image visibility */
       z-index: 0;
     }
     .card {
       position: relative;
       z-index: 1;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border-radius: 20px;
       padding: 40px;
       box-shadow: 0 10px 26px rgba(0,0,0,0.12);
@@ -38,19 +39,21 @@
       color: #004a43;
     }
     p {
-      color: #444;
+      color: #333;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     a.button {
       display: inline-block;
       background: #004a43;
       color: #fff;
       text-decoration: none;
-      padding: 12px 24px;
+      padding: 12px 26px;
       border-radius: 8px;
       font-weight: 600;
-      margin-top: 18px;
+      margin-top: 20px;
+      transition: background 0.2s ease;
+      cursor: pointer;
     }
     a.button:hover {
       background: #036b60;
@@ -58,7 +61,7 @@
     .tips {
       text-align: left;
       margin-top: 24px;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.8);
       border-radius: 12px;
       padding: 18px;
     }
@@ -94,28 +97,31 @@
   </div>
 
   <script>
+    // Retrieve subdomain either from URL or from localStorage
     const params = new URLSearchParams(window.location.search);
-    const sub = params.get("sub");
+    let sub = params.get("sub");
+
+    if (!sub) {
+      sub = localStorage.getItem("tenant_subdomain");
+    } else {
+      localStorage.setItem("tenant_subdomain", sub);
+    }
 
     const message = document.getElementById("message");
     const button = document.getElementById("goButton");
 
     if (sub) {
-      const url = `https://${sub}.bagthatthangup.com`;
-      message.innerHTML = `Your site has been created successfully!<br><strong>${url}</strong>`;
+      const url = `https://${sub}.bagthatthangup.com/tenant/index.html`;
+      message.innerHTML = `Your site has been created successfully!<br><strong><a href="${url}" target="_blank" style="color:#004a43;text-decoration:underline;">${url}</a></strong>`;
       button.href = url;
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = url;
+      });
       window.history.replaceState({}, document.title, "/success");
     } else {
       message.textContent = "Setup complete, but no subdomain was provided.";
       button.style.display = "none";
-    }
-
-    // Prevent unwanted redirect back to landing
-    const subParam = new URLSearchParams(window.location.search).get('sub');
-    if (!subParam) {
-      window.stop();
-    } else {
-      history.pushState(null, '', window.location.href);
     }
   </script>
 </body>
