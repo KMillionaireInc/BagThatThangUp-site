@@ -69,6 +69,12 @@
       color: #666;
       margin-top: 20px;
     }
+    #subdomainError {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 8px;
+      min-height: 18px;
+    }
   </style>
 </head>
 <body>
@@ -96,18 +102,56 @@
       <div>
         <label for="subdomain">Preferred Subdomain</label>
         <input id="subdomain" placeholder="e.g. dealsbydee" required />
+        <div id="subdomainError"></div>
       </div>
       <div>
         <label for="associateId">Amazon Associates ID</label>
         <input id="associateId" placeholder="e.g. yourtag-20" required />
       </div>
-      <button type="submit">Launch My Storefront</button>
+      <button type="submit" id="submitBtn">Launch My Storefront</button>
     </form>
 
     <footer>© 2025 BagThat. All rights reserved.</footer>
   </div>
 
   <script>
+    const subdomainInput = document.getElementById("subdomain");
+    const subdomainError = document.getElementById("subdomainError");
+    const submitBtn = document.getElementById("submitBtn");
+
+    async function checkSubdomain() {
+      const val = subdomainInput.value.trim().toLowerCase();
+      subdomainError.textContent = "";
+      submitBtn.disabled = true;
+
+      if (!val.match(/^[a-z0-9\-]{3,}$/i)) {
+        subdomainError.textContent = "Only letters, numbers and dashes allowed (min 3).";
+        return;
+      }
+      try {
+        const res = await fetch(
+          `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?select=subdomain&subdomain=eq.${val}`,
+          {
+            headers: {
+              apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+            }
+          }
+        );
+        const data = await res.json();
+        if (data.length > 0) {
+          subdomainError.textContent = "This subdomain is already taken. Please choose another!";
+          submitBtn.disabled = true;
+        } else {
+          submitBtn.disabled = false;
+        }
+      } catch {
+        subdomainError.textContent = "Connection issue. Please try again.";
+        submitBtn.disabled = true;
+      }
+    }
+
+    subdomainInput.addEventListener("input", checkSubdomain);
+
     const form = document.getElementById('onboardingForm');
 
     form.addEventListener('submit', async (e) => {
