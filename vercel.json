@@ -3,7 +3,6 @@
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/success", "destination": "/success/index.html" },
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/tenant", "destination": "/tenant/index.html" },
     { "source": "/", "has": [{ "type": "host", "value": "*.bagthatthangup.com" }], "destination": "/tenant/index.html" },
     { "source": "/", "destination": "/index.html" }
   ]
