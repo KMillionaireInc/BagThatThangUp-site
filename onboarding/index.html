@@ -96,12 +96,14 @@
       <div>
         <label for="subdomain">Preferred Subdomain</label>
         <input id="subdomain" required />
+        <!-- REQUIRED CHANGE for instant error: -->
+        <span id="subError" style="color: red; font-size: 13px; display: none;"></span>
       </div>
       <div>
         <label for="associateId">Amazon Associates ID</label>
         <input id="associateId" required />
       </div>
-      <button type="submit">Launch My Storefront</button>
+      <button type="submit" id="submitBtn">Launch My Storefront</button>
     </form>
 
     <footer>© 2025 BagThat. All rights reserved.</footer>
@@ -109,9 +111,53 @@
 
   <script>
     const form = document.getElementById('onboardingForm');
+    const subdomainInput = document.getElementById('subdomain');
+    const subError = document.getElementById('subError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // REQUIRED: check if subdomain is already taken
+    subdomainInput.addEventListener('input', async () => {
+      const subVal = subdomainInput.value.trim().toLowerCase();
+      if (!subVal) {
+        subError.style.display = "none";
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // Call Supabase API to check for duplicate subdomain
+      try {
+        // PUBLIC read-only REST call (change 'users' if your table is named differently)
+        const response = await fetch(
+          `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/users?subdomain=eq.${encodeURIComponent(subVal)}`,
+          {
+            headers: {
+              apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc",
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+            }
+          }
+        );
+        const existing = await response.json();
+        if (Array.isArray(existing) && existing.length > 0) {
+          subError.textContent = "This subdomain has already been taken, please choose another.";
+          subError.style.display = "inline";
+          submitBtn.disabled = true;
+        } else {
+          subError.textContent = "";
+          subError.style.display = "none";
+          submitBtn.disabled = false;
+        }
+      } catch (err) {
+        subError.textContent = "Could not check subdomain. Try again in a moment.";
+        subError.style.display = "inline";
+        submitBtn.disabled = true;
+      }
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Block submission if error displayed
+      if (subError.style.display !== "none") return;
 
       const userData = {
         first_name: form.firstName.value.trim(),
