@@ -94,11 +94,9 @@
   </div>
 
   <script>
-    // Get subdomain from URL (?sub=)
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
 
-    // Elements
     const message = document.getElementById("message");
     const button = document.getElementById("goButton");
 
@@ -106,14 +104,7 @@
       const url = `https://${sub}.bagthatthangup.com`;
       message.innerHTML = `Your site has been created successfully!<br><strong>${url}</strong>`;
       button.href = url;
-
-      // Clean the URL bar after display
       window.history.replaceState({}, document.title, "/success");
-
-      // Redirect automatically after short delay
-      setTimeout(() => {
-        window.location.href = url;
-      }, 2500);
     } else {
       message.textContent = "Setup complete, but no subdomain was provided.";
       button.style.display = "none";
@@ -121,4 +112,3 @@
   </script>
 </body>
 </html>
-
