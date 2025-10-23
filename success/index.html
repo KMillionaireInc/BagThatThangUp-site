@@ -94,7 +94,7 @@
   </div>
 
   <script>
-    // Get subdomain from URL
+    // Get subdomain from URL (?sub=)
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
 
@@ -107,8 +107,13 @@
       message.innerHTML = `Your site has been created successfully!<br><strong>${url}</strong>`;
       button.href = url;
 
-      // Clean the ?sub= param from the address bar without reload
+      // Clean the URL bar after display
       window.history.replaceState({}, document.title, "/success");
+
+      // Redirect automatically after short delay
+      setTimeout(() => {
+        window.location.href = url;
+      }, 2500);
     } else {
       message.textContent = "Setup complete, but no subdomain was provided.";
       button.style.display = "none";
@@ -116,3 +121,4 @@
   </script>
 </body>
 </html>
+
