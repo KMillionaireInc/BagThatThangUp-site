@@ -3,7 +3,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/index.html"
+    },
+    {
+      "source": "/:path*",
       "has": [
         { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
       ],
@@ -13,6 +20,7 @@
     { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
     { "source": "/success", "destination": "/success/index.html" },
     { "source": "/success/(.*)", "destination": "/success/index.html" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
