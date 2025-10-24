@@ -1,10 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/success/(.*)", "destination": "/success/index.html" },
-    { "source": "/tenant/(.*)", "destination": "/tenant/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "onboarding/index.html", "use": "@vercel/static" },
+    { "src": "success/index.html", "use": "@vercel/static" },
+    { "src": "tenant/index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/onboarding", "dest": "/onboarding/index.html" },
+    { "src": "/success", "dest": "/success/index.html" },
+    { "src": "/tenant.*", "dest": "/tenant/index.html" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
+
