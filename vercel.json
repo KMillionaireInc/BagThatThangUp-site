@@ -6,10 +6,10 @@
     { "src": "tenant/index.html", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "https://([^/]+)\\.bagthatthangup\\.com/?$", "dest": "/tenant/index.html" },
     { "src": "/onboarding", "dest": "/onboarding/index.html" },
     { "src": "/success", "dest": "/success/index.html" },
     { "src": "/tenant.*", "dest": "/tenant/index.html" },
     { "src": "/.*", "dest": "/index.html" }
   ]
 }
-
