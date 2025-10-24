@@ -1,6 +1,12 @@
 {
+  "public": true,
   "cleanUrls": true,
   "trailingSlash": false,
+  "build": {
+    "env": {
+      "NEXT_DISABLE_STATIC_IMAGES": "true"
+    }
+  },
   "rewrites": [
     {
       "source": "/",
