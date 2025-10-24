@@ -1,9 +1,9 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo 'Static build complete'",
+  "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
-  "static": {
-    "include": ["tenant/**", "onboarding/**", "success/**", "assets/**", "index.html"]
-  },
   "rewrites": [
     {
       "source": "/",
