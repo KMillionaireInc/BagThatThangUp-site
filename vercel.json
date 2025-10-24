@@ -14,9 +14,10 @@
   "redirects": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "((?!bagthatthangup\\.com).+)" }],
       "destination": "/tenant/index.html",
-      "permanent": false
+      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
+      "permanent": false,
+      "wildcard": true
     }
   ]
 }
