@@ -8,16 +8,21 @@
   "rewrites": [
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/tenant.*", "destination": "/tenant/index.html" },
+    { "source": "/tenant", "destination": "/tenant/index.html" },
+    { "source": "/tenant/(.*)", "destination": "/tenant/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
     {
       "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?!bagthatthangup\\.com$)(.*)\\.bagthatthangup\\.com$"
+        }
+      ],
       "destination": "/tenant/index.html",
-      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }],
-      "permanent": false,
-      "wildcard": true
+      "permanent": false
     }
   ]
 }
