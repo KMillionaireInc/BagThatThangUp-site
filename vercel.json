@@ -1,11 +1,8 @@
 {
-  "public": true,
   "cleanUrls": true,
   "trailingSlash": false,
-  "build": {
-    "env": {
-      "NEXT_DISABLE_STATIC_IMAGES": "true"
-    }
+  "static": {
+    "include": ["tenant/**", "onboarding/**", "success/**", "assets/**", "index.html"]
   },
   "rewrites": [
     {
