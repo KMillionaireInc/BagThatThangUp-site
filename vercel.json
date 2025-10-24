@@ -3,22 +3,30 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/index.html"
+    },
+    {
       "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "^(?<subdomain>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/$1"
     },
     {
-      "source": "/onboarding(.*)",
+      "source": "/onboarding",
       "destination": "/onboarding/index.html"
     },
     {
-      "source": "/success(.*)",
+      "source": "/success",
       "destination": "/success/index.html"
     },
     {
       "source": "/(.*)",
+      "missing": [{ "type": "host", "value": ".*\\.bagthatthangup\\.com$" }],
       "destination": "/index.html"
     }
   ]
