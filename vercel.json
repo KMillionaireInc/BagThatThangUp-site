@@ -3,15 +3,17 @@
     {
       "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+        {
+          "type": "host",
+          "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$"
+        }
       ],
-      "destination": "/tenant/$1"
+      "destination": "/tenant/index.html"
     },
     { "source": "/success", "destination": "/success/index.html" },
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/$", "destination": "/index.html" }
   ],
   "cleanUrls": true,
   "trailingSlash": false
 }
-
