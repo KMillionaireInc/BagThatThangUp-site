@@ -1,16 +1,25 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/success(.*)", "destination": "/success/index.html" },
-    { "source": "/onboarding(.*)", "destination": "/onboarding/index.html" },
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }],
-      "destination": "/tenant/index.html"
-    },
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "^(?<subdomain>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/$1"
+    },
+    {
+      "source": "/onboarding(.*)",
+      "destination": "/onboarding/index.html"
+    },
+    {
+      "source": "/success(.*)",
+      "destination": "/success/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
