@@ -4,11 +4,15 @@
   "rewrites": [
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
+
     { "source": "/success", "destination": "/success/index.html" },
     { "source": "/success/(.*)", "destination": "/success/index.html" },
+
     { "source": "/tenant", "destination": "/tenant/index.html" },
     { "source": "/tenant/(.*)", "destination": "/tenant/index.html" },
+
     { "source": "/", "destination": "/index.html" },
+    
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [],
