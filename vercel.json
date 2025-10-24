@@ -1,13 +1,13 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/onboarding/(.*)", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/success/(.*)", "destination": "/success/index.html" },
-    { "source": "/tenant", "destination": "/tenant/index.html" },
-    { "source": "/tenant/(.*)", "destination": "/tenant/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "src": "^/onboarding$", "dest": "/onboarding/index.html" },
+    { "src": "^/onboarding/.*", "dest": "/onboarding/index.html" },
+    { "src": "^/success$", "dest": "/success/index.html" },
+    { "src": "^/success/.*", "dest": "/success/index.html" },
+    { "src": "^/tenant$", "dest": "/tenant/index.html" },
+    { "src": "^/tenant/.*", "dest": "/tenant/index.html" },
+    { "src": ".*", "dest": "/index.html" }
   ]
 }
