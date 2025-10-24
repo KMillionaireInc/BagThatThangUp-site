@@ -26,7 +26,6 @@
     },
     {
       "source": "/(.*)",
-      "missing": [{ "type": "host", "value": ".*\\.bagthatthangup\\.com$" }],
       "destination": "/index.html"
     }
   ]
