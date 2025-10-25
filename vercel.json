@@ -1,27 +1,19 @@
 {
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "onboarding/index.html", "use": "@vercel/static" },
-    { "src": "success/index.html", "use": "@vercel/static" },
-    { "src": "tenant/index.html", "use": "@vercel/static" },
-    { "src": "assets/**/*", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "^/onboarding$", "dest": "/onboarding/index.html" },
-    { "src": "^/success$", "dest": "/success/index.html" },
+  "rewrites": [
     {
-      "src": "^/$",
+      "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "^(?!bagthatthangup\\.com$)([a-z0-9-]+)\\.bagthatthangup\\.com$" }
+        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
-      "dest": "/tenant/index.html"
+      "destination": "/tenant/index.html"
     },
+    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    { "source": "/success", "destination": "/success/index.html" },
+    { "source": "/", "destination": "/index.html" },
     {
-      "src": "^/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    { "src": "^/$", "dest": "/index.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    }
   ],
   "cleanUrls": true,
   "trailingSlash": false
