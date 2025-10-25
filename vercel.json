@@ -3,12 +3,9 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "onboarding/index.html", "use": "@vercel/static" },
     { "src": "success/index.html", "use": "@vercel/static" },
-    { "src": "tenant/index.html", "use": "@vercel/static" }
+    { "src": "tenant/index.html", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" }
   ],
-  "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/tenant", "destination": "/tenant/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
