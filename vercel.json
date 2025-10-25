@@ -1,29 +1,26 @@
-{
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "onboarding/index.html", "use": "@vercel/static" },
-    { "src": "success/index.html", "use": "@vercel/static" },
-    { "src": "tenant/index.html", "use": "@vercel/static" },
-    { "src": "assets/**/*", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "^/onboarding$", "dest": "/onboarding/index.html" },
-    { "src": "^/success$", "dest": "/success/index.html" },
+"routes": [
+  { "src": "^/onboarding$", "dest": "/onboarding/index.html" },
+  { "src": "^/success$", "dest": "/success/index.html" },
 
-    {
-      "src": "^/$",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(?!bagthatthangup\\.com$)([a-z0-9-]+)\\.bagthatthangup\\.com$"
-        }
-      ],
-      "dest": "/tenant/index.html"
-    },
+  {
+    "src": "^/$",
+    "has": [
+      {
+        "type": "host",
+        "value": "^(?!www\\.)[a-z0-9-]+\\.bagthatthangup\\.com$"
+      }
+    ],
+    "dest": "/tenant/index.html"
+  },
 
-    { "src": "^/$", "dest": "/index.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
-}
+  {
+    "src": "^/$",
+    "has": [
+      { "type": "host", "value": "^(www\\.)?bagthatthangup\\.com$" }
+    ],
+    "dest": "/index.html"
+  },
+
+  { "src": "/(.*)", "dest": "/index.html" }
+]
+
