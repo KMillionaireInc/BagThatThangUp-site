@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/(.*)",
@@ -9,12 +11,10 @@
     },
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/success", "destination": "/success/index.html" },
-    { "source": "/", "destination": "/index.html" },
     {
       "source": "/assets/(.*)",
       "destination": "/assets/$1"
-    }
-  ],
-  "cleanUrls": true,
-  "trailingSlash": false
+    },
+    { "source": "/", "destination": "/index.html" }
+  ]
 }
