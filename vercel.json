@@ -1,20 +1,9 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "has": [
-        { "type": "host", "value": "^(?<sub>[a-z0-9-]+)\\.bagthatthangup\\.com$" }
-      ],
-      "destination": "/tenant/index.html"
-    },
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
-    },
-    { "source": "/", "destination": "/index.html" }
+  "version": 2,
+  "routes": [
+    { "src": "/onboarding", "dest": "/onboarding/index.html" },
+    { "src": "/success", "dest": "/success/index.html" },
+    { "src": "/tenant", "dest": "/tenant/index.html" },
+    { "src": "/", "dest": "/index.html" }
   ]
 }
