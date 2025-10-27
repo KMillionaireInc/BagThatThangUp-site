@@ -5,12 +5,12 @@
     { "source": "/onboarding", "destination": "/onboarding/index.html" },
     { "source": "/success", "destination": "/success/index.html" },
     {
-      "source": "/",
+      "source": "/(.*)",
       "has": [
         { "type": "host", "value": "^([a-zA-Z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
-      "destination": "/tenant/index.html"
+      "destination": "/tenant/$1"
     },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/$1" }
   ]
 }
