@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: url('../assets/images/freedom.jpg') center/cover no-repeat;
+      background: url('/assets/images/freedom.jpg') center/cover no-repeat;
       margin: 0;
       display: flex;
       align-items: center;
@@ -19,7 +19,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(255, 255, 255, 0.65); /* less transparent so background shows more */
+      background: rgba(255, 255, 255, 0.65);
       z-index: 0;
     }
     .card {
@@ -116,7 +116,6 @@
       button.style.display = "none";
     }
 
-    // Prevent redirect loop back to landing
     const subParam = new URLSearchParams(window.location.search).get('sub');
     if (!subParam) {
       window.stop();
@@ -126,3 +125,4 @@
   </script>
 </body>
 </html>
+
