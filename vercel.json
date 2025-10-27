@@ -10,7 +10,6 @@
         { "type": "host", "value": "^([a-zA-Z0-9-]+)\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/$1"
-    },
-    { "source": "/(.*)", "destination": "/$1" }
+    }
   ]
 }
