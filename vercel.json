@@ -1,4 +1,9 @@
 {
+  "projectSettings": {
+    "framework": "other",
+    "outputDirectory": ".",
+    "buildCommand": ""
+  },
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
@@ -11,3 +16,4 @@
     }
   ]
 }
+
