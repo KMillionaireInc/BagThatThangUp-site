@@ -1,19 +1,16 @@
 {
-  "projectSettings": {
-    "framework": "other",
-    "outputDirectory": ".",
-    "buildCommand": ""
-  },
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/onboarding", "destination": "/onboarding/index.html" },
+    { "source": "/success", "destination": "/success/index.html" },
     {
-      "source": "/(.*)",
+      "source": "/",
       "has": [
-        { "type": "host", "value": "^(?!www\\.)[a-zA-Z0-9-]+\\.bagthatthangup\\.com$" }
+        { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/index.html"
-    }
+    },
+    { "source": "/", "destination": "/index.html" }
   ]
 }
-
