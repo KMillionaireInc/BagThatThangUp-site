@@ -2,16 +2,12 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
     {
       "source": "/(.*)",
-      "destination": "/tenant/$1",
       "has": [
-        { "type": "host", "value": "^(?!www$|bagthatthangup$)[a-zA-Z0-9-]+\\.bagthatthangup\\.com$" }
-      ]
-    },
-    { "source": "/(.*)", "destination": "/$1" }
+        { "type": "host", "value": "^[a-zA-Z0-9-]+\\.bagthatthangup\\.com$" }
+      ],
+      "destination": "/tenant/$1"
+    }
   ]
 }
-
