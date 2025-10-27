@@ -1,14 +1,19 @@
 {
-  "projectSettings": {
-    "framework": "other",
-    "outputDirectory": ".",
-    "buildCommand": ""
-  },
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/onboarding", "destination": "/onboarding/index.html" },
-    { "source": "/success", "destination": "/success/index.html" },
+    {
+      "source": "/onboarding",
+      "destination": "/onboarding/index.html"
+    },
+    {
+      "source": "/success",
+      "destination": "/success/index.html"
+    },
+    {
+      "source": "/tenant",
+      "destination": "/tenant/index.html"
+    },
     {
       "source": "/",
       "has": [
@@ -16,6 +21,9 @@
       ],
       "destination": "/tenant/index.html"
     },
-    { "source": "/", "destination": "/index.html" }
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
   ]
 }
