@@ -3,27 +3,16 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/onboarding",
-      "destination": "/onboarding/index.html"
-    },
-    {
-      "source": "/success",
-      "destination": "/success/index.html"
-    },
-    {
-      "source": "/tenant",
-      "destination": "/tenant/index.html"
-    },
-    {
-      "source": "/",
+      "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "^[^.]+\\.bagthatthangup\\.com$" }
+        { "type": "host", "value": "^(?!www\\.)[a-zA-Z0-9-]+\\.bagthatthangup\\.com$" }
       ],
       "destination": "/tenant/index.html"
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
+
