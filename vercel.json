@@ -5,7 +5,10 @@
     {
       "source": "/(.*)",
       "has": [
-        { "type": "host", "value": "^(?!www\\.)[a-zA-Z0-9-]+\\.bagthatthangup\\.com$" }
+        {
+          "type": "host",
+          "value": "^[a-zA-Z0-9-]+\\.bagthatthangup\\.com$"
+        }
       ],
       "destination": "/tenant/index.html"
     },
