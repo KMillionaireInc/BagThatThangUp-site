@@ -2,6 +2,19 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/tenant/index.html" }
+    {
+      "source": "/.*",
+      "has": [
+        {
+          "type": "host",
+          "value": "^[a-zA-Z0-9-]+\\.bagthatthangup\\.com$"
+        }
+      ],
+      "destination": "/tenant/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
