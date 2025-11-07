@@ -6,6 +6,7 @@
   <title>BagThat — Automate Your Deal Storefront</title>
   <meta name="description" content="Turn your Amazon promo links into a branded, automated storefront. No coding. No daily posting. Just plug in and profit.">
   <link rel="icon" type="image/png" href="custompro.png" />
+
   <style>
     :root {
       --teal: #008080;
@@ -23,86 +24,158 @@
       color: var(--charcoal);
       line-height: 1.6;
     }
+
     header,section {max-width:1100px;margin:auto;padding:60px 20px;}
     header{text-align:center;padding-top:60px;}
-    header img{width:80px;height:auto;margin-bottom:20px;}
-    header h1{font-size:2.6rem;color:var(--teal);margin-bottom:1rem;}
-    header p{font-size:1.2rem;color:#374151;max-width:650px;margin:auto;}
-    .hero img{width:100%;max-width:760px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:40px;}
+
+    /* --- HERO --- */
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f4f7f7 100%);
+      padding: 80px 10%;
+    }
+    .hero-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 50px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .hero-text {flex: 1 1 480px;}
+    .hero-text .logo {
+      width: 70px;
+      margin-bottom: 1rem;
+    }
+    .hero-text h1 {
+      font-size: 2.8rem;
+      color: var(--teal);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .hero-text p {
+      font-size: 1.15rem;
+      color: #374151;
+      margin-bottom: 2rem;
+    }
+    .hero-image {
+      flex: 1 1 480px;
+      text-align: center;
+    }
+    .hero-image img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .cta {
+      display:inline-block;
+      background:var(--teal);
+      color:white;
+      padding:14px 30px;
+      border-radius:8px;
+      font-weight:600;
+      text-decoration:none;
+      transition:background .3s;
+    }
+    .cta:hover{background:var(--coral);}
+    @media (max-width: 900px) {
+      .hero-wrapper {
+        flex-direction: column-reverse;
+        text-align: center;
+      }
+      .hero-text h1 {font-size: 2.2rem;}
+      .hero-image img {max-width: 90%;}
+    }
+
+    /* --- SECTIONS --- */
     .section{display:flex;flex-wrap:wrap;align-items:center;gap:40px;margin-top:60px;}
     .section img{flex:1 1 420px;width:100%;border-radius:var(--radius);box-shadow:var(--shadow);}
     .section div{flex:1 1 400px;}
     .section h2{font-size:2rem;margin-bottom:1rem;color:var(--teal);}
     .section p{font-size:1.1rem;color:#374151;}
-    .cta {
-      display:inline-block;background:var(--teal);color:white;
-      padding:14px 30px;border-radius:8px;font-weight:600;text-decoration:none;
-      transition:background .3s;
+    @media(max-width:800px){
+      .section{flex-direction:column;}
+      .section h2{font-size:1.8rem;text-align:center;}
+      .section p{text-align:center;}
     }
-    .cta:hover{background:var(--coral);}
+
+    /* --- PRICING --- */
     .pricing{text-align:center;background:white;border-radius:var(--radius);
       box-shadow:var(--shadow);padding:60px 20px;margin:100px 20px;}
     .pricing h2{font-size:2rem;margin-bottom:10px;color:var(--charcoal);}
     .pricing .price{font-size:3rem;color:var(--teal);margin:20px 0;}
     .pricing p{color:#374151;margin-bottom:20px;}
+    .pricing span{font-size:1.2rem;color:#666;}
+
+    /* --- FOOTER --- */
     footer{text-align:center;padding:40px 20px;background:var(--charcoal);color:white;font-size:.9rem;}
-    @media(max-width:800px){
-      .section{flex-direction:column;}
-      header h1{font-size:2rem;}
-    }
   </style>
 </head>
+
 <body>
-<header>
-<header class="hero">
-  <div class="hero-content">
-    <img src="assets/images/custompro.png" alt="BagThat Logo" class="logo">
-    <h1>Automate Your Amazon Deal Storefront</h1>
-    <p class="subtitle">
-      Stop burning hours chasing promo codes and fighting algorithms. <br>
-      BagThat builds your branded, automated storefront that updates itself — using your affiliate ID.
-    </p>
-    <a href="#pricing" class="cta">Launch Your Storefront</a>
-  </div>
-  <img src="assets/images/hero.jpg" alt="Creator working at laptop" class="hero-img">
-</header>
 
-<section id="frustration" class="section">
-  <h2>You’re Doing It All… And Burning Out</h2>
-  <p>
-    Every day feels like a race — converting links, fighting feeds, chasing clicks. You work hard, but the algorithm wins. 
-    Your time and effort vanish into the scroll, and your audience scrolls right past your hard work.
-  </p>
-  <img src="assets/images/frustrated.jpg" alt="Stressed creator at desk" class="section-img">
-</section>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-wrapper">
+      <div class="hero-text">
+        <img src="assets/images/custompro.png" alt="BagThat Logo" class="logo">
+        <h1>Stop Posting Deals. Start Profiting Automatically.</h1>
+        <p>
+          You’re tired of chasing algorithms, updating links, and burning hours on posts that vanish overnight.  
+          <strong>BagThat builds your branded, automated storefront that updates itself every day — using your affiliate ID.</strong>
+        </p>
+        <a href="#pricing" class="cta">Launch My Storefront</a>
+      </div>
+      <div class="hero-image">
+        <img src="assets/images/hero.jpg" alt="Creator working at laptop">
+      </div>
+    </div>
+  </header>
 
-<section id="freedom" class="section">
-  <h2>Finally, Freedom From Manual Posting</h2>
-  <p>
-    With BagThat, your deals auto-update daily. Your storefront runs while you sleep — no code, no spreadsheets, no burnout. 
-    Just your brand, your deals, and your income. You focus on creating; BagThat handles the rest.
-  </p>
-  <img src="assets/images/freedom.jpg" alt="Happy creator holding drink" class="section-img">
-</section>
+  <!-- SECTIONS -->
+  <section id="frustration" class="section">
+    <div>
+      <h2>You’re Doing It All… And Burning Out</h2>
+      <p>
+        Every day feels like a race — converting links, fighting feeds, chasing clicks. You work hard, but the algorithm wins. 
+        Your time and effort vanish into the scroll, and your audience scrolls right past your hard work.
+      </p>
+    </div>
+    <img src="assets/images/frustrated.jpg" alt="Stressed creator at desk" class="section-img">
+  </section>
 
-<section id="features" class="section">
-  <h2>Build Once. Earn Daily.</h2>
-  <p>
-    BagThat connects to your Amazon affiliate data, formats your promos beautifully, and hosts them under your own subdomain. 
-    Everything’s automated — image pulls, coupon updates, and link tracking. You get a storefront that feels professional from day one.
-  </p>
-  <img src="assets/images/feature1.jpg" alt="Creators collaborating" class="section-img">
-</section>
+  <section id="freedom" class="section">
+    <div>
+      <h2>Finally, Freedom From Manual Posting</h2>
+      <p>
+        With BagThat, your deals auto-update daily. Your storefront runs while you sleep — no code, no spreadsheets, no burnout. 
+        Just your brand, your deals, and your income. You focus on creating; BagThat handles the rest.
+      </p>
+    </div>
+    <img src="assets/images/freedom.jpg" alt="Happy creator holding drink" class="section-img">
+  </section>
 
-<section id="pricing" class="pricing">
-  <h2>Start Your Storefront</h2>
-  <p class="sub">Everything you need — automation, branding, and updates that run themselves.</p>
-  <div class="price">$19<span>/month</span></div>
-  <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch for $19</a>
-</section>
+  <section id="features" class="section">
+    <div>
+      <h2>Build Once. Earn Daily.</h2>
+      <p>
+        BagThat connects to your Amazon affiliate data, formats your promos beautifully, and hosts them under your own subdomain. 
+        Everything’s automated — image pulls, coupon updates, and link tracking. You get a storefront that feels professional from day one.
+      </p>
+    </div>
+    <img src="assets/images/feature1.jpg" alt="Creators collaborating" class="section-img">
+  </section>
 
-<footer>© 2025 BagThat. Your Deals. Your Brand. Your Freedom.</footer>
+  <!-- PRICING -->
+  <section id="pricing" class="pricing">
+    <h2>Start Your Storefront</h2>
+    <p class="sub">Everything you need — automation, branding, and updates that run themselves.</p>
+    <div class="price">$19<span>/month</span></div>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch for $19</a>
+  </section>
 
+  <footer>© 2025 BagThat. Your Deals. Your Brand. Your Freedom.</footer>
 
 </body>
 </html>
