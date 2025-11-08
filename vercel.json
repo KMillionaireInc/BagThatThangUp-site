@@ -13,7 +13,8 @@
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/onboarding", "dest": "/onboarding/index.html" },
     { "src": "/success", "dest": "/success/index.html" },
-    { "src": "/", "dest": "/tenant/index.html" }
+    { "src": "/tenant", "dest": "/tenant/index.html" },
+    { "src": "/", "dest": "/index.html" }
   ]
 }
 
