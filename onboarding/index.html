@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Onboarding | BagThatThangUp</title>
 <style>
   body, html {
     height: 100%;
@@ -91,7 +96,8 @@
   }
   #msg { font-weight: bold; margin-top: 10px;}
 </style>
-
+</head>
+<body>
 <div class="hero-bg"></div>
 <div class="form-container">
   <div class="branding-header">
@@ -121,17 +127,27 @@
     <label for="email">Email Address</label>
     <input type="email" id="email" placeholder="e.g. peppa@example.com" required />
 
-    <button type="submit" id="submitBtn">Submit</button>
+    <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
   </form>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE
-const SUPABASE_KEY = 'public-anon-key';                  // <-- REPLACE
+const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE with your actual project URL
+const SUPABASE_KEY = 'public-anon-key';                  // <-- REPLACE with your API Key
 const SUPABASE_TABLE = 'sites';
 
-let siteUrlAvailable = null; // null = unchecked, true = available, false = taken
+let lastCheckedValue = "";
+let siteUrlAvailable = false;
+
+// Debounce to avoid excessive API calls as user types
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
 
 async function checkDuplicateUrl(siteUrlName) {
   if (!siteUrlName) return null;
@@ -148,55 +164,68 @@ async function checkDuplicateUrl(siteUrlName) {
   return data.length === 0;
 }
 
-// Live check as you type and enable/disable submit
-document.getElementById('siteUrlName').addEventListener('input', async function() {
-  const siteUrlName = this.value.trim().toLowerCase();
-  const msgEl = document.getElementById('siteUrlMsg');
-  const submitBtn = document.getElementById('submitBtn');
-  if(!siteUrlName) {
+const inputEl = document.getElementById('siteUrlName');
+const msgEl = document.getElementById('siteUrlMsg');
+const submitBtn = document.getElementById('submitBtn');
+
+const realTimeChecker = debounce(async function() {
+  const siteUrlName = inputEl.value.trim().toLowerCase();
+  lastCheckedValue = siteUrlName;
+  submitBtn.disabled = true;
+
+  if (!siteUrlName) {
     msgEl.textContent = '';
-    submitBtn.disabled = false;
-    siteUrlAvailable = null;
+    siteUrlAvailable = false;
     return;
   }
+
   msgEl.style.color = '#555';
   msgEl.textContent = 'Checking availability...';
-  siteUrlAvailable = await checkDuplicateUrl(siteUrlName);
-  if (siteUrlAvailable) {
-    msgEl.style.color = 'green';
-    msgEl.textContent = '✅ Available!';
-    submitBtn.disabled = false;
-  } else {
-    msgEl.style.color = 'red';
-    msgEl.textContent = 'This site URL name is already taken. Please try another.';
-    submitBtn.disabled = true;
+
+  const available = await checkDuplicateUrl(siteUrlName);
+
+  if (lastCheckedValue === siteUrlName) {
+    if (available) {
+      msgEl.style.color = 'green';
+      msgEl.textContent = '✅ Available!';
+      siteUrlAvailable = true;
+      submitBtn.disabled = false;
+    } else {
+      msgEl.style.color = 'red';
+      msgEl.textContent = 'This site URL name is already taken. Please try another.';
+      siteUrlAvailable = false;
+      submitBtn.disabled = true;
+    }
   }
-});
+}, 400);
+
+inputEl.addEventListener('input', realTimeChecker);
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  
-  const firstName = document.getElementById('firstName').value.trim();
-  const lastName = document.getElementById('lastName').value.trim();
-  const siteName = document.getElementById('siteName').value.trim();
-  const siteUrlName = document.getElementById('siteUrlName').value.trim().toLowerCase();
-  const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const msgEl = document.getElementById('msg');
 
-  if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
-    msgEl.style.color = 'red';
-    msgEl.textContent = 'Please fill out all fields.';
-    return;
-  }
   if (!siteUrlAvailable) {
     msgEl.style.color = 'red';
     msgEl.textContent = 'Please choose an available site URL name.';
     return;
   }
 
-  msgEl.style.color = '#283860';
-  msgEl.textContent = 'Setting up your site…';
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const siteName = document.getElementById('siteName').value.trim();
+  const siteUrlName = inputEl.value.trim().toLowerCase();
+  const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const msgBlock = document.getElementById('msg');
+
+  if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
+    msgBlock.style.color = 'red';
+    msgBlock.textContent = 'Please fill out all fields.';
+    return;
+  }
+
+  msgBlock.style.color = '#283860';
+  msgBlock.textContent = 'Setting up your site…';
 
   const payload = [{
     first_name: firstName,
@@ -219,13 +248,15 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   });
 
   if (res.ok) {
-    msgEl.style.color = 'green';
-    msgEl.textContent = 'Success! Redirecting…';
-    setTimeout(() => window.location.href = '/success', 1200);
+    msgBlock.style.color = 'green';
+    msgBlock.textContent = 'Success! Redirecting…';
+    setTimeout(() => window.location.href = '/success', 1000);
   } else {
     const error = await res.json();
-    msgEl.style.color = 'red';
-    msgEl.textContent = 'Error: ' + (error?.message || 'Could not submit. Please try again.');
+    msgBlock.style.color = 'red';
+    msgBlock.textContent = 'Error: ' + (error?.message || 'Could not submit. Please try again.');
   }
 });
 </script>
+</body>
+</html>
