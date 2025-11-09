@@ -22,30 +22,28 @@
     flex-direction: column;
   }
   .branding-header {
-    background: rgba(0,0,0,0.57);
+    background: none;
     color: #fff;
-    padding: 36px 32px 18px 32px;
-    border-radius: 22px;
-    box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+    padding: 30px 32px 10px 32px;
     text-align: center;
-    max-width: 410px;
-    margin-bottom: 18px;
+    max-width: 500px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 20px #163060, 0 1px 5px #000;
+    font-weight: bold;
   }
   .branding-header h1 {
     margin: 0 0 9px 0;
-    font-size: 2.2rem;
+    font-size: 2.1rem;
     font-weight: 900;
-    letter-spacing: -0.04em;
-    text-shadow: 0 3px 8px rgba(18,50,120,0.24);
+    letter-spacing: -0.03em;
   }
   .branding-header p {
-    margin: 0 0 11px 0;
-    font-size: 19px;
+    margin: 0 0 8px 0;
+    font-size: 18px;
     font-weight: 500;
-    text-shadow: 0 1px 5px rgba(14,30,60,0.18);
   }
   #onboarding-form {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.97);
     padding: 32px 24px;
     border-radius: 16px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.08);
@@ -81,15 +79,15 @@
     font-size: 18px;
     transition: background 0.2s;
   }
-  #onboarding-form button:hover {
-    background: #1945b0;
+  #onboarding-form button:disabled {
+    background: #7a91c6;
+    cursor: not-allowed;
   }
-  #siteUrlMsg, #msg {
-    margin-top: 3px;
-    color: red;
-    min-height: 24px;
+  #siteUrlMsg {
+    margin-top: 2px;
     font-size: 15px;
-    font-weight: normal;
+    font-weight: 500;
+    min-height: 22px;
   }
   #msg { font-weight: bold; margin-top: 10px;}
 </style>
@@ -99,9 +97,8 @@
   <div class="branding-header">
     <h1>Welcome to BagThatThangUp!</h1>
     <p>
-      <span aria-label="confetti" role="img">🎉</span> Payment received!<br>
-      Let’s personalize your new site.<br>
-      Complete your setup below and launch in minutes.
+      🎉 Payment received!<br>
+      Personalize your new site below and launch instantly.
     </p>
   </div>
   <form id="onboarding-form" autocomplete="off">
@@ -124,17 +121,20 @@
     <label for="email">Email Address</label>
     <input type="email" id="email" placeholder="e.g. peppa@example.com" required />
 
-    <button type="submit">Submit</button>
+    <button type="submit" id="submitBtn">Submit</button>
     <div id="msg"></div>
   </form>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_KEY = 'public-anon-key';
+const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE
+const SUPABASE_KEY = 'public-anon-key';                  // <-- REPLACE
 const SUPABASE_TABLE = 'sites';
 
+let siteUrlAvailable = null; // null = unchecked, true = available, false = taken
+
 async function checkDuplicateUrl(siteUrlName) {
+  if (!siteUrlName) return null;
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`,
     {
@@ -145,22 +145,31 @@ async function checkDuplicateUrl(siteUrlName) {
     }
   );
   const data = await res.json();
-  return data.length > 0;
+  return data.length === 0;
 }
 
-// Realtime unique check
-document.getElementById('siteUrlName').addEventListener('blur', async function() {
+// Live check as you type and enable/disable submit
+document.getElementById('siteUrlName').addEventListener('input', async function() {
   const siteUrlName = this.value.trim().toLowerCase();
   const msgEl = document.getElementById('siteUrlMsg');
+  const submitBtn = document.getElementById('submitBtn');
   if(!siteUrlName) {
     msgEl.textContent = '';
+    submitBtn.disabled = false;
+    siteUrlAvailable = null;
     return;
   }
+  msgEl.style.color = '#555';
   msgEl.textContent = 'Checking availability...';
-  if (await checkDuplicateUrl(siteUrlName)) {
-    msgEl.textContent = 'This site URL name is already taken. Please try another.';
+  siteUrlAvailable = await checkDuplicateUrl(siteUrlName);
+  if (siteUrlAvailable) {
+    msgEl.style.color = 'green';
+    msgEl.textContent = '✅ Available!';
+    submitBtn.disabled = false;
   } else {
-    msgEl.textContent = '';
+    msgEl.style.color = 'red';
+    msgEl.textContent = 'This site URL name is already taken. Please try another.';
+    submitBtn.disabled = true;
   }
 });
 
@@ -174,24 +183,20 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgEl = document.getElementById('msg');
-  const siteUrlMsgEl = document.getElementById('siteUrlMsg');
 
-  // Validation
   if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
     msgEl.style.color = 'red';
     msgEl.textContent = 'Please fill out all fields.';
     return;
   }
-  msgEl.textContent = '';
-  siteUrlMsgEl.textContent = 'Checking availability...';
-
-  if (await checkDuplicateUrl(siteUrlName)) {
-    siteUrlMsgEl.textContent = 'This site URL name is already taken. Please try another.';
-    msgEl.textContent = '';
+  if (!siteUrlAvailable) {
+    msgEl.style.color = 'red';
+    msgEl.textContent = 'Please choose an available site URL name.';
     return;
-  } else {
-    siteUrlMsgEl.textContent = '';
   }
+
+  msgEl.style.color = '#283860';
+  msgEl.textContent = 'Setting up your site…';
 
   const payload = [{
     first_name: firstName,
@@ -202,8 +207,6 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     email: email
   }];
 
-  msgEl.style.color = '#283860';
-  msgEl.textContent = 'Submitting…';
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: 'POST',
     headers: {
@@ -217,9 +220,8 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 
   if (res.ok) {
     msgEl.style.color = 'green';
-    msgEl.textContent = 'Success! Your site setup is underway. Check your email for next steps.';
-    document.getElementById('onboarding-form').reset();
-    siteUrlMsgEl.textContent = '';
+    msgEl.textContent = 'Success! Redirecting…';
+    setTimeout(() => window.location.href = '/success', 1200);
   } else {
     const error = await res.json();
     msgEl.style.color = 'red';
