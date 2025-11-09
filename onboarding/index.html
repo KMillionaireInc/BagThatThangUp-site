@@ -68,18 +68,28 @@
     box-shadow: 0 2px 16px rgba(0,0,0,0.09);
     max-width: 350px;
     width: 100%;
-    text-align: center;
+    text-align: left;
     margin: 0 auto;
   }
+  #onboarding-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 2px;
+    margin-top: 16px;
+    font-size: 15px;
+    color: #283860;
+  }
   #onboarding-form input, #onboarding-form button {
-    margin: 8px 0;
-    width: 90%;
+    margin: 0 0 14px 0;
+    width: 96%;
     padding: 8px;
     border-radius: 6px;
     border: 1px solid #ddd;
     font-size: 16px;
+    background: #fff;
   }
   #onboarding-form button {
+    margin-top: 16px;
     background: #2c60ff;
     color: #fff;
     border: none;
@@ -87,11 +97,12 @@
     font-weight: bold;
     font-size: 18px;
   }
-  #msg {
-    margin-top: 10px;
+  #siteUrlMsg, #msg {
+    margin-top: 3px;
     color: red;
     min-height: 24px;
   }
+  #msg { font-weight: bold; margin-top: 10px;}
 </style>
 
 <div class="hero-bg"></div>
@@ -105,13 +116,26 @@
     </p>
     <a href="#onboarding-form" class="cta-btn">Get Started Free</a>
   </div>
-  <form id="onboarding-form">
-    <input type="text" id="firstName" placeholder="First Name" required /><br>
-    <input type="text" id="lastName" placeholder="Last Name" required /><br>
-    <input type="text" id="siteName" placeholder="Site Name (e.g., Peppa's Place)" required /><br>
-    <input type="text" id="siteUrlName" placeholder="Site URL Name (e.g., peppasplace)" required /><br>
-    <input type="text" id="amazonStoreId" placeholder="Amazon Store ID" required /><br>
-    <input type="email" id="email" placeholder="Email Address" required /><br>
+  <form id="onboarding-form" autocomplete="off">
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" placeholder="e.g. Peppa" required />
+
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" placeholder="e.g. Pig" required />
+
+    <label for="siteName">Site Name</label>
+    <input type="text" id="siteName" placeholder="e.g. Peppa's Place" required />
+
+    <label for="siteUrlName">Site URL Name</label>
+    <input type="text" id="siteUrlName" placeholder="e.g. peppasplace" required />
+    <div id="siteUrlMsg"></div>
+
+    <label for="amazonStoreId">Amazon Store ID</label>
+    <input type="text" id="amazonStoreId" placeholder="e.g. yourstore-20" required />
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="e.g. peppa@example.com" required />
+
     <button type="submit">Submit</button>
     <div id="msg"></div>
   </form>
@@ -123,15 +147,34 @@ const SUPABASE_KEY = 'public-anon-key';
 const SUPABASE_TABLE = 'sites';
 
 async function checkDuplicateUrl(siteUrlName) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`,
+    {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
     }
-  });
+  );
   const data = await res.json();
   return data.length > 0;
 }
+
+// Realtime check on blur
+document.getElementById('siteUrlName').addEventListener('blur', async function() {
+  const siteUrlName = this.value.trim().toLowerCase();
+  const msgEl = document.getElementById('siteUrlMsg');
+  if(!siteUrlName) {
+    msgEl.textContent = '';
+    return;
+  }
+  msgEl.textContent = 'Checking availability...';
+  if (await checkDuplicateUrl(siteUrlName)) {
+    msgEl.textContent = 'This site URL name is already taken. Please try another.';
+  } else {
+    msgEl.textContent = '';
+  }
+});
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -143,16 +186,20 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgEl = document.getElementById('msg');
+  const siteUrlMsgEl = document.getElementById('siteUrlMsg');
 
+  // Validate
   if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
     msgEl.textContent = 'Please fill out all fields.';
     return;
   }
-
-  msgEl.textContent = 'Checking site URL...';
+  msgEl.textContent = '';
+  siteUrlMsgEl.textContent = 'Checking availability...';
   if (await checkDuplicateUrl(siteUrlName)) {
-    msgEl.textContent = 'That site URL name is already taken. Please try another.';
+    siteUrlMsgEl.textContent = 'This site URL name is already taken. Please try another.';
     return;
+  } else {
+    siteUrlMsgEl.textContent = '';
   }
 
   const payload = [{
@@ -164,6 +211,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     email: email
   }];
 
+  msgEl.textContent = 'Submitting…';
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: 'POST',
     headers: {
@@ -179,6 +227,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     msgEl.style.color = 'green';
     msgEl.textContent = 'Onboarding complete! Check your email for next steps.';
     document.getElementById('onboarding-form').reset();
+    siteUrlMsgEl.textContent = '';
   } else {
     const error = await res.json();
     msgEl.style.color = 'red';
