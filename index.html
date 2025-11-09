@@ -1,205 +1,177 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BagThat — Unlock Effortless Income for Your Deal Group</title>
-  <meta name="description" content="BagThat automates Amazon deals for your group. Save hours, boost earnings, and streamline your work—just one link, no more busywork. Monthly subscription, total control.">
-  <link rel="icon" type="image/png" href="custompro.png" />
-
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>BagThat — Launch Your Branded Deal Hub</title>
   <style>
     :root {
-      --teal: #008080;
-      --coral: #ff6b6b;
-      --offwhite: #f9fafb;
-      --charcoal: #1f2937;
-      --radius: 16px;
-      --shadow: 0 6px 20px rgba(0,0,0,0.08);
-      --alert: #e53e3e;
+      --ink:#1b1b1b;
+      --accent:#b7a98b;
+      --bg:#f6f5f3;
+      --white:#ffffff;
+      --radius:18px;
+      --transition: all .35s ease;
     }
-    * {box-sizing:border-box;margin:0;padding:0}
     body {
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: var(--offwhite);
-      color: var(--charcoal);
-      line-height: 1.6;
+      font-family:"Inter",system-ui,sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.6;
     }
-    .energy-banner {
-      background: var(--coral);
-      color: white;
-      padding: 16px;
-      font-size: 1.2rem;
-      text-align: center;
-      font-weight: 700;
-      letter-spacing: .01em;
+    header {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:3rem;
+      padding:6rem 1.5rem 4rem;
+      max-width:1200px;
+      margin:auto;
     }
-    .hero {
-      background: white;
-      padding: 60px 20px 40px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 40px;
-      max-width: 1100px;
-      margin: auto;
+    header .text {
+      flex:1 1 420px;
     }
-    .hero-text { flex: 1 1 420px; text-align: left; }
-    .hero-text img.logo { width: 60px; margin-bottom: 1rem; }
-    .hero-text h1 {
-      font-size: 2.3rem;
-      color: var(--teal);
-      margin-bottom: 0.8rem;
-      font-weight: bold;
-      line-height: 1.2;
+    header h1 {
+      font-size:2.6rem;
+      margin:0 0 1rem;
+      line-height:1.2;
     }
-    .hero-text p {
-      font-size: 1.13rem;
-      color: #374151;
-      margin-bottom: 1.2rem;
-      max-width: 500px;
-      font-weight: 500;
-    }
-    .hero-text ul {
-      margin: 1rem 0 1.5rem 1.3rem;
-      padding-left: .9em;
-      font-size: 1.06rem;
-      color: #1f2937;
-    }
-    .hero-text ul li {
-      margin-bottom: .45em;
-    }
+    header p {font-size:1.15rem;}
     .cta {
       display:inline-block;
-      background:var(--teal);
-      color:white;
-      padding:13px 30px;
-      border-radius:8px;
-      font-weight:700;
-      font-size:1.15rem;
-      text-decoration:none;
-      transition:background .3s;
-      margin-top: 10px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      border: none;
-      cursor: pointer;
-    }
-    .cta:hover{background:var(--alert);}
-    .hero-image {
-      flex: 1 1 420px;
-      text-align: center;
-    }
-    .hero-image img {
-      width: 100%;
-      max-width: 340px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    @media(max-width:900px){
-      .hero { flex-direction: column-reverse; text-align: center; }
-      .hero-text p,
-      .hero-text ul { margin: 0 auto 1.2rem; }
-      .hero-text ul { text-align: left; display: inline-block; }
-    }
-    section {max-width:1100px;margin:auto;padding:60px 20px;}
-    .section{display:flex;flex-wrap:wrap;align-items:center;gap:40px;margin-top:40px;}
-    .section img{flex:1 1 420px;width:100%;border-radius:var(--radius);box-shadow:var(--shadow);}
-    .section div{flex:1 1 400px;}
-    .section h2{font-size:1.8rem;margin-bottom:1rem;color:var(--teal);}
-    .section p{font-size:1rem;color:#374151;}
-    @media(max-width:800px){
-      .section{flex-direction:column;text-align:center;}
-      .section h2{font-size:1.6rem;}
-    }
-    .pricing{text-align:center;background:white;border-radius:var(--radius);
-      box-shadow:var(--shadow);padding:60px 20px;margin:80px 20px;}
-    .pricing h2{font-size:1.8rem;margin-bottom:12px;color:var(--charcoal);}
-    .pricing .price{font-size:2.7rem;color:var(--teal);margin:20px 0 10px;}
-    .pricing p{color:#374151;margin-bottom:22px;}
-    .pricing span{font-size:1.06rem;color:#666;}
-    .guarantee {
-      font-size:1rem;color:var(--charcoal);background:#f1f8f7;margin:26px auto 10px;padding:16px 10px;border-radius:var(--radius);max-width:420px;box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      background:var(--accent);
+      color:var(--white);
+      padding:1rem 2rem;
+      border-radius:var(--radius);
+      margin-top:2rem;
       font-weight:600;
+      text-decoration:none;
+      transition:var(--transition);
     }
-    footer{text-align:center;padding:40px 20px;background:var(--charcoal);color:white;font-size:.9rem;}
+    .cta:hover{opacity:.85;}
+    header .image {
+      flex:1 1 400px;
+      text-align:center;
+    }
+    header img {
+      width:100%;
+      max-width:460px;
+      border-radius:var(--radius);
+      box-shadow:0 10px 30px rgba(0,0,0,.1);
+    }
+    section {
+      padding:5rem 1.5rem;
+      max-width:1100px;
+      margin:auto;
+    }
+    section:nth-child(even){background:var(--white);}
+    h2 {
+      text-align:center;
+      font-size:1.9rem;
+      margin-bottom:2.5rem;
+    }
+    .features {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:2rem;
+    }
+    .card {
+      background:var(--white);
+      border-radius:var(--radius);
+      padding:2rem;
+      box-shadow:0 3px 15px rgba(0,0,0,.06);
+      transition:var(--transition);
+    }
+    .card:hover{transform:translateY(-4px);}
+    .card h3{margin-top:0;font-size:1.25rem;}
+    .testimonials {
+      text-align:center;
+      max-width:800px;
+      margin:auto;
+    }
+    .quote {
+      font-style:italic;
+      background:var(--white);
+      padding:2rem;
+      border-radius:var(--radius);
+      box-shadow:0 3px 12px rgba(0,0,0,.05);
+      margin-bottom:2rem;
+    }
+    footer {
+      text-align:center;
+      padding:3rem 1rem;
+      font-size:.9rem;
+      color:#555;
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="energy-banner">
-    <span>Stop losing income and wasting hours! BagThat makes it automatic—one link, hundreds of deals, zero burnout.</span>
-  </div>
-
-  <header class="hero">
-    <div class="hero-text">
-      <img src="custompro.png" alt="BagThat Logo" class="logo">
-      <h1>No More Algorithm Roadblocks. No More Busywork. Just Results.</h1>
-      <p>
-        <strong>BagThat is a recurring monthly service—because your income and freedom are worth more than a one-time quick fix.</strong><br>
-        <span style="color:var(--coral);font-weight:bold;">Start today. Get results tomorrow. Keep profiting every day.</span>
-      </p>
-      <ul>
-        <li><b>Automatic Daily Updates:</b> Your group gets every hot deal, every code, every campaign, LIVE—no manual posting.</li>
-        <li><b>One Link, Unlimited Reach:</b> Your branded hub is the only link you ever need. No more cryptic code posts or lost traffic.</li>
-        <li><b>Every Link = Your Earnings:</b> Forget tracking or converting. Every product is auto-tagged for your account—just share and profit.</li>
-        <li><b>Maximum Community, Minimum Effort:</b> Skip the grind and focus on what grows your group: engagement, fun, and influence.</li>
-      </ul>
-      <a href="#pricing" class="cta">Get Started Now—Recurring Value for Your Group</a>
+  <header>
+    <div class="text">
+      <h1>Unleash Your Amazon Deal Group — Earn More, Do Less, Build Real Community</h1>
+      <p><strong>Break free from Facebook’s suppression.</strong><br>
+      No more cryptic “deal code” posts, buried links, or wasted hours converting.<br>
+      Send your tribe to one unstoppable hub—where every offer is fresh, every link earns, and your group finally sees what they really want.</p>
+      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Branded Hub</a>
     </div>
-    <div class="hero-image">
-      <img src="/hero.jpg" alt="Creator working at laptop">
+    <div class="image">
+      <img src="/assets/mockup-laptop-phone.jpg" alt="BagThat branded hub mockup">
     </div>
   </header>
 
-  <section id="frustration" class="section">
-    <div>
-      <h2>Still Posting Deals One at a Time?</h2>
-      <p>
-        It’s 2025. If you’re still converting links, “talking in code,” and fighting suppression just to share value, it’s time for an upgrade. Stop losing hours every week—and stop losing money you already earned!
-      </p>
+  <section>
+    <h2>Why It Works</h2>
+    <div class="features">
+      <div class="card">
+        <h3>All Your Deals, All at Once</h3>
+        <p>No daily posting. No hiding. Every Amazon code and promo automatically updates for your whole group—visible and ready to shop.</p>
+      </div>
+      <div class="card">
+        <h3>Your Brand, Your Hub</h3>
+        <p>Drive traffic to one branded link that belongs to you. It looks professional, builds loyalty, and gives you full control of your audience.</p>
+      </div>
+      <div class="card">
+        <h3>Boost Income — Zero Hassle</h3>
+        <p>Every link is tagged with your affiliate info. See which items drive the highest commissions and which campaigns perform best—no spreadsheets required.</p>
+      </div>
+      <div class="card">
+        <h3>No Maintenance Required</h3>
+        <p>Deals refresh automatically, expired codes vanish, and your storefront stays perfectly current.</p>
+      </div>
+      <div class="card">
+        <h3>More Engagement, More Action</h3>
+        <p>Keep your feed for conversation and community. Let your hub handle conversions while you grow influence and income.</p>
+      </div>
     </div>
-    <img src="/frustrated.jpg" alt="Stressed creator at desk">
   </section>
 
-  <section id="freedom" class="section">
-    <div>
-      <h2>The Smart Way to Run a Deal Group</h2>
-      <p>
-        With BagThat, your hub does the work for you: deals rotate, links convert, everything is tracked for you. Imagine more energy and more income—without posting 50 times a day.
-      </p>
+  <section>
+    <h2>Creators Are Taking Back Control</h2>
+    <div class="testimonials">
+      <div class="quote">“It used to take me hours a day to post deals. Now it’s all automatic—and my group engagement is higher than ever.”<br><strong>— Kimberly M., Amazon Group Owner</strong></div>
+      <div class="quote">“BagThat gave my followers a single place to shop, and my commissions doubled in two weeks.”<br><strong>— Community Admin</strong></div>
     </div>
-    <img src="/freedom.jpg" alt="Happy creator holding drink">
   </section>
 
-  <section id="features" class="section">
-    <div>
-      <h2>Your Group, Your Income—On Autopilot</h2>
-      <p>
-        <b>BagThat was built for real group leaders:</b>  
-        - No maintenance, ever  
-        - See top-commission campaigns instantly  
-        - Highlight must-share deals, but keep your hub loaded with hundreds more  
-        - Unlock time for fun, reels, and real group growth
-      </p>
-    </div>
-    <img src="/feature1.jpg" alt="Creators collaborating">
-  </section>
-
-  <section id="pricing" class="pricing">
-    <h2>Recurring Results, Recurring Income</h2>
-    <p>
-      <b>Just $19/month, cancel anytime.</b>  
-      BagThat works every day—so you see new income and engagement every single month.
+  <section style="text-align:center;">
+    <h2>Ready to Ditch the Busywork?</h2>
+    <p style="max-width:700px;margin:0 auto 2rem;">
+      Launch your branded deal hub today—your community, your income, your time back.
     </p>
-    <div class="price">$19<span>/month</span></div>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Subscribe for Instant Access</a>
-    <div class="guarantee">
-      Your group wants new deals, not the same old hassle.<br>
-      <span style="color:var(--coral);">BagThat keeps you ahead—recurring service, recurring results. Cancel any time.</span>
-    </div>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Get Started Now</a>
+    <p style="margin-top:1rem;font-size:.95rem;color:#555;">
+      Everything’s automated. Everything’s tracked. You just get better results.
+    </p>
   </section>
 
-  <footer>© 2025 BagThat. One Link. Zero Busywork. All Your Deals & Earnings—On Autopilot.</footer>
+  <footer>
+    <p>As an Amazon Associate, members may earn commissions from qualifying purchases.</p>
+    <p><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></p>
+  </footer>
+
 </body>
 </html>
-
