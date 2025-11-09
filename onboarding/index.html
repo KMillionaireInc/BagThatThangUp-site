@@ -33,39 +33,22 @@
   }
   .branding-header h1 {
     margin: 0 0 9px 0;
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: -0.04em;
-    text-shadow: 0 3px 8px rgba(18,50,120,0.32);
+    text-shadow: 0 3px 8px rgba(18,50,120,0.24);
   }
   .branding-header p {
-    margin: 0 0 14px 0;
+    margin: 0 0 11px 0;
     font-size: 19px;
     font-weight: 500;
-    text-shadow: 0 1px 6px rgba(14,30,60,0.36);
-  }
-  .branding-header .cta-btn {
-    display: inline-block;
-    margin-top: 9px;
-    background: #ffbe18;
-    color: #000;
-    font-size: 19px;
-    font-weight: bold;
-    padding: 10px 26px;
-    border-radius: 25px;
-    text-decoration: none;
-    transition: background 0.2s;
-    box-shadow: 0 2px 8px rgba(14,30,60,0.19);
-  }
-  .branding-header .cta-btn:hover {
-    background: #ff8800;
-    color: #fff;
+    text-shadow: 0 1px 5px rgba(14,30,60,0.18);
   }
   #onboarding-form {
-    background: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.95);
     padding: 32px 24px;
     border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     max-width: 350px;
     width: 100%;
     text-align: left;
@@ -73,7 +56,7 @@
   }
   #onboarding-form label {
     display: block;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 2px;
     margin-top: 16px;
     font-size: 15px;
@@ -96,11 +79,17 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 18px;
+    transition: background 0.2s;
+  }
+  #onboarding-form button:hover {
+    background: #1945b0;
   }
   #siteUrlMsg, #msg {
     margin-top: 3px;
     color: red;
     min-height: 24px;
+    font-size: 15px;
+    font-weight: normal;
   }
   #msg { font-weight: bold; margin-top: 10px;}
 </style>
@@ -108,13 +97,12 @@
 <div class="hero-bg"></div>
 <div class="form-container">
   <div class="branding-header">
-    <h1>BagThatThangUp 🚀</h1>
+    <h1>Welcome to BagThatThangUp!</h1>
     <p>
-      Ready to finally beat social suppression<br>
-      and turn every Amazon deal into cash?<br>
-      <strong>Join top creators—early access open now!</strong>
+      <span aria-label="confetti" role="img">🎉</span> Payment received!<br>
+      Let’s personalize your new site.<br>
+      Complete your setup below and launch in minutes.
     </p>
-    <a href="#onboarding-form" class="cta-btn">Get Started Free</a>
   </div>
   <form id="onboarding-form" autocomplete="off">
     <label for="firstName">First Name</label>
@@ -160,7 +148,7 @@ async function checkDuplicateUrl(siteUrlName) {
   return data.length > 0;
 }
 
-// Realtime check on blur
+// Realtime unique check
 document.getElementById('siteUrlName').addEventListener('blur', async function() {
   const siteUrlName = this.value.trim().toLowerCase();
   const msgEl = document.getElementById('siteUrlMsg');
@@ -188,15 +176,18 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   const msgEl = document.getElementById('msg');
   const siteUrlMsgEl = document.getElementById('siteUrlMsg');
 
-  // Validate
+  // Validation
   if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
+    msgEl.style.color = 'red';
     msgEl.textContent = 'Please fill out all fields.';
     return;
   }
   msgEl.textContent = '';
   siteUrlMsgEl.textContent = 'Checking availability...';
+
   if (await checkDuplicateUrl(siteUrlName)) {
     siteUrlMsgEl.textContent = 'This site URL name is already taken. Please try another.';
+    msgEl.textContent = '';
     return;
   } else {
     siteUrlMsgEl.textContent = '';
@@ -211,6 +202,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     email: email
   }];
 
+  msgEl.style.color = '#283860';
   msgEl.textContent = 'Submitting…';
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: 'POST',
@@ -225,7 +217,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 
   if (res.ok) {
     msgEl.style.color = 'green';
-    msgEl.textContent = 'Onboarding complete! Check your email for next steps.';
+    msgEl.textContent = 'Success! Your site setup is underway. Check your email for next steps.';
     document.getElementById('onboarding-form').reset();
     siteUrlMsgEl.textContent = '';
   } else {
