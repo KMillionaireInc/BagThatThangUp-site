@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BagThat — Unleash Your Deal Group, Boost Income, Ditch Busywork</title>
-  <meta name="description" content="Automate your Facebook deal group with a branded, auto-updating Amazon promo hub. Drive group engagement, earn more, skip the daily posting grind.">
+  <title>BagThat — Unlock Effortless Income for Your Deal Group</title>
+  <meta name="description" content="BagThat makes sharing Amazon deals a breeze. Auto-update your group’s deals, boost your earnings, and save hours every week—no tech headaches. One link, no busywork, total control.">
   <link rel="icon" type="image/png" href="custompro.png" />
 
   <style>
@@ -15,8 +15,8 @@
       --charcoal: #1f2937;
       --radius: 16px;
       --shadow: 0 6px 20px rgba(0,0,0,0.08);
+      --alert: #e53e3e;
     }
-
     * {box-sizing:border-box;margin:0;padding:0}
     body {
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -24,18 +24,15 @@
       color: var(--charcoal);
       line-height: 1.6;
     }
-
-    /* --- BANNER --- */
     .energy-banner {
       background: var(--coral);
       color: white;
       padding: 16px;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       text-align: center;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: .01em;
     }
-
-    /* --- HERO --- */
     .hero {
       background: white;
       padding: 60px 20px 40px;
@@ -47,78 +44,63 @@
       max-width: 1100px;
       margin: auto;
     }
-
-    .hero-text {
-      flex: 1 1 420px;
-      text-align: left;
-    }
-
-    .hero-text img.logo {
-      width: 60px;
-      margin-bottom: 1rem;
-    }
-
+    .hero-text { flex: 1 1 420px; text-align: left; }
+    .hero-text img.logo { width: 60px; margin-bottom: 1rem; }
     .hero-text h1 {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       color: var(--teal);
-      margin-bottom: 0.75rem;
-      line-height: 1.2;
+      margin-bottom: 0.8rem;
+      font-weight: bold;
+      line-height: 1.15;
     }
-
     .hero-text p {
-      font-size: 1.08rem;
+      font-size: 1.13rem;
       color: #374151;
-      margin-bottom: 0.75rem;
-      max-width: 470px;
+      margin-bottom: 1.2rem;
+      max-width: 500px;
+      font-weight: 500;
     }
-
     .hero-text ul {
-      margin: 1rem 0 1.5rem 1.2rem;
+      margin: 1rem 0 1.5rem 1.3rem;
+      padding-left: .9em;
+      font-size: 1.06rem;
       color: #1f2937;
-      font-size: 1.05rem;
-      padding-left: 1em;
     }
-
+    .hero-text ul li {
+      margin-bottom: .45em;
+    }
     .cta {
       display:inline-block;
       background:var(--teal);
       color:white;
-      padding:12px 26px;
+      padding:13px 30px;
       border-radius:8px;
-      font-weight:600;
+      font-weight:700;
+      font-size:1.15rem;
       text-decoration:none;
       transition:background .3s;
-      margin-top: 8px;
+      margin-top: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border: none;
+      cursor: pointer;
     }
-    .cta:hover{background:var(--coral);}
-
+    .cta:hover{background:var(--alert);}
     .hero-image {
       flex: 1 1 420px;
       text-align: center;
     }
     .hero-image img {
       width: 100%;
-      max-width: 360px;
+      max-width: 340px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
-
     @media(max-width:900px){
-      .hero {
-        flex-direction: column-reverse;
-        text-align: center;
-      }
+      .hero { flex-direction: column-reverse; text-align: center; }
       .hero-text p,
-      .hero-text ul {
-        margin: 0 auto 1.2rem;
-      }
-      .hero-text ul {
-        text-align: left;
-        display: inline-block;
-      }
+      .hero-text ul { margin: 0 auto 1.2rem; }
+      .hero-text ul { text-align: left; display: inline-block; }
     }
-
-    /* --- SECTIONS --- */
     section {max-width:1100px;margin:auto;padding:60px 20px;}
     .section{display:flex;flex-wrap:wrap;align-items:center;gap:40px;margin-top:40px;}
     .section img{flex:1 1 420px;width:100%;border-radius:var(--radius);box-shadow:var(--shadow);}
@@ -129,54 +111,51 @@
       .section{flex-direction:column;text-align:center;}
       .section h2{font-size:1.6rem;}
     }
-
-    /* --- PRICING --- */
     .pricing{text-align:center;background:white;border-radius:var(--radius);
       box-shadow:var(--shadow);padding:60px 20px;margin:80px 20px;}
-    .pricing h2{font-size:1.8rem;margin-bottom:10px;color:var(--charcoal);}
-    .pricing .price{font-size:2.6rem;color:var(--teal);margin:20px 0;}
-    .pricing p{color:#374151;margin-bottom:20px;}
-    .pricing span{font-size:1rem;color:#666;}
-
+    .pricing h2{font-size:1.8rem;margin-bottom:12px;color:var(--charcoal);}
+    .pricing .price{font-size:2.7rem;color:var(--teal);margin:20px 0 10px;}
+    .pricing p{color:#374151;margin-bottom:22px;}
+    .pricing span{font-size:1.06rem;color:#666;}
+    .guarantee {
+      font-size:1rem;color:var(--charcoal);background:#f1f8f7;margin:26px auto 10px;padding:16px 10px;border-radius:var(--radius);max-width:420px;box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      font-weight:600;
+    }
     footer{text-align:center;padding:40px 20px;background:var(--charcoal);color:white;font-size:.9rem;}
   </style>
 </head>
-
 <body>
 
-  <!-- ENERGETIC BANNER -->
   <div class="energy-banner">
-    Tired of code-speaking, vanishing posts, and endless busywork? <b>BagThat</b> gives your group ONE link, unlimited reach, and unstoppable income—all on autopilot!
+    <span>Stop losing income and wasting hours! BagThat makes it automatic—one link, hundreds of deals, zero burnout.</span>
   </div>
 
-  <!-- HERO -->
   <header class="hero">
     <div class="hero-text">
       <img src="custompro.png" alt="BagThat Logo" class="logo">
-      <h1>Unleash Your Amazon Deal Group — Earn More, Do Less, Build Real Community</h1>
+      <h1>No More Algorithm Roadblocks. No More Busywork. Just Results.</h1>
       <p>
-        Break free from “talking in code” and sinking hours into posts the algorithm hides.<br>
-        <strong>BagThat is your branded, auto-updating Amazon deals hub—so you engage more, earn more, and never race the feed again.</strong>
+        <strong>If you run an Amazon deal group, BagThat is a no-brainer.</strong>  
+        <span style="color:var(--coral);font-weight:bold;">Quit working for the feed. Let your income and engagement work for you.</span>
       </p>
       <ul>
-        <li><strong>All Your Deals, Automatically:</strong> Every promo, code, and high-commission offer—fresh, every day.</li>
-        <li><strong>One Link. Infinite Exposure:</strong> Send your whole group to your own storefront—all tracked to your affiliate/influencer ID.</li>
-        <li><strong>No Posting. No Converting. No Cleanup:</strong> Your hub refreshes, expires, and rotates deals for you.</li>
-        <li><strong>Earn More, Effortlessly:</strong> Focus on real engagement instead of “hacking” the system.</li>
+        <li><b>Automatic Daily Updates:</b> Your group gets every hot deal, every code, every campaign, LIVE—no manual posting.</li>
+        <li><b>One Link, Unlimited Reach:</b> Your branded hub is the only link you ever need. No more cryptic code posts or lost traffic.</li>
+        <li><b>Every Link = Your Earnings:</b> Forget tracking or converting. Every product is auto-tagged for your account—just share and profit.</li>
+        <li><b>Maximum Community, Minimum Effort:</b> Skip the grind and focus on what grows your group: engagement, fun, and influence.</li>
       </ul>
-      <a href="#pricing" class="cta">Launch My Storefront Now</a>
+      <a href="#pricing" class="cta">Get Started Now—Unlock Effortless Group Income</a>
     </div>
     <div class="hero-image">
       <img src="/hero.jpg" alt="Creator working at laptop">
     </div>
   </header>
 
-  <!-- SECTIONS -->
   <section id="frustration" class="section">
     <div>
-      <h2>Battling the Feed Is Burning You Out</h2>
+      <h2>Still Posting Deals One at a Time?</h2>
       <p>
-        Endless link converting, secret-words, and disappearing posts? You’re not alone. The old way steals your time, drains your energy, and blocks your message from the people who need it most—your group.
+        It’s 2025. If you’re still converting links, “talking in code,” and fighting suppression just to share value, it’s time for an upgrade. Stop losing hours every week—and stop losing money you already earned!
       </p>
     </div>
     <img src="/frustrated.jpg" alt="Stressed creator at desk">
@@ -184,10 +163,9 @@
 
   <section id="freedom" class="section">
     <div>
-      <h2>Say Hello to Automated, Hands-Off Profit</h2>
+      <h2>The Smart Way to Run a Deal Group</h2>
       <p>
-        With BagThat, your deals page updates itself, round the clock. No manual posting. No scrambling after outdated links.
-        Just your brand, your community, and easy income—while you sleep.
+        With BagThat, your hub does the work for you: deals rotate, links convert, everything is tracked for you. Imagine more energy and more income—without posting 50 times a day.
       </p>
     </div>
     <img src="/freedom.jpg" alt="Happy creator holding drink">
@@ -195,27 +173,31 @@
 
   <section id="features" class="section">
     <div>
-      <h2>Built for Influencers Who Want More</h2>
+      <h2>Your Group, Your Income—On Autopilot</h2>
       <p>
-        BagThat connects your group, your promos, and your income in a single, powerful hub.<br>
-        - Every deal auto-tagged for your earnings<br>
-        - See top commission campaigns at a glance<br>
-        - Highlight “can’t-miss” items, while your hub hosts hundreds more
+        <b>BagThat was built for real group leaders:</b>  
+        - No maintenance, ever  
+        - See top-commission campaigns instantly  
+        - Highlight must-share deals, but keep your hub loaded with hundreds more  
+        - Unlock time for fun, reels, and real group growth
       </p>
     </div>
     <img src="/feature1.jpg" alt="Creators collaborating">
   </section>
 
-  <!-- PRICING -->
   <section id="pricing" class="pricing">
-    <h2>Start Now—Unlock Your New Income Stream</h2>
-    <p>No busywork. No code. Just your group, your hub, and your earnings—finally in your control.</p>
+    <h2>It Pays for Itself—Every Single Day</h2>
+    <p>
+      <b>One small investment, hundreds of hassle-free deals, and more income than ever. Ready to finally grow?</b>
+    </p>
     <div class="price">$19<span>/month</span></div>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch for $19</a>
-    <p style="color:#666;font-size:.98rem;margin-top:1rem;">Your members want deals. You deserve results. Start today—no long-term contract, cancel anytime.</p>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch Your Hub for $19</a>
+    <div class="guarantee">
+      Your group wants deals. You want results.  
+      <span style="color:var(--coral);">BagThat is the only tool that gives you BOTH—try it today, cancel anytime.</span>
+    </div>
   </section>
 
-  <footer>© 2025 BagThat. Your Deals. Your Brand. Your Freedom.</footer>
-
+  <footer>© 2025 BagThat. One Link. Zero Busywork. All Your Deals & Earnings—On Autopilot.</footer>
 </body>
 </html>
