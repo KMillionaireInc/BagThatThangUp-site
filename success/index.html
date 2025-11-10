@@ -1,233 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Success | BagThatThangUp</title>
-<style>
-  :root {
-    --accent: #006d5b;
-    --bg: #f6faf9;
-    --ink: #0b1320;
-    --muted: #4d6375;
-    --radius: 18px;
-    --shadow: 0 10px 26px rgba(2, 24, 43, 0.12);
-  }
-
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
-
-  .hero {
-    position: relative;
-    width: 100%;
-    height: 70vh;
-    background: url("./freedom.jpg") center center/cover no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
-  }
-  .hero::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-  }
-  .hero-content {
-    position: relative;
-    z-index: 1;
-    padding: 0 20px;
-    max-width: 650px;
-  }
-  .hero h1 {
-    font-size: 2.3rem;
-    font-weight: 800;
-    margin-bottom: 12px;
-  }
-  .hero p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 28px;
-  }
-  .cta-btn {
-    background: var(--accent);
-    color: #fff;
-    padding: 14px 30px;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background 0.2s ease;
-  }
-  .cta-btn:hover {
-    background: #005749;
-  }
-
-  .benefits {
-    max-width: 780px;
-    margin: 60px auto;
-    text-align: center;
-    padding: 0 20px;
-  }
-  .benefits h2 {
-    font-size: 1.8rem;
-    color: var(--accent);
-    margin-bottom: 18px;
-  }
-  .benefits p {
-    color: var(--muted);
-    font-size: 1rem;
-    line-height: 1.7;
-  }
-
-  .next-steps {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    max-width: 1000px;
-    margin: 60px auto;
-    gap: 40px;
-    padding: 0 20px 60px;
-  }
-  .next-steps img {
-    width: 420px;
-    max-width: 100%;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-  .steps-content {
-    max-width: 460px;
-  }
-  .steps-content h3 {
-    color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-  .steps-content p {
-    color: var(--muted);
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 18px;
-  }
-  .link-box {
-    background: white;
-    padding: 14px 18px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    font-weight: 600;
-    color: var(--accent);
-    word-break: break-all;
-    margin-bottom: 16px;
-  }
-  .link-box a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-block;
-  }
-  ul.checklist {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  ul.checklist li {
-    margin-bottom: 10px;
-    font-size: 15px;
-    color: var(--muted);
-  }
-  ul.checklist li::before {
-    content: "✓";
-    color: var(--accent);
-    font-weight: bold;
-    margin-right: 8px;
-  }
-
-  footer {
-    text-align: center;
-    font-size: 14px;
-    color: var(--muted);
-    padding: 30px 20px 50px;
-  }
-
-  @media (max-width: 768px) {
-    .hero h1 {
-      font-size: 1.8rem;
-    }
-    .next-steps {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Storefront Is Ready!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: url("yessuccess.jpg") center center/cover no-repeat fixed;
+      color: #0b1320;
+      display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.85);
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      width: 90%;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px 30px;
       text-align: center;
+      animation: fadeIn 0.8s ease-out;
     }
-    .steps-content {
-      max-width: 100%;
+
+    h1 {
+      color: #006d5b;
+      font-size: 28px;
+      margin-bottom: 12px;
     }
-  }
-</style>
+
+    p {
+      font-size: 16px;
+      color: #1b2b3a;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .site-link {
+      display: inline-block;
+      margin-bottom: 15px;
+      color: #006d5b;
+      text-decoration: underline;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: #006d5b;
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+      transition: background 0.2s ease;
+    }
+
+    .cta-btn:hover {
+      background: #00856f;
+    }
+
+    .next-steps {
+      margin-top: 28px;
+      text-align: left;
+    }
+
+    .next-steps h3 {
+      font-size: 18px;
+      color: #0b1320;
+      margin-bottom: 8px;
+    }
+
+    .next-steps ul {
+      list-style: disc;
+      padding-left: 20px;
+      color: #1b2b3a;
+      line-height: 1.6;
+    }
+
+    .image-section {
+      margin-top: 35px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .image-section img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #44545f;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Congratulations — You Just Stepped Into Easy!</h1>
-      <p>No more converting links. No more daily posting. No more algorithm battles.<br>
-      Just one site — automatically updated every single day.</p>
-      <a id="siteLinkHero" href="#" class="cta-btn" target="_blank">Go to Your Site</a>
-    </div>
-  </section>
+  <div class="overlay"></div>
 
-  <section class="benefits">
-    <h2>Your New Routine: Relaxed and Running</h2>
-    <p>
-      You don’t have to chase the feed or outsmart the platform anymore.<br>
-      Your deals load daily, your links stay clean, and your brand stays in motion —<br>
-      all from one single, automated website that works while you do life.
-    </p>
-  </section>
+  <div class="content">
+    <h1>Congratulations — You Just Stepped Into Easy!</h1>
+    <p>No more converting links. No more daily posting. No more algorithm battles.<br>
+       Just one automated site — updated for you every single day.</p>
 
-  <section class="next-steps">
-    <img src="./yessuccess.jpg" alt="Celebrating success">
-    <div class="steps-content">
-      <h3>Your Next Steps</h3>
-      <p>Your site is live and ready to share. Bookmark it, post it, and let automation handle the rest.</p>
-      <div class="link-box">
-        <a id="linkBox" href="#" target="_blank">Loading your link...</a>
-      </div>
-      <ul class="checklist">
-        <li>Click the button above to visit your live site</li>
-        <li>Bookmark your site for quick access</li>
-        <li>Share it in your group or stories</li>
-        <li>Let daily automation do the heavy lifting</li>
+    <a id="siteLink" class="site-link" href="#" target="_blank">Loading your site link...</a><br>
+    <a id="goBtn" class="cta-btn" href="#" target="_blank">Go to My Storefront</a>
+
+    <div class="next-steps">
+      <h3>Next Steps</h3>
+      <ul>
+        <li>Bookmark your storefront for quick access.</li>
+        <li>Share your link in your groups or stories.</li>
+        <li>Let daily automation do the heavy lifting.</li>
       </ul>
     </div>
-  </section>
 
-  <footer>© BagThatThangUp — All Rights Reserved</footer>
+    <div class="image-section">
+      <img src="freedom.jpg" alt="Celebrating Success">
+    </div>
 
-<script>
-  // Extract subdomain from URL (example: ?sub=myshop)
-  const params = new URLSearchParams(window.location.search);
-  const sub = params.get("sub");
-  const heroLink = document.getElementById("siteLinkHero");
-  const linkBox = document.getElementById("linkBox");
+    <footer>© 2025 BagThat. All Rights Reserved.</footer>
+  </div>
 
-  if (sub) {
-    const url = `https://${sub}.bagthatthangup.com`;
-    heroLink.href = url;
-    linkBox.href = url;
-    linkBox.textContent = url;
-  } else {
-    heroLink.href = "https://bagthatthangup.com";
-    linkBox.href = "https://bagthatthangup.com";
-    linkBox.textContent = "https://bagthatthangup.com";
-  }
-</script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sub = params.get("sub");
+    if (sub) {
+      const siteURL = `https://${sub}.bagthatthangup.com`;
+      document.getElementById("siteLink").href = siteURL;
+      document.getElementById("siteLink").textContent = siteURL;
+      document.getElementById("goBtn").href = siteURL;
+    } else {
+      document.getElementById("siteLink").textContent = "Error: missing site link.";
+    }
+  </script>
 </body>
 </html>
