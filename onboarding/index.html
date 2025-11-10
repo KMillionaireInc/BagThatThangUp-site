@@ -63,7 +63,7 @@ async function checkUrlAvailability(subdomain) {
   if (!subdomain) return false;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?subdomain=eq.${encodeURIComponent(subdomain.toLowerCase())}`,
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&subdomain=eq.${encodeURIComponent(subdomain.toLowerCase())}`,
       {
         headers: {
           'apikey': SUPABASE_KEY,
