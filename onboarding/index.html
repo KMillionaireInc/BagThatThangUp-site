@@ -4,96 +4,18 @@
 <meta charset="UTF-8">
 <title>Onboarding | BagThatThangUp</title>
 <style>
-  body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  .hero-bg {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100vw; height: 100vh;
-    background: url('/hero.jpg') center center/cover no-repeat;
-    z-index: 0;
-  }
-  .form-container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .branding-header {
-    background: none;
-    color: #fff;
-    padding: 30px 32px 10px 32px;
-    text-align: center;
-    max-width: 500px;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 20px #163060, 0 1px 5px #000;
-    font-weight: bold;
-  }
-  .branding-header h1 {
-    margin: 0 0 9px 0;
-    font-size: 2.1rem;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-  }
-  .branding-header p {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 500;
-  }
-  #onboarding-form {
-    background: rgba(255,255,255,0.97);
-    padding: 32px 24px;
-    border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    max-width: 350px;
-    width: 100%;
-    text-align: left;
-    margin: 0 auto;
-  }
-  #onboarding-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 2px;
-    margin-top: 16px;
-    font-size: 15px;
-    color: #283860;
-  }
-  #onboarding-form input, #onboarding-form button {
-    margin: 0 0 14px 0;
-    width: 96%;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    background: #fff;
-  }
-  #onboarding-form button {
-    margin-top: 16px;
-    background: #2c60ff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 18px;
-    transition: background 0.2s;
-  }
-  #onboarding-form button:disabled {
-    background: #7a91c6;
-    cursor: not-allowed;
-  }
-  #siteUrlMsg {
-    margin-top: 2px;
-    font-size: 15px;
-    font-weight: 500;
-    min-height: 22px;
-  }
+  body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
+  .hero-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: url('/hero.jpg') center center/cover no-repeat; z-index: 0; }
+  .form-container { position: relative; z-index: 1; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  .branding-header { background: none; color: #fff; padding: 30px 32px 10px 32px; text-align: center; max-width: 500px; margin-bottom: 10px; text-shadow: 0 2px 20px #163060, 0 1px 5px #000; font-weight: bold; }
+  .branding-header h1 { margin: 0 0 9px 0; font-size: 2.1rem; font-weight: 900; letter-spacing: -0.03em; }
+  .branding-header p { margin: 0 0 8px 0; font-size: 18px; font-weight: 500; }
+  #onboarding-form { background: rgba(255,255,255,0.97); padding: 32px 24px; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); max-width: 350px; width: 100%; text-align: left; margin: 0 auto; }
+  #onboarding-form label { display: block; font-weight: 600; margin-bottom: 2px; margin-top: 16px; font-size: 15px; color: #283860; }
+  #onboarding-form input, #onboarding-form button { margin: 0 0 14px 0; width: 96%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 16px; background: #fff; }
+  #onboarding-form button { margin-top: 16px; background: #2c60ff; color: #fff; border: none; cursor: pointer; font-weight: bold; font-size: 18px; transition: background 0.2s; }
+  #onboarding-form button:disabled { background: #7a91c6; cursor: not-allowed; }
+  #subdomainMsg { margin-top: 2px; font-size: 15px; font-weight: 500; min-height: 22px; }
   #msg { font-weight: bold; margin-top: 10px;}
 </style>
 </head>
@@ -102,10 +24,7 @@
 <div class="form-container">
   <div class="branding-header">
     <h1>Welcome to BagThatThangUp!</h1>
-    <p>
-      🎉 Payment received!<br>
-      Personalize your new site below and launch instantly.
-    </p>
+    <p>🎉 Payment received!<br>Personalize your new site below and launch instantly.</p>
   </div>
   <form id="onboarding-form" autocomplete="off">
     <label for="firstName">First Name</label>
@@ -117,12 +36,12 @@
     <label for="siteName">Site Name</label>
     <input type="text" id="siteName" placeholder="e.g. Peppa's Place" required />
 
-    <label for="siteUrlName">Site URL Name</label>
-    <input type="text" id="siteUrlName" placeholder="e.g. peppasplace" required autocomplete="off"/>
-    <div id="siteUrlMsg"></div>
+    <label for="subdomain">Site URL Name</label>
+    <input type="text" id="subdomain" placeholder="e.g. peppasplace" required autocomplete="off"/>
+    <div id="subdomainMsg"></div>
 
-    <label for="amazonStoreId">Amazon Store ID</label>
-    <input type="text" id="amazonStoreId" placeholder="e.g. yourstore-20" required />
+    <label for="amazonId">Amazon Store ID</label>
+    <input type="text" id="amazonId" placeholder="e.g. yourstore-20" required />
 
     <label for="email">Email Address</label>
     <input type="email" id="email" placeholder="e.g. peppa@example.com" required />
@@ -133,18 +52,18 @@
 </div>
 
 <script>
-const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE with your project
-const SUPABASE_KEY = 'public-anon-key';                  // <-- REPLACE with your API Key
-const SUPABASE_TABLE = 'sites';
+// Use your actual anon public key string here:
+const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc'; // <-- paste your public anon API key string from Supabase dashboard
+const SUPABASE_TABLE = 'users';
 
-// Tracks latest checked value to avoid async conflicts:
-let latestCheckedUrl = "";
+let latestCheckedValue = "";
 
-async function checkUrlAvailability(siteUrlName) {
-  if (!siteUrlName) return null;
+async function checkUrlAvailability(subdomain) {
+  if (!subdomain) return null;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`,
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?subdomain=eq.${encodeURIComponent(subdomain.toLowerCase())}`,
       {
         headers: {
           'apikey': SUPABASE_KEY,
@@ -159,51 +78,51 @@ async function checkUrlAvailability(siteUrlName) {
   }
 }
 
-const siteUrlInput = document.getElementById('siteUrlName');
-const siteUrlMsg = document.getElementById('siteUrlMsg');
+const subdomainInput = document.getElementById('subdomain');
+const subdomainMsg = document.getElementById('subdomainMsg');
 const submitBtn = document.getElementById('submitBtn');
 
-// Instant feedback on every keystroke, debounced for API efficiency:
+// Debounced as-you-type validation
 let typingTimeout = null;
-siteUrlInput.addEventListener('input', () => {
+subdomainInput.addEventListener('input', () => {
   clearTimeout(typingTimeout);
-  const val = siteUrlInput.value.trim().toLowerCase();
-  siteUrlMsg.textContent = '';
+  const val = subdomainInput.value.trim().toLowerCase();
+  subdomainMsg.textContent = '';
   submitBtn.disabled = true;
   if (!val) return;
-  siteUrlMsg.style.color = '#555';
-  siteUrlMsg.textContent = 'Checking availability...';
-  latestCheckedUrl = val;
+  subdomainMsg.style.color = '#555';
+  subdomainMsg.textContent = 'Checking availability...';
+  latestCheckedValue = val;
   typingTimeout = setTimeout(async () => {
     const available = await checkUrlAvailability(val);
-    if (siteUrlInput.value.trim().toLowerCase() !== latestCheckedUrl) return; // user kept typing
+    if (subdomainInput.value.trim().toLowerCase() !== latestCheckedValue) return;
     if (available === null) {
-      siteUrlMsg.style.color = 'red';
-      siteUrlMsg.textContent = 'Could not check site URL availability.';
+      subdomainMsg.style.color = 'red';
+      subdomainMsg.textContent = 'Could not check site URL availability.';
       submitBtn.disabled = true;
       return;
     }
     if (available) {
-      siteUrlMsg.style.color = 'green';
-      siteUrlMsg.textContent = '✅ Available!';
+      subdomainMsg.style.color = 'green';
+      subdomainMsg.textContent = '✅ Available!';
       submitBtn.disabled = false;
     } else {
-      siteUrlMsg.style.color = 'red';
-      siteUrlMsg.textContent = 'This site URL name is already taken. Please try another.';
+      subdomainMsg.style.color = 'red';
+      subdomainMsg.textContent = 'This site URL name is already taken. Please try another.';
       submitBtn.disabled = true;
     }
   }, 450);
 });
 
 document.getElementById('onboarding-form').addEventListener('input', () => {
-  // Enable submit only if ALL fields are filled and URL is available
+  // Enable submit only if all fields are filled and URL is available
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
   const siteName = document.getElementById('siteName').value.trim();
-  const siteUrlName = siteUrlInput.value.trim();
-  const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
+  const subdomain = subdomainInput.value.trim();
+  const amazonId = document.getElementById('amazonId').value.trim();
   const email = document.getElementById('email').value.trim();
-  const allFilled = firstName && lastName && siteName && siteUrlName && amazonStoreId && email;
+  const allFilled = firstName && lastName && siteName && subdomain && amazonId && email;
   if (!allFilled || submitBtn.disabled) {
     submitBtn.disabled = true;
   }
@@ -211,17 +130,15 @@ document.getElementById('onboarding-form').addEventListener('input', () => {
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-
-  // Final check: all fields AND URL must be available
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
   const siteName = document.getElementById('siteName').value.trim();
-  const siteUrlName = siteUrlInput.value.trim().toLowerCase();
-  const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
+  const subdomain = subdomainInput.value.trim().toLowerCase();
+  const amazonId = document.getElementById('amazonId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgBlock = document.getElementById('msg');
   msgBlock.textContent = '';
-  if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
+  if (!firstName || !lastName || !siteName || !subdomain || !amazonId || !email) {
     msgBlock.style.color = 'red';
     msgBlock.textContent = 'Please fill out all fields.';
     return;
@@ -239,8 +156,8 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     first_name: firstName,
     last_name: lastName,
     site_name: siteName,
-    site_url_name: siteUrlName,
-    amazon_store_id: amazonStoreId,
+    subdomain: subdomain,
+    amazon_id: amazonId,
     email: email
   }];
 
