@@ -28,23 +28,23 @@
   </div>
   <form id="onboarding-form" autocomplete="off">
     <label for="firstName">First Name</label>
-    <input type="text" id="firstName" placeholder="e.g. Peppa" required />
+    <input type="text" id="firstName" required />
 
     <label for="lastName">Last Name</label>
-    <input type="text" id="lastName" placeholder="e.g. Pig" required />
+    <input type="text" id="lastName" required />
 
     <label for="siteName">Site Name</label>
-    <input type="text" id="siteName" placeholder="e.g. Peppa's Place" required />
+    <input type="text" id="siteName" required />
 
     <label for="subdomain">Site URL Name</label>
-    <input type="text" id="subdomain" placeholder="e.g. peppasplace" required autocomplete="off"/>
+    <input type="text" id="subdomain" required autocomplete="off"/>
     <div id="subdomainMsg"></div>
 
     <label for="amazonId">Amazon Store ID</label>
-    <input type="text" id="amazonId" placeholder="e.g. yourstore-20" required />
+    <input type="text" id="amazonId" required />
 
     <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="e.g. peppa@example.com" required />
+    <input type="email" id="email" required />
 
     <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
@@ -56,10 +56,11 @@ const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
 const SUPABASE_TABLE = 'Users';
 
-let latestCheckedValue = "";
+let subdomainAvailable = false;
 
+// Live subdomain availability checker
 async function checkUrlAvailability(subdomain) {
-  if (!subdomain) return null;
+  if (!subdomain) return false;
   try {
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?subdomain=eq.${encodeURIComponent(subdomain.toLowerCase())}`,
@@ -73,7 +74,7 @@ async function checkUrlAvailability(subdomain) {
     const data = await res.json();
     return data.length === 0;
   } catch (err) {
-    return null;
+    return false;
   }
 }
 
@@ -81,7 +82,17 @@ const subdomainInput = document.getElementById('subdomain');
 const subdomainMsg = document.getElementById('subdomainMsg');
 const submitBtn = document.getElementById('submitBtn');
 
-// Debounced as-you-type validation
+async function validateForm() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const siteName = document.getElementById('siteName').value.trim();
+  const subdomain = subdomainInput.value.trim();
+  const amazonId = document.getElementById('amazonId').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const allFilled = firstName && lastName && siteName && subdomain && amazonId && email;
+  submitBtn.disabled = !(allFilled && subdomainAvailable);
+}
+
 let typingTimeout = null;
 subdomainInput.addEventListener('input', () => {
   clearTimeout(typingTimeout);
@@ -91,41 +102,20 @@ subdomainInput.addEventListener('input', () => {
   if (!val) return;
   subdomainMsg.style.color = '#555';
   subdomainMsg.textContent = 'Checking availability...';
-  latestCheckedValue = val;
   typingTimeout = setTimeout(async () => {
-    const available = await checkUrlAvailability(val);
-    if (subdomainInput.value.trim().toLowerCase() !== latestCheckedValue) return;
-    if (available === null) {
-      subdomainMsg.style.color = 'red';
-      subdomainMsg.textContent = 'Could not check site URL availability.';
-      submitBtn.disabled = true;
-      return;
-    }
-    if (available) {
+    subdomainAvailable = await checkUrlAvailability(val);
+    if (subdomainAvailable) {
       subdomainMsg.style.color = 'green';
       subdomainMsg.textContent = '✅ Available!';
-      submitBtn.disabled = false;
     } else {
       subdomainMsg.style.color = 'red';
       subdomainMsg.textContent = 'This site URL name is already taken. Please try another.';
-      submitBtn.disabled = true;
     }
+    await validateForm();
   }, 450);
 });
 
-document.getElementById('onboarding-form').addEventListener('input', () => {
-  // Enable submit only if all fields are filled and URL is available
-  const firstName = document.getElementById('firstName').value.trim();
-  const lastName = document.getElementById('lastName').value.trim();
-  const siteName = document.getElementById('siteName').value.trim();
-  const subdomain = subdomainInput.value.trim();
-  const amazonId = document.getElementById('amazonId').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const allFilled = firstName && lastName && siteName && subdomain && amazonId && email;
-  if (!allFilled || submitBtn.disabled) {
-    submitBtn.disabled = true;
-  }
-});
+document.getElementById('onboarding-form').addEventListener('input', validateForm);
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -142,7 +132,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     msgBlock.textContent = 'Please fill out all fields.';
     return;
   }
-  if (submitBtn.disabled) {
+  if (!subdomainAvailable) {
     msgBlock.style.color = 'red';
     msgBlock.textContent = 'Please choose an available site URL name.';
     return;
@@ -174,7 +164,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   if (res.ok) {
     msgBlock.style.color = 'green';
     msgBlock.textContent = 'Success! Redirecting…';
-    setTimeout(() => window.location.href = '/success', 1000);
+    setTimeout(() => window.location.href = `/success?sub=${subdomain}`, 1000);
   } else {
     const error = await res.json();
     msgBlock.style.color = 'red';
@@ -184,4 +174,3 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 </script>
 </body>
 </html>
-
