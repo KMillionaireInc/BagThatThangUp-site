@@ -112,29 +112,24 @@
       <button id="tab-almost">Almost Gone</button>
     </nav>
   </header>
-
   <main id="deals">Loading deals...</main>
-
   <script>
     const CSV_URLS = {
       today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
       yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
       almost: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
     };
-
     const dealsEl = document.getElementById("deals");
     const storeNameEl = document.getElementById("storeName");
-
     const buttons = {
       today: document.getElementById("tab-today"),
       yesterday: document.getElementById("tab-yesterday"),
       almost: document.getElementById("tab-almost")
     };
-
+    // Get subdomain from current hostname (tenant)
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
-
     async function fetchTenantInfo() {
       try {
         const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?select=store_name,amazon_id&subdomain=eq.${subdomain}`, {
@@ -154,7 +149,11 @@
         storeNameEl.textContent = "BagThat Deals";
       }
     }
-
+    function forceTag(url, amazonTag) {
+      url = url.replace(/([&?])tag=[^&]*/i, ''); // Remove any tag
+      const sep = url.includes('?') ? '&' : '?';
+      return url + sep + 'tag=' + amazonTag;
+    }
     async function loadDeals(type = "today") {
       dealsEl.textContent = "Loading deals...";
       const csvUrl = CSV_URLS[type];
@@ -167,13 +166,12 @@
         dealsEl.textContent = "Error loading deals.";
       }
     }
-
     function renderDeals(rows) {
       dealsEl.innerHTML = rows
         .filter(r => r[1])
         .map(r => {
           const [ , , discountPrice, promoCode, , , taggedLink, , imageURL ] = r;
-          const url = amazonTag ? `${taggedLink}&tag=${amazonTag}` : taggedLink;
+          const url = amazonTag ? forceTag(taggedLink, amazonTag) : taggedLink;
           return `
             <div class="card">
               <img src="${imageURL}" alt="Deal image">
@@ -187,7 +185,6 @@
         })
         .join("");
     }
-
     Object.entries(buttons).forEach(([key, btn]) => {
       btn.addEventListener("click", () => {
         Object.values(buttons).forEach(b => b.classList.remove("active"));
@@ -195,7 +192,6 @@
         loadDeals(key);
       });
     });
-
     fetchTenantInfo().then(() => loadDeals("today"));
   </script>
 </body>
