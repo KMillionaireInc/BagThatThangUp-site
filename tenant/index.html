@@ -119,6 +119,7 @@
       yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
       almost: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
     };
+
     const dealsEl = document.getElementById("deals");
     const storeNameEl = document.getElementById("storeName");
     const buttons = {
@@ -126,13 +127,15 @@
       yesterday: document.getElementById("tab-yesterday"),
       almost: document.getElementById("tab-almost")
     };
+
     // Get subdomain from current hostname (tenant)
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
+
     async function fetchTenantInfo() {
       try {
-        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?select=store_name,amazon_id&subdomain=eq.${subdomain}`, {
+        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=store_name,amazon_id`, {
           headers: {
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
           }
@@ -149,11 +152,13 @@
         storeNameEl.textContent = "BagThat Deals";
       }
     }
+
     function forceTag(url, amazonTag) {
-      url = url.replace(/([&?])tag=[^&]*/i, ''); // Remove any tag
+      url = url.replace(/([&?])tag=[^&]*/i, ''); // Remove any existing tag
       const sep = url.includes('?') ? '&' : '?';
       return url + sep + 'tag=' + amazonTag;
     }
+
     async function loadDeals(type = "today") {
       dealsEl.textContent = "Loading deals...";
       const csvUrl = CSV_URLS[type];
@@ -166,6 +171,7 @@
         dealsEl.textContent = "Error loading deals.";
       }
     }
+
     function renderDeals(rows) {
       dealsEl.innerHTML = rows
         .filter(r => r[1])
@@ -185,6 +191,7 @@
         })
         .join("");
     }
+
     Object.entries(buttons).forEach(([key, btn]) => {
       btn.addEventListener("click", () => {
         Object.values(buttons).forEach(b => b.classList.remove("active"));
@@ -192,6 +199,7 @@
         loadDeals(key);
       });
     });
+
     fetchTenantInfo().then(() => loadDeals("today"));
   </script>
 </body>
