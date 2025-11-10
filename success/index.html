@@ -41,7 +41,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.4);
   }
   .hero-content {
     position: relative;
@@ -50,7 +50,7 @@
     max-width: 650px;
   }
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
     font-weight: 800;
     margin-bottom: 12px;
   }
@@ -129,6 +129,12 @@
     word-break: break-all;
     margin-bottom: 16px;
   }
+  .link-box a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+  }
   ul.checklist {
     list-style: none;
     padding: 0;
@@ -170,8 +176,8 @@
 <body>
   <section class="hero">
     <div class="hero-content">
-      <h1>Congratulations — You Just Stepped Into Easy!</h1>
-      <p>No more converting links. No more daily posting. No more algorithm battles.  
+      <h1>Congratulations! — You Just Stepped Into Easy!</h1>
+      <p>No more converting links. No more daily posting. No more algorithm battles.<br>
       Just one site — automatically updated every single day.</p>
       <a id="siteLinkHero" href="#" class="cta-btn" target="_blank">Go to Your Site</a>
     </div>
@@ -180,18 +186,20 @@
   <section class="benefits">
     <h2>Your New Routine: Relaxed and Running</h2>
     <p>
-      You don’t have to chase the feed or outsmart the platform anymore.  
-      Your deals load daily, your links stay clean, and your brand stays in motion —  
+      You don’t have to chase the feed or outsmart the platform anymore.<br>
+      Your deals load daily, your links stay clean, and your brand stays in motion —<br>
       all from one single, automated website that works while you do life.
     </p>
   </section>
 
   <section class="next-steps">
-    <img src="yessuccess.jpg" alt="Celebrating success">
+    <img src="./yessuccess.jpg" alt="Celebrating success">
     <div class="steps-content">
       <h3>Your Next Steps</h3>
       <p>Your site is live and ready to share. Bookmark it, post it, and let automation handle the rest.</p>
-      <div id="linkBox" class="link-box">Loading your link...</div>
+      <div class="link-box">
+        <a id="linkBox" href="#" target="_blank">Loading your link...</a>
+      </div>
       <ul class="checklist">
         <li>Click the button above to visit your live site</li>
         <li>Bookmark your site for quick access</li>
@@ -213,9 +221,11 @@
   if (sub) {
     const url = `https://${sub}.bagthatthangup.com`;
     heroLink.href = url;
+    linkBox.href = url;
     linkBox.textContent = url;
   } else {
     heroLink.href = "https://bagthatthangup.com";
+    linkBox.href = "https://bagthatthangup.com";
     linkBox.textContent = "https://bagthatthangup.com";
   }
 </script>
