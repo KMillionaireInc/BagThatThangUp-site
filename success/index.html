@@ -15,13 +15,12 @@
       justify-content: center;
       min-height: 100vh;
       color: #003731;
-      /* Makes background image appear sharp and vibrant */
       background-blend-mode: normal;
     }
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(255, 255, 255, 0.19); /* lower opacity for brighter image */
+      background: rgba(255, 255, 255, 0.19);
       z-index: 0;
     }
     .card {
@@ -62,6 +61,7 @@
       color: #004a43;
       text-decoration: underline;
       word-break: break-all;
+      font-size: 15px;
     }
     .tips {
       text-align: left;
@@ -87,7 +87,7 @@
   <div class="card">
     <h2>Your Storefront Is Ready!</h2>
     <p id="message">We’re getting everything ready for you...</p>
-    <a id="goButton" class="button" href="#" target="_blank">Go to My Storefront</a>
+    <a id="goButton" class="button" href="#" target="_blank" style="display:none">Go to My Storefront</a>
 
     <div class="tips">
       <h3>Next Steps</h3>
@@ -102,27 +102,23 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const sub = params.get("sub");
-
+    // Always get the subdomain from URL: /success?sub=YOURSUBDOMAIN
+    function getSubdomainParam() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('sub');
+    }
+    const subdomain = getSubdomainParam();
     const message = document.getElementById("message");
     const button = document.getElementById("goButton");
 
-    if (sub) {
-      const url = `https://${sub}.bagthatthangup.com/`;
+    if (subdomain && subdomain.length > 0) {
+      const url = `https://${subdomain}.bagthatthangup.com/`;
       message.innerHTML = `Your site has been created successfully!<br><a href="${url}" class="link" target="_blank">${url}</a>`;
       button.href = url;
-      window.history.replaceState({}, document.title, "/success");
+      button.style.display = "inline-block";
     } else {
       message.textContent = "Setup complete, but no subdomain was provided.";
       button.style.display = "none";
-    }
-
-    const subParam = new URLSearchParams(window.location.search).get('sub');
-    if (!subParam) {
-      window.stop();
-    } else {
-      history.pushState(null, '', window.location.href);
     }
   </script>
 </body>
