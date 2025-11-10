@@ -118,7 +118,7 @@
     <input type="text" id="siteName" placeholder="e.g. Peppa's Place" required />
 
     <label for="siteUrlName">Site URL Name</label>
-    <input type="text" id="siteUrlName" placeholder="e.g. peppasplace" required />
+    <input type="text" id="siteUrlName" placeholder="e.g. peppasplace" required autocomplete="off"/>
     <div id="siteUrlMsg"></div>
 
     <label for="amazonStoreId">Amazon Store ID</label>
@@ -133,94 +133,102 @@
 </div>
 
 <script>
-const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE with your actual project URL
+const SUPABASE_URL = 'https://your-project.supabase.co'; // <-- REPLACE with your project
 const SUPABASE_KEY = 'public-anon-key';                  // <-- REPLACE with your API Key
 const SUPABASE_TABLE = 'sites';
 
-let lastCheckedValue = "";
-let siteUrlAvailable = false;
+// Tracks latest checked value to avoid async conflicts:
+let latestCheckedUrl = "";
 
-// Debounce to avoid excessive API calls as user types
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-}
-
-async function checkDuplicateUrl(siteUrlName) {
+async function checkUrlAvailability(siteUrlName) {
   if (!siteUrlName) return null;
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`,
-    {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?site_url_name=eq.${encodeURIComponent(siteUrlName.toLowerCase())}`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
       }
-    }
-  );
-  const data = await res.json();
-  return data.length === 0;
+    );
+    const data = await res.json();
+    return data.length === 0;
+  } catch (err) {
+    return null;
+  }
 }
 
-const inputEl = document.getElementById('siteUrlName');
-const msgEl = document.getElementById('siteUrlMsg');
+const siteUrlInput = document.getElementById('siteUrlName');
+const siteUrlMsg = document.getElementById('siteUrlMsg');
 const submitBtn = document.getElementById('submitBtn');
 
-const realTimeChecker = debounce(async function() {
-  const siteUrlName = inputEl.value.trim().toLowerCase();
-  lastCheckedValue = siteUrlName;
+// Instant feedback on every keystroke, debounced for API efficiency:
+let typingTimeout = null;
+siteUrlInput.addEventListener('input', () => {
+  clearTimeout(typingTimeout);
+  const val = siteUrlInput.value.trim().toLowerCase();
+  siteUrlMsg.textContent = '';
   submitBtn.disabled = true;
-
-  if (!siteUrlName) {
-    msgEl.textContent = '';
-    siteUrlAvailable = false;
-    return;
-  }
-
-  msgEl.style.color = '#555';
-  msgEl.textContent = 'Checking availability...';
-
-  const available = await checkDuplicateUrl(siteUrlName);
-
-  if (lastCheckedValue === siteUrlName) {
+  if (!val) return;
+  siteUrlMsg.style.color = '#555';
+  siteUrlMsg.textContent = 'Checking availability...';
+  latestCheckedUrl = val;
+  typingTimeout = setTimeout(async () => {
+    const available = await checkUrlAvailability(val);
+    if (siteUrlInput.value.trim().toLowerCase() !== latestCheckedUrl) return; // user kept typing
+    if (available === null) {
+      siteUrlMsg.style.color = 'red';
+      siteUrlMsg.textContent = 'Could not check site URL availability.';
+      submitBtn.disabled = true;
+      return;
+    }
     if (available) {
-      msgEl.style.color = 'green';
-      msgEl.textContent = '✅ Available!';
-      siteUrlAvailable = true;
+      siteUrlMsg.style.color = 'green';
+      siteUrlMsg.textContent = '✅ Available!';
       submitBtn.disabled = false;
     } else {
-      msgEl.style.color = 'red';
-      msgEl.textContent = 'This site URL name is already taken. Please try another.';
-      siteUrlAvailable = false;
+      siteUrlMsg.style.color = 'red';
+      siteUrlMsg.textContent = 'This site URL name is already taken. Please try another.';
       submitBtn.disabled = true;
     }
-  }
-}, 400);
+  }, 450);
+});
 
-inputEl.addEventListener('input', realTimeChecker);
+document.getElementById('onboarding-form').addEventListener('input', () => {
+  // Enable submit only if ALL fields are filled and URL is available
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const siteName = document.getElementById('siteName').value.trim();
+  const siteUrlName = siteUrlInput.value.trim();
+  const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const allFilled = firstName && lastName && siteName && siteUrlName && amazonStoreId && email;
+  if (!allFilled || submitBtn.disabled) {
+    submitBtn.disabled = true;
+  }
+});
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  if (!siteUrlAvailable) {
-    msgEl.style.color = 'red';
-    msgEl.textContent = 'Please choose an available site URL name.';
-    return;
-  }
-
+  // Final check: all fields AND URL must be available
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
   const siteName = document.getElementById('siteName').value.trim();
-  const siteUrlName = inputEl.value.trim().toLowerCase();
+  const siteUrlName = siteUrlInput.value.trim().toLowerCase();
   const amazonStoreId = document.getElementById('amazonStoreId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgBlock = document.getElementById('msg');
-
+  msgBlock.textContent = '';
   if (!firstName || !lastName || !siteName || !siteUrlName || !amazonStoreId || !email) {
     msgBlock.style.color = 'red';
     msgBlock.textContent = 'Please fill out all fields.';
+    return;
+  }
+  if (submitBtn.disabled) {
+    msgBlock.style.color = 'red';
+    msgBlock.textContent = 'Please choose an available site URL name.';
     return;
   }
 
