@@ -1,224 +1,268 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>BagThat — Launch Your Branded Deal Hub</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BagThat — Finally, Your Deal Group Runs Itself</title>
   <style>
     :root {
-      --ink:#1b1b1b;
-      --accent:#b7a98b;
-      --bg:#f6f5f3;
-      --white:#ffffff;
-      --radius:18px;
-      --transition: all .35s ease;
+      --bg: #f6f5f3;
+      --ink: #1b1b1b;
+      --muted: #4a4a4a;
+      --accent: #b7a98b;
+      --white: #ffffff;
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --transition: all 0.4s ease;
     }
+
     body {
-      font-family:"Inter",system-ui,sans-serif;
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      line-height:1.6;
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
+
+    /* Fade-in animation */
+    .fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: var(--transition);
+    }
+    .fade.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* HERO */
     header {
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:center;
-      gap:3rem;
-      padding:6rem 1.5rem 4rem;
-      max-width:1200px;
-      margin:auto;
-    }
-    header .text {
-      flex:1 1 420px;
-    }
-    header h1 {
-      font-size:2.6rem;
-      margin:0 0 1rem;
-      line-height:1.2;
-    }
-    header p {font-size:1.15rem;}
-    .cta {
-      display:inline-block;
-      background:var(--accent);
-      color:var(--white);
-      padding:1rem 2rem;
-      border-radius:var(--radius);
-      margin-top:2rem;
-      font-weight:600;
-      text-decoration:none;
-      transition:var(--transition);
-    }
-    .cta:hover{opacity:.85;}
-    header .image {
-      flex:1 1 400px;
-      text-align:center;
-    }
-    header img {
-      width:100%;
-      max-width:460px;
-      border-radius:var(--radius);
-      box-shadow:0 10px 30px rgba(0,0,0,.1);
-    }
-    section {
-      padding:5rem 1.5rem;
-      max-width:1100px;
-      margin:auto;
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-    }
-    section img {
-      width:100%;
-      max-width:380px;
-      border-radius:var(--radius);
-      box-shadow:0 6px 25px rgba(0,0,0,.08);
-      margin-bottom:1.2rem;
-    }
-    section .content {
-      flex: 1 1 350px;
-    }
-    section .image-section {
-      flex: 1 1 320px;
       text-align: center;
+      padding: 6rem 1.5rem 5rem;
+      background: var(--white);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.04);
     }
-    section:nth-child(even){background:var(--white);}
-    h2 {
-      text-align:left;
-      font-size:1.7rem;
-      margin-bottom:2.3rem;
+
+    header h1 {
+      font-size: 2.6rem;
+      max-width: 720px;
+      margin: 0 auto 1rem;
+      font-weight: 800;
+      line-height: 1.2;
     }
-    .features {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:2rem;
-      width:100%;
+
+    header p {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      font-size: 1.15rem;
+      color: var(--muted);
     }
-    .card {
-      background:var(--white);
-      border-radius:var(--radius);
-      padding:2rem;
-      box-shadow:0 3px 15px rgba(0,0,0,.06);
-      transition:var(--transition);
+
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
     }
-    .card:hover{transform:translateY(-4px);}
-    .card h3{margin-top:0;font-size:1.25rem;}
+
+    .cta:hover { opacity: 0.9; }
+
+    header img {
+      width: 100%;
+      max-width: 480px;
+      margin-top: 3rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* BEFORE/AFTER */
+    .compare {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 3rem;
+      padding: 6rem 1.5rem;
+      max-width: 1100px;
+      margin: auto;
+      align-items: center;
+    }
+
+    .compare img {
+      width: 100%;
+      max-width: 420px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .compare .text {
+      flex: 1 1 400px;
+    }
+
+    .block {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 3px 16px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .block h2 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    ul { padding-left: 1.2rem; margin: 0; color: var(--muted); }
+    li { margin-bottom: 0.75rem; }
+
+    /* PROOF */
+    .proof {
+      text-align: center;
+      padding: 6rem 1.5rem;
+      background: #fff;
+    }
+
+    .proof img {
+      width: 100%;
+      max-width: 620px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-top: 2rem;
+    }
+
+    /* TESTIMONIALS */
     .testimonials {
-      text-align:center;
-      max-width:800px;
-      margin:auto;
+      padding: 5rem 1.5rem;
+      max-width: 900px;
+      margin: auto;
     }
+
     .quote {
-      font-style:italic;
-      background:var(--white);
-      padding:2rem;
-      border-radius:var(--radius);
-      box-shadow:0 3px 12px rgba(0,0,0,.05);
-      margin-bottom:2rem;
+      background: var(--white);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 3px 16px rgba(0,0,0,0.05);
+      font-style: italic;
+      margin-bottom: 2rem;
     }
+
+    .quote strong {
+      display: block;
+      margin-top: 1rem;
+      font-style: normal;
+      color: var(--ink);
+    }
+
+    /* FINAL CTA */
+    .final {
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      background: var(--white);
+      box-shadow: 0 -3px 12px rgba(0,0,0,0.04);
+    }
+
+    .final img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: var(--radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
     footer {
-      text-align:center;
-      padding:3rem 1rem;
-      font-size:.9rem;
-      color:#555;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #666;
     }
-    @media(max-width:800px){
-      header, section {flex-direction:column;}
-      section .image-section, section .content {width:100%;max-width:100%;}
+
+    footer a {
+      color: #666;
+      text-decoration: none;
+      margin: 0 0.3rem;
+    }
+
+    @media(max-width: 800px){
+      .compare { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
-
 <body>
 
-  <header>
-    <div class="text">
-      <h1>Unleash Your Amazon Deal Group — Earn More, Do Less, Build Real Community</h1>
-      <p>
-        <strong>Break free from Facebook’s suppression.</strong><br>
-        No more cryptic “deal code” posts, buried links, or wasted hours converting.<br>
-        Send your tribe to one unstoppable hub—where every offer is fresh, every link earns, and your group finally sees what they really want.
-      </p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Branded Hub</a>
-    </div>
-    <div class="image">
-      <img src="/hero.jpg" alt="BagThat branded hero">
-    </div>
+  <!-- HERO -->
+  <header class="fade">
+    <h1>Finally, Your Deal Group Runs Itself</h1>
+    <p>No more cryptic codes, late-night posting, or chasing the algorithm. BagThat automates your Amazon deals and keeps your group shopping — while you get your life back.</p>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Site</a>
+    <img src="/freedom.jpg" alt="Smiling creator celebrating her freedom">
   </header>
 
-  <section>
-    <div class="image-section">
-      <img src="/frustrated.jpg" alt="Stressed online seller reflecting on the grind">
-    </div>
-    <div class="content">
-      <h2>Why It Works</h2>
-      <div class="features">
-        <div class="card">
-          <h3>All Your Deals, All at Once</h3>
-          <p>No daily posting. No hiding. Every Amazon code and promo automatically updates for your whole group—visible and ready to shop.</p>
-        </div>
-        <div class="card">
-          <h3>Your Brand, Your Hub</h3>
-          <p>Drive traffic to one branded link that belongs to you. It looks professional, builds loyalty, and gives you full control of your audience.</p>
-        </div>
-        <div class="card">
-          <h3>Boost Income — Zero Hassle</h3>
-          <p>Every link is tagged with your affiliate info. See which items drive the highest commissions and which campaigns perform best—no spreadsheets required.</p>
-        </div>
-        <div class="card">
-          <h3>No Maintenance Required</h3>
-          <p>Deals refresh automatically, expired codes vanish, and your storefront stays perfectly current.</p>
-        </div>
-        <div class="card">
-          <h3>More Engagement, More Action</h3>
-          <p>Keep your feed for conversation and community. Let your hub handle conversions while you grow influence and income.</p>
-        </div>
+  <!-- BEFORE/AFTER -->
+  <section class="compare fade">
+    <img src="/frustrated.jpg" alt="Frustrated creator stuck posting manually">
+    <div class="text">
+      <div class="block">
+        <h2>The Grind You’re Escaping</h2>
+        <ul>
+          <li>Posting deals by hand — again and again.</li>
+          <li>Fighting suppression just to be seen.</li>
+          <li>Converting links that constantly break.</li>
+          <li>Spending hours online for pennies back.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h2>What Happens When You BagThat</h2>
+        <ul>
+          <li>Your deals update daily, automatically.</li>
+          <li>Your links stay clean, branded, and tracked.</li>
+          <li>Your group sees fresh finds, not chaos.</li>
+          <li>You finally get your time — and your peace — back.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section>
-    <div class="content">
-      <h2>Freedom & More Fun</h2>
-      <p>
-        Imagine waking up to an updated storefront, fresh campaign codes, and happy group members shopping every category. Your life should be less grind, more growth—and BagThat makes it real.
-      </p>
-    </div>
-    <div class="image-section">
-      <img src="/freedom.jpg" alt="Happy seller celebrating more free time">
-    </div>
+  <!-- PROOF -->
+  <section class="proof fade">
+    <h2>One Link. Your Brand. Daily Automation.</h2>
+    <p>Each BagThat site is uniquely yours — built to drive clicks, trust, and income. 
+       No tech headaches, no spreadsheets, no burnout. Just one link that works every single day.</p>
+    <img src="/feature2.jpg" alt="Example of BagThat automated storefront">
   </section>
 
-  <section>
-    <div class="image-section">
-      <img src="/feature2.jpg" alt="Professional storefront automation platform">
-    </div>
-    <div class="content">
-      <h2>Creators Are Taking Back Control</h2>
-      <div class="testimonials">
-        <div class="quote">“It used to take me hours a day to post deals. Now it’s all automatic—and my group engagement is higher than ever.”<br><strong>— Kimberly M., Amazon Group Owner</strong></div>
-        <div class="quote">“BagThat gave my followers a single place to shop, and my commissions doubled in two weeks.”<br><strong>— Community Admin</strong></div>
-      </div>
-    </div>
+  <!-- TESTIMONIALS -->
+  <section class="testimonials fade">
+    <div class="quote">“I used to spend 4+ hours a day just posting. Now it’s automatic — and my group engagement tripled.”<strong>— Kimberly M., Amazon Group Owner</strong></div>
+    <div class="quote">“I stopped fighting the feed and started earning in peace.”<strong>— Community Admin</strong></div>
   </section>
 
-  <section style="text-align:center;flex-direction:column;">
-    <img src="/feature1.jpg" alt="Engaged community shopping online deals">
-    <h2>Ready to Ditch the Busywork?</h2>
-    <p style="max-width:700px;margin:0 auto 2rem;">
-      Launch your branded deal hub today—your community, your income, your time back.
-    </p>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Get Started Now</a>
-    <p style="margin-top:1rem;font-size:.95rem;color:#555;">
-      Everything’s automated. Everything’s tracked. You just get better results.
-    </p>
+  <!-- FINAL CTA -->
+  <section class="final fade">
+    <img src="/feature1.jpg" alt="Happy creator working calmly from home">
+    <h2>You’ve Earned Easy</h2>
+    <p>Launch your branded hub today — your community, your income, your time back.</p>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Site</a>
   </section>
 
-  <footer>
+  <footer class="fade">
     <p>As an Amazon Associate, members may earn commissions from qualifying purchases.</p>
     <p><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></p>
   </footer>
+
+  <script>
+    const fadeEls = document.querySelectorAll('.fade');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.2 });
+    fadeEls.forEach(el => observer.observe(el));
+  </script>
+
 </body>
 </html>
