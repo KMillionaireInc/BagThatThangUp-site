@@ -175,7 +175,9 @@
     As an Amazon Associate, I earn from qualifying purchases.
   </div>
 
-  <div id="welcomeBanner">Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!</div>
+  <div id="welcomeBanner">
+    Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
+  </div>
 
   <header>
     <h1 id="storeName">Loading...</h1>
@@ -210,31 +212,34 @@
 
     async function fetchTenantInfo() {
       try {
-        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=store_name,amazon_id`, {
+        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=store_name,amazon_id,amazon_tag`, {
           headers: {
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
           }
         });
         const data = await res.json();
         if (data?.length) {
-          storeName = data[0].store_name;
-          amazonTag = data[0].amazon_id;
+          storeName = data[0].store_name || "BagThat Deals";
+          amazonTag = data[0].amazon_tag || data[0].amazon_id || "azillionaires-20";
           storeNameEl.textContent = storeName;
           storeGreetingEl.textContent = storeName;
         } else {
           storeNameEl.textContent = "BagThat Deals";
           storeGreetingEl.textContent = "BagThat Deals";
+          amazonTag = "azillionaires-20";
         }
       } catch {
         storeNameEl.textContent = "BagThat Deals";
         storeGreetingEl.textContent = "BagThat Deals";
+        amazonTag = "azillionaires-20";
       }
     }
 
     function forceTag(url, amazonTag) {
-      url = url.replace(/([&?])tag=[^&]*/i, '');
-      const sep = url.includes('?') ? '&' : '?';
-      return url + sep + 'tag=' + amazonTag;
+      if (!amazonTag) return url;
+      url = url.replace(/([&?])tag=[^&]*/i, ""); 
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "tag=" + amazonTag;
     }
 
     async function loadDeals(type = "today") {
@@ -255,7 +260,7 @@
         .filter(r => r[1])
         .map(r => {
           const [ , , discountPrice, promoCode, , , taggedLink, , imageURL ] = r;
-          const url = amazonTag ? forceTag(taggedLink, amazonTag) : taggedLink;
+          const url = forceTag(taggedLink, amazonTag);
           return `
             <div class="card">
               <img src="${imageURL}" alt="Deal image">
