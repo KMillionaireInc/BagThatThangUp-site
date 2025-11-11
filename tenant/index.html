@@ -20,7 +20,6 @@
       letter-spacing: 0.2px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-
     /* Welcome Banner */
     #welcomeBanner {
       background: linear-gradient(90deg, #0e8c76, #2cb49f);
@@ -32,7 +31,6 @@
       letter-spacing: 0.3px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
-
     :root {
       --bg: #f6faf9;
       --ink: #0b1320;
@@ -41,14 +39,12 @@
       --radius: 16px;
       --shadow: 0 8px 22px rgba(2, 24, 43, 0.08);
     }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--ink);
     }
-
     header {
       text-align: center;
       padding: 18px 12px;
@@ -58,18 +54,15 @@
       top: 50px;
       z-index: 10;
     }
-
     header h1 {
       margin: 0;
       font-size: 24px;
       color: var(--accent);
       font-weight: 800;
     }
-
     nav {
       margin-top: 10px;
     }
-
     nav button {
       background: none;
       border: none;
@@ -80,20 +73,17 @@
       font-weight: 600;
       transition: color 0.2s ease;
     }
-
     nav button:hover,
     nav button.active {
       color: #0e8c76;
       text-decoration: underline;
     }
-
     #deals {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
       padding: 24px;
     }
-
     .card {
       background: white;
       border-radius: var(--radius);
@@ -103,12 +93,10 @@
       flex-direction: column;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 26px rgba(2, 24, 43, 0.16);
     }
-
     .card img {
       width: 100%;
       height: auto;
@@ -117,30 +105,25 @@
       background: #fff;
       padding: 8px;
     }
-
     .info {
       padding: 12px 16px;
     }
-
     .info h3 {
       font-size: 15px;
       font-weight: 600;
       color: var(--ink);
       margin: 0 0 8px;
     }
-
     .price {
       font-size: 15px;
       color: var(--accent);
       font-weight: 700;
     }
-
     .promo {
       color: var(--muted);
       font-size: 13px;
       margin-top: 4px;
     }
-
     .cta {
       margin-top: auto;
       background: var(--accent);
@@ -154,11 +137,9 @@
       border-radius: 0 0 var(--radius) var(--radius);
       transition: background 0.2s ease;
     }
-
     .cta:hover {
       background: #0e8c76;
     }
-
     @media (max-width: 768px) {
       #welcomeBanner {
         font-size: 1rem;
@@ -174,11 +155,9 @@
   <div id="disclosure">
     As an Amazon Associate, I earn from qualifying purchases.
   </div>
-
   <div id="welcomeBanner">
     Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
   </div>
-
   <header>
     <h1 id="storeName">Loading...</h1>
     <nav>
@@ -187,16 +166,13 @@
       <button id="tab-almost">Almost Gone</button>
     </nav>
   </header>
-
   <main id="deals">Loading deals...</main>
-
   <script>
     const CSV_URLS = {
       today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
       yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
       almost: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
     };
-
     const dealsEl = document.getElementById("deals");
     const storeNameEl = document.getElementById("storeName");
     const storeGreetingEl = document.getElementById("storeGreeting");
@@ -205,22 +181,20 @@
       yesterday: document.getElementById("tab-yesterday"),
       almost: document.getElementById("tab-almost")
     };
-
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
-
     async function fetchTenantInfo() {
       try {
-const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_tag`, {
+        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`, {
           headers: {
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
           }
         });
         const data = await res.json();
         if (data?.length) {
-          storeName = data[0].store_name || "BagThat Deals";
-          amazonTag = data[0].amazon_tag || data[0].amazon_id || "azillionaires-20";
+          storeName = data[0].site_name || "BagThat Deals";
+          amazonTag = data[0].amazon_id || "azillionaires-20";
           storeNameEl.textContent = storeName;
           storeGreetingEl.textContent = storeName;
         } else {
@@ -234,14 +208,12 @@ const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?
         amazonTag = "azillionaires-20";
       }
     }
-
     function forceTag(url, amazonTag) {
       if (!amazonTag) return url;
       url = url.replace(/([&?])tag=[^&]*/i, ""); 
       const sep = url.includes("?") ? "&" : "?";
       return url + sep + "tag=" + amazonTag;
     }
-
     async function loadDeals(type = "today") {
       dealsEl.textContent = "Loading deals...";
       const csvUrl = CSV_URLS[type];
@@ -254,7 +226,6 @@ const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?
         dealsEl.textContent = "Error loading deals.";
       }
     }
-
     function renderDeals(rows) {
       dealsEl.innerHTML = rows
         .filter(r => r[1])
@@ -274,7 +245,6 @@ const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?
         })
         .join("");
     }
-
     Object.entries(buttons).forEach(([key, btn]) => {
       btn.addEventListener("click", () => {
         Object.values(buttons).forEach(b => b.classList.remove("active"));
@@ -282,9 +252,7 @@ const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?
         loadDeals(key);
       });
     });
-
     fetchTenantInfo().then(() => loadDeals("today"));
   </script>
 </body>
 </html>
-
