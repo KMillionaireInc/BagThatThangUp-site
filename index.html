@@ -25,27 +25,46 @@
       overflow-x: hidden;
     }
 
+    /* Fade-on-scroll */
     .fade { opacity: 0; transform: translateY(20px); transition: var(--transition); }
     .fade.show { opacity: 1; transform: translateY(0); }
 
+    /* HERO SECTION */
     header {
-      background: url('/hero.jpg') center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
       color: var(--white);
       text-align: center;
-      padding: 10rem 1.5rem 8rem;
-      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('/hero.jpg') center/cover no-repeat;
+      transform: scale(1);
+      transition: transform 8s ease-out;
+      will-change: transform;
+      z-index: 0;
+    }
+    header.loaded::before {
+      transform: scale(1.15);
     }
     header::after {
       content: "";
       position: absolute;
       inset: 0;
       background: rgba(0,0,0,0.45);
+      z-index: 0;
     }
     header .content {
       position: relative;
       z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
+      max-width: 780px;
+      padding: 0 1.5rem;
     }
     header h1 {
       font-size: 2.8rem;
@@ -120,8 +139,8 @@
     }
 
     @media (max-width: 850px) {
-      header { padding: 8rem 1.2rem 7rem; }
-      header h1 { font-size: 2.1rem; }
+      header { height: auto; padding: 10rem 1.5rem; }
+      header h1 { font-size: 2.2rem; }
       .flex { flex-direction: column; }
       .flex img { max-width: 100%; margin-top: 2rem; }
     }
@@ -225,6 +244,7 @@
   </footer>
 
   <script>
+    // Fade animations
     const fadeEls = document.querySelectorAll('.fade');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -232,6 +252,11 @@
       });
     }, { threshold: 0.2 });
     fadeEls.forEach(el => observer.observe(el));
+
+    // Hero zoom effect
+    window.addEventListener('load', () => {
+      document.querySelector('header').classList.add('loaded');
+    });
   </script>
 
 </body>
