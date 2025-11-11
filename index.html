@@ -3,250 +3,177 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BagThat — Finally, Your Deal Group Runs Itself</title>
+  <title>BagThat — Beta Introductory Offer Ends 11/24</title>
   <style>
     :root {
-      --bg: #f6f5f3;
-      --ink: #1b1b1b;
-      --muted: #4a4a4a;
-      --accent: #b7a98b;
-      --white: #ffffff;
-      --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.08);
-      --transition: all 0.4s ease;
+      --bg:#f6f5f3;
+      --ink:#1b1b1b;
+      --muted:#4a4a4a;
+      --accent:#b7a98b;
+      --white:#ffffff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,0.08);
+      --transition:all .4s ease;
     }
+    body{margin:0;font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;}
 
-    body {
-      margin: 0;
-      font-family: "Inter", system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* Fade-in animation */
-    .fade {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: var(--transition);
-    }
-    .fade.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* Fade animation */
+    .fade{opacity:0;transform:translateY(25px);transition:var(--transition);}
+    .fade.show{opacity:1;transform:translateY(0);}
 
     /* HERO */
-    header {
-      text-align: center;
-      padding: 6rem 1.5rem 5rem;
-      background: var(--white);
-      box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    header{
+      position:relative;
+      text-align:center;
+      color:var(--white);
+      padding:9rem 1.5rem 10rem;
+      background:url('/hero.jpg') center/cover no-repeat;
+    }
+    header::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+    }
+    header .content{position:relative;z-index:1;max-width:820px;margin:auto;}
+    header h1{font-size:3rem;line-height:1.15;margin-bottom:1rem;font-weight:800;}
+    header p{font-size:1.25rem;max-width:640px;margin:0 auto 2rem;color:#f1f1f1;}
+    .cta{
+      display:inline-block;
+      background:var(--accent);
+      color:var(--white);
+      padding:1rem 2.4rem;
+      border-radius:var(--radius);
+      text-decoration:none;
+      font-weight:600;
+      transition:var(--transition);
+    }
+    .cta:hover{opacity:.9;}
+
+    .offer-banner{
+      background:var(--white);
+      color:var(--ink);
+      text-align:center;
+      font-weight:600;
+      padding:.8rem 1rem;
+      box-shadow:0 3px 12px rgba(0,0,0,.05);
     }
 
-    header h1 {
-      font-size: 2.6rem;
-      max-width: 720px;
-      margin: 0 auto 1rem;
-      font-weight: 800;
-      line-height: 1.2;
+    section{padding:6rem 1.5rem;max-width:1100px;margin:auto;}
+    h2{text-align:center;font-size:2rem;margin-bottom:1rem;}
+    ul{padding-left:1.2rem;color:var(--muted);}
+    li{margin-bottom:.75rem;}
+    .two-col{display:flex;flex-wrap:wrap;gap:3rem;align-items:center;justify-content:center;}
+    .two-col .text{flex:1 1 400px;}
+    .two-col img{width:100%;max-width:480px;border-radius:var(--radius);box-shadow:var(--shadow);}
+
+    .quote{background:var(--white);padding:2rem;border-radius:var(--radius);box-shadow:0 3px 16px rgba(0,0,0,0.05);font-style:italic;margin-bottom:2rem;}
+    .quote strong{display:block;margin-top:1rem;font-style:normal;color:var(--ink);}
+
+    .final{text-align:center;background:var(--white);padding:6rem 1.5rem 5rem;box-shadow:0 -3px 12px rgba(0,0,0,0.04);}
+    .final h2{font-size:2.2rem;margin-bottom:1rem;}
+    .final p{color:var(--muted);margin-bottom:2rem;font-size:1.15rem;}
+
+    footer{text-align:center;padding:2rem 1rem;font-size:.9rem;color:#666;}
+    footer a{color:#666;text-decoration:none;margin:0 .3rem;}
+
+    /* Sticky CTA bar */
+    .sticky-cta{
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      background:var(--accent);
+      color:var(--white);
+      text-align:center;
+      padding:1rem;
+      font-weight:600;
+      box-shadow:0 -2px 10px rgba(0,0,0,0.15);
     }
+    .sticky-cta a{color:var(--white);text-decoration:none;margin-left:.5rem;font-weight:700;}
 
-    header p {
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      font-size: 1.15rem;
-      color: var(--muted);
-    }
-
-    .cta {
-      display: inline-block;
-      background: var(--accent);
-      color: var(--white);
-      padding: 1rem 2rem;
-      border-radius: var(--radius);
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .cta:hover { opacity: 0.9; }
-
-    header img {
-      width: 100%;
-      max-width: 480px;
-      margin-top: 3rem;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    /* BEFORE/AFTER */
-    .compare {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 3rem;
-      padding: 6rem 1.5rem;
-      max-width: 1100px;
-      margin: auto;
-      align-items: center;
-    }
-
-    .compare img {
-      width: 100%;
-      max-width: 420px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .compare .text {
-      flex: 1 1 400px;
-    }
-
-    .block {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: 0 3px 16px rgba(0,0,0,0.05);
-      margin-bottom: 1.5rem;
-    }
-
-    .block h2 {
-      margin-top: 0;
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-    }
-
-    ul { padding-left: 1.2rem; margin: 0; color: var(--muted); }
-    li { margin-bottom: 0.75rem; }
-
-    /* PROOF */
-    .proof {
-      text-align: center;
-      padding: 6rem 1.5rem;
-      background: #fff;
-    }
-
-    .proof img {
-      width: 100%;
-      max-width: 620px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-top: 2rem;
-    }
-
-    /* TESTIMONIALS */
-    .testimonials {
-      padding: 5rem 1.5rem;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .quote {
-      background: var(--white);
-      padding: 2rem;
-      border-radius: var(--radius);
-      box-shadow: 0 3px 16px rgba(0,0,0,0.05);
-      font-style: italic;
-      margin-bottom: 2rem;
-    }
-
-    .quote strong {
-      display: block;
-      margin-top: 1rem;
-      font-style: normal;
-      color: var(--ink);
-    }
-
-    /* FINAL CTA */
-    .final {
-      text-align: center;
-      padding: 6rem 1.5rem 4rem;
-      background: var(--white);
-      box-shadow: 0 -3px 12px rgba(0,0,0,0.04);
-    }
-
-    .final img {
-      width: 100%;
-      max-width: 480px;
-      border-radius: var(--radius);
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    footer a {
-      color: #666;
-      text-decoration: none;
-      margin: 0 0.3rem;
-    }
-
-    @media(max-width: 800px){
-      .compare { flex-direction: column; text-align: center; }
+    @media(max-width:800px){
+      header{padding:8rem 1.2rem;}
+      header h1{font-size:2.3rem;}
+      .two-col{flex-direction:column;text-align:center;}
     }
   </style>
 </head>
 <body>
 
+  <div class="offer-banner fade">🚀 Beta Introductory Offer — Good Through November 24</div>
+
   <!-- HERO -->
   <header class="fade">
-    <h1>Finally, Your Deal Group Runs Itself</h1>
-    <p>No more cryptic codes, late-night posting, or chasing the algorithm. BagThat automates your Amazon deals and keeps your group shopping — while you get your life back.</p>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Site</a>
-    <img src="/freedom.jpg" alt="Smiling creator celebrating her freedom">
+    <div class="content">
+      <h1>You’ve Been Doing It the Hard Way.</h1>
+      <p>BagThat turns your Amazon Store or Deal Group into a self-updating hub that works for you — no posting, no fixing links, no chasing reach.</p>
+      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
+    </div>
   </header>
 
-  <!-- BEFORE/AFTER -->
-  <section class="compare fade">
-    <img src="/frustrated.jpg" alt="Frustrated creator stuck posting manually">
+  <!-- PROBLEM -->
+  <section class="fade">
+    <h2>The Daily Grind You’re Done With</h2>
+    <ul>
+      <li>Converting codes that expire overnight.</li>
+      <li>Posting deals that disappear in minutes.</li>
+      <li>Talking in “code” to avoid suppression.</li>
+      <li>Spending hours maintaining instead of earning.</li>
+    </ul>
+    <p style="text-align:center;margin-top:1.5rem;"><strong>You didn’t sign up to be tech support for your own business.</strong></p>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="two-col fade">
+    <img src="/feature2.jpg" alt="BagThat automated storefront example">
     <div class="text">
-      <div class="block">
-        <h2>The Grind You’re Escaping</h2>
-        <ul>
-          <li>Posting deals by hand — again and again.</li>
-          <li>Fighting suppression just to be seen.</li>
-          <li>Converting links that constantly break.</li>
-          <li>Spending hours online for pennies back.</li>
-        </ul>
-      </div>
-      <div class="block">
-        <h2>What Happens When You BagThat</h2>
-        <ul>
-          <li>Your deals update daily, automatically.</li>
-          <li>Your links stay clean, branded, and tracked.</li>
-          <li>Your group sees fresh finds, not chaos.</li>
-          <li>You finally get your time — and your peace — back.</li>
-        </ul>
-      </div>
+      <h2>The Fix That Finally Works</h2>
+      <ul>
+        <li>Your deals refresh automatically — every day.</li>
+        <li>Your links stay clean, branded & tracked.</li>
+        <li>Your followers shop one beautiful site — yours.</li>
+        <li>You step out of maintenance mode and into momentum.</li>
+      </ul>
+      <p>Plug in your Amazon Store ID once. We handle everything else.</p>
     </div>
   </section>
 
-  <!-- PROOF -->
-  <section class="proof fade">
-    <h2>One Link. Your Brand. Daily Automation.</h2>
-    <p>Each BagThat site is uniquely yours — built to drive clicks, trust, and income. 
-       No tech headaches, no spreadsheets, no burnout. Just one link that works every single day.</p>
-    <img src="/feature2.jpg" alt="Example of BagThat automated storefront">
+  <!-- RESULT -->
+  <section class="two-col fade">
+    <div class="text">
+      <h2>Imagine This</h2>
+      <p>You wake up to engagement, not a to-do list.  
+      Your group looks alive while you’re offline.  
+      Your store feels effortless and professional.  
+      <br><br>This isn’t another tool — it’s the quiet engine behind creators who seem to have it all handled.</p>
+    </div>
+    <img src="/feature1.jpg" alt="Relaxed creator reviewing sales">
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="testimonials fade">
-    <div class="quote">“I used to spend 4+ hours a day just posting. Now it’s automatic — and my group engagement tripled.”<strong>— Kimberly M., Amazon Group Owner</strong></div>
-    <div class="quote">“I stopped fighting the feed and started earning in peace.”<strong>— Community Admin</strong></div>
+  <section class="fade" style="max-width:900px;">
+    <h2>Creators Already Bagging Results</h2>
+    <div class="quote">“I used to spend 4 hours a day posting. Now I just check my dashboard and smile.”<strong>— Kimberly M., Creator & Group Admin</strong></div>
+    <div class="quote">“It’s like my store updates itself while I sleep.”<strong>— Early Beta User</strong></div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="fade">
+    <h2>Who BagThat Is For</h2>
+    <ul style="max-width:700px;margin:auto;">
+      <li><strong>Influencers</strong> who want their deals refreshed daily without lifting a finger.</li>
+      <li><strong>Group Admins</strong> ready to retire manual posting forever.</li>
+      <li><strong>Creators & Brands</strong> who want one polished hub that earns 24/7.</li>
+    </ul>
+    <p style="text-align:center;margin-top:2rem;">If you have an Amazon Store ID — this was built for you.</p>
   </section>
 
   <!-- FINAL CTA -->
   <section class="final fade">
-    <img src="/feature1.jpg" alt="Happy creator working calmly from home">
-    <h2>You’ve Earned Easy</h2>
-    <p>Launch your branded hub today — your community, your income, your time back.</p>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Site</a>
+    <h2>Congratulations — You Just Stepped Into Easy.</h2>
+    <p><strong>Beta Introductory Offer Ends November 24.</strong><br>Launch your BagThat site today and let your store run itself while you focus on everything else that matters.</p>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
   </section>
 
   <footer class="fade">
@@ -254,15 +181,18 @@
     <p><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></p>
   </footer>
 
+  <div class="sticky-cta fade">
+    Beta Offer Ends 11/24 — <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000">Claim Access Now</a>
+  </div>
+
   <script>
-    const fadeEls = document.querySelectorAll('.fade');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('show');
-      });
-    }, { threshold: 0.2 });
-    fadeEls.forEach(el => observer.observe(el));
+    const fadeEls=document.querySelectorAll('.fade');
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show');});
+    },{threshold:0.2});
+    fadeEls.forEach(el=>observer.observe(el));
   </script>
 
 </body>
 </html>
+
