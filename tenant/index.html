@@ -212,7 +212,7 @@
 
     async function fetchTenantInfo() {
       try {
-        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=store_name,amazon_id,amazon_tag`, {
+const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_tag`, {
           headers: {
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
           }
