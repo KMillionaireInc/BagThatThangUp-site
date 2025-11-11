@@ -25,52 +25,40 @@
       overflow-x: hidden;
     }
 
-    .fade {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: var(--transition);
-    }
-    .fade.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .fade { opacity: 0; transform: translateY(20px); transition: var(--transition); }
+    .fade.show { opacity: 1; transform: translateY(0); }
 
-    /* HERO BACKGROUND */
     header {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 90vh;
-      color: var(--white);
       background: url('/hero.jpg') center/cover no-repeat;
-      overflow: hidden;
+      color: var(--white);
+      text-align: center;
+      padding: 10rem 1.5rem 8rem;
+      position: relative;
     }
-    header::before {
+    header::after {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 0;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
     }
     header .content {
       position: relative;
       z-index: 1;
-      padding: 0 1.5rem;
-      max-width: 720px;
+      max-width: 800px;
+      margin: 0 auto;
     }
     header h1 {
       font-size: 2.8rem;
-      margin-bottom: 1rem;
       font-weight: 800;
       line-height: 1.2;
+      margin-bottom: 1rem;
     }
     header p {
       font-size: 1.15rem;
       margin-bottom: 2rem;
-      color: #eaeaea;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .cta {
@@ -86,35 +74,27 @@
     .cta:hover { opacity: 0.9; }
 
     section {
-      max-width: 950px;
+      max-width: 1000px;
       margin: 5rem auto;
       padding: 0 1.5rem;
     }
     section h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
+      color: var(--ink);
     }
     section h3 {
-      font-size: 1.4rem;
-      margin-top: 2rem;
+      font-size: 1.5rem;
       margin-bottom: 1rem;
     }
     section p {
+      color: var(--muted);
       margin-bottom: 1.2rem;
-      color: var(--muted);
     }
-    ul {
-      margin: 0 0 2rem 1.2rem;
-      color: var(--muted);
-    }
+    ul { color: var(--muted); margin: 0 0 2rem 1.2rem; }
     li { margin-bottom: 0.6rem; }
 
-    .highlight {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .content-block {
+    .content {
       background: var(--white);
       border-radius: var(--radius);
       padding: 2rem 2.5rem;
@@ -139,10 +119,11 @@
       color: #666;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
+      header { padding: 8rem 1.2rem 7rem; }
       header h1 { font-size: 2.1rem; }
-      section { margin: 3rem auto; }
-      header { min-height: 80vh; }
+      .flex { flex-direction: column; }
+      .flex img { max-width: 100%; margin-top: 2rem; }
     }
   </style>
 </head>
@@ -159,105 +140,82 @@
   </header>
 
   <!-- STORY -->
-  <section class="story fade">
-    <div class="content-block">
+  <section class="fade">
+    <div class="content">
       <h2>Sharing deals was never supposed to be this hard.</h2>
       <p>When you started your deals group, it was exciting — sharing finds, sparking excitement, and earning from your influence. But somewhere between posting and “add to cart,” the system stopped working.</p>
       <p>You’ve always had to post deals one by one — hundreds a day if you wanted to stay consistent. Then the algorithm turned into your biggest hater, hiding your content and leaving your members confused. You built secret codes with emojis and intentional misspellings just to sneak savings through. And when deals expired, you had to scroll back, delete, and clean it all up.</p>
-      <p class="highlight">It’s not creativity anymore. It’s maintenance. And it’s exhausting.</p>
+      <p><strong>It’s not creativity anymore. It’s maintenance. And it’s exhausting.</strong></p>
       <p><strong>That’s why we built BagThatThangUp.com — so your followers can bag up the savings, the discounts, and the finds, while you finally bag up the clicks, the engagement, and the revenue.</strong></p>
       <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Get My Beta Access</a>
     </div>
   </section>
 
-  <!-- VISUAL 1: FRUSTRATED -->
-  <div class="visual fade">
-    <img src="/frustrated.jpg" alt="Frustrated creator overwhelmed by manual posting">
-  </div>
+  <!-- VISUAL BREAKS -->
+  <div class="visual fade"><img src="/frustrated.jpg" alt="Creator frustrated with manual posting"></div>
+  <div class="visual fade"><img src="/feature2.jpg" alt="BagThat automated deal feed example"></div>
+  <div class="visual fade"><img src="/feature1.jpg" alt="Example of BagThat automated site interface"></div>
 
-  <!-- SOLUTION -->
-  <section class="solution fade">
-    <div class="content-block">
-      <h2>Then Came BagThat Deal.</h2>
-      <p>Instead of fighting platforms all day, you fill out one short onboarding form — and in minutes, you have your own branded deal-hub site tied to your Amazon Store ID.</p>
-      <p>It updates automatically every morning. Deals live for three rolling days — then they disappear. No posting. No cleanup. No code talk. Just <strong>one link</strong> that houses everything.</p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Launch My Automated Site</a>
+  <!-- BENEFITS 2-COLUMN -->
+  <section class="fade">
+    <div class="content" style="padding:3rem;">
+      <div style="display:flex; flex-wrap:wrap; gap:3rem; justify-content:space-between;">
+        
+        <!-- LEFT -->
+        <div style="flex:1 1 420px; background:#f3f2f1; border-radius:18px; padding:2rem;">
+          <h3>Here’s What You’re Letting Go Of:</h3>
+          <ul>
+            <li>Hours of manual posting</li>
+            <li>Algorithm games and shadow bans</li>
+            <li>Looking like a spammer</li>
+            <li>Cleaning up expired links</li>
+            <li>Writing in secret emoji code</li>
+            <li>Affiliate link restrictions</li>
+          </ul>
+        </div>
+
+        <!-- RIGHT -->
+        <div style="flex:1 1 420px;">
+          <h3>And Here’s What You Get Instead:</h3>
+          <ul>
+            <li>A fully automated, branded site that updates daily</li>
+            <li>One simple link to share everywhere</li>
+            <li>Members who can finally see everything in one place</li>
+            <li>Freedom to engage — not maintain</li>
+          </ul>
+          <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Join the Beta</a>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- VISUAL 2: FEATURE2 -->
-  <div class="visual fade">
-    <img src="/feature2.jpg" alt="BagThat automation dashboard and daily updates">
-  </div>
+  <!-- FINAL SECTION: OFFER + FREEDOM -->
+  <section class="fade" style="background:#f9f8f6; padding:5rem 1.5rem;">
+    <div class="flex" style="max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:3rem;">
+      
+      <!-- TEXT -->
+      <div style="flex:1 1 480px;">
+        <h2>The Beta Introductory Offer</h2>
+        <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$29/month</strong>.</p>
+        <p>After <strong>November 24</strong>, pricing increases to <strong>$49/month</strong> — so time is of the essence.</p>
+        <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
 
-  <!-- BENEFITS -->
-  <section class="benefits fade">
-    <div class="content-block">
-      <h3>Here’s What You’re Letting Go Of:</h3>
-      <ul>
-        <li>Hours of manual posting</li>
-        <li>Algorithm games and shadow bans</li>
-        <li>Looking like a spammer</li>
-        <li>Cleaning up expired links</li>
-        <li>Writing in secret emoji code</li>
-        <li>Affiliate link restrictions</li>
-      </ul>
+        <hr style="border:none; height:1px; background:#ddd; margin:3rem 0;">
 
-      <h3>And Here’s What You Get Instead:</h3>
-      <ul>
-        <li>A fully automated, branded site that updates daily</li>
-        <li>One simple link to share everywhere</li>
-        <li>Members who can finally see everything in one place</li>
-        <li>Freedom to engage — not maintain</li>
-      </ul>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Join the Beta</a>
-    </div>
-  </section>
+        <h2>You’ve proven you can hustle — now step into easy.</h2>
+        <p>BagThat Deal runs it for you automatically, every single day — no posting, no burnout, no chasing reach. You set it up once, and your brand keeps working while you get your time back.</p>
+        <p>Imagine waking up to a fresh deal site that’s already updated, already branded, already live — and all you had to do was sleep.</p>
+        <p>Your followers get the savings, the discounts, and the excitement they love — and you get the clicks, engagement, and income you’ve worked for.</p>
+        <p><strong>Everyone wins — and you never have to lift a finger, so go ahead and <span style="color:#b7a98b;">BagThatThangUp!</span></strong></p>
+        <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Go Ahead & BagThatThangUp</a>
+      </div>
 
-  <!-- VISUAL 3: FEATURE1 -->
-  <div class="visual fade">
-    <img src="/feature1.jpg" alt="Example of a creator’s branded BagThatThangUp site">
-  </div>
+      <!-- IMAGE -->
+      <div style="flex:1 1 420px; text-align:center;">
+        <img src="/freedom.jpg" alt="Creator enjoying freedom" style="width:100%; max-width:480px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+      </div>
 
-  <!-- FEATURES -->
-  <section class="features fade">
-    <div class="content-block">
-      <h2>Each Site Includes:</h2>
-      <ul>
-        <li>Your chosen name (ex. <strong>Azillionaires</strong>)</li>
-        <li>Your branded subdomain (ex. <strong>Azillionaires.bagthatthangup.com</strong>)</li>
-        <li>Easy “Go to Amazon” and “Copy Code” buttons</li>
-        <li>Three rolling days of deals (Today, Yesterday, Almost Gone)</li>
-        <li>Built-in required disclosure banner</li>
-      </ul>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Start My Setup</a>
-    </div>
-  </section>
-
-  <!-- VISUAL 4: FREEDOM -->
-  <div class="visual fade">
-    <img src="/freedom.jpg" alt="Creator relaxing after automating their store">
-  </div>
-
-  <!-- OFFER -->
-  <section class="offer fade">
-    <div class="content-block">
-      <h2>The Beta Introductory Offer</h2>
-      <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$29/month</strong>.</p>
-      <p>After <strong>November 24</strong>, pricing increases to <strong>$49/month</strong> — so time is of the essence.</p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access Now</a>
-    </div>
-  </section>
-
-  <!-- CLOSER -->
-  <section class="closer fade">
-    <div class="content-block">
-      <h2>You’ve proven you can hustle — now step into easy.</h2>
-      <p>BagThat Deal runs it for you automatically, every single day — no posting, no burnout, no chasing reach. You set it up once, and your brand keeps working while you get your time back.</p>
-      <p>Imagine waking up to a fresh deal site that’s already updated, already branded, already live — and all you had to do was sleep.</p>
-      <p>Your followers get the savings, the discounts, and the excitement they love — and you get the clicks, engagement, and income you’ve worked for.</p>
-      <p class="highlight">Everyone wins — and you never have to lift a finger, so go ahead and <strong>BagThatThangUp!</strong></p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Go Ahead & BagThatThangUp</a>
     </div>
   </section>
 
