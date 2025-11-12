@@ -2,83 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BagThatThangUp — Your Deals, Your Brand, Fully Automated</title>
-  <link rel="icon" type="image/png" href="/custompro.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BagThat Deals</title>
+  <link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png"/>
   <style>
     :root {
-      --bg: #ffffff;
-      --ink: #000000;
-      --muted: #333333;
       --accent: #b7a98b;
-      --header-bg: #f6f5f3;
+      --white: #ffffff;
       --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.08);
-      --transition: all 0.4s ease;
+      --transition: all 0.35s ease;
     }
 
     body {
       margin: 0;
       font-family: "Inter", system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
+      background: #f6f5f3;
+      color: #1b1b1b;
       line-height: 1.6;
-      overflow-x: hidden;
     }
 
-    /* Fade-on-scroll */
-    .fade { opacity: 0; transform: translateY(20px); transition: var(--transition); }
-    .fade.show { opacity: 1; transform: translateY(0); }
-
-    /* HERO SECTION */
+    /* === HERO SECTION === */
     header {
-      position: relative;
-      overflow: hidden;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        url("https://www.bagthatthangup.com/hero.jpg") center/cover no-repeat;
       color: var(--white);
       text-align: center;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 8rem 1.5rem 6rem;
     }
-    header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('/hero.jpg') center/cover no-repeat;
-      transform: scale(1);
-      transition: transform 8s ease-out;
-      will-change: transform;
-      z-index: 0;
-    }
-    header.loaded::before {
-      transform: scale(1.15);
-    }
-    header::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.7) 100%);
-      z-index: 0;
-    }
-    header .content {
-      position: relative;
-      z-index: 1;
-      max-width: 780px;
-      padding: 0 1.5rem;
-    }
+
     header h1 {
       font-size: 2.8rem;
       font-weight: 800;
-      line-height: 1.2;
       margin-bottom: 1rem;
+      line-height: 1.2;
     }
+
     header p {
-      font-size: 1.15rem;
-      margin-bottom: 2rem;
-      max-width: 680px;
-      margin-left: auto;
-      margin-right: auto;
+      font-size: 1.2rem;
+      max-width: 640px;
+      margin: 0 auto 2rem;
     }
 
     .cta {
@@ -91,83 +54,33 @@
       font-weight: 600;
       transition: var(--transition);
     }
-    .cta:hover { opacity: 0.9; }
 
-    section {
-      max-width: 1000px;
-      margin: 5rem auto;
-      padding: 0 1.5rem;
-    }
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--ink);
-    }
-    section h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    section p {
-      color: var(--muted);
-      margin-bottom: 1.2rem;
-    }
-    ul { color: var(--muted); margin: 0 0 2rem 1.2rem; }
-    li { margin-bottom: 0.6rem; }
-
-    .content {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 2rem 2.5rem;
-      box-shadow: var(--shadow);
+    .cta:hover {
+      opacity: 0.9;
     }
 
-    .visual {
-      text-align: center;
-      margin: 4rem 0;
+    @media (max-width: 800px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+      header p {
+        font-size: 1rem;
+      }
     }
-    .visual img {
-      width: 100%;
-      max-width: 720px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    @media (max-width: 850px) {
-      header { height: auto; padding: 10rem 1.5rem; }
-      header h1 { font-size: 2.2rem; }
-      .flex { flex-direction: column; }
-      .flex img { max-width: 100%; margin-top: 2rem; }
-    }
-    header::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4); /* adjustable */
-  z-index: 0;
-}
-header * { position: relative; z-index: 1; color: #fff; }
-
   </style>
 </head>
 <body>
 
   <!-- HERO -->
-  <header class="fade">
-    <div class="content">
-      <h1>Your Store. Your Brand. On Autopilot.</h1>
-      <p>You built the audience. Now it’s time the system worked for you. BagThatThangUp automates your Amazon Store or Deal Group — no endless posting, no algorithm games, no wasted time.</p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
-      <p style="margin-top:1rem;font-weight:600;">Beta Introductory Offer Ends November 24</p>
-    </div>
+  <header>
+    <h1>Your Store. Your Brand. On Autopilot.</h1>
+    <p>You built the audience. Now it’s time the system worked for you. 
+      BagThatThangUp automates your Amazon Store or Deal Group — 
+      no endless posting, no algorithm games, no wasted time.</p>
+    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
+    <p style="margin-top:1.5rem;font-weight:600;">Beta Introductory Offer Ends November 24</p>
   </header>
+
 
   <!-- STORY -->
   <section class="fade">
@@ -227,7 +140,7 @@ header * { position: relative; z-index: 1; color: #fff; }
       <!-- TEXT -->
       <div style="flex:1 1 480px;">
         <h2>The Beta Introductory Offer</h2>
-        <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$29/month</strong>.</p>
+        <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$19/month</strong>.</p>
         <p>After <strong>November 24</strong>, pricing increases to <strong>$49/month</strong> — so time is of the essence.</p>
         <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
 
