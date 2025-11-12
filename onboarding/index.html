@@ -28,29 +28,28 @@
   </div>
   <form id="onboarding-form" autocomplete="off">
     <label for="firstName">First Name</label>
-    <input type="text" id="firstName" required />
+    <input type="text" id="firstName" required placeholder="e.g. Tiffany" />
 
     <label for="lastName">Last Name</label>
-    <input type="text" id="lastName" required />
+    <input type="text" id="lastName" required placeholder="e.g. Johnson" />
 
     <label for="siteName">Site Name</label>
-    <input type="text" id="siteName" required />
+    <input type="text" id="siteName" required placeholder="e.g. Tiffany’s Finds" />
 
     <label for="subdomain">Site URL Name</label>
-    <input type="text" id="subdomain" required autocomplete="off"/>
+    <input type="text" id="subdomain" required autocomplete="off" placeholder="e.g. tiffanysdeals" />
     <div id="subdomainMsg"></div>
 
     <label for="amazonId">Amazon Store ID</label>
-    <input type="text" id="amazonId" required />
+    <input type="text" id="amazonId" required placeholder="e.g. tiffany19-20" />
 
     <label for="email">Email Address</label>
-    <input type="email" id="email" required />
+    <input type="email" id="email" required placeholder="e.g. tiffany@email.com" />
 
     <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
   </form>
 </div>
-
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
