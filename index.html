@@ -4,31 +4,41 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BagThat Deals</title>
-  <link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png"/>
+  <link rel="icon" type="image/png" href="/custompro.png"/>
+
   <style>
     :root {
+      --bg: #f6f5f3;
+      --ink: #1b1b1b;
+      --muted: #4a4a4a;
       --accent: #b7a98b;
       --white: #ffffff;
       --radius: 18px;
-      --transition: all 0.35s ease;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --transition: all 0.4s ease;
     }
 
     body {
       margin: 0;
       font-family: "Inter", system-ui, sans-serif;
-      background: #f6f5f3;
-      color: #1b1b1b;
+      background: var(--bg);
+      color: var(--ink);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    /* === HERO SECTION === */
+    /* ===== HERO ===== */
     header {
       background:
         linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-        url("https://www.bagthatthangup.com/hero.jpg") center/cover no-repeat;
+        url("/hero.jpg") center/cover no-repeat;
       color: var(--white);
       text-align: center;
-      padding: 8rem 1.5rem 6rem;
+      padding: 8rem 1.5rem;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     header h1 {
@@ -39,7 +49,7 @@
     }
 
     header p {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       max-width: 640px;
       margin: 0 auto 2rem;
     }
@@ -59,130 +69,177 @@
       opacity: 0.9;
     }
 
+    /* ===== SECTION BASE ===== */
+    section {
+      max-width: 1000px;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .content {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    section h3 {
+      font-size: 1.4rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    section p, ul {
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    ul { padding-left: 1.5rem; }
+
+    /* ===== IMAGE SECTIONS ===== */
+    .visual {
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .visual img {
+      width: 100%;
+      max-width: 800px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      height: auto;
+    }
+
+    /* ===== SPLIT LAYOUTS ===== */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .split img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    footer a {
+      color: var(--ink);
+      text-decoration: none;
+      margin: 0 0.5rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 800px) {
-      header h1 {
-        font-size: 2.2rem;
-      }
-      header p {
-        font-size: 1rem;
-      }
+      header h1 { font-size: 2.2rem; }
+      header p { font-size: 1rem; }
+      .split { grid-template-columns: 1fr; }
+      section { margin: 3rem auto; }
     }
   </style>
 </head>
-<body>
 
+<body>
   <!-- HERO -->
   <header>
     <h1>Your Store. Your Brand. On Autopilot.</h1>
-    <p>You built the audience. Now it’s time the system worked for you. 
-      BagThatThangUp automates your Amazon Store or Deal Group — 
-      no endless posting, no algorithm games, no wasted time.</p>
+    <p>You built the audience. Now it’s time the system worked for you. BagThatThangUp automates your Amazon Store or Deal Group — no endless posting, no algorithm games, no wasted time.</p>
     <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
     <p style="margin-top:1.5rem;font-weight:600;">Beta Introductory Offer Ends November 24</p>
   </header>
 
+  <!-- VISUAL 1 -->
+  <div class="visual">
+    <img src="/frustrated.jpg" alt="Creator frustrated with manual posting">
+  </div>
 
-  <!-- STORY -->
-  <section class="fade">
-    <div class="content">
-      <h2>Sharing deals was never supposed to be this hard.</h2>
-      <p>When you started your deals group, it was exciting — sharing finds, sparking excitement, and earning from your influence. But somewhere between posting and “add to cart,” the system stopped working.</p>
-      <p>You’ve always had to post deals one by one — hundreds a day if you wanted to stay consistent. Then the algorithm turned into your biggest hater, hiding your content and leaving your members confused. You built secret codes with emojis and intentional misspellings just to sneak savings through. And when deals expired, you had to scroll back, delete, and clean it all up.</p>
-      <p><strong>It’s not creativity anymore. It’s maintenance. And it’s exhausting.</strong></p>
-      <p><strong>That’s why we built BagThatThangUp.com — so your followers can bag up the savings, the discounts, and the finds, while you finally bag up the clicks, the engagement, and the revenue.</strong></p>
-      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Get My Beta Access</a>
-    </div>
-  </section>
-
-  <!-- VISUAL BREAKS -->
-  <div class="visual fade"><img src="/frustrated.jpg" alt="Creator frustrated with manual posting"></div>
-  <div class="visual fade"><img src="/feature2.jpg" alt="BagThat automated deal feed example"></div>
-  <div class="visual fade"><img src="/feature1.jpg" alt="Example of BagThat automated site interface"></div>
-
-  <!-- BENEFITS 2-COLUMN -->
-  <section class="fade">
-    <div class="content" style="padding:3rem;">
-      <div style="display:flex; flex-wrap:wrap; gap:3rem; justify-content:space-between;">
-        
-        <!-- LEFT -->
-        <div style="flex:1 1 420px; background:#f3f2f1; border-radius:18px; padding:2rem;">
-          <h3>Here’s What You’re Letting Go Of:</h3>
-          <ul>
-            <li>Hours of manual posting</li>
-            <li>Algorithm suppression and invisibility</li>
-            <li>Looking like a spammer in your own group</li>
-            <li>Expired deals cluttering your feed</li>
-            <li>Talking in code to sneak past filters</li>
-            <li>Constant cleanup instead of growth</li>
-          </ul>
-        </div>
-
-        <!-- RIGHT -->
-        <div style="flex:1 1 420px;">
-          <h3>And Here’s What You Get Instead:</h3>
-          <ul>
-            <li>A fully automated, branded site that updates daily</li>
-            <li>One clean link to share anywhere</li>
-            <li>Fresh content that your group actually sees</li>
-            <li>Your time back — without losing momentum</li>
-          </ul>
-          <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Join the Beta</a>
-        </div>
-
+  <!-- BENEFITS -->
+  <section>
+    <div class="content split">
+      <div>
+        <h3>Here’s What You’re Letting Go Of:</h3>
+        <ul>
+          <li>Hours of manual posting</li>
+          <li>Algorithm suppression and invisibility</li>
+          <li>Looking like a spammer in your group</li>
+          <li>Expired deals cluttering your feed</li>
+          <li>Tweaking code to sneak past filters</li>
+          <li>Constant cleanup instead of growth</li>
+        </ul>
+      </div>
+      <div>
+        <h3>And Here’s What You Get Instead:</h3>
+        <ul>
+          <li>A fully automated, branded site that updates daily</li>
+          <li>One clean link to share everywhere</li>
+          <li>Fresh content your group actually sees</li>
+          <li>Your time back — without losing momentum</li>
+        </ul>
+        <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Join the Beta</a>
       </div>
     </div>
   </section>
 
-  <!-- FINAL SECTION: OFFER + FREEDOM -->
-  <section class="fade" style="background:#f9f8f6; padding:5rem 1.5rem;">
-    <div class="flex" style="max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:3rem;">
-      
-      <!-- TEXT -->
-      <div style="flex:1 1 480px;">
+  <!-- VISUAL 2 -->
+  <div class="visual">
+    <img src="/feature2.jpg" alt="BagThat user dashboard showing automation">
+  </div>
+
+  <!-- OFFER -->
+  <section>
+    <div class="content split">
+      <div>
         <h2>The Beta Introductory Offer</h2>
-        <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$19/month</strong>.</p>
+        <p>During this limited beta phase, you can launch your own BagThat Deal site and lock in lifetime pricing and future upgrades for only <strong>$29/month</strong>.</p>
         <p>After <strong>November 24</strong>, pricing increases to <strong>$49/month</strong> — so time is of the essence.</p>
         <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
-
-        <hr style="border:none; height:1px; background:#ddd; margin:3rem 0;">
-
-        <h2>You’ve proven you can hustle — now step into easy.</h2>
-        <p>BagThat Deal runs it for you automatically, every single day — no manual posting, no algorithm battles, no chaos. You set it up once, and your brand keeps working while you live your life.</p>
-        <p>Imagine waking up to a deal site that’s already refreshed, already branded, already live — and all you did was sleep.</p>
-        <p>Your followers get the savings and finds they love — and you get the clicks, engagement, and revenue you’ve earned.</p>
-        <p><strong>Everyone wins — so go ahead and <span style="color:#b7a98b;">BagThatThangUp!</span></strong></p>
-        <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Go Ahead & BagThatThangUp</a>
       </div>
-
-      <!-- IMAGE -->
-      <div style="flex:1 1 420px; text-align:center;">
-        <img src="/freedom.jpg" alt="Creator enjoying freedom" style="width:100%; max-width:480px; border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+      <div>
+        <img src="/feature1.jpg" alt="Example of a BagThat automated site interface">
       </div>
-
     </div>
   </section>
 
-  <footer class="fade">
+  <!-- VISUAL 3 -->
+  <div class="visual">
+    <img src="/freedom.jpg" alt="Creator feeling free from daily posting stress">
+  </div>
+
+  <!-- CLOSER -->
+  <section>
+    <div class="content split">
+      <div>
+        <h2>You’ve proven you can hustle — now step into easy.</h2>
+        <p>BagThat Deal runs it for you automatically, every single day — no posting, no burnout, no chasing reach. You set it up once, and your brand keeps working while you get your time back.</p>
+        <p>Imagine waking up to a fresh deal site that’s already updated, already branded, already live — and all you had to do was sleep.</p>
+        <p>Your followers get the savings, the discounts, and the excitement they love — and you get the clicks, engagement, and income you’ve worked for.</p>
+        <p><strong>Everyone wins — so go ahead and BagThatThangUp!</strong></p>
+        <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Go Ahead & BagThatThangUp</a>
+      </div>
+      <div>
+        <img src="/freedom.jpg" alt="Smiling creator celebrating her freedom">
+      </div>
+    </div>
+  </section>
+
+  <footer>
     <p>As an Amazon Associate, members may earn commissions from qualifying purchases.</p>
     <p><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></p>
   </footer>
-
-  <script>
-    // Fade animations
-    const fadeEls = document.querySelectorAll('.fade');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('show');
-      });
-    }, { threshold: 0.2 });
-    fadeEls.forEach(el => observer.observe(el));
-
-    // Hero zoom effect
-    window.addEventListener('load', () => {
-      document.querySelector('header').classList.add('loaded');
-    });
-  </script>
-
 </body>
 </html>
-
