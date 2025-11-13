@@ -179,6 +179,28 @@
   margin-left: 4px;
   vertical-align: middle;
 }
+.asin {
+  font-size: 0.75rem;
+  color: #9aa4af;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  margin-bottom: 4px;
+}
+    .rating {
+  font-size: 0.9rem;
+  color: #f5b000; /* gold star color */
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.share-icon {
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.65;
+  transition: opacity 0.2s ease;
+}
+.share-icon:hover {
+  opacity: 1;
+}
 
   </style>
 </head>
@@ -215,6 +237,23 @@
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
+    function shareDeal(title, url) {
+  if (navigator.share) {
+    navigator.share({
+      title: title,
+      text: "Check this out!",
+      url: url
+    });
+  } else {
+    navigator.clipboard.writeText(url);
+    alert("Link copied!");
+  }
+}
+
+async function fetchTenantInfo() {
+    // existing code…
+}
+
     async function fetchTenantInfo() {
       try {
         const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`, {
@@ -259,34 +298,76 @@
     }
 function renderDeals(rows) {
   dealsEl.innerHTML = rows
-    .filter(r => r[1])
+    .filter(r => r[1]) // only keep valid rows
     .map(r => {
-      const [ , , discountPrice, promoCode, , ccFlag, taggedLink, , imageURL ] = r;
-      const originalPrice = r[21] || ""; // column V = index 21
-      const title = r[12] || "Untitled Product";
-      const ccBadge = (ccFlag && ccFlag.trim().toLowerCase() === "yes")
-  ? `<span class="cc-badge">✔ CC</span>`
-  : "";
+      // === CORRECT COLUMN MAPPING ===
+      const asin = r[1];               // column B
+      const discountPrice = r[2];      // column C
+      const promoCode = r[3];          // column D
+      const ccFlag = r[5];             // column F
+      const taggedLink = r[6];         // column G
+      const imageURL = r[8];           // column I
+      const title = r[12] || "Untitled Product"; // column M
+      const rating = r[14] || "";      // column O
+      const originalPrice = r[21] || ""; // column V
 
+      // === AMAZON TAG FIX ===
       const url = forceTag(taggedLink, amazonTag);
 
-      const priceHTML = originalPrice
-  ? `<div class="price"><span class="discount">${discountPrice}</span> <span class="original">${originalPrice}</span></div>`
-  : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
+      // === ASIN DISPLAY ===
+      const asinTag = asin
+        ? `<div class="asin">ASIN: ${asin}</div>`
+        : "";
 
-      return `
-        <div class="card">
-          <img src="${imageURL}" alt="Deal image">
-          <div class="info">
-            <h3>${title} ${ccBadge}</h3>
-            ${priceHTML}
-            ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
-          </div>
-          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-        </div>`;
-    })
-    .join("");
-}
+      // === CC BADGE ===
+      const ccBadge =
+        ccFlag && ccFlag.trim().toLowerCase() === "yes"
+          ? `<span class="cc-badge">✔ CC</span>`
+          : "";
+
+      // === PRICE DISPLAY ===
+      const priceHTML = originalPrice
+        ? `<div class="price">
+             <span class="discount">${discountPrice}</span>
+             <span class="original">${originalPrice}</span>
+           </div>`
+        : `<div class="price">
+             <span class="discount">${discountPrice}</span>
+           </div>`;
+
+// === CARD HTML ===
+return `
+  <div class="card">
+    <img src="${imageURL}" alt="Deal image">
+
+    <div class="info">
+      ${asinTag}
+
+      <h3 style="display:flex;justify-content:space-between;align-items:center;">
+        <span>${title} ${ccBadge}</span>
+
+        <span class="share-icon" onclick="shareDeal('${title}', '${url}')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" 
+               stroke="currentColor" stroke-width="2" 
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 3h7v7"></path>
+            <path d="M10 14 21 3"></path>
+            <path d="M21 14v7H3V3h7"></path>
+          </svg>
+        </span>
+      </h3>
+
+      ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+      ${priceHTML}
+      ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
+    </div>
+
+    <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+  </div>
+`;
+
+
+
     Object.entries(buttons).forEach(([key, btn]) => {
       btn.addEventListener("click", () => {
         Object.values(buttons).forEach(b => b.classList.remove("active"));
