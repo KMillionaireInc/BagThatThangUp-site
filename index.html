@@ -62,6 +62,15 @@
     .cta:hover {
       opacity: 0.9;
     }
+    .sample-link {
+      background: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--accent);
+    }
+    .sample-link:hover {
+      background: var(--accent);
+      color: var(--white);
+    }
     section {
       max-width: 1000px;
       margin: 4rem auto;
@@ -154,9 +163,15 @@
   <header>
     <h1>Your Store. Your Brand. On Autopilot.</h1>
     <p>You built the audience. Now it’s time the system worked for you. BagThatThangUp automates your affiliate link/Deal Group content — no endless posting, no algorithm games, no wasted time.</p>
-    <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
+    
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;">
+      <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Claim My Beta Access</a>
+      <a href="https://azillionaires.bagthatthangup.com" target="_blank" class="cta sample-link">View a Live Sample Site</a>
+    </div>
+
     <p style="margin-top:1.5rem;font-weight:600;">Beta Introductory Offer Ends November 24</p>
   </header>
+
   <!-- STORY -->
   <section>
     <div class="content">
@@ -168,10 +183,12 @@
       <a href="https://buy.stripe.com/14AeVc8nn8E062VfLV00000" class="cta">Get My Beta Access</a>
     </div>
   </section>
+
   <!-- VISUAL 1 -->
   <div class="visual">
     <img src="/frustrated.jpg" alt="Creator frustrated with manual posting">
   </div>
+
   <!-- BENEFITS -->
   <section>
     <div class="content split">
@@ -198,10 +215,12 @@
       </div>
     </div>
   </section>
+
   <!-- VISUAL 2 -->
   <div class="visual">
     <img src="/feature2.jpg" alt="BagThat user dashboard showing automation">
   </div>
+
   <!-- OFFER -->
   <section>
     <div class="content split">
@@ -233,6 +252,7 @@
       </div>
     </div>
   </section>
+
   <footer>
     <p>As an Amazon Associate, members may earn commissions from qualifying purchases.</p>
     <p><a href="/privacy.html">Privacy</a> • <a href="/terms.html">Terms</a> • <a href="/contact.html">Contact</a></p>
