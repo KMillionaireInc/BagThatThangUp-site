@@ -7,7 +7,6 @@
   <link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png" />
 
   <style>
-    /* Amazon Disclosure */
     #disclosure {
       position: sticky;
       top: 0;
@@ -19,10 +18,9 @@
       font-weight: 500;
       padding: 8px 10px;
       letter-spacing: 0.2px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    /* Welcome Banner */
     #welcomeBanner {
       background: linear-gradient(90deg, #0e8c76, #2cb49f);
       color: #fff;
@@ -79,11 +77,10 @@
       margin: 0 8px;
       cursor: pointer;
       font-weight: 600;
-      transition: color 0.2s ease;
     }
 
-    nav button:hover,
-    nav button.active {
+    nav button.active,
+    nav button:hover {
       color: #0e8c76;
       text-decoration: underline;
     }
@@ -102,21 +99,14 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 26px rgba(2,24,43,0.16);
     }
 
     .card img {
       width: 100%;
-      height: auto;
-      aspect-ratio: 1/1;
-      object-fit: contain;
-      background: #fff;
       padding: 8px;
+      object-fit: contain;
+      aspect-ratio: 1/1;
+      background: white;
     }
 
     .info {
@@ -127,30 +117,45 @@
       font-size: 15px;
       font-weight: 600;
       margin: 0 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .price {
-      font-size: 15px;
+    .share-icon {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .share-icon:hover {
+      opacity: 1;
+    }
+
+    .asin {
+      font-size: 0.75rem;
+      color: #9aa4af;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .cc-badge {
+      background: #e8f5f1;
       color: var(--accent);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 6px;
       font-weight: 700;
+      margin-left: 4px;
     }
 
-    .promo {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .cta {
-      margin-top: auto;
-      background: var(--accent);
-      color: white;
-      padding: 12px;
-      text-align: center;
+    .rating {
+      font-size: 0.9rem;
+      color: #f5b000;
       font-weight: 600;
-      text-decoration: none;
-      border-top: 1px solid #e6e6e6;
-      border-radius: 0 0 var(--radius) var(--radius);
+      margin-bottom: 6px;
     }
 
     .price {
@@ -161,49 +166,41 @@
 
     .price .discount {
       color: var(--accent);
-      font-weight: 800;
       font-size: 1.2rem;
+      font-weight: 800;
     }
 
     .price .original {
       color: #999;
       text-decoration: line-through;
-      font-weight: 500;
       font-size: 0.9rem;
       opacity: 0.85;
     }
 
-    .cc-badge {
-      display: inline-block;
-      background: #e8f5f1;
-      color: var(--accent);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 4px;
-      vertical-align: middle;
+    .promo {
+      font-size: 13px;
+      margin-top: 4px;
+      color: var(--muted);
     }
 
-    .asin {
-      font-size: 0.75rem;
-      color: #9aa4af;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .rating {
-      font-size: 0.9rem;
-      color: #f5b000;
+    .cta {
+      margin-top: auto;
+      background: var(--accent);
+      color: white;
+      padding: 12px;
+      text-align: center;
       font-weight: 600;
-      margin-bottom: 6px;
+      text-decoration: none;
+      border-radius: 0 0 var(--radius) var(--radius);
     }
   </style>
 </head>
 
 <body>
 
-  <div id="disclosure">As an Amazon Associate, I earn from qualifying purchases. Prices/Codes/Coupons can change and/or expire at anytime.</div>
+  <div id="disclosure">
+    As an Amazon Associate, I earn from qualifying purchases. Prices/Codes/Coupons can change anytime.
+  </div>
 
   <div id="welcomeBanner">
     Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
@@ -233,11 +230,15 @@
 
     async function fetchTenantInfo() {
       try {
-        const res = await fetch(`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`, {
-          headers: {
-            apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+        const res = await fetch(
+          `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`,
+          {
+            headers: {
+              apikey:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+            }
           }
-        });
+        );
 
         const data = await res.json();
 
@@ -251,10 +252,18 @@
 
         document.getElementById("storeName").textContent = storeName;
         document.getElementById("storeGreeting").textContent = storeName;
-
       } catch (e) {
         storeName = "BagThat Deals";
         amazonTag = "azillionaires-20";
+      }
+    }
+
+    function shareDeal(title, url) {
+      if (navigator.share) {
+        navigator.share({ title, text: "Check this out!", url });
+      } else {
+        navigator.clipboard.writeText(url);
+        alert("Link copied!");
       }
     }
 
@@ -297,24 +306,34 @@
               : "";
 
           const priceHTML = originalPrice
-            ? `<div class="price">
-                 <span class="discount">${discountPrice}</span>
-                 <span class="original">${originalPrice}</span>
-               </div>`
-            : `<div class="price">
-                 <span class="discount">${discountPrice}</span>
-               </div>`;
+            ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
+            : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
 
           return `
             <div class="card">
               <img src="${imageURL}" alt="Deal image">
               <div class="info">
                 ${asinTag}
-                <h3>${title} ${ccBadge}</h3>
+
+                <h3>
+                  <span>${title} ${ccBadge}</span>
+
+                  <span class="share-icon" onclick="shareDeal('${title}', '${url}')">
+                    <svg width="16" height="16" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 3h7v7"></path>
+                      <path d="M10 14 21 3"></path>
+                      <path d="M21 14v7H3V3h7"></path>
+                    </svg>
+                  </span>
+                </h3>
+
                 ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
                 ${priceHTML}
                 ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
               </div>
+
               <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
             </div>
           `;
@@ -323,7 +342,6 @@
     }
 
     const dealsEl = document.getElementById("deals");
-
     const buttons = {
       today: document.getElementById("tab-today"),
       yesterday: document.getElementById("tab-yesterday"),
@@ -343,4 +361,3 @@
 
 </body>
 </html>
-
