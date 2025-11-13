@@ -193,6 +193,39 @@
       text-decoration: none;
       border-radius: 0 0 var(--radius) var(--radius);
     }
+    .copy-code {
+  display: inline-block;
+  background: #e8f5f1;
+  color: var(--accent);
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 6px;
+  width: fit-content;
+}
+
+.copy-code:hover {
+  background: #d6eee8;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #006d5b;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
   </style>
 </head>
 
@@ -282,6 +315,17 @@
       renderDeals(rows);
     }
 
+    function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.getElementById("toast");
+    toast.style.opacity = "1";
+    setTimeout(() => {
+      toast.style.opacity = "0";
+    }, 1200);
+  });
+}
+
+
     function renderDeals(rows) {
       dealsEl.innerHTML = rows
         .filter(r => r[1])
@@ -331,7 +375,8 @@
 
                 ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
                 ${priceHTML}
-                ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
+                ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
+
               </div>
 
               <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
@@ -358,6 +403,7 @@
 
     fetchTenantInfo().then(() => loadDeals("today"));
   </script>
+<div id="toast" class="toast">Copied!</div>
 
 </body>
 </html>
