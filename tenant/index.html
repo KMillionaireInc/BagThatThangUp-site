@@ -149,6 +149,37 @@
         font-size: 20px;
       }
     }
+    .price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.price .discount {
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.price .original {
+  color: #999;
+  text-decoration: line-through;
+  font-weight: 500;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+    .cc-badge {
+  display: inline-block;
+  background: #e8f5f1;
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
   </style>
 </head>
 <body>
@@ -226,25 +257,36 @@
         dealsEl.textContent = "Error loading deals.";
       }
     }
-    function renderDeals(rows) {
-      dealsEl.innerHTML = rows
-        .filter(r => r[1])
-        .map(r => {
-          const [ , , discountPrice, promoCode, , , taggedLink, , imageURL ] = r;
-          const url = forceTag(taggedLink, amazonTag);
-          return `
-            <div class="card">
-              <img src="${imageURL}" alt="Deal image">
-              <div class="info">
-                <h3>${r[12] || "Untitled Product"}</h3>
-                <div class="price">${discountPrice || ""}</div>
-                ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
-              </div>
-              <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-            </div>`;
-        })
-        .join("");
-    }
+function renderDeals(rows) {
+  dealsEl.innerHTML = rows
+    .filter(r => r[1])
+    .map(r => {
+      const [ , , discountPrice, promoCode, , ccFlag, taggedLink, , imageURL ] = r;
+      const originalPrice = r[21] || ""; // column V = index 21
+      const title = r[12] || "Untitled Product";
+      const ccBadge = (ccFlag && ccFlag.trim().toLowerCase() === "yes")
+  ? `<span class="cc-badge">✔ CC</span>`
+  : "";
+
+      const url = forceTag(taggedLink, amazonTag);
+
+      const priceHTML = originalPrice
+  ? `<div class="price"><span class="discount">${discountPrice}</span> <span class="original">${originalPrice}</span></div>`
+  : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
+
+      return `
+        <div class="card">
+          <img src="${imageURL}" alt="Deal image">
+          <div class="info">
+            <h3>${title} ${ccBadge}</h3>
+            ${priceHTML}
+            ${promoCode ? `<div class="promo">Code: ${promoCode}</div>` : ""}
+          </div>
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>`;
+    })
+    .join("");
+}
     Object.entries(buttons).forEach(([key, btn]) => {
       btn.addEventListener("click", () => {
         Object.values(buttons).forEach(b => b.classList.remove("active"));
