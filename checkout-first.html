@@ -1,9 +1,59 @@
 <!doctype html>
-<html>
-<head><title>Access Denied</title></head>
-<body style="font-family:sans-serif;text-align:center;padding-top:25vh;">
-<h2>Access Restricted</h2>
-<p>This page is only available after completing your plan checkout.</p>
-<a href="https://bagthatthangup.com">Return to Pricing</a>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Access Restricted</title>
+  <style>
+    html,body {
+      margin:0;
+      padding:0;
+      height:100%;
+      font-family:system-ui, sans-serif;
+      color:#fff;
+      text-align:center;
+      background:url("feature1.jpg") center/cover no-repeat fixed;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+    }
+    .overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      z-index:0;
+    }
+    .content {
+      position:relative;
+      z-index:1;
+      background:rgba(0,0,0,0.45);
+      padding:2.5rem 3rem;
+      border-radius:18px;
+      backdrop-filter:blur(4px);
+      max-width:420px;
+    }
+    h2 {margin:0 0 1rem;font-size:1.75rem;font-weight:600;}
+    p {margin:0 0 1.5rem;line-height:1.5;}
+    a {
+      display:inline-block;
+      background:#b7a98b;
+      color:#1b1b1b;
+      padding:.75rem 1.5rem;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:600;
+      transition:all .3s ease;
+    }
+    a:hover {background:#c5b89a;}
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="content">
+    <h2>Access Restricted</h2>
+    <p>This page is only available after completing your plan checkout.</p>
+    <a href="https://bagthatthangup.com">Return to Pricing</a>
+  </div>
 </body>
 </html>
