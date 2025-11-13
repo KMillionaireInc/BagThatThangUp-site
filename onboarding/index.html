@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+// ✅ ACCESS CONTROL — DO NOT REMOVE
+// Only allow entry if a valid plan key is present in the URL
+const allowedKeys = [
+  "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7", // Basic
+  "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5", // Custom
+  "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f"  // Pro
+];
+const key = new URLSearchParams(window.location.search).get("plan_key");
+if (!allowedKeys.includes(key)) {
+  window.location.href = "/checkout-first.html";
+}
+</script>
+
 <meta charset="UTF-8">
 <title>Onboarding | BagThatThangUp</title>
 <style>
@@ -20,6 +34,7 @@
 </style>
 </head>
 <body>
+  
 <div class="hero-bg"></div>
 <div class="form-container">
   <div class="branding-header">
