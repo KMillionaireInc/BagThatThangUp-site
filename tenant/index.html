@@ -371,65 +371,69 @@
     }
 
     function renderDeals(rows) {
-      dealsEl.innerHTML = rows
-        .filter(r => r[1])
-        .map(r => {
-          const asin = r[1];
-          const discountPrice = r[2];
-          const promoCode = r[3];
-          const ccFlag = r[5];
-          const taggedLink = r[6];
-          const imageURL = r[8];
-          const title = r[12] || "Untitled Product";
-          const rating = r[14] || "";
-          const originalPrice = r[21] || "";
+  dealsEl.innerHTML = rows
+    .filter(r => r[1])
+    .map(r => {
+      const asin = r[1];
+      const discountPrice = r[2];
+      const promoCode = r[3];
+      const ccFlag = r[5];
+      const taggedLink = r[6];
+      const hasCoupon = String(r[10] || "").trim().toLowerCase() === "true";
+      const imageURL = r[8];
+      const title = r[12] || "Untitled Product";
+      const rating = r[14] || "";
+      const originalPrice = r[21] || "";
 
-          const url = forceTag(taggedLink, amazonTag);
+      const url = forceTag(taggedLink, amazonTag);
 
-          const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
+      const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
 
-          const ccBadge =
-            ccFlag && ccFlag.trim().toLowerCase() === "yes"
-              ? `<span class="cc-badge">✔ CC</span>`
-              : "";
+      const ccBadge =
+        ccFlag && ccFlag.trim().toLowerCase() === "yes"
+          ? `<span class="cc-badge">✔ CC</span>`
+          : "";
 
-          const priceHTML = originalPrice
-            ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
-            : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
+      const priceHTML = originalPrice
+        ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
+        : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
 
-          return `
-            <div class="card" data-title="${title.toLowerCase()}">
-              <img src="${imageURL}" alt="Deal image">
-              <div class="info">
+      return `
+        <div class="card" data-title="${title.toLowerCase()}">
+          <img src="${imageURL}" alt="Deal image">
+          <div class="info">
 
-                ${asinTag}
+            ${asinTag}
 
-                <h3>
-                  <span>${title} ${ccBadge}</span>
+            <h3>
+              <span>${title} ${ccBadge}</span>
 
-                  <span class="share-icon" onclick="shareDeal('${title}', '${url}')">
-                    <svg width="16" height="16" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M14 3h7v7"></path>
-                      <path d="M10 14 21 3"></path>
-                      <path d="M21 14v7H3V3h7"></path>
-                    </svg>
-                  </span>
-                </h3>
+              <span class="share-icon" onclick="shareDeal('${title}', '${url}')">
+                <svg width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 3h7v7"></path>
+                  <path d="M10 14 21 3"></path>
+                  <path d="M21 14v7H3V3h7"></path>
+                </svg>
+              </span>
+            </h3>
 
-                ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
-                ${priceHTML}
+            ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+            ${priceHTML}
 
-                ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
-              </div>
+            ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
 
-              <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-            </div>
-          `;
-        })
-        .join("");
-    }
+            ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+          </div>
+
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>
+      `;
+    })
+    .join("");
+}
+
 
     // SEARCH FEATURE
     document.getElementById("searchInput").addEventListener("input", e => {
