@@ -10,7 +10,7 @@
     #disclosure {
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 2000;
       background: #006d5b;
       color: #fff;
       text-align: center;
@@ -55,7 +55,7 @@
       box-shadow: var(--shadow);
       position: sticky;
       top: 50px;
-      z-index: 10;
+      z-index: 1500;
     }
 
     header h1 {
@@ -86,47 +86,43 @@
     }
 
     /* SEARCH BAR */
-    #searchBar {
+    #searchBarWrapper {
       position: sticky;
-      top: 120px;
-      z-index: 999;
-      background: white;
-      padding: 12px 18px 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-
-    #searchWrapper {
-      position: relative;
-    }
-
-    #searchWrapper svg {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-      stroke: #7d8a96;
-      pointer-events: none;
+      top: 110px;
+      z-index: 1400;
+      background: var(--bg);
+      padding: 12px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     #searchInput {
       width: 100%;
-      padding: 12px 14px 12px 42px;
-      border: 1px solid #d4d9dd;
-      border-radius: 10px;
+      padding: 12px 38px 12px 14px;
       font-size: 15px;
+      border-radius: 12px;
+      border: 1px solid #b9c6cf;
       outline: none;
+      background: white;
     }
 
-    #searchInput::placeholder {
-      color: #9aa4af;
+    #searchIcon {
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: 0.55;
     }
 
-    /* GRID */
+    #searchContainer {
+      position: relative;
+      width: 100%;
+    }
+
+    /* 2-CARD MOBILE GRID */
     #deals {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 18px;
       padding: 24px;
     }
@@ -166,8 +162,8 @@
       opacity: 0.7;
       transition: opacity 0.2s ease;
       display: inline-flex;
+      align-items: center;
     }
-
     .share-icon:hover {
       opacity: 1;
     }
@@ -287,14 +283,15 @@
   </header>
 
   <!-- SEARCH BAR -->
-  <div id="searchBar">
-    <div id="searchWrapper">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  <div id="searchBarWrapper">
+    <div id="searchContainer">
+      <input id="searchInput" placeholder="Search deals...">
+      <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input id="searchInput" type="text" placeholder="Search: stroller, blender, shoes, organizer..." />
     </div>
   </div>
 
@@ -310,7 +307,7 @@
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
-    let fullRows = [];
+    let allRows = [];
 
     async function fetchTenantInfo() {
       try {
@@ -325,12 +322,16 @@
         );
 
         const data = await res.json();
-
-        storeName = data?.[0]?.site_name || "BagThat Deals";
-        amazonTag = data?.[0]?.amazon_id || "azillionaires-20";
-
+        if (data?.length) {
+          storeName = data[0].site_name || "BagThat Deals";
+          amazonTag = data[0].amazon_id || "azillionaires-20";
+        } else {
+          storeName = "BagThat Deals";
+          amazonTag = "azillionaires-20";
+        }
         document.getElementById("storeName").textContent = storeName;
         document.getElementById("storeGreeting").textContent = storeName;
+
       } catch (e) {
         storeName = "BagThat Deals";
         amazonTag = "azillionaires-20";
@@ -338,9 +339,8 @@
     }
 
     function shareDeal(title, url) {
-      if (navigator.share) {
-        navigator.share({ title, text: "Check this out!", url });
-      } else {
+      if (navigator.share) navigator.share({ title, text: "Check this out!", url });
+      else {
         navigator.clipboard.writeText(url);
         alert("Link copied!");
       }
@@ -357,15 +357,16 @@
       dealsEl.textContent = "Loading deals...";
       const res = await fetch(CSV_URLS[type]);
       const text = await res.text();
-      fullRows = text.split("\n").slice(1).map(r => r.split(","));
-      renderDeals(fullRows);
+      const rows = text.split("\n").slice(1).map(r => r.split(","));
+      allRows = rows;
+      renderDeals(rows);
     }
 
     function copyCode(code) {
       navigator.clipboard.writeText(code).then(() => {
         const t = document.getElementById("toast");
         t.style.opacity = "1";
-        setTimeout(() => t.style.opacity = "0", 1200);
+        setTimeout(() => (t.style.opacity = "0"), 1200);
       });
     }
 
@@ -386,6 +387,7 @@
           const url = forceTag(taggedLink, amazonTag);
 
           const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
+
           const ccBadge =
             ccFlag && ccFlag.trim().toLowerCase() === "yes"
               ? `<span class="cc-badge">✔ CC</span>`
@@ -396,9 +398,10 @@
             : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
 
           return `
-            <div class="card">
+            <div class="card" data-title="${title.toLowerCase()}">
               <img src="${imageURL}" alt="Deal image">
               <div class="info">
+
                 ${asinTag}
 
                 <h3>
@@ -428,19 +431,18 @@
         .join("");
     }
 
-    // SEARCH FILTER
+    // SEARCH FEATURE
     document.getElementById("searchInput").addEventListener("input", e => {
-      const q = e.target.value.toLowerCase().trim();
-      if (!q) return renderDeals(fullRows);
-
-      const filtered = fullRows.filter(r =>
-        (r[12] || "").toLowerCase().includes(q)
-      );
-
-      renderDeals(filtered);
+      const q = e.target.value.toLowerCase();
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(card => {
+        const title = card.getAttribute("data-title");
+        card.style.display = title.includes(q) ? "flex" : "none";
+      });
     });
 
     const dealsEl = document.getElementById("deals");
+
     const buttons = {
       today: document.getElementById("tab-today"),
       yesterday: document.getElementById("tab-yesterday"),
