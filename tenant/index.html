@@ -85,6 +85,45 @@
       text-decoration: underline;
     }
 
+    /* SEARCH BAR */
+    #searchBar {
+      position: sticky;
+      top: 120px;
+      z-index: 999;
+      background: white;
+      padding: 12px 18px 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    #searchWrapper {
+      position: relative;
+    }
+
+    #searchWrapper svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      stroke: #7d8a96;
+      pointer-events: none;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1px solid #d4d9dd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #searchInput::placeholder {
+      color: #9aa4af;
+    }
+
+    /* GRID */
     #deals {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -127,7 +166,6 @@
       opacity: 0.7;
       transition: opacity 0.2s ease;
       display: inline-flex;
-      align-items: center;
     }
 
     .share-icon:hover {
@@ -248,6 +286,18 @@
     </nav>
   </header>
 
+  <!-- SEARCH BAR -->
+  <div id="searchBar">
+    <div id="searchWrapper">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input id="searchInput" type="text" placeholder="Search: stroller, blender, shoes, organizer..." />
+    </div>
+  </div>
+
   <main id="deals">Loading deals...</main>
 
   <script>
@@ -260,6 +310,7 @@
     const subdomain = window.location.hostname.split(".")[0];
     let amazonTag = "";
     let storeName = "";
+    let fullRows = [];
 
     async function fetchTenantInfo() {
       try {
@@ -275,13 +326,8 @@
 
         const data = await res.json();
 
-        if (data?.length) {
-          storeName = data[0].site_name || "BagThat Deals";
-          amazonTag = data[0].amazon_id || "azillionaires-20";
-        } else {
-          storeName = "BagThat Deals";
-          amazonTag = "azillionaires-20";
-        }
+        storeName = data?.[0]?.site_name || "BagThat Deals";
+        amazonTag = data?.[0]?.amazon_id || "azillionaires-20";
 
         document.getElementById("storeName").textContent = storeName;
         document.getElementById("storeGreeting").textContent = storeName;
@@ -311,8 +357,8 @@
       dealsEl.textContent = "Loading deals...";
       const res = await fetch(CSV_URLS[type]);
       const text = await res.text();
-      const rows = text.split("\n").slice(1).map(r => r.split(","));
-      renderDeals(rows);
+      fullRows = text.split("\n").slice(1).map(r => r.split(","));
+      renderDeals(fullRows);
     }
 
     function copyCode(code) {
@@ -340,7 +386,6 @@
           const url = forceTag(taggedLink, amazonTag);
 
           const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
-
           const ccBadge =
             ccFlag && ccFlag.trim().toLowerCase() === "yes"
               ? `<span class="cc-badge">✔ CC</span>`
@@ -382,6 +427,18 @@
         })
         .join("");
     }
+
+    // SEARCH FILTER
+    document.getElementById("searchInput").addEventListener("input", e => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) return renderDeals(fullRows);
+
+      const filtered = fullRows.filter(r =>
+        (r[12] || "").toLowerCase().includes(q)
+      );
+
+      renderDeals(filtered);
+    });
 
     const dealsEl = document.getElementById("deals");
     const buttons = {
