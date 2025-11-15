@@ -127,14 +127,35 @@ async function validateForm() {
 let typingTimeout = null;
 subdomainInput.addEventListener('input', () => {
   clearTimeout(typingTimeout);
-  const val = subdomainInput.value.trim().toLowerCase();
+
+  // SANITIZE INPUT: no spaces, no symbols
+  const cleaned = subdomainInput.value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '');
+
+  // Update field if user typed something invalid
+  if (subdomainInput.value !== cleaned) {
+    subdomainInput.value = cleaned;
+  }
+
+  // Update preview line
+  const preview = document.getElementById('subPreview');
+  preview.textContent = cleaned
+    ? `${cleaned}.bagthatthangup.com`
+    : 'yoursite.bagthatthangup.com';
+
+  // Reset availability message
   subdomainMsg.textContent = '';
   submitBtn.disabled = true;
-  if (!val) return;
+
+  if (!cleaned) return;
+
   subdomainMsg.style.color = '#555';
   subdomainMsg.textContent = 'Checking availability...';
+
   typingTimeout = setTimeout(async () => {
-    subdomainAvailable = await checkUrlAvailability(val);
+    subdomainAvailable = await checkUrlAvailability(cleaned);
+
     if (subdomainAvailable) {
       subdomainMsg.style.color = 'green';
       subdomainMsg.textContent = '✅ Available!';
@@ -142,6 +163,7 @@ subdomainInput.addEventListener('input', () => {
       subdomainMsg.style.color = 'red';
       subdomainMsg.textContent = 'This site URL name is already taken. Please try another.';
     }
+
     await validateForm();
   }, 450);
 });
