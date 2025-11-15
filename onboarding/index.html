@@ -41,7 +41,9 @@ if (!allowedKeys.includes(key)) {
     <h1>Welcome to BagThatThangUp!</h1>
     <p>🎉 Payment received!<br>Personalize your new site below and launch instantly.</p>
   </div>
+
   <form id="onboarding-form" autocomplete="off">
+    
     <label for="firstName">First Name</label>
     <input type="text" id="firstName" required placeholder="e.g. Tiffany" />
 
@@ -52,7 +54,22 @@ if (!allowedKeys.includes(key)) {
     <input type="text" id="siteName" required placeholder="e.g. Tiffany’s Finds" />
 
     <label for="subdomain">Site URL Name</label>
-    <input type="text" id="subdomain" required autocomplete="off" placeholder="e.g. tiffanysdeals" />
+    <input 
+      type="text" 
+      id="subdomain" 
+      required 
+      autocomplete="off" 
+      placeholder="e.g. tiffanysdeals"
+    />
+
+    <!-- LIVE PREVIEW OF FULL URL -->
+    <div 
+      id="subPreview" 
+      style="font-size:14px;color:#666;margin-top:-6px;margin-bottom:4px;"
+    >
+      yoursite.bagthatthangup.com
+    </div>
+
     <div id="subdomainMsg"></div>
 
     <label for="amazonId">Amazon Store ID</label>
