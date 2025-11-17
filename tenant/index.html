@@ -449,15 +449,7 @@ function renderDeals(rows) {
         ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
         : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
 
-  const shareSVG = `
-  <svg width="20" height="20" viewBox="0 0 24 24"
-    fill="none" stroke="currentColor" stroke-width="2"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2v10"></path>
-    <path d="M5 12l7-7 7 7"></path>
-    <path d="M4 22h16v-8"></path>
-  </svg>
-`;
+const shareSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"></path><path d="M5 12l7-7 7 7"></path><path d="M4 22h16v-8"></path></svg>`;
 
       return `
         <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}">
