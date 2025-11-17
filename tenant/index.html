@@ -39,6 +39,7 @@
       --accent: #006d5b;
       --radius: 16px;
       --shadow: 0 8px 22px rgba(2,24,43,0.08);
+      --glow: 0 0 14px rgba(0,150,135,0.9);
     }
 
     body {
@@ -132,6 +133,12 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: box-shadow .3s ease;
+    }
+
+    .card.glow-highlight {
+      box-shadow: var(--glow);
+      border: 2px solid #00a691;
     }
 
     .card img {
@@ -157,7 +164,7 @@
 
     .share-icon {
       cursor: pointer;
-      opacity: 0.7;
+      opacity: 0.9;
       transition: opacity 0.2s ease;
       display: inline-flex;
       align-items: center;
@@ -204,12 +211,6 @@
       text-decoration: line-through;
       font-size: 0.9rem;
       opacity: 0.85;
-    }
-
-    .promo {
-      font-size: 13px;
-      margin-top: 4px;
-      color: var(--muted);
     }
 
     .copy-code {
@@ -261,6 +262,18 @@
       margin-top: 8px;
       width: fit-content;
     }
+
+    /* FEATURED POPUP */
+    #featuredPopup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
   </style>
 </head>
 
@@ -286,247 +299,304 @@
   <div id="searchBarWrapper">
     <div id="searchContainer">
       <input id="searchInput" placeholder="Search deals...">
-      <svg id="searchIcon" width="20" height="20">
+      <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
     </div>
   </div>
 
   <main id="deals">Loading deals...</main>
 
-  <script>
-    const CSV_URLS = {
-      today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
-      yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
-      almost: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
-    };
-
-    const subdomain = window.location.hostname.split(".")[0];
-    let amazonTag = "";
-    let storeName = "";
-    let allRows = [];
-
-    async function fetchTenantInfo() {
-      try {
-        const res = await fetch(
-          `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`,
-          { 
-            headers: { 
-              apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc" 
-            } 
-          }
-        );
-        const data = await res.json();
-        if (data?.length) {
-          storeName = data[0].site_name || "BagThat Deals";
-          amazonTag = data[0].amazon_id || "azillionaires-20";
-        } else {
-          storeName = "BagThat Deals";
-          amazonTag = "azillionaires-20";
-        }
-        document.getElementById("storeName").textContent = storeName;
-        document.getElementById("storeGreeting").textContent = storeName;
-      } catch {}
-    }
-
-    function shareDeal(title, url) {
-      if (navigator.share) navigator.share({ title, text: "Check this out!", url });
-      else navigator.clipboard.writeText(url);
-    }
-
-    function forceTag(url, tag) {
-      if (!tag) return url;
-      url = url.replace(/([&?])tag=[^&]*/i, "");
-      return url + (url.includes("?") ? "&" : "?") + "tag=" + tag;
-    }
-
-    async function loadDeals(type = "today") {
-      dealsEl.textContent = "Loading deals...";
-      const res = await fetch(CSV_URLS[type]);
-      const text = await res.text();
-      const rows = text.split("\n").slice(1).map(r => r.split(","));
-      allRows = rows;
-      renderDeals(rows);
-    }
-
-    function copyCode(code) {
-      navigator.clipboard.writeText(code);
-    }
-
-    function renderDeals(rows) {
-      dealsEl.innerHTML = rows
-        .filter(r => r[1])
-        .map(r => {
-          const asin = r[1];
-          const discountPrice = r[2];
-          const promoCode = r[3];
-          const ccFlag = r[5];
-          const taggedLink = r[6];
-          const hasCoupon = String(r[10] || "").trim().toLowerCase() === "true";
-          const imageURL = r[8];
-          const title = r[12] || "Untitled Product";
-          const rating = r[14] || "";
-          const originalPrice = r[21] || "";
-          const url = forceTag(taggedLink, amazonTag);
-
-          const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
-          const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes" ? `<span class="cc-badge">✔ CC</span>` : "";
-          const priceHTML = originalPrice
-            ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
-            : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
-
-          return `
-            <div class="card" data-title="${title.toLowerCase()}">
-              <img src="${imageURL}" alt="Deal image">
-              <div class="info">
-                ${asinTag}
-                <h3>
-                  <span>${title} ${ccBadge}</span>
-                  <span class="share-icon" onclick="shareDeal('${title}', '${url}')">🔗</span>
-                </h3>
-                ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
-                ${priceHTML}
-                ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
-                ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
-              </div>
-              <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-            </div>
-          `;
-        })
-        .join("");
-    }
-
-    /* FEATURED POPUP LOGIC */
-    function showFeaturedPopup() {
-      const shown = localStorage.getItem('bttu_featured_shown');
-      const today = new Date().toISOString().slice(0,10);
-      if (shown === today) return;
-
-      const deals = allRows.map(r => ({
-        Category: r[13] || "",
-        DiscountPrice: Number(r[2] || 0),
-        PromoCode: r[3] || "",
-        HasCoupon: (r[10] || "").trim().toLowerCase() === "true",
-        ImageURL: r[8] || "",
-        Title: r[12] || "",
-        TaggedLink: r[6] || ""
-      }));
-
-      const filtered = deals.filter(d => {
-        const cat = d.Category.toLowerCase();
-        const autoApply = d.PromoCode.trim() === "";
-        return (
-          (cat.includes("women") || cat.includes("home")) &&
-          d.DiscountPrice >= 50 &&
-          autoApply &&
-          !d.HasCoupon
-        );
-      });
-
-      if (!filtered.length) return;
-
-      const pick = filtered[Math.floor(Math.random() * filtered.length)];
-
-      document.getElementById("fpImg").src = pick.ImageURL;
-      document.getElementById("fpTitle").textContent = pick.Title;
-      document.getElementById("fpDisc").textContent = pick.DiscountPrice + "% Off";
-      document.getElementById("fpBtn").href = pick.TaggedLink;
-
-      const popup = document.getElementById("featuredPopup");
-      popup.style.display = "flex";
-
-      document.getElementById("fpClose").onclick = () => {
-        popup.style.display = "none";
-        localStorage.setItem('bttu_featured_shown', today);
-      };
-
-      popup.onclick = e => {
-        if (e.target.id === "featuredPopup") {
-          popup.style.display = "none";
-          localStorage.setItem('bttu_featured_shown', today);
-        }
-      };
-    }
-
-    const dealsEl = document.getElementById("deals");
-
-    document.getElementById("searchInput").addEventListener("input", e => {
-      const q = e.target.value.toLowerCase();
-      const cards = document.querySelectorAll(".card");
-      cards.forEach(card => {
-        const title = card.getAttribute("data-title");
-        card.style.display = title.includes(q) ? "flex" : "none";
-      });
-    });
-
-    const buttons = {
-      today: document.getElementById("tab-today"),
-      yesterday: document.getElementById("tab-yesterday"),
-      almost: document.getElementById("tab-almost")
-    };
-
-    Object.entries(buttons).forEach(([key, btn]) => {
-      btn.addEventListener("click", () => {
-        Object.values(buttons).forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        loadDeals(key).then(() => {
-          showFeaturedPopup();
-        });
-      });
-    });
-
-    /* FIX ORDER: load store name -> load deals -> show popup */
-    fetchTenantInfo().then(() => {
-      loadDeals("today").then(() => {
-        showFeaturedPopup();
-      });
-    });
-  </script>
+  <!-- FEATURED POPUP -->
+  <div id="featuredPopup">
+    <div style="
+      background:#fff;
+      width:90%;
+      max-width:420px;
+      border-radius:14px;
+      padding:18px;
+      text-align:center;
+    ">
+      <img id="fpImg" style="width:100%;border-radius:12px;" />
+      <h3 id="fpTitle" style="margin:12px 0 4px 0;font-size:18px;color:#222;"></h3>
+      <p id="fpDisc" style="margin:0 0 12px 0;font-size:16px;font-weight:600;color:#2c60ff;"></p>
+      <a id="fpBtn" target="_blank" style="
+        display:block;
+        background:#2c60ff;
+        color:#fff;
+        padding:10px;
+        border-radius:8px;
+        margin-top:4px;
+        font-weight:bold;
+        text-decoration:none;
+      ">View Deal</a>
+      <button id="fpClose" style="
+        margin-top:12px;
+        background:none;
+        border:none;
+        font-size:16px;
+        color:#444;
+        cursor:pointer;
+      ">Close</button>
+    </div>
+  </div>
 
   <div id="toast" class="toast">Copied!</div>
 
-<!-- FEATURED DEAL POPUP -->
-<div id="featuredPopup" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.55);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-">
-  <div style="
-    background: #fff;
-    width: 90%;
-    max-width: 420px;
-    border-radius: 14px;
-    padding: 18px;
-    text-align: center;
-  ">
-    <img id="fpImg" style="width:100%;border-radius:12px;" />
-    <h3 id="fpTitle" style="margin:12px 0 4px 0;font-size:18px;color:#222;"></h3>
-    <p id="fpDisc" style="margin:0 0 12px 0;font-size:16px;font-weight:600;color:#2c60ff;"></p>
-    <a id="fpBtn" target="_blank" style="
-      display:block;
-      background:#2c60ff;
-      color:#fff;
-      padding:10px;
-      border-radius:8px;
-      margin-top:4px;
-      font-weight:bold;
-      text-decoration:none;
-    ">View Deal</a>
-    <button id="fpClose" style="
-      margin-top:12px;
-      background:none;
-      border:none;
-      font-size:16px;
-      color:#444;
-      cursor:pointer;
-    ">Close</button>
-  </div>
-</div>
+<script>
+/* === CSV URLs === */
+const CSV_URLS = {
+  today: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
+  yesterday: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+  almost: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
+};
+
+const subdomain = window.location.hostname.split(".")[0];
+let amazonTag = "";
+let storeName = "";
+let allRows = [];
+
+/* === FETCH TENANT INFO === */
+async function fetchTenantInfo() {
+  try {
+    const res = await fetch(
+      `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`,
+      {
+        headers: {
+          apikey:
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+        }
+      }
+    );
+    const data = await res.json();
+    if (data?.length) {
+      storeName = data[0].site_name || "BagThat Deals";
+      amazonTag = data[0].amazon_id || "azillionaires-20";
+    } else {
+      storeName = "BagThat Deals";
+      amazonTag = "azillionaires-20";
+    }
+    document.getElementById("storeName").textContent = storeName;
+    document.getElementById("storeGreeting").textContent = storeName;
+  } catch {}
+}
+
+/* === SHARE LINK CREATION === */
+function createShareLink(asin) {
+  return `https://${window.location.hostname}/?item=${asin}`;
+}
+
+function shareDeal(asin, title) {
+  const link = createShareLink(asin);
+  if (navigator.share) {
+    navigator.share({ title, url: link });
+  } else {
+    navigator.clipboard.writeText(link);
+    alert("Deal link copied!");
+  }
+}
+
+/* === FORCE TAG === */
+function forceTag(url, tag) {
+  if (!tag) return url;
+  url = url.replace(/([&?])tag=[^&]*/i, "");
+  return url + (url.includes("?") ? "&" : "?") + "tag=" + tag;
+}
+
+/* === LOAD DEALS === */
+async function loadDeals(type = "today") {
+  dealsEl.textContent = "Loading deals...";
+  const res = await fetch(CSV_URLS[type]);
+  const text = await res.text();
+  const rows = text.split("\n").slice(1).map(r => r.split(","));
+  allRows = rows;
+  renderDeals(rows);
+}
+
+/* === COPY CODE === */
+function copyCode(code) {
+  navigator.clipboard.writeText(code);
+}
+
+/* === RENDER DEALS === */
+function renderDeals(rows) {
+  dealsEl.innerHTML = rows
+    .filter(r => r[1])
+    .map(r => {
+      const asin = r[1];
+      const discountPrice = r[2];
+      const promoCode = r[3];
+      const ccFlag = r[5];
+      const taggedLink = r[6];
+      const hasCoupon = String(r[10] || "").trim().toLowerCase() === "true";
+      const imageURL = r[8];
+      const title = r[12] || "Untitled Product";
+      const rating = r[14] || "";
+      const originalPrice = r[21] || "";
+
+      const url = forceTag(taggedLink, amazonTag);
+
+      const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
+      const ccBadge =
+        ccFlag && ccFlag.toLowerCase() === "yes"
+          ? `<span class="cc-badge">✔ CC</span>`
+          : "";
+
+      const priceHTML = originalPrice
+        ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
+        : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
+
+      const shareSVG = `
+        <svg width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="14,3 21,3 21,10"></polyline>
+          <polyline points="10,14 21,3"></polyline>
+          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+        </svg>`;
+
+      return `
+        <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}">
+          <img src="${imageURL}" alt="Deal image">
+
+          <div class="info">
+            ${asinTag}
+
+            <h3>
+              <span>${title} ${ccBadge}</span>
+              <span class="share-icon" onclick="shareDeal('${asin}', '${title.replace(/'/g, "\\'")}')">
+                ${shareSVG}
+              </span>
+            </h3>
+
+            ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+            ${priceHTML}
+
+            ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
+
+            ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+          </div>
+
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>
+      `;
+    })
+    .join("");
+
+  highlightDeepLinkedItem();
+}
+
+/* === DEEP LINK HIGHLIGHT === */
+function highlightDeepLinkedItem() {
+  const params = new URLSearchParams(window.location.search);
+  const asin = params.get("item");
+  if (!asin) return;
+
+  const card = document.querySelector(`.card[data-asin="${asin}"]`);
+  if (!card) return;
+
+  card.classList.add("glow-highlight");
+
+  setTimeout(() => {
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 300);
+}
+
+/* === FEATURED POPUP === */
+function showFeaturedPopup() {
+  const shown = localStorage.getItem('bttu_featured_shown');
+  const today = new Date().toISOString().slice(0,10);
+  if (shown === today) return;
+
+  const deals = allRows.map(r => ({
+    Category: r[13] || "",
+    DiscountPrice: Number(r[2] || 0),
+    PromoCode: r[3] || "",
+    HasCoupon: (r[10] || "").trim().toLowerCase() === "true",
+    ImageURL: r[8] || "",
+    Title: r[12] || "",
+    TaggedLink: r[6] || ""
+  }));
+
+  const filtered = deals.filter(d => {
+    const cat = d.Category.toLowerCase();
+    const autoApply = d.PromoCode.trim() === "";
+    return (
+      (cat.includes("women") || cat.includes("home")) &&
+      d.DiscountPrice >= 50 &&
+      autoApply &&
+      !d.HasCoupon
+    );
+  });
+
+  if (!filtered.length) return;
+
+  const pick = filtered[Math.floor(Math.random() * filtered.length)];
+
+  document.getElementById("fpImg").src = pick.ImageURL;
+  document.getElementById("fpTitle").textContent = pick.Title;
+  document.getElementById("fpDisc").textContent = pick.DiscountPrice + "% Off";
+  document.getElementById("fpBtn").href = pick.TaggedLink;
+
+  const popup = document.getElementById("featuredPopup");
+
+  setTimeout(() => {
+    popup.style.display = "flex";
+  }, 1500);
+
+  document.getElementById("fpClose").onclick = () => {
+    popup.style.display = "none";
+    localStorage.setItem('bttu_featured_shown', today);
+  };
+
+  popup.onclick = e => {
+    if (e.target.id === "featuredPopup") {
+      popup.style.display = "none";
+      localStorage.setItem('bttu_featured_shown', today);
+    }
+  };
+}
+
+/* === SEARCH === */
+document.getElementById("searchInput").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    const title = card.getAttribute("data-title");
+    card.style.display = title.includes(q) ? "flex" : "none";
+  });
+});
+
+/* === TABS === */
+const dealsEl = document.getElementById("deals");
+
+const buttons = {
+  today: document.getElementById("tab-today"),
+  yesterday: document.getElementById("tab-yesterday"),
+  almost: document.getElementById("tab-almost")
+};
+
+Object.entries(buttons).forEach(([key, btn]) => {
+  btn.addEventListener("click", () => {
+    Object.values(buttons).forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    loadDeals(key).then(() => {
+      showFeaturedPopup();
+    });
+  });
+});
+
+/* === INITIAL LOAD === */
+fetchTenantInfo().then(() => {
+  loadDeals("today").then(() => {
+    showFeaturedPopup();
+  });
+});
+</script>
 
 </body>
 </html>
