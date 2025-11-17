@@ -296,6 +296,17 @@
     </nav>
   </header>
 
+  <div id="dealCount" style="
+  text-align:center;
+  padding:10px;
+  font-size:15px;
+  font-weight:600;
+  color:#006d5b;
+">
+  Deals: 0
+</div>
+
+
   <div id="searchBarWrapper">
     <div id="searchContainer">
       <input id="searchInput" placeholder="Search deals...">
@@ -489,6 +500,8 @@ const shareSVG = `
     .join("");
 
   highlightDeepLinkedItem();
+  updateDealCount();
+
 }
 
 /* === DEEP LINK HIGHLIGHT === */
@@ -598,6 +611,13 @@ fetchTenantInfo().then(() => {
     showFeaturedPopup();
   });
 });
+
+  function updateDealCount() {
+  const cards = document.querySelectorAll(".card");
+  const count = cards.length;
+  document.getElementById("dealCount").textContent = "Deals: " + count;
+}
+
 </script>
 
 </body>
