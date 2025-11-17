@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Full Working Tenant Code for BTTU  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -85,6 +85,7 @@
       text-decoration: underline;
     }
 
+    /* SEARCH BAR */
     #searchBarWrapper {
       position: sticky;
       top: 110px;
@@ -118,6 +119,7 @@
       width: 100%;
     }
 
+    /* 2-CARD MOBILE GRID */
     #deals {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -158,11 +160,18 @@
     .share-icon {
       cursor: pointer;
       opacity: 0.7;
+      transition: opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+    .share-icon:hover {
+      opacity: 1;
     }
 
     .asin {
       font-size: 0.75rem;
       color: #9aa4af;
+      font-weight: 500;
       margin-bottom: 4px;
     }
 
@@ -221,6 +230,10 @@
       width: fit-content;
     }
 
+    .copy-code:hover {
+      background: #d6eee8;
+    }
+
     .cta {
       margin-top: auto;
       background: var(--accent);
@@ -241,22 +254,24 @@
       color: white;
       padding: 10px 16px;
       border-radius: 8px;
+      font-size: 0.9rem;
       opacity: 0;
+      pointer-events: none;
       transition: opacity 0.3s ease;
       z-index: 9999;
     }
-
     .coupon-flag {
-      display: inline-block;
-      background: #fff8d1;
-      color: #8a6a00;
-      padding: 4px 10px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      border-radius: 8px;
-      margin-top: 8px;
-      width: fit-content;
-    }
+  display: inline-block;
+  background: #fff8d1;      /* soft yellow */
+  color: #8a6a00;           /* warm gold/brown text */
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-top: 8px;
+  width: fit-content;
+}
+
   </style>
 </head>
 
@@ -279,11 +294,15 @@
     </nav>
   </header>
 
+  <!-- SEARCH BAR -->
   <div id="searchBarWrapper">
     <div id="searchContainer">
       <input id="searchInput" placeholder="Search deals...">
-      <svg id="searchIcon" width="20" height="20">
+      <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
     </div>
   </div>
@@ -306,27 +325,44 @@
       try {
         const res = await fetch(
           `https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id`,
-          { headers: { apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." } }
+          {
+            headers: {
+              apikey:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+            }
+          }
         );
+
         const data = await res.json();
         if (data?.length) {
           storeName = data[0].site_name || "BagThat Deals";
           amazonTag = data[0].amazon_id || "azillionaires-20";
+        } else {
+          storeName = "BagThat Deals";
+          amazonTag = "azillionaires-20";
         }
         document.getElementById("storeName").textContent = storeName;
         document.getElementById("storeGreeting").textContent = storeName;
-      } catch {}
+
+      } catch (e) {
+        storeName = "BagThat Deals";
+        amazonTag = "azillionaires-20";
+      }
     }
 
     function shareDeal(title, url) {
       if (navigator.share) navigator.share({ title, text: "Check this out!", url });
-      else navigator.clipboard.writeText(url);
+      else {
+        navigator.clipboard.writeText(url);
+        alert("Link copied!");
+      }
     }
 
     function forceTag(url, tag) {
       if (!tag) return url;
       url = url.replace(/([&?])tag=[^&]*/i, "");
-      return url + (url.includes("?") ? "&" : "?") + "tag=" + tag;
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "tag=" + tag;
     }
 
     async function loadDeals(type = "today") {
@@ -339,109 +375,79 @@
     }
 
     function copyCode(code) {
-      navigator.clipboard.writeText(code);
+      navigator.clipboard.writeText(code).then(() => {
+        const t = document.getElementById("toast");
+        t.style.opacity = "1";
+        setTimeout(() => (t.style.opacity = "0"), 1200);
+      });
     }
 
     function renderDeals(rows) {
-      dealsEl.innerHTML = rows
-        .filter(r => r[1])
-        .map(r => {
-          const asin = r[1];
-          const discountPrice = r[2];
-          const promoCode = r[3];
-          const ccFlag = r[5];
-          const taggedLink = r[6];
-          const hasCoupon = String(r[10] || "").trim().toLowerCase() === "true";
-          const imageURL = r[8];
-          const title = r[12] || "Untitled Product";
-          const rating = r[14] || "";
-          const originalPrice = r[21] || "";
-          const url = forceTag(taggedLink, amazonTag);
+  dealsEl.innerHTML = rows
+    .filter(r => r[1])
+    .map(r => {
+      const asin = r[1];
+      const discountPrice = r[2];
+      const promoCode = r[3];
+      const ccFlag = r[5];
+      const taggedLink = r[6];
+      const hasCoupon = String(r[10] || "").trim().toLowerCase() === "true";
+      const imageURL = r[8];
+      const title = r[12] || "Untitled Product";
+      const rating = r[14] || "";
+      const originalPrice = r[21] || "";
 
-          const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
-          const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes" ? `<span class="cc-badge">✔ CC</span>` : "";
-          const priceHTML = originalPrice
-            ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
-            : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
+      const url = forceTag(taggedLink, amazonTag);
 
-          return `
-            <div class="card" data-title="${title.toLowerCase()}">
-              <img src="${imageURL}" alt="Deal image">
-              <div class="info">
-                ${asinTag}
-                <h3>
-                  <span>${title} ${ccBadge}</span>
-                  <span class="share-icon" onclick="shareDeal('${title}', '${url}')">🔗</span>
-                </h3>
-                ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
-                ${priceHTML}
-                ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
-                ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
-              </div>
-              <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-            </div>
-          `;
-        })
-        .join("");
+      const asinTag = asin ? `<div class="asin">ASIN: ${asin}</div>` : "";
 
-      /* POPUP TRIGGER */
-      showFeaturedPopup();
-    }
+      const ccBadge =
+        ccFlag && ccFlag.trim().toLowerCase() === "yes"
+          ? `<span class="cc-badge">✔ CC</span>`
+          : "";
 
-    /* FEATURED POPUP LOGIC */
-    function showFeaturedPopup() {
-      const shown = localStorage.getItem('bttu_featured_shown');
-      const today = new Date().toISOString().slice(0,10);
-      if (shown === today) return;
+      const priceHTML = originalPrice
+        ? `<div class="price"><span class="discount">${discountPrice}</span><span class="original">${originalPrice}</span></div>`
+        : `<div class="price"><span class="discount">${discountPrice}</span></div>`;
 
-      const deals = allRows.map(r => ({
-        Category: r[13] || "",
-        DiscountPrice: Number(r[2] || 0),
-        PromoCode: r[3] || "",
-        HasCoupon: (r[10] || "").trim().toLowerCase() === "true",
-        ImageURL: r[8] || "",
-        Title: r[12] || "",
-        TaggedLink: r[6] || ""
-      }));
+      return `
+        <div class="card" data-title="${title.toLowerCase()}">
+          <img src="${imageURL}" alt="Deal image">
+          <div class="info">
 
-      const filtered = deals.filter(d => {
-        const cat = d.Category.toLowerCase();
-        const autoApply = d.PromoCode.trim() === "";
-        return (
-          (cat.includes("women") || cat.includes("home")) &&
-          d.DiscountPrice >= 60 &&
-          autoApply &&
-          !d.HasCoupon
-        );
-      });
+            ${asinTag}
 
-      if (!filtered.length) return;
+            <h3>
+              <span>${title} ${ccBadge}</span>
 
-      const pick = filtered[Math.floor(Math.random() * filtered.length)];
+              <span class="share-icon" onclick="shareDeal('${title}', '${url}')">
+                <svg width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 3h7v7"></path>
+                  <path d="M10 14 21 3"></path>
+                  <path d="M21 14v7H3V3h7"></path>
+                </svg>
+              </span>
+            </h3>
 
-      document.getElementById("fpImg").src = pick.ImageURL;
-      document.getElementById("fpTitle").textContent = pick.Title;
-      document.getElementById("fpDisc").textContent = pick.DiscountPrice + "% Off";
-      document.getElementById("fpBtn").href = pick.TaggedLink;
+            ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+            ${priceHTML}
 
-      const popup = document.getElementById("featuredPopup");
-      popup.style.display = "flex";
+            ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
 
-      document.getElementById("fpClose").onclick = () => {
-        popup.style.display = "none";
-        localStorage.setItem('bttu_featured_shown', today);
-      };
+            ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+          </div>
 
-      popup.onclick = e => {
-        if (e.target.id === "featuredPopup") {
-          popup.style.display = "none";
-          localStorage.setItem('bttu_featured_shown', today);
-        }
-      };
-    }
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>
+      `;
+    })
+    .join("");
+}
 
-    const dealsEl = document.getElementById("deals");
 
+    // SEARCH FEATURE
     document.getElementById("searchInput").addEventListener("input", e => {
       const q = e.target.value.toLowerCase();
       const cards = document.querySelectorAll(".card");
@@ -450,6 +456,8 @@
         card.style.display = title.includes(q) ? "flex" : "none";
       });
     });
+
+    const dealsEl = document.getElementById("deals");
 
     const buttons = {
       today: document.getElementById("tab-today"),
@@ -469,49 +477,6 @@
   </script>
 
   <div id="toast" class="toast">Copied!</div>
-
-<!-- FEATURED DEAL POPUP -->
-<div id="featuredPopup" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.55);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-">
-  <div style="
-    background: #fff;
-    width: 90%;
-    max-width: 420px;
-    border-radius: 14px;
-    padding: 18px;
-    text-align: center;
-  ">
-    <img id="fpImg" src="" style="width:100%;border-radius:12px;" />
-    <h3 id="fpTitle" style="margin:12px 0 4px 0;font-size:18px;color:#222;"></h3>
-    <p id="fpDisc" style="margin:0 0 12px 0;font-size:16px;font-weight:600;color:#2c60ff;"></p>
-    <a id="fpBtn" href="#" target="_blank" style="
-      display:block;
-      background:#2c60ff;
-      color:#fff;
-      padding:10px;
-      border-radius:8px;
-      margin-top:4px;
-      font-weight:bold;
-      text-decoration:none;
-    ">View Deal</a>
-    <button id="fpClose" style="
-      margin-top:12px;
-      background:none;
-      border:none;
-      font-size:16px;
-      color:#444;
-      cursor:pointer;
-    ">Close</button>
-  </div>
-</div>
 
 </body>
 </html>
