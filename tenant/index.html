@@ -458,9 +458,17 @@ function renderDeals(rows) {
           ? `<span class="cc-badge">✔ CC</span>`
           : "";
 
-      const priceHTML = originalPrice
-        ? `<div class="price"><span class="discount">$${discountPrice}</span><span class="original">$${originalPrice}</span></div>`
-        : `<div class="price"><span class="discount">$${discountPrice}</span></div>`;
+      const normalizeMoney = val =>
+  String(val || "")
+    .replace(/\$/g, "")      // remove all dollar signs
+    .trim();
+
+const disc = normalizeMoney(discountPrice);
+const orig = normalizeMoney(originalPrice);
+
+const priceHTML = orig
+  ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
+  : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
       const shareSVG = `
 <svg width="20" height="20" viewBox="0 0 24 24"
