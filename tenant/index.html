@@ -119,6 +119,14 @@
       width: 100%;
     }
 
+    #dealCount {
+      text-align:center;
+      padding:10px;
+      font-size:15px;
+      font-weight:600;
+      color:#006d5b;
+    }
+
     #deals {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -296,16 +304,7 @@
     </nav>
   </header>
 
-  <div id="dealCount" style="
-  text-align:center;
-  padding:10px;
-  font-size:15px;
-  font-weight:600;
-  color:#006d5b;
-">
-  Deals: 0
-</div>
-
+  <div id="dealCount">Deals: 0</div>
 
   <div id="searchBarWrapper">
     <div id="searchContainer">
@@ -321,7 +320,6 @@
 
   <main id="deals">Loading deals...</main>
 
-  <!-- FEATURED POPUP -->
   <div id="featuredPopup">
     <div style="
       background:#fff;
@@ -356,6 +354,8 @@
   </div>
 
   <div id="toast" class="toast">Copied!</div>
+
+
 
 <script>
 /* === CSV URLs === */
@@ -422,7 +422,16 @@ async function loadDeals(type = "today") {
   dealsEl.textContent = "Loading deals...";
   const res = await fetch(CSV_URLS[type]);
   const text = await res.text();
-  const rows = text.split("\n").slice(1).map(r => r.split(","));
+
+  const rows = text
+    .split("\n")
+    .slice(1)
+    .map(r => {
+      const parts = r.split(",");
+      while (parts.length < 23) parts.push(""); // ENSURE 23 COLUMNS
+      return parts;
+    });
+
   allRows = rows;
   renderDeals(rows);
 }
@@ -454,6 +463,7 @@ function renderDeals(rows) {
       const title = r[12] || "Untitled Product";
       const rating = r[14] || "";
       const originalPrice = r[21] || "";
+      const importBlock = r[22] || ""; // NEW
 
       const url = forceTag(taggedLink, amazonTag);
 
@@ -619,12 +629,11 @@ fetchTenantInfo().then(() => {
   });
 });
 
-  function updateDealCount() {
+function updateDealCount() {
   const cards = document.querySelectorAll(".card");
   const count = cards.length;
   document.getElementById("dealCount").textContent = "Deals: " + count;
 }
-
 </script>
 
 </body>
