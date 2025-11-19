@@ -203,18 +203,40 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 <!-- AMAZON STORE ID POPUP VALIDATION -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const amazonField = document.querySelector("input[name='amazon_id']");
+  const amazonField = document.getElementById("amazonId");
+
   if (!amazonField) return;
 
+  // Enforce allowed pattern while typing
+  amazonField.addEventListener("input", function () {
+    let v = amazonField.value;
+
+    // Remove spaces immediately
+    v = v.replace(/\s+/g, "");
+
+    // Remove any characters that are not letters, numbers, or hyphens
+    v = v.replace(/[^a-zA-Z0-9-]/g, "");
+
+    // Prevent multiple hyphens anywhere
+    v = v.replace(/-+/g, "-");
+
+    amazonField.value = v;
+  });
+
+  // Validate on blur
   amazonField.addEventListener("blur", function () {
     const val = amazonField.value.trim();
+
     if (!val) return;
 
-    if (!val.endsWith("-20")) {
+    // Must match: letters + numbers + hyphen + 20
+    const valid = /^[a-zA-Z0-9]+-20$/.test(val);
+
+    if (!valid) {
       alert(
-        "STOP! Please confirm your Amazon Associates Store ID.\n\n" +
-        "It must end in -20.\n" +
-        "Log into your Amazon Associates account and verify it before continuing."
+        "STOP! Your Amazon Associates Store ID must contain only letters + numbers and end with -20.\n\n" +
+        "Example: tiffany19-20\n" +
+        "Log into your Amazon Associates account and verify your correct Store ID before continuing."
       );
     }
   });
