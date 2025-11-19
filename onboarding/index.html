@@ -82,6 +82,12 @@ const SUPABASE_TABLE = 'Users';
 
 let subdomainAvailable = false;
 
+// VALIDATION FUNCTION FOR AMAZON ID
+function validateAmazonId() {
+  const amazon = document.getElementById('amazonId').value.trim();
+  return /^[a-zA-Z0-9]+-20$/.test(amazon);
+}
+
 async function checkUrlAvailability(subdomain) {
   if (!subdomain) return false;
   try {
@@ -114,7 +120,9 @@ async function validateForm() {
   const email = document.getElementById('email').value.trim();
 
   const allFilled = first && last && site && sub && amazon && email;
-  submitBtn.disabled = !(allFilled && subdomainAvailable);
+
+  // BLOCK SUBMISSION UNLESS AMAZON ID IS VALID
+  submitBtn.disabled = !(allFilled && subdomainAvailable && validateAmazonId());
 }
 
 let typingTimeout = null;
@@ -150,6 +158,7 @@ document.getElementById('onboarding-form').addEventListener('input', validateFor
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
+
   const first = document.getElementById('firstName').value.trim();
   const last = document.getElementById('lastName').value.trim();
   const site = document.getElementById('siteName').value.trim();
@@ -157,6 +166,13 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   const amazon = document.getElementById('amazonId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgBlock = document.getElementById('msg');
+
+  // HARD BLOCK IF AMAZON ID INVALID
+  if (!validateAmazonId()) {
+    msgBlock.style.color = 'red';
+    msgBlock.textContent = 'Your Amazon Store ID is invalid. It must contain only letters/numbers and end with -20.';
+    return;
+  }
 
   if (!subdomainAvailable) {
     msgBlock.style.color = 'red';
@@ -204,39 +220,38 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const amazonField = document.getElementById("amazonId");
-
   if (!amazonField) return;
 
-  // Enforce allowed pattern while typing
+  let firstBlurShown = false;
+
   amazonField.addEventListener("input", function () {
     let v = amazonField.value;
-
-    // Remove spaces immediately
     v = v.replace(/\s+/g, "");
-
-    // Remove any characters that are not letters, numbers, or hyphens
     v = v.replace(/[^a-zA-Z0-9-]/g, "");
-
-    // Prevent multiple hyphens anywhere
     v = v.replace(/-+/g, "-");
-
     amazonField.value = v;
   });
 
-  // Validate on blur
   amazonField.addEventListener("blur", function () {
     const val = amazonField.value.trim();
 
-    if (!val) return;
+    if (!firstBlurShown) {
+      firstBlurShown = true;
+      alert(
+        "IMPORTANT: Please verify your Amazon Associates Store ID.\n\n" +
+        "It must contain only letters/numbers and end with -20.\n" +
+        "Log into your Amazon Associates dashboard to confirm."
+      );
+      return;
+    }
 
-    // Must match: letters + numbers + hyphen + 20
     const valid = /^[a-zA-Z0-9]+-20$/.test(val);
 
-    if (!valid) {
+    if (!valid && val !== "") {
       alert(
-        "STOP! Your Amazon Associates Store ID must contain only letters + numbers and end with -20.\n\n" +
+        "STOP! Your Amazon Associates Store ID must contain only letters/numbers and end with -20.\n\n" +
         "Example: tiffany19-20\n" +
-        "Log into your Amazon Associates account and verify your correct Store ID before continuing."
+        "Please verify it before continuing."
       );
     }
   });
