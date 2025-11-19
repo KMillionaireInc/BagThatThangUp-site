@@ -141,6 +141,23 @@ nav button:hover {
     padding:32px;
   }
 
+    /* Force 2-per-row on mobile */
+@media (max-width: 600px) {
+  #deals {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 20px;
+  }
+}
+
+/* Optional: 3-per-row on small tablets */
+@media (min-width: 601px) and (max-width: 900px) {
+  #deals {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
   /* Cards */
   .card {
     background:var(--white);
