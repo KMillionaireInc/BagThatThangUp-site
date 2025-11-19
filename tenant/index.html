@@ -308,7 +308,18 @@ nav button:hover {
   border-radius: 6px;
   z-index: 9999;
   backdrop-filter: blur(4px);
+}  #subHeaderTagline {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6e6e6e;
+
+  margin-top: 6px;
+  margin-bottom: 28px;   /* strong separation */
+  letter-spacing: 0.3px;
+  display: block;
 }
+
 
   </style>
 
@@ -322,12 +333,19 @@ nav button:hover {
 
 <header>
   <h1 id="storeName">Loading...</h1>
+
+  <div id="subHeaderTagline">
+    Daily promo codes, coupons & curated finds — curated savings every day.
+  </div>
+
   <nav>
     <button id="tab-today" class="active">Today's Deals</button>
     <button id="tab-yesterday">Yesterday</button>
     <button id="tab-almost">Almost Gone</button>
   </nav>
 </header>
+
+
 
 <div id="welcomeBanner">
   Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
