@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <script>
-// ✅ ACCESS CONTROL — DO NOT REMOVE
-// Only allow entry if a valid plan key is present in the URL
-const allowedKeys = [
-  "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7", // Basic
-  "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5", // Custom
-  "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f"  // Pro
-];
-const key = new URLSearchParams(window.location.search).get("plan_key");
-if (!allowedKeys.includes(key)) {
-  window.location.href = "/checkout-first.html";
-}
-</script>
+  // ACCESS CONTROL
+  const allowedKeys = [
+    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7",
+    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5",
+    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f"
+  ];
+  const key = new URLSearchParams(window.location.search).get("plan_key");
+  if (!allowedKeys.includes(key)) {
+    window.location.href = "/checkout-first.html";
+  }
+  </script>
 
 <meta charset="UTF-8">
 <title>Onboarding | BagThatThangUp</title>
+
 <style>
   body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
   .hero-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: url('/hero.jpg') center center/cover no-repeat; z-index: 0; }
@@ -30,20 +30,23 @@ if (!allowedKeys.includes(key)) {
   #onboarding-form button { margin-top: 16px; background: #2c60ff; color: #fff; border: none; cursor: pointer; font-weight: bold; font-size: 18px; transition: background 0.2s; }
   #onboarding-form button:disabled { background: #7a91c6; cursor: not-allowed; }
   #subdomainMsg { margin-top: 2px; font-size: 15px; font-weight: 500; min-height: 22px; }
-  #msg { font-weight: bold; margin-top: 10px;}
+  #subPreview { font-size:14px; color:#666; margin-top:-6px; margin-bottom:4px; }
 </style>
 </head>
+
 <body>
-  
+
 <div class="hero-bg"></div>
+
 <div class="form-container">
+
   <div class="branding-header">
     <h1>Welcome to BagThatThangUp!</h1>
     <p>🎉 Payment received!<br>Personalize your new site below and launch instantly.</p>
   </div>
 
   <form id="onboarding-form" autocomplete="off">
-    
+
     <label for="firstName">First Name</label>
     <input type="text" id="firstName" required placeholder="e.g. Tiffany" />
 
@@ -54,26 +57,14 @@ if (!allowedKeys.includes(key)) {
     <input type="text" id="siteName" required placeholder="e.g. Tiffany’s Finds" />
 
     <label for="subdomain">Site URL Name</label>
-    <input 
-      type="text" 
-      id="subdomain" 
-      required 
-      autocomplete="off" 
-      placeholder="e.g. tiffanysdeals"
-    />
+    <input type="text" id="subdomain" required placeholder="e.g. tiffanysdeals" />
 
-    <!-- LIVE PREVIEW OF FULL URL -->
-    <div 
-      id="subPreview" 
-      style="font-size:14px;color:#666;margin-top:-6px;margin-bottom:4px;"
-    >
-      yoursite.bagthatthangup.com
-    </div>
+    <div id="subPreview">yoursite.bagthatthangup.com</div>
 
     <div id="subdomainMsg"></div>
 
     <label for="amazonId">Amazon Store ID</label>
-    <input type="text" id="amazonId" required placeholder="e.g. tiffany19-20" />
+    <input type="text" id="amazonId" name="amazon_id" required placeholder="e.g. tiffany19-20" />
 
     <label for="email">Email Address</label>
     <input type="email" id="email" required placeholder="e.g. tiffany@email.com" />
@@ -82,6 +73,8 @@ if (!allowedKeys.includes(key)) {
     <div id="msg"></div>
   </form>
 </div>
+
+
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc';
@@ -89,12 +82,11 @@ const SUPABASE_TABLE = 'Users';
 
 let subdomainAvailable = false;
 
-// Live subdomain availability checker
 async function checkUrlAvailability(subdomain) {
   if (!subdomain) return false;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&subdomain=eq.${encodeURIComponent(subdomain.toLowerCase())}`,
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&subdomain=eq.${encodeURIComponent(subdomain)}`,
       {
         headers: {
           'apikey': SUPABASE_KEY,
@@ -104,7 +96,7 @@ async function checkUrlAvailability(subdomain) {
     );
     const data = await res.json();
     return data.length === 0;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -114,13 +106,14 @@ const subdomainMsg = document.getElementById('subdomainMsg');
 const submitBtn = document.getElementById('submitBtn');
 
 async function validateForm() {
-  const firstName = document.getElementById('firstName').value.trim();
-  const lastName = document.getElementById('lastName').value.trim();
-  const siteName = document.getElementById('siteName').value.trim();
-  const subdomain = subdomainInput.value.trim();
-  const amazonId = document.getElementById('amazonId').value.trim();
+  const first = document.getElementById('firstName').value.trim();
+  const last = document.getElementById('lastName').value.trim();
+  const site = document.getElementById('siteName').value.trim();
+  const sub = subdomainInput.value.trim();
+  const amazon = document.getElementById('amazonId').value.trim();
   const email = document.getElementById('email').value.trim();
-  const allFilled = firstName && lastName && siteName && subdomain && amazonId && email;
+
+  const allFilled = first && last && site && sub && amazon && email;
   submitBtn.disabled = !(allFilled && subdomainAvailable);
 }
 
@@ -128,23 +121,12 @@ let typingTimeout = null;
 subdomainInput.addEventListener('input', () => {
   clearTimeout(typingTimeout);
 
-  // SANITIZE INPUT: no spaces, no symbols
-  const cleaned = subdomainInput.value
-    .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '');
+  const cleaned = subdomainInput.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  if (subdomainInput.value !== cleaned) subdomainInput.value = cleaned;
 
-  // Update field if user typed something invalid
-  if (subdomainInput.value !== cleaned) {
-    subdomainInput.value = cleaned;
-  }
+  document.getElementById('subPreview').textContent =
+    cleaned ? `${cleaned}.bagthatthangup.com` : 'yoursite.bagthatthangup.com';
 
-  // Update preview line
-  const preview = document.getElementById('subPreview');
-  preview.textContent = cleaned
-    ? `${cleaned}.bagthatthangup.com`
-    : 'yoursite.bagthatthangup.com';
-
-  // Reset availability message
   subdomainMsg.textContent = '';
   submitBtn.disabled = true;
 
@@ -155,16 +137,12 @@ subdomainInput.addEventListener('input', () => {
 
   typingTimeout = setTimeout(async () => {
     subdomainAvailable = await checkUrlAvailability(cleaned);
+    subdomainMsg.style.color = subdomainAvailable ? 'green' : 'red';
+    subdomainMsg.textContent = subdomainAvailable
+      ? '✅ Available!'
+      : 'This site URL name is already taken.';
 
-    if (subdomainAvailable) {
-      subdomainMsg.style.color = 'green';
-      subdomainMsg.textContent = '✅ Available!';
-    } else {
-      subdomainMsg.style.color = 'red';
-      subdomainMsg.textContent = 'This site URL name is already taken. Please try another.';
-    }
-
-    await validateForm();
+    validateForm();
   }, 450);
 });
 
@@ -172,19 +150,14 @@ document.getElementById('onboarding-form').addEventListener('input', validateFor
 
 document.getElementById('onboarding-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const firstName = document.getElementById('firstName').value.trim();
-  const lastName = document.getElementById('lastName').value.trim();
-  const siteName = document.getElementById('siteName').value.trim();
-  const subdomain = subdomainInput.value.trim().toLowerCase();
-  const amazonId = document.getElementById('amazonId').value.trim();
+  const first = document.getElementById('firstName').value.trim();
+  const last = document.getElementById('lastName').value.trim();
+  const site = document.getElementById('siteName').value.trim();
+  const sub = subdomainInput.value.trim().toLowerCase();
+  const amazon = document.getElementById('amazonId').value.trim();
   const email = document.getElementById('email').value.trim();
   const msgBlock = document.getElementById('msg');
-  msgBlock.textContent = '';
-  if (!firstName || !lastName || !siteName || !subdomain || !amazonId || !email) {
-    msgBlock.style.color = 'red';
-    msgBlock.textContent = 'Please fill out all fields.';
-    return;
-  }
+
   if (!subdomainAvailable) {
     msgBlock.style.color = 'red';
     msgBlock.textContent = 'Please choose an available site URL name.';
@@ -195,11 +168,11 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   msgBlock.textContent = 'Setting up your site…';
 
   const payload = [{
-    first_name: firstName,
-    last_name: lastName,
-    site_name: siteName,
-    subdomain: subdomain,
-    amazon_id: amazonId,
+    first_name: first,
+    last_name: last,
+    site_name: site,
+    subdomain: sub,
+    amazon_id: amazon,
     email: email
   }];
 
@@ -217,14 +190,36 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   if (res.ok) {
     msgBlock.style.color = 'green';
     msgBlock.textContent = 'Success! Redirecting…';
-    setTimeout(() => window.location.href = `/success?sub=${subdomain}`, 1000);
+    setTimeout(() => window.location.href = `/success?sub=${sub}`, 1000);
   } else {
     const error = await res.json();
     msgBlock.style.color = 'red';
-    msgBlock.textContent = 'Error: ' + (error?.message || 'Could not submit. Please try again.');
+    msgBlock.textContent = 'Error: ' + (error?.message || 'Try again.');
   }
 });
 </script>
+
+
+<!-- AMAZON STORE ID POPUP VALIDATION -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const amazonField = document.querySelector("input[name='amazon_id']");
+  if (!amazonField) return;
+
+  amazonField.addEventListener("blur", function () {
+    const val = amazonField.value.trim();
+    if (!val) return;
+
+    if (!val.endsWith("-20")) {
+      alert(
+        "STOP! Please confirm your Amazon Associates Store ID.\n\n" +
+        "It must end in -20.\n" +
+        "Log into your Amazon Associates account and verify it before continuing."
+      );
+    }
+  });
+});
+</script>
+
 </body>
 </html>
-
