@@ -24,78 +24,82 @@
     font-family:"Inter",system-ui,sans-serif;
   }
 
-  /* Disclosure */
-  #disclosure {
-    position:sticky;
-    top:0;
-    z-index:2000;
-    background:var(--ink);
-    color:var(--white);
-    text-align:center;
-    font-size:14px;
-    padding:10px 12px;
-    letter-spacing:0.3px;
-  }
+ /* Disclosure Bar (unchanged) */
+#disclosure {
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+  background: var(--ink);
+  color: var(--white);
+  text-align: center;
+  font-size: 14px;
+  padding: 10px 12px;
+  letter-spacing: 0.3px;
+}
 
-  /* Welcome Banner */
-  #welcomeBanner {
-    background: #f2eee7;
-    color: var(--ink);
-    text-align:center;
-    padding:18px 16px;
-    font-size:1.15rem;
-    font-family:"Playfair Display",serif;
-    border-top:1px solid #dfd7c7;
-    border-bottom:1px solid #dfd7c7;
-    letter-spacing:0.3px;
-  }
+/* HEADER — match Azillionaires style */
+header {
+  background: #f6f4ee;
+  text-align: center;
+  padding: 46px 14px 26px;
+  border-bottom: 1px solid #e7e0d4;
+  position: sticky;
+  top: 30px;
+  z-index: 1500;
+  box-shadow: none;
+}
 
-  /* Header */
-  header {
-    background:var(--white);
-    text-align:center;
-    padding:34px 14px 20px;
-    box-shadow:var(--shadow);
-    position:sticky;
-    top:30px;
-    z-index:1500;
-  }
+/* Store Name — match AZ title exactly */
+header h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 46px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  letter-spacing: 0.4px;
+  color: #1b1b1b;
+}
 
-  header h1 {
-    font-family:"Playfair Display",serif;
-    font-size:34px;
-    margin:0 0 10px;
-    font-weight:600;
-    color:var(--ink);
-    letter-spacing:0.2px;
-  }
+/* Tabs — keep yours but soften hover tone slightly */
+nav button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  margin: 0 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1b1b1b;
+  font-family: "Inter", sans-serif;
+}
 
-  /* Tabs */
-  nav button {
-    background:none;
-    border:none;
-    font-size:15px;
-    margin:0 12px;
-    cursor:pointer;
-    font-weight:600;
-    color:var(--ink);
-    font-family:"Inter",sans-serif;
-  }
+nav button.active,
+nav button:hover {
+  color: #b7a98b;
+  text-decoration: underline;
+}
 
-  nav button.active,
-  nav button:hover {
-    color:var(--accent);
-    text-decoration:underline;
-  }
+/* WELCOME BANNER — flat luxe, like AZ section paragraph */
+#welcomeBanner {
+  background: #f7f5f1;
+  text-align: center;
+  padding: 26px 16px;
+  font-size: 1.22rem;
+  font-family: "Playfair Display", serif;
+  color: #1b1b1b;
+  border-top: 1px solid #e8e1d5;
+  border-bottom: 1px solid #e8e1d5;
+  letter-spacing: 0.2px;
+}
 
-  /* Deal count */
-  #dealCount {
-    text-align:center;
-    padding:12px;
-    font-size:15px;
-    font-weight:600;
-    color:var(--accent);
-  }
+/* DEAL COUNT — unify tone with top section */
+#dealCount {
+  background: #f6f4ee;
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #b7a98b;
+  border-bottom: 1px solid #e3dbcf;
+}
 
   /* Search bar */
   #searchBarWrapper {
