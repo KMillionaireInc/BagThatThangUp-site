@@ -16,14 +16,12 @@
       justify-content: center;
       min-height: 100vh;
     }
-
     .overlay {
       position: absolute;
       inset: 0;
       background: rgba(255, 255, 255, 0.85);
       z-index: 0;
     }
-
     .content {
       position: relative;
       z-index: 1;
@@ -36,29 +34,17 @@
       text-align: center;
       animation: fadeIn 0.8s ease-out;
     }
-
     h1 {
       color: #006d5b;
       font-size: 28px;
       margin-bottom: 12px;
     }
-
     p {
       font-size: 16px;
       color: #1b2b3a;
       margin-bottom: 22px;
       line-height: 1.6;
     }
-
-    .site-link {
-      display: inline-block;
-      margin-bottom: 15px;
-      color: #006d5b;
-      text-decoration: underline;
-      font-weight: 600;
-      word-break: break-all;
-    }
-
     .cta-btn {
       display: inline-block;
       background: #006d5b;
@@ -70,31 +56,55 @@
       text-decoration: none;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
       transition: background 0.2s ease;
+      margin-bottom: 20px;
     }
-
-    .cta-btn:hover {
-      background: #00856f;
+    .cta-btn:hover { background: #00856f; }
+    .important-box {
+      background:#fffadd; 
+      color:#8a6a00; 
+      padding:15px; 
+      border-radius:8px; 
+      border:1px solid #ffe28c; 
+      margin:16px 0 20px 0; 
+      font-size:1.08em;
+      text-align: center;
     }
-
+    #userSiteUrl {
+      font-weight:bold; 
+      display:block; 
+      margin:8px 0 6px 0; 
+      word-break:break-all;
+      font-size: 1.05em;
+      color: #056d5b;
+    }
+    .copy-btn {
+      padding:4px 18px; 
+      margin-bottom:6px; 
+      font-size:15px; 
+      border-radius:6px;
+      border:none;
+      background: #ffe28c;
+      color: #8a6a00;
+      cursor: pointer;
+      transition: background 0.18s;
+      font-weight: 600;
+    }
+    .copy-btn:hover { background: #ffe493; }
     .next-steps {
       margin-top: 28px;
       text-align: left;
     }
-
     .next-steps h3 {
       font-size: 18px;
       color: #0b1320;
       margin-bottom: 8px;
     }
-
     .next-steps ul {
       list-style: disc;
       padding-left: 20px;
       color: #1b2b3a;
       line-height: 1.6;
     }
-
-    /* Facebook Button */
     .fb-btn {
       display: block;
       margin: 25px auto 0;
@@ -108,30 +118,23 @@
       width: fit-content;
       transition: background 0.2s ease;
     }
-
-    .fb-btn:hover {
-      background: #0f5ad6;
-    }
-
+    .fb-btn:hover { background: #0f5ad6; }
     .image-section {
       margin-top: 35px;
       display: flex;
       justify-content: center;
     }
-
     .image-section img {
       width: 100%;
       max-width: 400px;
       border-radius: 12px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.1);
     }
-
     footer {
       margin-top: 40px;
       font-size: 13px;
       color: #44545f;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -140,15 +143,24 @@
 </head>
 <body>
   <div class="overlay"></div>
-
   <div class="content">
     <h1>Congratulations — You Just Stepped Into Easy!</h1>
     <p>No more converting links. No more daily posting. No more algorithm battles.<br>
        Just one automated site — updated for you every single day.</p>
-
-    <a id="siteLink" class="site-link" href="#" target="_blank">Loading your site link...</a><br>
+    <!-- START: Important Box for Store Link -->
+    <div class="important-box">
+      <strong>Important:</strong><br>
+      This is your unique store link:
+      <span id="userSiteUrl">Loading...</span>
+      <button class="copy-btn" onclick="copyUserUrl()">Copy</button>
+      <br>
+      <span style="font-size:.95em; display:block; margin-top:4px">
+        Please <b>bookmark</b> or <b>save</b> this link now.<br>
+        You’ll need it to access your storefront in the future!
+      </span>
+    </div>
+    <!-- END: Important Box -->
     <a id="goBtn" class="cta-btn" href="#" target="_blank">Go to My Storefront</a>
-
     <div class="next-steps">
       <h3>Next Steps</h3>
       <ul>
@@ -157,31 +169,32 @@
         <li>Let daily automation do the heavy lifting.</li>
       </ul>
     </div>
-
-    <!-- FACEBOOK GROUP BUTTON INSERTED HERE -->
     <a 
       href="https://www.facebook.com/groups/477291862849459"
       target="_blank"
       class="fb-btn"
     >Join the Private Facebook Group</a>
-
     <div class="image-section">
       <img src="freedom.jpg" alt="Celebrating Success">
     </div>
-
     <footer>© 2025 BagThat. All Rights Reserved.</footer>
   </div>
-
   <script>
+    function copyUserUrl() {
+      const url = document.getElementById("userSiteUrl").textContent;
+      navigator.clipboard.writeText(url);
+      alert('Copied! This is your unique storefront link. Be sure to bookmark or save it.');
+    }
+    // Set all places the site link is referenced
     const params = new URLSearchParams(window.location.search);
     const sub = params.get("sub");
     if (sub) {
       const siteURL = `https://${sub}.bagthatthangup.com`;
-      document.getElementById("siteLink").href = siteURL;
-      document.getElementById("siteLink").textContent = siteURL;
       document.getElementById("goBtn").href = siteURL;
+      document.getElementById("userSiteUrl").textContent = siteURL;
     } else {
-      document.getElementById("siteLink").textContent = "Error: missing site link.";
+      document.getElementById("goBtn").href = "#";
+      document.getElementById("userSiteUrl").textContent = "Error: missing site link.";
     }
   </script>
 </body>
