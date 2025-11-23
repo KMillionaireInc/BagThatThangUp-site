@@ -15,17 +15,20 @@
       line-height: 1.6;
     }
 
-    /* HERO */
-    .hero {
-      width: 100%;
-      min-height: 55vh;
-      background: 
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-        url("/hero.jpg") center/cover no-repeat;
-      color: #ffffff;
-      text-align: center;
-      padding: 6rem 1.5rem;
-    }
+.hero {
+  width: 100%;
+  min-height: 55vh;
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("/hero.jpg") center/cover no-repeat;
+  color: #ffffff;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* pushes all text to the bottom half */
+  padding: 3rem 1.5rem;       /* bottom spacing */
+}
 
     .hero h1 {
       font-size: 2.5rem;
@@ -166,9 +169,6 @@
   <!-- WHY PARTNERS LOVE BAGTHAT + TESTIMONIALS -->
   <h2>Why Partners Love BagThat</h2>
 
-<!-- Testimonial image added -->
-<img src="/testimonial.jpg" class="testimonial-img" alt="Testimonials">
-
 <ul>
   <li>High retention (creators don’t want to lose automation)</li>
   <li>High monthly value</li>
@@ -176,6 +176,9 @@
   <li>Transparent tracking through Endorsely</li>
   <li>Unlimited earning potential</li>
 </ul>
+
+  <!-- Testimonial image added -->
+<img src="/testimonial.jpg" class="testimonial-img" alt="Testimonials">
 
 <!-- Testimonials added below the original list -->
 <div class="testimonial">
