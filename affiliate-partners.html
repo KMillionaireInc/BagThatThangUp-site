@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BagThat Partner Program — Earn 20% Recurring</title>
 
-  <!-- OG Tags -->
   <meta property="og:title" content="BagThat Partner Program — Earn 20% Monthly Recurring Commissions">
   <meta property="og:description" content="Partner with BagThat — the automated deal-site platform for creators. Earn recurring monthly revenue from every subscriber you refer.">
   <meta property="og:image" content="/hero.jpg">
@@ -32,22 +31,19 @@
     }
 
     /* HERO */
-header {
-  background:
-    linear-gradient(rgba(0,0,0,0.60), rgba(0,0,0,0.60)),
-    url("/hero.jpg") center/cover no-repeat;
-  color: var(--white);
-  text-align: center;
-  padding: 7rem 1.5rem 5rem 1.5rem;
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  /* NEW for readability */
-  text-shadow: 0px 2px 8px rgba(0,0,0,0.35);
-}
-
+    header {
+      background:
+        linear-gradient(rgba(0,0,0,0.60), rgba(0,0,0,0.60)),
+        url("/hero.jpg") center/cover no-repeat;
+      color: var(--white);
+      text-align: center;
+      padding: 7rem 1.5rem 5rem 1.5rem;
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-shadow: 0px 2px 8px rgba(0,0,0,0.35);
+    }
 
     header h1 {
       font-size: 2.8rem;
@@ -56,15 +52,12 @@ header {
       line-height: 1.2;
     }
 
-   header p {
-  font-size: 1.2rem;
-  max-width: 650px;
-  margin: 0 auto 1.5rem;
-
-  /* NEW: force white text */
-  color: #ffffff;
-}
-
+    header p {
+      font-size: 1.2rem;
+      max-width: 650px;
+      margin: 0 auto 1.5rem;
+      color: #ffffff;
+    }
 
     /* BUTTON */
     .cta {
@@ -99,6 +92,50 @@ header {
     p, ul { color: var(--muted); }
     ul { padding-left: 1.5rem; }
 
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+
+    .feature-box h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    /* Testimonials */
+    .testimonial-image {
+      width: 100%;
+      max-width: 750px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      margin: 0 auto 2rem;
+      display: block;
+    }
+
+    .testimonial {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 1.2rem 0;
+      box-shadow: var(--shadow);
+    }
+
+    .testimonial strong {
+      color: var(--ink);
+      font-size: 1.05rem;
+    }
+
     /* Responsive */
     @media(max-width: 800px) {
       header h1 { font-size: 2rem; }
@@ -122,6 +159,7 @@ header {
   </a>
 </header>
 
+
 <!-- MAIN CONTENT -->
 <section>
   <div class="content">
@@ -139,34 +177,85 @@ header {
 
     <hr>
 
-    <h2>Your Commission</h2>
-    <p><strong>20% recurring monthly commission.</strong></p>
-    <p>You refer a subscriber once. You earn every month they stay active.</p>
+
+    <!-- FEATURES AT A GLANCE -->
+    <h2>Features at a Glance</h2>
+    <div class="features-grid">
+      <div class="feature-box">
+        <h3>Daily Auto-Updates</h3>
+        <p>Your subscribers get fresh deals every day — without posting anything manually.</p>
+      </div>
+      <div class="feature-box">
+        <h3>Branded Storefront</h3>
+        <p>Each creator gets a clean, professional site that matches their identity.</p>
+      </div>
+      <div class="feature-box">
+        <h3>Zero Maintenance</h3>
+        <p>No coding, no cleanup, no expired posts. Everything refreshes automatically.</p>
+      </div>
+      <div class="feature-box">
+        <h3>Optimized Layout</h3>
+        <p>Built for speed, clarity, and clicks — your referrals convert better.</p>
+      </div>
+    </div>
 
     <hr>
 
-    <h2>Why Partners Love This Program</h2>
-    <ul>
-      <li>High retention — creators don’t want to lose automation</li>
-      <li>Consistent recurring payouts</li>
-      <li>Easy tracking through Endorsely</li>
-      <li>No limits on commissions earned</li>
-      <li>Creators already want automation — this sells itself</li>
-    </ul>
+
+    <!-- SEE IT IN ACTION -->
+    <h2>See BagThat In Action</h2>
+    <p>Explore a real, fully automated BagThat storefront. This is the type of branded site your referrals will receive — updated daily, hands-free.</p>
+
+    <!-- Screenshot #1 -->
+    <div style="text-align:center; margin: 2rem 0;">
+      <a href="https://azillionaires.bagthatthangup.com" target="_blank">
+        <img src="/feature2.jpg"
+             alt="BagThat Live Example"
+             style="max-width: 750px; width: 100%; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+      </a>
+    </div>
+
+    <!-- Screenshot #2 -->
+    <div style="text-align:center; margin: 2rem 0;">
+      <a href="https://azillionaires.bagthatthangup.com" target="_blank">
+        <img src="/feature1.jpg"
+             alt="BagThat Feature Example"
+             style="max-width: 750px; width: 100%; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+      </a>
+    </div>
+
+    <a href="https://azillionaires.bagthatthangup.com" class="cta" target="_blank" style="margin-top:1rem; display:inline-block;">
+      View the Live Sample Site
+    </a>
 
     <hr>
 
-    <h2>Who to Share BagThat With</h2>
-    <ul>
-      <li>Amazon find creators</li>
-      <li>Deal/coupon page owners</li>
-      <li>Facebook group admins</li>
-      <li>TikTok/IG “finds” creators</li>
-      <li>Anyone overwhelmed by daily deal posting</li>
-    </ul>
+
+    <!-- TESTIMONIALS -->
+    <h2>What Creators Are Saying</h2>
+
+    <!-- Testimonial Banner -->
+    <img src="/testimonial.jpg" class="testimonial-image" alt="Testimonials">
+
+    <div class="testimonial">
+      <strong>PauletteOnTheMic — Amazon Affiliate</strong>
+      <p>"You just saved my life and my time!!!!"</p>
+    </div>
+
+    <div class="testimonial">
+      <strong>Lyndsey — Content Creator</strong>
+      <p>"The views and traction to my site have doubled since starting this."</p>
+    </div>
+
+    <div class="testimonial">
+      <strong>ShoptillyoudropwithC — Deals Curator</strong>
+      <p>"It's the best thing out!"</p>
+    </div>
 
     <hr>
 
+
+    <!-- CTA -->
     <h2>Become a Partner</h2>
     <p>Create your affiliate account and get your tracking link instantly.</p>
     <a href="https://bagthatthangupcom-6869.endorsely.com/" class="cta" target="_blank">
