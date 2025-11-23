@@ -77,16 +77,22 @@
     h1, h2 { margin-top: 0; }
 
     a.cta {
-      display: inline-block;
-      background: #b7a98b;
-      color: #ffffff;
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      margin-top: 1.5rem;
-      transition: opacity 0.3s ease;
-    }
+  display: inline-block;   /* was block */
+  background: #b7a98b;
+  color: #ffffff;
+  padding: 1rem 2rem;      /* balanced padding */
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 1.5rem;
+
+  /* center it */
+  margin-left: auto;
+  margin-right: auto;
+
+  transition: opacity 0.3s ease;
+}
+
     a.cta:hover { opacity: 0.9; }
 
     ul { padding-left: 1.2rem; }
