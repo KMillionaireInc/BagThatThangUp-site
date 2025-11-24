@@ -69,6 +69,22 @@
     <label for="email">Email Address</label>
     <input type="email" id="email" required placeholder="e.g. tiffany@email.com" />
 
+        <label for="amazonUrl">Amazon Storefront URL</label>
+    <input type="text" id="amazonUrl" placeholder="https://www.amazon.com/shop/yourname" />
+
+    <label for="instagramUrl">Instagram URL</label>
+    <input type="text" id="instagramUrl" placeholder="https://instagram.com/yourhandle" />
+
+    <label for="facebookUrl">Facebook URL</label>
+    <input type="text" id="facebookUrl" placeholder="https://facebook.com/yourpage" />
+
+    <label for="youtubeUrl">YouTube URL</label>
+    <input type="text" id="youtubeUrl" placeholder="https://youtube.com/@yourchannel" />
+
+    <label for="pinterestUrl">Pinterest URL</label>
+    <input type="text" id="pinterestUrl" placeholder="https://pinterest.com/yourname" />
+
+
     <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
   </form>
@@ -189,8 +205,14 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     site_name: site,
     subdomain: sub,
     amazon_id: amazon,
-    email: email
+    email: email,
+    amazon_url: document.getElementById('amazonUrl').value.trim(),
+    instagram_url: document.getElementById('instagramUrl').value.trim(),
+    facebook_url: document.getElementById('facebookUrl').value.trim(),
+    youtube_url: document.getElementById('youtubeUrl').value.trim(),
+    pinterest_url: document.getElementById('pinterestUrl').value.trim()
   }];
+
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: 'POST',
