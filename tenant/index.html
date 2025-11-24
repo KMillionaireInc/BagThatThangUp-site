@@ -237,4 +237,215 @@ function parseCSV(text){const rows=[];let row=[];let cell="";let insideQuotes=fa
 
 const CSV_URLS={
   today:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
-  yesterday:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LR
+  yesterday:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+  almost:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
+};
+
+const subdomain=window.location.hostname.split(".")[0];
+let amazonTag="";
+let storeName="";
+let allRows=[];
+const dealsEl=document.getElementById("deals");
+
+async function fetchTenantInfo(){
+  try{
+    const res=await fetch(
+`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_url,instagram_url,facebook_url,youtube_url,pinterest_url,tiktok_url`,
+      { headers:{apikey:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"}}
+    );
+
+    const data=await res.json();
+    const s=data?.[0]||{};
+
+    storeName=s.site_name||"BagThat Deals";
+    amazonTag=s.amazon_id||"";
+
+    const links={
+      amazon:s.amazon_url,
+      instagram:s.instagram_url,
+      facebook:s.facebook_url,
+      youtube:s.youtube_url,
+      pinterest:s.pinterest_url,
+      tiktok:s.tiktok_url
+    };
+
+    if(links.amazon)    document.getElementById("btnAmazon").href=links.amazon;
+    if(links.instagram) document.getElementById("btnInstagram").href=links.instagram;
+    if(links.facebook)  document.getElementById("btnFacebook").href=links.facebook;
+    if(links.youtube)   document.getElementById("btnYouTube").href=links.youtube;
+    if(links.pinterest) document.getElementById("btnPinterest").href=links.pinterest;
+    if(links.tiktok)    document.getElementById("btnTikTok").href=links.tiktok;
+
+    if(links.amazon||links.instagram||links.facebook||links.youtube||links.pinterest||links.tiktok){
+      document.getElementById("socialLinksBar").style.display="block";
+    }
+
+    document.getElementById("storeName").textContent=storeName;
+    document.getElementById("storeGreeting").textContent=storeName;
+  }catch(e){}
+}
+
+function createShareLink(asin){
+  return `https://${window.location.hostname}/?item=${asin}`;
+}
+
+function shareDeal(asin,title){
+  const link=createShareLink(asin);
+  if(navigator.share){
+    navigator.share({title,url:link});
+  }else{
+    navigator.clipboard.writeText(link);
+    alert("Deal link copied!");
+  }
+}
+
+function forceTag(url,tag){
+  if(!tag)return url;
+  url=url.replace(/([&?])tag=[^&]*/i,"");
+  return url+(url.includes("?")?"&":"?")+"tag="+tag;
+}
+
+async function loadDeals(type="today"){
+  dealsEl.textContent="Loading deals...";
+  const res=await fetch(CSV_URLS[type]);
+  const text=await res.text();
+  const parsed=parseCSV(text);
+  const rows=parsed.slice(1);
+  allRows=rows;
+  renderDeals(rows);
+}
+
+function copyCode(code){
+  navigator.clipboard.writeText(code).then(()=>{
+    const t=document.getElementById("toast");
+    t.style.opacity="1";
+    setTimeout(()=>{t.style.opacity="0";},1200);
+  });
+}
+
+function renderDeals(rows){
+  dealsEl.innerHTML=rows
+    .filter(r=>r[1])
+    .map(r=>{
+      const asin=r[1];
+      const discountPrice=r[16];
+      const promoCode=r[3];
+      const ccFlag=r[5];
+      const taggedLink=r[6];
+      const hasCoupon=(r[10]||"").trim().toLowerCase()==="true";
+      const imageURL=r[8]||r[7]||"";
+      const title=r[12]||"Untitled Product";
+      const rating=r[14]||"";
+      const originalPrice=r[21]||"";
+      const category=r[13]||"";
+
+      const url=forceTag(taggedLink,amazonTag);
+      const asinTag=asin?`<div class="asin">ASIN: ${asin}</div>`:"";
+
+      const ccBadge=ccFlag&&ccFlag.toLowerCase()==="yes"
+        ? `<span class="cc-badge">✔ CC</span>`
+        : "";
+
+      const normalizeMoney=val=>String(val||"").replace(/\$/g,"").trim();
+      const disc=normalizeMoney(discountPrice);
+      const orig=normalizeMoney(originalPrice);
+
+      const priceHTML=orig
+        ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
+        : `<div class="price"><span class="discount">$${disc}</span></div>`;
+
+      const shareSVG=`
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 3v12"></path>
+  <path d="M8 7l4-4 4 4"></path>
+  <path d="M5 21h14a2 2 0 0 0 2-2v-7"></path>
+  <path d="M3 12v7a2 2 0 0 0 2 2"></path>
+</svg>`;
+
+      return `
+        <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}" data-category="${category}">
+          <img src="${imageURL}" alt="Deal image">
+          <div class="info">
+            ${asinTag}
+            <h3>
+              <span>${title} ${ccBadge}</span>
+              <span class="share-icon" onclick="shareDeal('${asin}', '${title.replace(/'/g, "\\'")}')">${shareSVG}</span>
+            </h3>
+            ${rating?`<div class="rating">★ ${rating}</div>`:""}
+            ${priceHTML}
+            ${promoCode?`<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>`:""}
+            ${hasCoupon?`<div class="coupon-flag">+ coupon on listing</div>`:""}
+          </div>
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>
+      `;
+    })
+    .join("");
+
+  highlightDeepLinkedItem();
+  updateDealCount();
+}
+
+function filterDeals(){
+  const cat=document.getElementById("categoryDropdown").value;
+  const searchQ=document.getElementById("searchInput").value.toLowerCase();
+
+  document.querySelectorAll(".card").forEach(card=>{
+    const title=card.getAttribute("data-title");
+    const category=card.getAttribute("data-category");
+    const matchCat=!cat||category===cat;
+    const matchSearch=!searchQ||title.includes(searchQ);
+    card.style.display=matchCat&&matchSearch?"flex":"none";
+  });
+
+  updateDealCount();
+}
+
+document.getElementById("categoryDropdown").addEventListener("change",filterDeals);
+document.getElementById("searchInput").addEventListener("input",filterDeals);
+
+function highlightDeepLinkedItem(){
+  const params=new URLSearchParams(window.location.search);
+  const asin=params.get("item");
+  if(!asin)return;
+  const card=document.querySelector(`.card[data-asin="${asin}"]`);
+  if(!card)return;
+  card.classList.add("glow-highlight");
+  setTimeout(()=>{card.scrollIntoView({behavior:"smooth",block:"center"});},300);
+}
+
+function updateDealCount(){
+  const cards=[...document.querySelectorAll(".card")].filter(c=>c.style.display!=="none");
+  document.getElementById("dealCount").textContent="Deals: "+cards.length;
+}
+
+const buttons={
+  today:document.getElementById("tab-today"),
+  yesterday:document.getElementById("tab-yesterday"),
+  almost:document.getElementById("tab-almost")
+};
+
+Object.entries(buttons).forEach(([key,btn])=>{
+  btn.addEventListener("click",()=>{
+    Object.values(buttons).forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("categoryDropdown").value="";
+    document.getElementById("searchInput").value="";
+    filterDeals();
+    loadDeals(key);
+  });
+});
+
+fetchTenantInfo().then(()=>{loadDeals("today");});
+
+function updateVisitorCounter(){
+  let count=localStorage.getItem("visitorCount");
+  count=count?parseInt(count)+1:1;
+  localStorage.setItem("visitorCount",count);
+  document.getElementById("visitorCounter").textContent=count;
+}
+updateVisitorCounter();
+</script>
+
+</body>
+</html>
