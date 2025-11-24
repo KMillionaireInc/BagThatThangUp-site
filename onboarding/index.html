@@ -16,8 +16,7 @@
 
 <meta charset="UTF-8">
 <title>Onboarding | BagThatThangUp</title>
-  <link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png" />
-
+<link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png" />
 
 <style>
   body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
@@ -64,29 +63,27 @@
   <form id="onboarding-form" autocomplete="off">
 
     <label for="firstName">First Name</label>
-    <input type="text" id="firstName" required placeholder="e.g. Tiffany" />
+    <input type="text" id="firstName" required />
 
     <label for="lastName">Last Name</label>
-    <input type="text" id="lastName" required placeholder="e.g. Johnson" />
+    <input type="text" id="lastName" required />
 
     <label for="siteName">Site Name</label>
-    <input type="text" id="siteName" required placeholder="e.g. Tiffany’s Finds" />
+    <input type="text" id="siteName" required />
 
     <label for="subdomain">Site URL Name</label>
-    <input type="text" id="subdomain" required placeholder="e.g. tiffanysdeals" />
-
+    <input type="text" id="subdomain" required />
     <div id="subPreview">yoursite.bagthatthangup.com</div>
-
     <div id="subdomainMsg"></div>
 
     <label for="amazonId">Amazon Store ID</label>
-    <input type="text" id="amazonId" name="amazon_id" required placeholder="e.g. tiffany19-20" />
+    <input type="text" id="amazonId" name="amazon_id" required placeholder="example19-20" />
 
     <label for="email">Email Address</label>
-    <input type="email" id="email" required placeholder="e.g. tiffany@email.com" />
+    <input type="email" id="email" required />
 
-        <label for="amazonUrl">Amazon Storefront URL</label>
-    <input type="text" id="amazonUrl" placeholder="https://www.amazon.com/shop/yourname" />
+    <label for="amazonUrl">Amazon Storefront URL</label>
+    <input type="text" id="amazonUrl" placeholder="https://amazon.com/shop/yourname" />
 
     <label for="instagramUrl">Instagram URL</label>
     <input type="text" id="instagramUrl" placeholder="https://instagram.com/yourhandle" />
@@ -97,9 +94,11 @@
     <label for="youtubeUrl">YouTube URL</label>
     <input type="text" id="youtubeUrl" placeholder="https://youtube.com/@yourchannel" />
 
+    <label for="pinterestUrl">Pinterest URL</label>
+    <input type="text" id="pinterestUrl" placeholder="https://pinterest.com/yourprofile" />
+
     <label for="tiktokUrl">TikTok URL</label>
     <input type="text" id="tiktokUrl" placeholder="https://www.tiktok.com/@yourname" />
-
 
     <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
@@ -114,7 +113,7 @@ const SUPABASE_TABLE = 'Users';
 
 let subdomainAvailable = false;
 
-// VALIDATION FUNCTION FOR AMAZON ID
+// AMAZON ID must end in -20
 function validateAmazonId() {
   const amazon = document.getElementById('amazonId').value.trim();
   return /^[a-zA-Z0-9]+-20$/.test(amazon);
@@ -153,7 +152,6 @@ async function validateForm() {
 
   const allFilled = first && last && site && sub && amazon && email;
 
-  // BLOCK SUBMISSION UNLESS AMAZON ID IS VALID
   submitBtn.disabled = !(allFilled && subdomainAvailable && validateAmazonId());
 }
 
@@ -199,10 +197,9 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
   const email = document.getElementById('email').value.trim();
   const msgBlock = document.getElementById('msg');
 
-  // HARD BLOCK IF AMAZON ID INVALID
   if (!validateAmazonId()) {
     msgBlock.style.color = 'red';
-    msgBlock.textContent = 'Your Amazon Store ID is invalid. It must contain only letters/numbers and end with -20.';
+    msgBlock.textContent = 'Amazon Store ID must end with -20.';
     return;
   }
 
@@ -222,13 +219,14 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     subdomain: sub,
     amazon_id: amazon,
     email: email,
+
     amazon_url: document.getElementById('amazonUrl').value.trim(),
     instagram_url: document.getElementById('instagramUrl').value.trim(),
     facebook_url: document.getElementById('facebookUrl').value.trim(),
     youtube_url: document.getElementById('youtubeUrl').value.trim(),
+    pinterest_url: document.getElementById('pinterestUrl').value.trim(),
     tiktok_url: document.getElementById('tiktokUrl').value.trim()
   }];
-
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: 'POST',
@@ -276,21 +274,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!firstBlurShown) {
       firstBlurShown = true;
       alert(
-        "IMPORTANT: Please verify your Amazon Associates Store ID.\n\n" +
-        "It must contain only letters/numbers and end with -20.\n" +
-        "Log into your Amazon Associates dashboard to confirm."
+        "IMPORTANT:\n\nYour Amazon Associates Store ID must contain only letters/numbers and end with -20.\nVerify this in your Associates dashboard."
       );
       return;
     }
 
-    const valid = /^[a-zA-Z0-9]+-20$/.test(val);
-
-    if (!valid && val !== "") {
-      alert(
-        "STOP! Your Amazon Associates Store ID must contain only letters/numbers and end with -20.\n\n" +
-        "Example: tiffany19-20\n" +
-        "Please verify it before continuing."
-      );
+    if (!/^[a-zA-Z0-9]+-20$/.test(val) && val !== "") {
+      alert("STOP! Your Amazon Associates Store ID is invalid.");
     }
   });
 });
