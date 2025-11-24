@@ -206,7 +206,7 @@
   <a id="btnInstagram" href="#" target="_blank" style="margin:0 8px; font-weight:600; font-size:14px; color:#1b1b1b; text-decoration:none;">Instagram</a>
   <a id="btnFacebook"  href="#" target="_blank" style="margin:0 8px; font-weight:600; font-size:14px; color:#1b1b1b; text-decoration:none;">Facebook</a>
   <a id="btnYouTube"   href="#" target="_blank" style="margin:0 8px; font-weight:600; font-size:14px; color:#1b1b1b; text-decoration:none;">YouTube</a>
-  <a id="btnTikTok" href="#" target="_blank" style="margin:0 8px; font-weight:600; font-size:14px; color:#1b1b1b; text-decoration:none;">Pinterest</a>
+  <a id="btnTikTok" href="#" target="_blank" style="margin:0 8px; font-weight:600; font-size:14px; color:#1b1b1b; text-decoration:none;">TikTok</a>
 </div>
 
 <div id="welcomeBanner">
@@ -276,7 +276,7 @@ const dealsEl = document.getElementById("deals");
 async function fetchTenantInfo() {
   try {
     const res = await fetch(
-`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_url,instagram_url,facebook_url,youtube_url,pinterest_url`,
+`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_url,instagram_url,facebook_url,youtube_url,tiktok_url`,
       {
         headers: {
           apikey:
@@ -295,7 +295,7 @@ const links = {
   instagram: s.instagram_url,
   facebook: s.facebook_url,
   youtube: s.youtube_url,
-  pinterest: s.pinterest_url
+  tiktok: s.tiktok_url
 };
 
 // Assign links if present
@@ -303,10 +303,10 @@ if (links.amazon)     document.getElementById("btnAmazon").href = links.amazon;
 if (links.instagram)  document.getElementById("btnInstagram").href = links.instagram;
 if (links.facebook)   document.getElementById("btnFacebook").href = links.facebook;
 if (links.youtube)    document.getElementById("btnYouTube").href = links.youtube;
-if (links.pinterest)  document.getElementById("btnPinterest").href = links.pinterest;
+if (links.tiktok)  document.getElementById("btntiktok").href = links.tiktok;
 
 // Show the bar if any link exists
-if (links.amazon || links.instagram || links.facebook || links.youtube || links.pinterest) {
+if (links.amazon || links.instagram || links.facebook || links.youtube || links.tiktok) {
   document.getElementById("socialLinksBar").style.display = "block";
 }
 
