@@ -286,7 +286,7 @@ async function fetchTenantInfo() {
     );
     const data = await res.json();
     storeName = data?.[0]?.site_name || "BagThat Deals";
-    amazonTag = data?.[0]?.amazon_id || "azillionaires-20";
+    amazonTag = data?.[0]?.amazon_id || "";
     // SOCIAL LINKS
 const s = data?.[0] || {};
 
