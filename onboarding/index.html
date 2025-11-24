@@ -20,7 +20,13 @@
 
 <style>
   body, html { height: 100%; margin: 0; font-family: Arial, sans-serif; }
-  .hero-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: url('/hero.jpg') center center/cover no-repeat; z-index: 0; }
+  .hero-bg { 
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    width: 100vw; height: 100vh; 
+    background: url('/hero.jpg') center center/cover no-repeat; 
+    z-index: 0; 
+  }
 
   .form-container {
     position: relative;
@@ -28,23 +34,92 @@
     width: 100%;
     min-height: 100vh;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
     flex-direction: column;
-    padding-top: 60px;
+
+    /* FIXES */
+    align-items: center;         
+    padding-top: 160px;          
     padding-bottom: 60px;
   }
 
-  .branding-header { background: none; color: #fff; padding: 30px 32px 10px 32px; text-align: center; max-width: 500px; margin-bottom: 10px; text-shadow: 0 2px 20px #163060, 0 1px 5px #000; font-weight: bold; }
-  .branding-header h1 { margin: 0 0 9px 0; font-size: 2.1rem; font-weight: 900; letter-spacing: -0.03em; }
-  .branding-header p { margin: 0 0 8px 0; font-size: 18px; font-weight: 500; }
-  #onboarding-form { background: rgba(255,255,255,0.97); padding: 32px 24px; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); max-width: 350px; width: 100%; text-align: left; margin: 0 auto; }
-  #onboarding-form label { display: block; font-weight: 600; margin-bottom: 2px; margin-top: 16px; font-size: 15px; color: #283860; }
-  #onboarding-form input, #onboarding-form button { margin: 0 0 14px 0; width: 96%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; font-size: 16px; background: #fff; }
-  #onboarding-form button { margin-top: 16px; background: #2c60ff; color: #fff; border: none; cursor: pointer; font-weight: bold; font-size: 18px; transition: background 0.2s; }
-  #onboarding-form button:disabled { background: #7a91c6; cursor: not-allowed; }
-  #subdomainMsg { margin-top: 2px; font-size: 15px; font-weight: 500; min-height: 22px; }
-  #subPreview { font-size:14px; color:#666; margin-top:-6px; margin-bottom:4px; }
+  .branding-header { 
+    background: none; 
+    color: #fff; 
+    padding: 30px 32px 10px 32px; 
+    text-align: center; 
+    max-width: 500px; 
+    margin-bottom: 10px; 
+    text-shadow: 0 2px 20px #163060, 0 1px 5px #000; 
+    font-weight: bold; 
+  }
+  .branding-header h1 { 
+    margin: 0 0 9px 0; 
+    font-size: 2.1rem; 
+    font-weight: 900; 
+    letter-spacing: -0.03em; 
+  }
+  .branding-header p { 
+    margin: 0 0 8px 0; 
+    font-size: 18px; 
+    font-weight: 500; 
+  }
+
+  #onboarding-form { 
+    background: rgba(255,255,255,0.97); 
+    padding: 32px 24px; 
+    border-radius: 16px; 
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08); 
+
+    max-width: 420px;           
+    width: 100%; 
+    text-align: left; 
+    margin: 0 auto; 
+  }
+
+  #onboarding-form label { 
+    display: block; 
+    font-weight: 600; 
+    margin-bottom: 2px; 
+    margin-top: 16px; 
+    font-size: 15px; 
+    color: #283860; 
+  }
+  #onboarding-form input, 
+  #onboarding-form button { 
+    margin: 0 0 14px 0; 
+    width: 96%; 
+    padding: 8px; 
+    border-radius: 6px; 
+    border: 1px solid #ddd; 
+    font-size: 16px; 
+    background: #fff; 
+  }
+  #onboarding-form button { 
+    margin-top: 16px; 
+    background: #2c60ff; 
+    color: #fff; 
+    border: none; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 18px; 
+    transition: background 0.2s; 
+  }
+  #onboarding-form button:disabled { 
+    background: #7a91c6; 
+    cursor: not-allowed; 
+  }
+  #subdomainMsg { 
+    margin-top: 2px; 
+    font-size: 15px; 
+    font-weight: 500; 
+    min-height: 22px; 
+  }
+  #subPreview { 
+    font-size:14px; 
+    color:#666; 
+    margin-top:-6px; 
+    margin-bottom:4px; 
+  }
 </style>
 
 </head>
@@ -104,7 +179,6 @@
     <div id="msg"></div>
   </form>
 </div>
-
 
 <script>
 const SUPABASE_URL = 'https://gmsjqunfsffjiksffvem.supabase.co';
@@ -251,9 +325,8 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
 });
 </script>
 
-
-<!-- AMAZON STORE ID POPUP VALIDATION -->
 <script>
+// AMAZON STORE ID POPUP VALIDATION
 document.addEventListener("DOMContentLoaded", function () {
   const amazonField = document.getElementById("amazonId");
   if (!amazonField) return;
