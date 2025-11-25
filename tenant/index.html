@@ -363,6 +363,9 @@ async function loadDeals(type="today"){
   const rows=parsed.slice(1);
   allRows=rows;
   renderDeals(rows);
+
+  // NEW: try highlight again after tab loads
+  highlightDeepLinkedItem();
 }
 
 function copyCode(code){
@@ -454,15 +457,36 @@ function filterDeals(){
 document.getElementById("categoryDropdown").addEventListener("change",filterDeals);
 document.getElementById("searchInput").addEventListener("input",filterDeals);
 
-function highlightDeepLinkedItem(){
-  const params=new URLSearchParams(window.location.search);
-  const asin=params.get("item");
-  if(!asin)return;
-  const card=document.querySelector(`.card[data-asin="${asin}"]`);
-  if(!card)return;
-  card.classList.add("glow-highlight");
-  setTimeout(()=>{card.scrollIntoView({behavior:"smooth",block:"center"});},300);
+function highlightDeepLinkedItem() {
+  const params = new URLSearchParams(window.location.search);
+  const asin = params.get("item");
+  if (!asin) return;
+
+  let attempts = 0;
+  const maxAttempts = 20;
+
+  const check = setInterval(() => {
+    attempts++;
+
+    const card = document.querySelector(`.card[data-asin="${asin}"]`);
+    if (card) {
+      clearInterval(check);
+
+      card.classList.add("glow-highlight");
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 250);
+
+      // Remove the glow after a few seconds
+      setTimeout(() => card.classList.remove("glow-highlight"), 2500);
+    }
+
+    if (attempts >= maxAttempts) {
+      clearInterval(check);
+    }
+  }, 300);
 }
+
 
 function updateDealCount(){
   const cards=[...document.querySelectorAll(".card")].filter(c=>c.style.display!=="none");
