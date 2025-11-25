@@ -4,9 +4,7 @@
   <script>
   // ACCESS CONTROL
   const allowedKeys = [
-    "btb_a1d4f8c93e2b47f6a8d9c0e2f3b1c5d7",
-    "btc_f9a4c7e2d1b0a6c3e8f4d2b7a1c9e0f5",
-    "btp_7c2e9a5f1d3b4a8c6e0f2d9b1a4c7e3f"
+    "bt47_f1a8c9e3b7d24658"  // NEW $47 plan key (only key allowed now)
   ];
   const key = new URLSearchParams(window.location.search).get("plan_key");
   if (!allowedKeys.includes(key)) {
@@ -35,8 +33,6 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-
-    /* FIXES */
     align-items: center;         
     padding-top: 160px;          
     padding-bottom: 60px;
@@ -69,7 +65,6 @@
     padding: 32px 24px; 
     border-radius: 16px; 
     box-shadow: 0 2px 16px rgba(0,0,0,0.08); 
-
     max-width: 420px;           
     width: 100%; 
     text-align: left; 
@@ -187,7 +182,6 @@ const SUPABASE_TABLE = 'Users';
 
 let subdomainAvailable = false;
 
-// AMAZON ID must end in -20
 function validateAmazonId() {
   const amazon = document.getElementById('amazonId').value.trim();
   return /^[a-zA-Z0-9]+-20$/.test(amazon);
