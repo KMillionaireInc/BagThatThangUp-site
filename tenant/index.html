@@ -126,12 +126,24 @@
     transform:translateY(-50%);
     opacity:0.55;
   }
+
+  /* MAIN GRID */
   #deals {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:26px;
     padding:32px;
   }
+
+  /* MOBILE FIX: FORCE ROOM FOR 2-COLUMN GRID */
+  @media (max-width: 600px) {
+    #deals {
+      padding: 12px;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+  }
+
   .card {
     background:var(--white);
     border-radius:var(--radius);
@@ -273,17 +285,14 @@ function normalizeSocial(url, platform) {
 
   url = url.trim();
 
-  // If it already starts with http or https, accept it
   if (url.startsWith("http://") || url.startsWith("https://")) {
     return url;
   }
 
-  // Remove accidental leading @
   if (url.startsWith("@")) {
     url = url.substring(1);
   }
 
-  // If they typed just a username, build full URL
   if (!url.includes(".")) {
     switch (platform) {
       case "instagram":
@@ -301,11 +310,9 @@ function normalizeSocial(url, platform) {
     }
   }
 
-  // If the URL contains instagram.com, tiktok.com, etc but is missing https
   return "https://" + url.replace(/^https?:\/\//, "");
 }
 
-// Apply normalization
 links.instagram = normalizeSocial(links.instagram, "instagram");
 links.facebook  = normalizeSocial(links.facebook,  "facebook");
 links.youtube   = normalizeSocial(links.youtube,   "youtube");
@@ -492,4 +499,3 @@ updateVisitorCounter();
 
 </body>
 </html>
-
