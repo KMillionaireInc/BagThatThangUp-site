@@ -127,7 +127,6 @@
     opacity:0.55;
   }
 
-  /* MAIN GRID */
   #deals {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -135,7 +134,6 @@
     padding:32px;
   }
 
-  /* MOBILE FIX: FORCE ROOM FOR 2-COLUMN GRID */
   @media (max-width: 600px) {
     #deals {
       padding: 12px;
@@ -167,6 +165,7 @@
   .coupon-flag { background:#fff8d1; color:#8a6a00; padding:4px 10px; font-size:0.8rem; font-weight:700; border-radius:8px; margin-top:10px; width:fit-content; }
   .cta { margin-top:auto; background:var(--accent); color:white; padding:14px; text-align:center; font-weight:700; text-decoration:none; border-radius:0 0 var(--radius) var(--radius); }
   .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--ink); color:white; padding:12px 18px; border-radius:8px; opacity:0; transition:opacity 0.3s; z-index:9999; }
+
   #visitorCounter {
     position: fixed;
     bottom: 14px;
@@ -174,15 +173,70 @@
     background: rgba(0,0,0,0.65);
     color: #fff;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600>
     padding: 6px 10px;
     border-radius: 6px;
     z-index: 9999;
     backdrop-filter: blur(4px);
   }
+
+  /* NEW HAUL TOASTER */
+  #haulToaster {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    color: #1b1b1b;
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+    font-family: Inter, sans-serif;
+    display: none;
+    align-items: center;
+    gap: 14px;
+    z-index: 99999;
+    cursor: pointer;
+    animation: slideUp 0.5s ease-out;
+  }
+
+  #haulToaster img {
+    width: 40px;
+    height: 40px;
+  }
+
+  #haulToaster .closeToaster {
+    margin-left: auto;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  #shhhLink {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #b7a98b;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    display: none;
+    cursor: pointer;
+    z-index: 99998;
+  }
   </style>
 </head>
 <body>
+
 <div id="disclosure">
   As an Amazon Associate, I earn from qualifying purchases. Prices/Codes/Coupons can change anytime.
 </div>
@@ -244,6 +298,15 @@
 <div id="toast" class="toast">Copied!</div>
 <div id="visitorCounter"></div>
 
+<!-- NEW HAUL TOASTER HTML -->
+<div id="haulToaster">
+  <img src="https://bagthatthangup.com/custom.png" alt="Haul">
+  <div>Secret Amazon Haul Picks are LIVE. Tap to peek.</div>
+  <div class="closeToaster">×</div>
+</div>
+
+<div id="shhhLink">SHHH!</div>
+
 <script>
 function parseCSV(text){const rows=[];let row=[];let cell="";let insideQuotes=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'&&text[i+1]==='"'){cell+='"';i++;continue;}if(c==='"'){insideQuotes=!insideQuotes;continue;}if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}if(c==='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}cell+=c;}if(cell.length||row.length){row.push(cell);rows.push(row);}return rows;}
 
@@ -280,6 +343,7 @@ async function fetchTenantInfo(){
       pinterest:s.pinterest_url,
       tiktok:s.tiktok_url
     };
+
 function normalizeSocial(url, platform) {
   if (!url) return "";
 
@@ -364,7 +428,6 @@ async function loadDeals(type="today"){
   allRows=rows;
   renderDeals(rows);
 
-  // NEW: try highlight again after tab loads
   highlightDeepLinkedItem();
 }
 
@@ -477,7 +540,6 @@ function highlightDeepLinkedItem() {
         card.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 250);
 
-      // Remove the glow after a few seconds
       setTimeout(() => card.classList.remove("glow-highlight"), 2500);
     }
 
@@ -486,7 +548,6 @@ function highlightDeepLinkedItem() {
     }
   }, 300);
 }
-
 
 function updateDealCount(){
   const cards=[...document.querySelectorAll(".card")].filter(c=>c.style.display!=="none");
@@ -519,6 +580,36 @@ function updateVisitorCounter(){
   document.getElementById("visitorCounter").textContent=count;
 }
 updateVisitorCounter();
+
+/* NEW HAUL TOASTER JS */
+document.addEventListener("DOMContentLoaded", function () {
+  const toaster = document.getElementById("haulToaster");
+  const shhh = document.getElementById("shhhLink");
+
+  function buildHaulUrl() {
+    return "https://www.amazon.com/haul/store" + (amazonTag ? "?tag=" + amazonTag : "");
+  }
+
+  setTimeout(() => {
+    toaster.style.display = "flex";
+  }, 2000);
+
+  toaster.addEventListener("click", function (e) {
+    if (!e.target.classList.contains("closeToaster")) {
+      window.open(buildHaulUrl(), "_blank");
+    }
+  });
+
+  document.querySelector(".closeToaster").addEventListener("click", function (e) {
+    e.stopPropagation();
+    toaster.style.display = "none";
+    shhh.style.display = "block";
+  });
+
+  shhh.addEventListener("click", function () {
+    window.open(buildHaulUrl(), "_blank");
+  });
+});
 </script>
 
 </body>
