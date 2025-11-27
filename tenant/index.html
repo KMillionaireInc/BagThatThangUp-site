@@ -180,17 +180,17 @@
     backdrop-filter: blur(4px);
   }
 
-  /* NEW HAUL TOASTER */
+  /* UPDATED PENNY DEALS TOASTER */
   #haulToaster {
     position: fixed;
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    background: white;
-    color: #1b1b1b;
+    background: #ff7a00;
+    color: #ffffff;
     border-radius: 16px;
     padding: 18px 22px;
-    box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.18);
     font-family: Inter, sans-serif;
     display: none;
     align-items: center;
@@ -198,6 +198,8 @@
     z-index: 99999;
     cursor: pointer;
     animation: slideUp 0.5s ease-out;
+    font-weight: 700;
+    font-size: 16px;
   }
 
   #haulToaster img {
@@ -207,9 +209,10 @@
 
   #haulToaster .closeToaster {
     margin-left: auto;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     padding: 4px 8px;
+    color: #ffffff;
   }
 
   @keyframes slideUp {
@@ -298,10 +301,9 @@
 <div id="toast" class="toast">Copied!</div>
 <div id="visitorCounter"></div>
 
-<!-- NEW HAUL TOASTER HTML -->
+<!-- UPDATED PENNY DEALS TOASTER -->
 <div id="haulToaster">
-  <img src="https://bagthatthangup.com/custom.png" alt="Haul">
-  <div>Secret Amazon Haul Picks are LIVE. Tap to peek.</div>
+  Amazon Penny Deals!! HURRY!!
   <div class="closeToaster">×</div>
 </div>
 
@@ -581,13 +583,13 @@ function updateVisitorCounter(){
 }
 updateVisitorCounter();
 
-/* NEW HAUL TOASTER JS */
+/* UPDATED PENNY DEALS POPUP */
 document.addEventListener("DOMContentLoaded", function () {
   const toaster = document.getElementById("haulToaster");
   const shhh = document.getElementById("shhhLink");
 
-  function buildHaulUrl() {
-    return "https://www.amazon.com/haul/store" + (amazonTag ? "?tag=" + amazonTag : "");
+  function getPennyDealsUrl() {
+    return "https://www.amazon.com/b/?_encoding=UTF8&node=211803559011&ishaul=1&ref_=hul_hp_md_in_line_4_1cent&pd_rd_w=Nwfpm&content-id=amzn1.sym.4b6e9444-2184-42df-bcb8-49bd37c644d3&pf_rd_p=4b6e9444-2184-42df-bcb8-49bd37c644d3&pf_rd_r=XWTCNSJZ1QJWZREZGFTG&pd_rd_wg=t9YSW&pd_rd_r=ab4f5de7-e319-4651-867c-0020e77abb14";
   }
 
   setTimeout(() => {
@@ -596,7 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   toaster.addEventListener("click", function (e) {
     if (!e.target.classList.contains("closeToaster")) {
-      window.open(buildHaulUrl(), "_blank");
+      window.open(getPennyDealsUrl(), "_blank");
     }
   });
 
@@ -607,7 +609,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   shhh.addEventListener("click", function () {
-    window.open(buildHaulUrl(), "_blank");
+    window.open(getPennyDealsUrl(), "_blank");
   });
 });
 </script>
