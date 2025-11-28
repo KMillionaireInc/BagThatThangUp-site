@@ -309,6 +309,26 @@
     cursor:pointer;
     z-index:99998;
   }
+
+  /* LUXE COPY LINK BUTTON */
+  .copy-link-btn {
+    background: var(--accent);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    width: fit-content;
+    margin-top: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: filter .2s ease, transform .2s ease;
+  }
+  .copy-link-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+
   </style>
 </head>
 
@@ -384,7 +404,6 @@
 
 <div id="shhhLink">SHHH!</div>
 
-<!-- PART 1 END -->
 <script>
 function parseCSV(text){
   const rows=[];let row=[];let cell="";let insideQuotes=false;
@@ -508,6 +527,7 @@ async function loadDeals(type="today"){
 function copyCode(code){
   navigator.clipboard.writeText(code).then(()=>{
     const t=document.getElementById("toast");
+    t.textContent = "Code Copied!";
     t.style.opacity="1";
     setTimeout(()=>t.style.opacity="0",1200);
   });
@@ -531,18 +551,19 @@ function renderDeals(rows){
 
       const url=forceTag(taggedLink,amazonTag);
 
-      const ccBadge=ccFlag&&ccFlag.toLowerCase()==="yes"
-        ? `<span class="cc-badge">✔ CC</span>`:"";
+      const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
+        ? `<span class="cc-badge">✔ CC</span>`
+        : "";
 
       const normalizeMoney=v=>String(v||"").replace(/\$/g,"").trim();
       const disc=normalizeMoney(discountPrice);
       const orig=normalizeMoney(originalPrice);
 
-      const priceHTML=orig
+      const priceHTML = orig
         ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
         : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
-      const shareSVG=`
+      const shareSVG = `
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 stroke-linecap="round" stroke-linejoin="round">
   <path d="M12 3v12"></path>
@@ -562,10 +583,15 @@ stroke-linecap="round" stroke-linejoin="round">
               ${shareSVG}
             </span>
           </h3>
-          ${rating?`<div class="rating">★ ${rating}</div>`:""}
+
+          ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
           ${priceHTML}
-          ${promoCode?`<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>`:""}
-          ${hasCoupon?`<div class="coupon-flag">+ coupon on listing</div>`:""}
+
+          ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
+          ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+
+          <div class="copy-link-btn" onclick="copyDealLink('${url}')">Copy Link</div>
+
         </div>
         <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
       </div>`;
@@ -575,6 +601,7 @@ stroke-linecap="round" stroke-linejoin="round">
   highlightDeepLinkedItem();
   updateDealCount();
 }
+
 
 function filterDeals(){
   const cat=document.getElementById("categoryDropdown").value;
@@ -672,8 +699,15 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   shhh.addEventListener("click",()=>window.open(pennyDealsUrl(),"_blank"));
 });
+
+function copyDealLink(url){
+  navigator.clipboard.writeText(url);
+  const t=document.getElementById("toast");
+  t.textContent="Link Copied!";
+  t.style.opacity="1";
+  setTimeout(()=>t.style.opacity="0",1200);
+}
 </script>
 
 </body>
 </html>
-
