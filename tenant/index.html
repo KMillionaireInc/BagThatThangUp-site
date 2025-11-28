@@ -40,7 +40,6 @@
     position: sticky;
     top: 42px;
     z-index: 1500;
-    box-shadow:none;
   }
   header h1 {
     font-family:"Playfair Display",serif;
@@ -77,6 +76,7 @@
     border-bottom:1px solid #e8e1d5;
     letter-spacing:0.2px;
   }
+
   #dealCount {
     background:#f6f4ee;
     padding:16px;
@@ -86,6 +86,7 @@
     color:#b7a98b;
     border-bottom:1px solid #e3dbcf;
   }
+
   #categoryBarWrapper {
     padding:10px 18px;
     background:var(--bg);
@@ -102,6 +103,7 @@
     color:var(--ink);
     margin-bottom:8px;
   }
+
   #searchBarWrapper {
     position:sticky;
     top:110px;
@@ -135,7 +137,7 @@
   }
 
   @media(max-width:600px){
-    #deals {
+    #deals{
       padding:12px;
       gap:16px;
       grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
@@ -183,22 +185,16 @@
   }
   .share-icon { cursor:pointer; opacity:0.85; }
   .rating { font-size:0.9rem; color:#d1a500; margin-bottom:6px; }
+
   .price {
     display:flex;
     align-items:baseline;
     gap:8px;
     margin-bottom:10px;
   }
-  .price .discount {
-    font-size:1.2rem;
-    font-weight:700;
-    color:var(--ink);
-  }
-  .price .original {
-    color:#999;
-    text-decoration:line-through;
-    font-size:0.9rem;
-  }
+  .price .discount { font-size:1.2rem; font-weight:700; color:var(--ink); }
+  .price .original { color:#999; text-decoration:line-through; font-size:0.9rem; }
+
   .copy-code {
     background:#f3efe7;
     color:var(--ink);
@@ -220,6 +216,7 @@
     margin-top:10px;
     width:fit-content;
   }
+
   .cta {
     margin-top:auto;
     background:var(--accent);
@@ -312,9 +309,9 @@
     cursor:pointer;
     z-index:99998;
   }
-
   </style>
 </head>
+
 <body>
 
 <div id="disclosure">
@@ -367,6 +364,7 @@
 <div id="searchBarWrapper">
   <div id="searchContainer">
     <input id="searchInput" placeholder="Search deals...">
+
     <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="8"></circle>
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -380,12 +378,13 @@
 <div id="visitorCounter"></div>
 
 <div id="haulToaster">
-  Amazon Penny Deals!! HURRY!!
+  AMAZON HIDDEN 50% OFF DEALS!
   <div class="closeToaster">×</div>
 </div>
 
 <div id="shhhLink">SHHH!</div>
 
+<!-- PART 1 END -->
 <script>
 function parseCSV(text){
   const rows=[];let row=[];let cell="";let insideQuotes=false;
@@ -425,8 +424,7 @@ async function fetchTenantInfo(){
     storeName=s.site_name||"BagThat Deals";
     amazonTag=s.amazon_id||"";
 
-    // FIX TAG HERE
-    if(amazonTag && !amazonTag.endsWith("-20")) {
+    if(amazonTag && !amazonTag.endsWith("-20")){
       amazonTag = amazonTag + "-20";
     }
 
@@ -519,33 +517,33 @@ function renderDeals(rows){
   dealsEl.innerHTML = rows
     .filter(r => r[1])
     .map(r => {
-      const asin = r[1];
-      const discountPrice = r[16];
-      const promoCode = r[3];
-      const ccFlag = r[5];
-      const taggedLink = r[6];
-      const hasCoupon = (r[10] || "").trim().toLowerCase() === "true";
-      const imageURL = r[8] || r[7] || "";
-      const title = r[12] || "Untitled Product";
-      const rating = r[14] || "";
-      const originalPrice = r[21] || "";
-      const category = r[13] || "";
+      const asin=r[1];
+      const discountPrice=r[16];
+      const promoCode=r[3];
+      const ccFlag=r[5];
+      const taggedLink=r[6];
+      const hasCoupon=(r[10]||"").trim().toLowerCase()==="true";
+      const imageURL=r[8]||r[7]||"";
+      const title=r[12]||"Untitled Product";
+      const rating=r[14]||"";
+      const originalPrice=r[21]||"";
+      const category=r[13]||"";
 
-      const url = forceTag(taggedLink, amazonTag);
+      const url=forceTag(taggedLink,amazonTag);
 
-      const ccBadge = ccFlag && ccFlag.toLowerCase()==="yes"
+      const ccBadge=ccFlag&&ccFlag.toLowerCase()==="yes"
         ? `<span class="cc-badge">✔ CC</span>`:"";
 
-      const normalizeMoney = val => String(val||"").replace(/\$/g,"").trim();
-      const disc = normalizeMoney(discountPrice);
-      const orig = normalizeMoney(originalPrice);
+      const normalizeMoney=v=>String(v||"").replace(/\$/g,"").trim();
+      const disc=normalizeMoney(discountPrice);
+      const orig=normalizeMoney(originalPrice);
 
-      const priceHTML = orig
+      const priceHTML=orig
         ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
         : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
-      const shareSVG = `
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+      const shareSVG=`
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 stroke-linecap="round" stroke-linejoin="round">
   <path d="M12 3v12"></path>
   <path d="M8 7l4-4 4 4"></path>
@@ -564,10 +562,10 @@ stroke-linecap="round" stroke-linejoin="round">
               ${shareSVG}
             </span>
           </h3>
-          ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+          ${rating?`<div class="rating">★ ${rating}</div>`:""}
           ${priceHTML}
-          ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
-          ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+          ${promoCode?`<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>`:""}
+          ${hasCoupon?`<div class="coupon-flag">+ coupon on listing</div>`:""}
         </div>
         <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
       </div>`;
@@ -581,6 +579,7 @@ stroke-linecap="round" stroke-linejoin="round">
 function filterDeals(){
   const cat=document.getElementById("categoryDropdown").value;
   const searchQ=document.getElementById("searchInput").value.toLowerCase();
+
   document.querySelectorAll(".card").forEach(card=>{
     const title=card.dataset.title;
     const category=card.dataset.category;
@@ -588,6 +587,7 @@ function filterDeals(){
     const matchSearch=!searchQ||title.includes(searchQ);
     card.style.display=matchCat&&matchSearch?"flex":"none";
   });
+
   updateDealCount();
 }
 
@@ -597,17 +597,21 @@ document.getElementById("searchInput").addEventListener("input",filterDeals);
 function highlightDeepLinkedItem(){
   const asin=new URLSearchParams(window.location.search).get("item");
   if(!asin)return;
+
   let attempts=0;
-  const check=setInterval(()=>{
+  const max=20;
+
+  const interval=setInterval(()=>{
     attempts++;
     const card=document.querySelector(`.card[data-asin="${asin}"]`);
+
     if(card){
-      clearInterval(check);
+      clearInterval(interval);
       card.classList.add("glow-highlight");
       setTimeout(()=>card.scrollIntoView({behavior:"smooth",block:"center"}),250);
       setTimeout(()=>card.classList.remove("glow-highlight"),2500);
     }
-    if(attempts>20)clearInterval(check);
+    if(attempts>=max)clearInterval(interval);
   },300);
 }
 
@@ -643,23 +647,21 @@ function updateVisitorCounter(){
 }
 updateVisitorCounter();
 
-/* CENTER POPUP WITH TAG */
+/* POPUP LOGIC */
 document.addEventListener("DOMContentLoaded",()=>{
   const toaster=document.getElementById("haulToaster");
   const shhh=document.getElementById("shhhLink");
 
   function pennyDealsUrl(){
-    const base="https://www.amazon.com/b/?_encoding=UTF8&node=211803559011&ishaul=1&ref_=hul_hp_md_in_line_4_1cent&pd_rd_w=Nwfpm&content-id=amzn1.sym.4b6e9444-2184-42df-bcb8-49bd37c644d3&pf_rd_p=4b6e9444-2184-42df-bcb8-49bd37c644d3&pf_rd_r=XWTCNSJZ1QJWZREZGFTG&pd_rd_wg=t9YSW&pd_rd_r=ab4f5de7-e319-4651-867c-0020e77abb14";
+    const base="https://www.amazon.com/b/?_encoding=UTF8&node=122430396011&ishaul=1&ref_=hul_hp_md_in_line_26_50off&pd_rd_w=v9Q4c&content-id=amzn1.sym.c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_p=c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_r=R7B7MEVQYCHEM8F3P9RM&pd_rd_wg=mJUfW&pd_rd_r=a88b8d6a-eede-4c51-bf41-1dd26e43a407";
     if(!amazonTag)return base;
     return base + "&tag=" + amazonTag;
   }
 
-  setTimeout(()=>{toaster.style.display="flex";},2000);
+  setTimeout(()=>toaster.style.display="flex",2000);
 
   toaster.addEventListener("click",e=>{
-    if(!e.target.classList.contains("closeToaster")){
-      window.open(pennyDealsUrl(),"_blank");
-    }
+    if(!e.target.classList.contains("closeToaster")) window.open(pennyDealsUrl(),"_blank");
   });
 
   document.querySelector(".closeToaster").addEventListener("click",e=>{
@@ -674,3 +676,4 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 </body>
 </html>
+
