@@ -519,6 +519,14 @@ function copyCode(code){
   });
 }
 
+function forceTag(url, tag) {
+  if (!url) return "";
+  if (!tag) return url;
+  if (url.includes("tag=")) return url;
+  return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
+}
+
+
 function renderDeals(rows){
   dealsEl.innerHTML = rows
     .filter(r => r[1])
