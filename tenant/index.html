@@ -573,7 +573,7 @@ stroke-linecap="round" stroke-linejoin="round">
           ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
           ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
 
-          <div class="copy-link-btn" onclick="copyDealLink('${url}')">Copy Link</div>
+          <div class="copy-link-btn" onclick="copyDealLink('${createShareLink(asin)}')">Copy Link</div>
 
         </div>
         <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
@@ -647,7 +647,33 @@ Object.entries(buttons).forEach(([key,btn])=>{
   });
 });
 
-fetchTenantInfo().then(()=>loadDeals("today"));
+fetchTenantInfo().then(()=>{
+  loadDeals("today");
+
+  // run deep link logic AFTER initial load begins
+  const asin = new URLSearchParams(window.location.search).get("item");
+  if(asin) resolveDeepLinkTab(asin);
+});
+  /* DEEP LINK TAB DETECTOR */
+async function resolveDeepLinkTab(asin){
+  if(!asin) return;
+
+  const order = ["today","yesterday","almost"];
+
+  for(let tab of order){
+    const res = await fetch(CSV_URLS[tab]);
+    const text = await res.text();
+    const parsed = parseCSV(text).slice(1);
+
+    const found = parsed.find(r => r[1] === asin);
+
+    if(found){
+      buttons[tab].click();
+      return;
+    }
+  }
+}
+
 
 function updateVisitorCounter(){
   let count=localStorage.getItem("visitorCount");
