@@ -293,22 +293,6 @@
     100%{ opacity:1; transform:translate(-50%, -50%) scale(1); }
   }
 
-  #shhhLink {
-    position:fixed;
-    bottom:24px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#b7a98b;
-    color:white;
-    padding:10px 16px;
-    border-radius:12px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.18);
-    font-family:Inter,sans-serif;
-    font-size:14px;
-    display:none;
-    cursor:pointer;
-    z-index:99998;
-  }
 
   /* LUXE COPY LINK BUTTON */
   .copy-link-btn {
@@ -402,7 +386,6 @@
   <div class="closeToaster">×</div>
 </div>
 
-<div id="shhhLink">SHHH!</div>
 
 <script>
 function parseCSV(text){
@@ -677,7 +660,6 @@ updateVisitorCounter();
 /* POPUP LOGIC */
 document.addEventListener("DOMContentLoaded",()=>{
   const toaster=document.getElementById("haulToaster");
-  const shhh=document.getElementById("shhhLink");
 
   function pennyDealsUrl(){
     const base="https://www.amazon.com/b/?_encoding=UTF8&node=122430396011&ishaul=1&ref_=hul_hp_md_in_line_26_50off&pd_rd_w=v9Q4c&content-id=amzn1.sym.c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_p=c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_r=R7B7MEVQYCHEM8F3P9RM&pd_rd_wg=mJUfW&pd_rd_r=a88b8d6a-eede-4c51-bf41-1dd26e43a407";
@@ -694,11 +676,12 @@ document.addEventListener("DOMContentLoaded",()=>{
   document.querySelector(".closeToaster").addEventListener("click",e=>{
     e.stopPropagation();
     toaster.style.display="none";
-    shhh.style.display="block";
-  });
 
-  shhh.addEventListener("click",()=>window.open(pennyDealsUrl(),"_blank"));
+  }); 
+
 });
+
+
 
 function copyDealLink(url){
   navigator.clipboard.writeText(url);
