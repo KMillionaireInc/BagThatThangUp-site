@@ -484,17 +484,20 @@ function createShareLink(asin){
   return`https://${window.location.hostname}/?item=${asin}`;
 }
 
-function shareDeal(asin,title){
-  const link=createShareLink(asin);
-  if(navigator.share){navigator.share({title,url:link});}
-  else{navigator.clipboard.writeText(link);alert("Deal link copied!");}
+function shareDeal(asin){
+  const link = createShareLink(asin);
+
+  if (navigator.share) {
+    navigator.share({ url: link });
+  } else {
+    navigator.clipboard.writeText(link);
+    const t = document.getElementById("toast");
+    t.textContent = "Link Copied!";
+    t.style.opacity = "1";
+    setTimeout(() => t.style.opacity = "0", 1200);
+  }
 }
 
-function forceTag(url,tag){
-  if(!tag)return url;
-  url=url.replace(/([&?])tag=[^&]*/i,"");
-  return url+(url.includes("?")?"&":"?")+"tag="+tag;
-}
 
 async function loadDeals(type="today"){
   dealsEl.textContent="Loading deals...";
@@ -562,7 +565,8 @@ stroke-linecap="round" stroke-linejoin="round">
           <div class="asin">ASIN: ${asin}</div>
           <h3>
             <span>${title} ${ccBadge}</span>
-            <span class="share-icon" onclick="shareDeal('${asin}','${title.replace(/'/g,"\\'")}')">
+            <span class="share-icon" onclick="shareDeal('${asin}')">
+
               ${shareSVG}
             </span>
           </h3>
