@@ -6,731 +6,581 @@
   <title>BagThat Deals</title>
   <link rel="icon" type="image/png" href="https://www.bagthatthangup.com/custompro.png" />
   <style>
-  :root {
-    --ink:#1b1b1b;
-    --accent:#b7a98b;
-    --bg:#f6f5f3;
-    --white:#ffffff;
-    --radius:18px;
-    --shadow:0 8px 22px rgba(0,0,0,0.08);
-    --muted:#6e6e6e;
-  }
-  body {
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:"Inter",system-ui,sans-serif;
-  }
-  #disclosure {
-    position: sticky;
-    top: 0;
-    z-index: 2000;
-    background: var(--ink);
-    color: var(--white);
-    text-align: center;
-    font-size: 14px;
-    padding: 10px 12px;
-    letter-spacing: 0.3px;
-  }
-  header {
-    background: #f6f4ee;
-    text-align: center;
-    padding: 46px 14px 26px;
-    border-bottom: 1px solid #e7e0d4;
-    position: sticky;
-    top: 42px;
-    z-index: 1500;
-  }
-  header h1 {
-    font-family:"Playfair Display",serif;
-    font-size:46px;
-    font-weight:700;
-    margin:0 0 12px;
-    letter-spacing:0.6px;
-    color:#1b1b1b;
-    text-transform:uppercase;
-    text-shadow:0 0 12px rgba(183,169,139,0.55);
-  }
-  nav button {
-    background:none;
-    border:none;
-    font-size:16px;
-    margin:0 12px;
-    cursor:pointer;
-    font-weight:600;
-    color:#1b1b1b;
-  }
-  nav button.active,
-  nav button:hover {
-    color:#b7a98b;
-    text-decoration:underline;
-  }
-  #welcomeBanner {
-    background:#f7f5f1;
-    text-align:center;
-    padding:26px 16px;
-    font-size:1.22rem;
-    font-family:"Playfair Display",serif;
-    color:#1b1b1b;
-    border-top:1px solid #e8e1d5;
-    border-bottom:1px solid #e8e1d5;
-    letter-spacing:0.2px;
-  }
-
-  #dealCount {
-    background:#f6f4ee;
-    padding:16px;
-    text-align:center;
-    font-size:16px;
-    font-weight:700;
-    color:#b7a98b;
-    border-bottom:1px solid #e3dbcf;
-  }
-
-  #categoryBarWrapper {
-    padding:10px 18px;
-    background:var(--bg);
-    border-bottom:1px solid rgba(0,0,0,0.05);
-  }
-  #categoryDropdown {
-    width:100%;
-    padding:10px 14px;
-    font-size:15px;
-    border-radius:12px;
-    border:1px solid #d2d2d2;
-    background:var(--white);
-    outline:none;
-    color:var(--ink);
-    margin-bottom:8px;
-  }
-
-  #searchBarWrapper {
-    position:sticky;
-    top:110px;
-    background:var(--bg);
-    padding:14px 18px;
-    z-index:1400;
-    border-bottom:1px solid rgba(0,0,0,0.05);
-  }
-  #searchInput {
-    width:100%;
-    padding:12px 40px 12px 16px;
-    font-size:15px;
-    border-radius:14px;
-    border:1px solid #d2d2d2;
-    background:var(--white);
-    outline:none;
-  }
-  #searchIcon {
-    position:absolute;
-    right:26px;
-    top:50%;
-    transform:translateY(-50%);
-    opacity:0.55;
-  }
-
-  #deals {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:26px;
-    padding:32px;
-  }
-
-  @media(max-width:600px){
-    #deals{
-      padding:12px;
-      gap:16px;
-      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    :root {
+      --ink:#1b1b1b; --accent:#b7a98b; --bg:#f6f5f3; --white:#ffffff;
+      --radius:18px; --shadow:0 8px 22px rgba(0,0,0,0.08); --muted:#6e6e6e;
     }
-  }
-
-  .card {
-    background:var(--white);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-  }
-  .card.glow-highlight {
-    box-shadow:0 0 18px rgba(183,169,139,0.8);
-    border:2px solid var(--accent);
-  }
-  .card img {
-    width:100%;
-    object-fit:contain;
-    aspect-ratio:1/1;
-    background:var(--white);
-    padding:12px;
-  }
-  .info { padding:16px 20px; }
-  .asin { font-size:0.75rem; color:var(--muted); margin-bottom:6px; }
-  .info h3 {
-    font-size:15px;
-    font-weight:600;
-    margin:0 0 10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    color:var(--ink);
-  }
-  .cc-badge {
-    background:#f3efe7;
-    color:var(--ink);
-    font-size:0.7rem;
-    padding:2px 6px;
-    border-radius:6px;
-    font-weight:700;
-    margin-left:4px;
-  }
-  .share-icon { cursor:pointer; opacity:0.85; }
-  .rating { font-size:0.9rem; color:#d1a500; margin-bottom:6px; }
-
-  .price {
-    display:flex;
-    align-items:baseline;
-    gap:8px;
-    margin-bottom:10px;
-  }
-  .price .discount { font-size:1.2rem; font-weight:700; color:var(--ink); }
-  .price .original { color:#999; text-decoration:line-through; font-size:0.9rem; }
-
-  .copy-code {
-    background:#f3efe7;
-    color:var(--ink);
-    padding:6px 10px;
-    font-size:0.78rem;
-    font-weight:700;
-    border-radius:6px;
-    margin-top:6px;
-    width:fit-content;
-    cursor:pointer;
-  }
-  .coupon-flag {
-    background:#fff8d1;
-    color:#8a6a00;
-    padding:4px 10px;
-    font-size:0.8rem;
-    font-weight:700;
-    border-radius:8px;
-    margin-top:10px;
-    width:fit-content;
-  }
-
-  .cta {
-    margin-top:auto;
-    background:var(--accent);
-    color:white;
-    padding:14px;
-    text-align:center;
-    font-weight:700;
-    text-decoration:none;
-    border-radius:0 0 var(--radius) var(--radius);
-  }
-
-  #toast {
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:var(--ink);
-    color:white;
-    padding:12px 18px;
-    border-radius:8px;
-    opacity:0;
-    transition:opacity .3s;
-    z-index:9999;
-  }
-
-  #visitorCounter {
-    position:fixed;
-    bottom:14px;
-    right:14px;
-    background:rgba(0,0,0,0.65);
-    color:#fff;
-    font-size:12px;
-    font-weight:600;
-    padding:6px 10px;
-    border-radius:6px;
-    z-index:9999;
-    backdrop-filter:blur(4px);
-  }
-
-  /* CENTER POPUP */
-  #haulToaster {
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
-    background:#ff7a00;
-    color:#fff;
-    border-radius:18px;
-    padding:28px 32px;
-    box-shadow:0 12px 28px rgba(0,0,0,0.22);
-    font-family:Inter,sans-serif;
-    display:none;
-    align-items:center;
-    gap:16px;
-    z-index:99999;
-    cursor:pointer;
-    animation:fadeInPop .45s ease-out;
-    font-weight:700;
-    font-size:18px;
-    text-align:center;
-    max-width:90%;
-  }
-  #haulToaster .closeToaster {
-    position:absolute;
-    top:10px;
-    right:12px;
-    font-size:24px;
-    cursor:pointer;
-    padding:4px 8px;
-    color:#fff;
-  }
-  @keyframes fadeInPop {
-    0% { opacity:0; transform:translate(-50%, -45%) scale(.9); }
-    100%{ opacity:1; transform:translate(-50%, -50%) scale(1); }
-  }
-
-
-  /* LUXE COPY LINK BUTTON */
-  .copy-link-btn {
-    background: var(--accent);
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    width: fit-content;
-    margin-top: 12px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-    transition: filter .2s ease, transform .2s ease;
-  }
-  .copy-link-btn:hover {
-    filter: brightness(1.08);
-    transform: translateY(-1px);
-  }
-
+    body {
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:"Inter",system-ui,sans-serif;
+    }
+    #disclosure {
+      position: sticky; top: 0; z-index: 2000; background: var(--ink);
+      color: var(--white); text-align: center; font-size: 14px;
+      padding: 10px 12px; letter-spacing: 0.3px;
+    }
+    header {
+      background: #f6f4ee; text-align: center; padding: 46px 14px 26px;
+      border-bottom: 1px solid #e7e0d4; position: sticky; top: 42px;
+      z-index: 1500;
+    }
+    header h1 {
+      font-family:"Playfair Display",serif; font-size:46px; font-weight:700;
+      margin:0 0 12px; letter-spacing:0.6px; color:#1b1b1b;
+      text-transform:uppercase;
+      text-shadow:0 0 12px rgba(183,169,139,0.55);
+    }
+    nav button {
+      background:none; border:none; font-size:16px; margin:0 12px;
+      cursor:pointer; font-weight:600; color:#1b1b1b;
+    }
+    nav button.active, nav button:hover {
+      color:#b7a98b; text-decoration:underline;
+    }
+    #welcomeBanner {
+      background:#f7f5f1; text-align:center; padding:26px 16px;
+      font-size:1.22rem; font-family:"Playfair Display",serif;
+      color:#1b1b1b; border-top:1px solid #e8e1d5;
+      border-bottom:1px solid #e8e1d5; letter-spacing:0.2px;
+    }
+    #dealCount {
+      background:#f6f4ee; padding:16px; text-align:center;
+      font-size:16px; font-weight:700; color:#b7a98b;
+      border-bottom:1px solid #e3dbcf;
+    }
+    #categoryBarWrapper {
+      padding:10px 18px; background:var(--bg);
+      border-bottom:1px solid rgba(0,0,0,0.05);
+    }
+    #categoryDropdown {
+      width:100%; padding:10px 14px; font-size:15px;
+      border-radius:12px; border:1px solid #d2d2d2;
+      background:var(--white); outline:none; color:var(--ink);
+      margin-bottom:8px;
+    }
+    #searchBarWrapper {
+      position:sticky; top:110px; background:var(--bg);
+      padding:14px 18px; z-index:1400;
+      border-bottom:1px solid rgba(0,0,0,0.05);
+    }
+    #searchInput {
+      width:100%; padding:12px 40px 12px 16px; font-size:15px;
+      border-radius:14px; border:1px solid #d2d2d2;
+      background:var(--white); outline:none;
+    }
+    #searchIcon {
+      position:absolute; right:26px; top:50%;
+      transform:translateY(-50%); opacity:0.55;
+    }
+    #deals {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:26px; padding:32px;
+    }
+    @media(max-width:600px){
+      #deals{
+        padding:12px; gap:16px;
+        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      }
+    }
+    .card {
+      background:var(--white); border-radius:var(--radius);
+      box-shadow:var(--shadow); overflow:hidden;
+      display:flex; flex-direction:column;
+    }
+    .card.glow-highlight {
+      box-shadow:0 0 18px rgba(183,169,139,0.8);
+      border:2px solid var(--accent);
+    }
+    .card img {
+      width:100%; object-fit:contain; aspect-ratio:1/1;
+      background:var(--white); padding:12px;
+    }
+    .info { padding:16px 20px; }
+    .asin { font-size:0.75rem; color:var(--muted); margin-bottom:6px; }
+    .info h3 {
+      font-size:15px; font-weight:600; margin:0 0 10px;
+      display:flex; justify-content:space-between; align-items:center;
+      color:var(--ink);
+    }
+    .cc-badge {
+      background:#f3efe7; color:var(--ink); font-size:0.7rem;
+      padding:2px 6px; border-radius:6px; font-weight:700;
+      margin-left:4px;
+    }
+    .share-icon { cursor:pointer; opacity:0.85; }
+    .rating { font-size:0.9rem; color:#d1a500; margin-bottom:6px; }
+    .price {
+      display:flex; align-items:baseline; gap:8px; margin-bottom:10px;
+    }
+    .price .discount {
+      font-size:1.2rem; font-weight:700; color:var(--ink);
+    }
+    .price .original {
+      color:#999; text-decoration:line-through; font-size:0.9rem;
+    }
+    .copy-code {
+      background:#f3efe7; color:var(--ink); padding:6px 10px;
+      font-size:0.78rem; font-weight:700; border-radius:6px;
+      margin-top:6px; width:fit-content; cursor:pointer;
+    }
+    .coupon-flag {
+      background:#fff8d1; color:#8a6a00; padding:4px 10px;
+      font-size:0.8rem; font-weight:700; border-radius:8px;
+      margin-top:10px; width:fit-content;
+    }
+    .cta {
+      margin-top:auto; background:var(--accent); color:white;
+      padding:14px; text-align:center; font-weight:700;
+      text-decoration:none; border-radius:0 0 var(--radius) var(--radius);
+    }
+    #toast {
+      position:fixed; bottom:20px; left:50%;
+      transform:translateX(-50%); background:var(--ink); color:white;
+      padding:12px 18px; border-radius:8px; opacity:0;
+      transition:opacity .3s; z-index:9999;
+    }
+    #visitorCounter {
+      position:fixed; bottom:14px; right:14px;
+      background:rgba(0,0,0,0.65); color:#fff; font-size:12px;
+      font-weight:600; padding:6px 10px; border-radius:6px;
+      z-index:9999; backdrop-filter:blur(4px);
+    }
+    #haulToaster {
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      background:#ff7a00; color:#fff; border-radius:18px;
+      padding:28px 32px; box-shadow:0 12px 28px rgba(0,0,0,0.22);
+      font-family:Inter,sans-serif; display:none; align-items:center;
+      gap:16px; z-index:99999; cursor:pointer;
+      animation:fadeInPop .45s ease-out;
+      font-weight:700; font-size:18px; text-align:center;
+      max-width:90%;
+    }
+    #haulToaster .closeToaster {
+      position:absolute; top:10px; right:12px; font-size:24px;
+      cursor:pointer; padding:4px 8px; color:#fff;
+    }
+    @keyframes fadeInPop {
+      0% { opacity:0; transform:translate(-50%, -45%) scale(.9); }
+      100%{ opacity:1; transform:translate(-50%, -50%) scale(1); }
+    }
+    .copy-link-btn {
+      background: var(--accent); color: white;
+      padding: 10px 14px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      width: fit-content; margin-top: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      transition: filter .2s ease, transform .2s ease;
+    }
+    .copy-link-btn:hover {
+      filter: brightness(1.08); transform: translateY(-1px);
+    }
   </style>
 </head>
-
 <body>
-
-<div id="disclosure">
-  As an Amazon Associate, I earn from qualifying purchases. Prices/Codes/Coupons can change anytime.
-</div>
-
-<header>
-  <h1 id="storeName">Loading...</h1>
-  <div id="subHeaderTagline">Daily promo codes, coupons & curated finds — curated savings every day.</div>
-  <nav>
-    <button id="tab-today" class="active">Today's Deals</button>
-    <button id="tab-yesterday">Yesterday</button>
-    <button id="tab-almost">Almost Gone</button>
-  </nav>
-</header>
-
-<div id="socialLinksBar" style="text-align:center;padding:14px 0;background:#f6f4ee;border-bottom:1px solid #e7e0d4;display:none;">
-  <a id="btnAmazon" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Amazon</a>
-  <a id="btnInstagram" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Instagram</a>
-  <a id="btnFacebook" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Facebook</a>
-  <a id="btnYouTube" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">YouTube</a>
-  <a id="btnPinterest" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Pinterest</a>
-  <a id="btnTikTok" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">TikTok</a>
-</div>
-
-<div id="welcomeBanner">
-  Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
-</div>
-
-<div id="dealCount">Deals: 0</div>
-
-<div id="categoryBarWrapper">
-  <select id="categoryDropdown">
-    <option value="">All Categories</option>
-    <option value="Clothing">Clothing</option>
-    <option value="Jewelry & Accessories">Jewelry & Accessories</option>
-    <option value="Beauty/Wellness">Beauty/Wellness</option>
-    <option value="Home & Furniture">Home & Furniture</option>
-    <option value="Kitchen">Kitchen</option>
-    <option value="Electronics">Electronics</option>
-    <option value="Fitness">Fitness</option>
-    <option value="Kids/Toys">Kids/Toys</option>
-    <option value="Pets">Pets</option>
-    <option value="Outdoor & Garden">Outdoor & Garden</option>
-    <option value="Sports/Outdoor">Sports/Outdoor</option>
-    <option value="Automotive">Automotive</option>
-  </select>
-</div>
-
-<div id="searchBarWrapper">
-  <div id="searchContainer">
-    <input id="searchInput" placeholder="Search deals...">
-
-    <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"></circle>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-    </svg>
+  <div id="disclosure">
+    As an Amazon Associate, I earn from qualifying purchases.
+    Prices/Codes/Coupons can change anytime.
   </div>
-</div>
 
-<main id="deals">Loading deals...</main>
+  <header>
+    <h1 id="storeName">Loading...</h1>
+    <div id="subHeaderTagline">
+      Daily promo codes, coupons & curated finds — curated savings every day.
+    </div>
+    <nav>
+      <button id="tab-today" class="active">Today's Deals</button>
+      <button id="tab-yesterday">Yesterday</button>
+      <button id="tab-almost">Almost Gone</button>
+    </nav>
+  </header>
 
-<div id="toast" class="toast">Copied!</div>
-<div id="visitorCounter"></div>
+  <div id="socialLinksBar" style="text-align:center;padding:14px 0;background:#f6f4ee;border-bottom:1px solid #e7e0d4;display:none;">
+    <a id="btnAmazon" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Amazon</a>
+    <a id="btnInstagram" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Instagram</a>
+    <a id="btnFacebook" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Facebook</a>
+    <a id="btnYouTube" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">YouTube</a>
+    <a id="btnPinterest" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">Pinterest</a>
+    <a id="btnTikTok" href="#" target="_blank" style="margin:0 8px;font-weight:600;font-size:14px;color:#1b1b1b;text-decoration:none;">TikTok</a>
+  </div>
 
-<div id="haulToaster">
-  AMAZON HIDDEN 50% OFF DEALS!
-  <div class="closeToaster">×</div>
-</div>
+  <div id="welcomeBanner">
+    Welcome to <span id="storeGreeting">Your Store</span> — let's save big today!
+  </div>
 
+  <div id="dealCount">Deals: 0</div>
 
-<script>
-function parseCSV(text){
-  const rows=[];let row=[];let cell="";let insideQuotes=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(c==='"'&&text[i+1]==='"'){cell+='"';i++;continue;}
-    if(c==='"'){insideQuotes=!insideQuotes;continue;}
-    if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}
-    if(c==='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
-    cell+=c;
-  }
-  if(cell.length||row.length){row.push(cell);rows.push(row);}
-  return rows;
-}
+  <div id="categoryBarWrapper">
+    <select id="categoryDropdown">
+      <option value="">All Categories</option>
+      <option value="Clothing">Clothing</option>
+      <option value="Jewelry & Accessories">Jewelry & Accessories</option>
+      <option value="Beauty/Wellness">Beauty/Wellness</option>
+      <option value="Home & Furniture">Home & Furniture</option>
+      <option value="Kitchen">Kitchen</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Fitness">Fitness</option>
+      <option value="Kids/Toys">Kids/Toys</option>
+      <option value="Pets">Pets</option>
+      <option value="Outdoor & Garden">Outdoor & Garden</option>
+      <option value="Sports/Outdoor">Sports/Outdoor</option>
+      <option value="Automotive">Automotive</option>
+    </select>
+  </div>
 
-const CSV_URLS={
-  today:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
-  yesterday:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
-  almost:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
-};
+  <div id="searchBarWrapper">
+    <div id="searchContainer" style="position:relative;">
+      <input id="searchInput" placeholder="Search deals..." />
+      <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+  </div>
 
-const subdomain=window.location.hostname.split(".")[0];
-let amazonTag="";
-let storeName="";
-let allRows=[];
-const dealsEl=document.getElementById("deals");
+  <main id="deals">Loading deals...</main>
 
-async function fetchTenantInfo(){
-  try{
-    const res=await fetch(
-`https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq.${subdomain}&select=site_name,amazon_id,amazon_url,instagram_url,facebook_url,youtube_url,pinterest_url,tiktok_url`,
-      { headers:{apikey:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"}}
-    );
-    const data=await res.json();
-    const s=data?.[0]||{};
+  <div id="toast" class="toast">Copied!</div>
+  <div id="visitorCounter"></div>
+  <div id="haulToaster">
+    AMAZON HIDDEN 50% OFF DEALS!
+    <div class="closeToaster">×</div>
+  </div>
 
-    storeName=s.site_name||"BagThat Deals";
-    amazonTag = (s.amazon_id || "").trim();
-if (!amazonTag) amazonTag = "MISSING-TAG"; 
-
-
-    if(amazonTag && !amazonTag.endsWith("-20")){
-      amazonTag = amazonTag + "-20";
+  <script>
+    function parseCSV(text){
+      const rows=[];let row=[];let cell="";let insideQuotes=false;
+      for(let i=0;i<text.length;i++){
+        const c=text[i];
+        if(c==='"'&&text[i+1]==='"'){cell+='"';i++;continue;}
+        if(c==='"'){insideQuotes=!insideQuotes;continue;}
+        if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}
+        if(c==='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
+        cell+=c;
+      }
+      if(cell.length||row.length){row.push(cell);rows.push(row);}
+      return rows;
     }
 
-    const links={
-      amazon:s.amazon_url,
-      instagram:s.instagram_url,
-      facebook:s.facebook_url,
-      youtube:s.youtube_url,
-      pinterest:s.pinterest_url,
-      tiktok:s.tiktok_url
+    const CSV_URLS={
+      today:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=23655256&single=true&output=csv",
+      yesterday:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=1955863351&single=true&output=csv",
+      almost:"https://docs.google.com/spreadsheets/d/e/2PACX-1vS8B3eTxf5t0-v2m2NNicpty89ci6LRrJlGnwauS0sLZa8VyAjpnHI1h15s0le8hEsqRbcS9BB0VwFm/pub?gid=499142778&single=true&output=csv"
     };
 
-function normalizeSocial(url, platform){
-  if(!url)return"";
-  url=url.trim();
-  if(url.startsWith("http"))return url;
-  if(url.startsWith("@"))url=url.slice(1);
-  if(!url.includes(".")){
-    switch(platform){
-      case"instagram":return"https://instagram.com/"+url;
-      case"tiktok":return"https://www.tiktok.com/@"+url;
-      case"facebook":return"https://facebook.com/"+url;
-      case"youtube":return"https://youtube.com/"+url;
-      case"pinterest":return"https://www.pinterest.com/"+url+"/";
-      default:return url;
+    const subdomain=window.location.hostname.split(".")[0];
+    let amazonTag="";
+    let storeName="";
+    let allRows=[];
+    const dealsEl=document.getElementById("deals");
+
+    async function fetchTenantInfo(){
+      try{
+        const res=await fetch(
+          "https://gmsjqunfsffjiksffvem.supabase.co/rest/v1/Users?subdomain=eq." +
+          encodeURIComponent(subdomain) +
+          "&select=site_name,amazon_id,amazon_url,instagram_url,facebook_url,youtube_url,pinterest_url,tiktok_url",
+          {
+            headers:{
+              apikey:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdtc2pxdW5mc2Zmamlrc2ZmdmVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NzIxNTgsImV4cCI6MjA3NjQ0ODE1OH0.7qEXKk8f8Sd3G2y8KyQ0XbeCyG8ieD-8WV18-_JkRGc"
+            }
+          }
+        );
+        const data=await res.json();
+        const s=data?.[0]||{};
+        storeName=s.site_name||"BagThat Deals";
+        amazonTag=(s.amazon_id||"").trim();
+        if(!amazonTag) amazonTag="MISSING-TAG";
+        if(amazonTag && !amazonTag.endsWith("-20")){
+          amazonTag=amazonTag+"-20";
+        }
+
+        const links={
+          amazon:s.amazon_url,
+          instagram:s.instagram_url,
+          facebook:s.facebook_url,
+          youtube:s.youtube_url,
+          pinterest:s.pinterest_url,
+          tiktok:s.tiktok_url
+        };
+
+        function normalizeSocial(url, platform){
+          if(!url)return"";
+          url=url.trim();
+          if(url.startsWith("http"))return url;
+          if(url.startsWith("@"))url=url.slice(1);
+          if(!url.includes(".")){
+            switch(platform){
+              case"instagram":return"https://instagram.com/"+url;
+              case"tiktok":return"https://www.tiktok.com/@"+url;
+              case"facebook":return"https://facebook.com/"+url;
+              case"youtube":return"https://youtube.com/"+url;
+              case"pinterest":return"https://www.pinterest.com/"+url+"/";
+              default:return url;
+            }
+          }
+          return"https://"+url.replace(/^https?:\/\//,"");
+        }
+
+        links.instagram=normalizeSocial(links.instagram,"instagram");
+        links.facebook=normalizeSocial(links.facebook,"facebook");
+        links.youtube=normalizeSocial(links.youtube,"youtube");
+        links.pinterest=normalizeSocial(links.pinterest,"pinterest");
+        links.tiktok=normalizeSocial(links.tiktok,"tiktok");
+
+        if(links.amazon)document.getElementById("btnAmazon").href=links.amazon;
+        if(links.instagram)document.getElementById("btnInstagram").href=links.instagram;
+        if(links.facebook)document.getElementById("btnFacebook").href=links.facebook;
+        if(links.youtube)document.getElementById("btnYouTube").href=links.youtube;
+        if(links.pinterest)document.getElementById("btnPinterest").href=links.pinterest;
+        if(links.tiktok)document.getElementById("btnTikTok").href=links.tiktok;
+
+        if(links.amazon||links.instagram||links.facebook||links.youtube||links.pinterest||links.tiktok){
+          document.getElementById("socialLinksBar").style.display="block";
+        }
+
+        document.getElementById("storeName").textContent=storeName;
+        document.getElementById("storeGreeting").textContent=storeName;
+      }catch(e){}
     }
-  }
-  return"https://"+url.replace(/^https?:\/\//,"");
-}
 
-links.instagram=normalizeSocial(links.instagram,"instagram");
-links.facebook=normalizeSocial(links.facebook,"facebook");
-links.youtube=normalizeSocial(links.youtube,"youtube");
-links.pinterest=normalizeSocial(links.pinterest,"pinterest");
-links.tiktok=normalizeSocial(links.tiktok,"tiktok");
-
-    if(links.amazon)document.getElementById("btnAmazon").href=links.amazon;
-    if(links.instagram)document.getElementById("btnInstagram").href=links.instagram;
-    if(links.facebook)document.getElementById("btnFacebook").href=links.facebook;
-    if(links.youtube)document.getElementById("btnYouTube").href=links.youtube;
-    if(links.pinterest)document.getElementById("btnPinterest").href=links.pinterest;
-    if(links.tiktok)document.getElementById("btnTikTok").href=links.tiktok;
-
-    if(links.amazon||links.instagram||links.facebook||links.youtube||links.pinterest||links.tiktok){
-      document.getElementById("socialLinksBar").style.display="block";
+    function createShareLink(asin){
+      const base = window.location.origin;
+      return base + "/?item=" + encodeURIComponent(asin);
     }
 
-    document.getElementById("storeName").textContent=storeName;
-    document.getElementById("storeGreeting").textContent=storeName;
-
-  }catch(e){}
-}
-
-function createShareLink(asin){
-  return`https://${window.location.hostname}/?item=${asin}`;
-}
-
-function shareDeal(asin){
-  const link = createShareLink(asin);
-
-  if (navigator.share) {
-    navigator.share({ url: link });
-  } else {
-    navigator.clipboard.writeText(link);
-    const t = document.getElementById("toast");
-    t.textContent = "Link Copied!";
-    t.style.opacity = "1";
-    setTimeout(() => t.style.opacity = "0", 1200);
-  }
-}
-
-
-async function loadDeals(type="today"){
-  dealsEl.textContent="Loading deals...";
-  const res=await fetch(CSV_URLS[type]);
-  const text=await res.text();
-  const parsed=parseCSV(text);
-  const rows=parsed.slice(1);
-  allRows=rows;
-  renderDeals(rows);
-  highlightDeepLinkedItem();
-}
-
-function copyCode(code){
-  navigator.clipboard.writeText(code).then(()=>{
-    const t=document.getElementById("toast");
-    t.textContent = "Code Copied!";
-    t.style.opacity="1";
-    setTimeout(()=>t.style.opacity="0",1200);
-  });
-}
-
-function forceTag(url, tag) {
-  if (!url) return "";
-  if (!tag) return url;
-  if (url.includes("tag=")) return url;
-  return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
-}
-
-
-function renderDeals(rows){
-  dealsEl.innerHTML = rows
-    .filter(r => r[1])
-    .map(r => {
-      const asin=r[1];
-      const discountPrice=r[16];
-      const promoCode=r[3];
-      const ccFlag=r[5];
-      const taggedLink=r[6];
-      const hasCoupon=(r[10]||"").trim().toLowerCase()==="true";
-      const imageURL=r[8]||r[7]||"";
-      const title=r[12]||"Untitled Product";
-      const rating=r[14]||"";
-      const originalPrice=r[21]||"";
-      const category=r[13]||"";
-
-      const url=forceTag(taggedLink,amazonTag);
-
-      const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
-        ? `<span class="cc-badge">✔ CC</span>`
-        : "";
-
-      const normalizeMoney=v=>String(v||"").replace(/\$/g,"").trim();
-      const disc=normalizeMoney(discountPrice);
-      const orig=normalizeMoney(originalPrice);
-
-      const priceHTML = orig
-        ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
-        : `<div class="price"><span class="discount">$${disc}</span></div>`;
-
-      const shareSVG = `
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 3v12"></path>
-  <path d="M8 7l4-4 4 4"></path>
-  <path d="M5 21h14a2 2 0 0 0 2-2v-7"></path>
-  <path d="M3 12v7a2 2 0 0 0 2 2"></path>
-</svg>`;
-
-      return `
-      <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}" data-category="${category}">
-        <img src="${imageURL}" alt="Deal image">
-        <div class="info">
-          <div class="asin">ASIN: ${asin}</div>
-          <h3>
-            <span>${title} ${ccBadge}</span>
-            <span class="share-icon" onclick="shareDeal('${asin}')">
-
-              ${shareSVG}
-            </span>
-          </h3>
-
-          ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
-          ${priceHTML}
-
-          ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
-          ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
-
-          <div class="copy-link-btn" onclick="copyDealLink('${createShareLink(asin)}')">Copy Link</div>
-
-        </div>
-        <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
-      </div>`;
-    })
-    .join("");
-
-  highlightDeepLinkedItem();
-  updateDealCount();
-}
-
-
-function filterDeals(){
-  const cat=document.getElementById("categoryDropdown").value;
-  const searchQ=document.getElementById("searchInput").value.toLowerCase();
-
-  document.querySelectorAll(".card").forEach(card=>{
-    const title=card.dataset.title;
-    const category=card.dataset.category;
-    const matchCat=!cat||category===cat;
-    const matchSearch=!searchQ||title.includes(searchQ);
-    card.style.display=matchCat&&matchSearch?"flex":"none";
-  });
-
-  updateDealCount();
-}
-
-document.getElementById("categoryDropdown").addEventListener("change",filterDeals);
-document.getElementById("searchInput").addEventListener("input",filterDeals);
-
-function highlightDeepLinkedItem(){
-  const asin=new URLSearchParams(window.location.search).get("item");
-  if(!asin)return;
-
-  let attempts=0;
-  const max=20;
-
-  const interval=setInterval(()=>{
-    attempts++;
-    const card=document.querySelector(`.card[data-asin="${asin}"]`);
-
-    if(card){
-      clearInterval(interval);
-      card.classList.add("glow-highlight");
-      setTimeout(()=>card.scrollIntoView({behavior:"smooth",block:"center"}),250);
-      setTimeout(()=>card.classList.remove("glow-highlight"),2500);
+    function shareDeal(asin){
+      const link = createShareLink(asin);
+      if (navigator.share) {
+        navigator.share({ url: link });
+      } else {
+        navigator.clipboard.writeText(link);
+        const t = document.getElementById("toast");
+        t.textContent = "Link Copied!";
+        t.style.opacity = "1";
+        setTimeout(() => t.style.opacity = "0", 1200);
+      }
     }
-    if(attempts>=max)clearInterval(interval);
-  },300);
-}
 
-function updateDealCount(){
-  const cards=[...document.querySelectorAll(".card")].filter(c=>c.style.display!=="none");
-  document.getElementById("dealCount").textContent="Deals: "+cards.length;
-}
-
-const buttons={
-  today:document.getElementById("tab-today"),
-  yesterday:document.getElementById("tab-yesterday"),
-  almost:document.getElementById("tab-almost")
-};
-
-Object.entries(buttons).forEach(([key,btn])=>{
-  btn.addEventListener("click",()=>{
-    Object.values(buttons).forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById("categoryDropdown").value="";
-    document.getElementById("searchInput").value="";
-    filterDeals();
-    loadDeals(key);
-  });
-});
-
-fetchTenantInfo().then(()=>{
-  loadDeals("today");
-
-  // run deep link logic AFTER initial load begins
-  const asin = new URLSearchParams(window.location.search).get("item");
-  if(asin) resolveDeepLinkTab(asin);
-});
-  /* DEEP LINK TAB DETECTOR */
-async function resolveDeepLinkTab(asin){
-  if(!asin) return;
-
-  const order = ["today","yesterday","almost"];
-
-  for(let tab of order){
-    const res = await fetch(CSV_URLS[tab]);
-    const text = await res.text();
-    const parsed = parseCSV(text).slice(1);
-
-    const found = parsed.find(r => r[1] === asin);
-
-    if(found){
-      buttons[tab].click();
-      return;
+    async function loadDeals(type="today"){
+      dealsEl.textContent="Loading deals...";
+      const res=await fetch(CSV_URLS[type]);
+      const text=await res.text();
+      const parsed=parseCSV(text);
+      const rows=parsed.slice(1);
+      allRows=rows;
+      renderDeals(rows);
+      highlightDeepLinkedItem();
     }
-  }
-}
 
+    function copyCode(code){
+      navigator.clipboard.writeText(code).then(()=>{
+        const t=document.getElementById("toast");
+        t.textContent = "Code Copied!";
+        t.style.opacity="1";
+        setTimeout(()=>t.style.opacity="0",1200);
+      });
+    }
 
-function updateVisitorCounter(){
-  let count=localStorage.getItem("visitorCount");
-  count=count?parseInt(count)+1:1;
-  localStorage.setItem("visitorCount",count);
-  document.getElementById("visitorCounter").textContent=count;
-}
-updateVisitorCounter();
+    function forceTag(url, tag) {
+      if (!url) return "";
+      if (!tag) return url;
+      if (url.includes("tag=")) return url;
+      return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
+    }
 
-/* POPUP LOGIC */
-document.addEventListener("DOMContentLoaded",()=>{
-  const toaster=document.getElementById("haulToaster");
+    function renderDeals(rows){
+      dealsEl.innerHTML = rows
+        .filter(r => r[1])
+        .map(r => {
+          const asin=r[1];
+          const discountPrice=r[16];
+          const promoCode=r[3];
+          const ccFlag=r[5];
+          const taggedLink=r[6];
+          const hasCoupon=(r[10]||"").trim().toLowerCase()==="true";
+          const imageURL=r[8]||r[7]||"";
+          const title=r[12]||"Untitled Product";
+          const rawRating=r[14];                // same CSV index as before
+          const rating = rawRating && rawRating.trim() !== "" ? rawRating : "";
+          const originalPrice=r[21]||"";
+          const category=r[13]||"";
+          const url=forceTag(taggedLink,amazonTag);
 
-  function pennyDealsUrl(){
-    const base="https://www.amazon.com/b/?_encoding=UTF8&node=122430396011&ishaul=1&ref_=hul_hp_md_in_line_26_50off&pd_rd_w=v9Q4c&content-id=amzn1.sym.c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_p=c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_r=R7B7MEVQYCHEM8F3P9RM&pd_rd_wg=mJUfW&pd_rd_r=a88b8d6a-eede-4c51-bf41-1dd26e43a407";
-    if(!amazonTag)return base;
-    return base + "&tag=" + amazonTag;
-  }
+          const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
+            ? '<span class="cc-badge">✔ CC</span>'
+            : "";
 
-  setTimeout(()=>toaster.style.display="flex",2000);
+          const normalizeMoney=v=>String(v||"").replace(/\$/g,"").trim();
+          const disc=normalizeMoney(discountPrice);
+          const orig=normalizeMoney(originalPrice);
 
-  toaster.addEventListener("click",e=>{
-    if(!e.target.classList.contains("closeToaster")) window.open(pennyDealsUrl(),"_blank");
-  });
+          const priceHTML = orig
+            ? '<div class="price"><span class="discount">$'+disc+
+              '</span><span class="original">$'+orig+'</span></div>'
+            : '<div class="price"><span class="discount">$'+disc+'</span></div>';
 
-  document.querySelector(".closeToaster").addEventListener("click",e=>{
-    e.stopPropagation();
-    toaster.style.display="none";
+          const shareSVG =
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" '+
+            'stroke="currentColor" stroke-width="2" stroke-linecap="round" '+
+            'stroke-linejoin="round">'+
+            '<path d="M12 3v12"></path>'+
+            '<path d="M8 7l4-4 4 4"></path>'+
+            '<path d="M5 21h14a2 2 0 0 0 2-2v-7"></path>'+
+            '<path d="M3 12v7a2 2 0 0 0 2 2"></path>'+
+            '</svg>';
 
-  }); 
+          const deepLink = createShareLink(asin); // per-item URL for Pinterest + copy
 
-});
+          return (
+            '<div class="card" data-asin="'+asin+'" data-title="'+title.toLowerCase()+
+            '" data-category="'+category+'">'+
+              // Pinterest per-item click-through URL
+              '<img src="'+imageURL+'" alt="Deal image" data-pin-url="'+deepLink+'">'+
+              '<div class="info">'+
+                '<div class="asin">ASIN: '+asin+'</div>'+
+                '<h3>'+
+                  '<span>'+title+' '+ccBadge+'</span>'+
+                  '<span class="share-icon" onclick="shareDeal(\''+asin+'\')">'+
+                    shareSVG+
+                  '</span>'+
+                '</h3>'+
+                (rating ? '<div class="rating">★ '+rating+'</div>' : '')+
+                priceHTML+
+                (promoCode
+                  ? '<div class="copy-code" onclick="copyCode(\''+promoCode+'\')">Copy Code: '+promoCode+'</div>'
+                  : ''
+                )+
+                (hasCoupon
+                  ? '<div class="coupon-flag">+ coupon on listing</div>'
+                  : ''
+                )+
+                '<div class="copy-link-btn" onclick="copyDealLink(\''+deepLink+'\')">Copy Link</div>'+
+              '</div>'+
+              '<a class="cta" href="'+url+'" target="_blank">Go to Amazon</a>'+
+            '</div>'
+          );
+        })
+        .join("");
 
+      highlightDeepLinkedItem();
+      updateDealCount();
+    }
 
+    function filterDeals(){
+      const cat=document.getElementById("categoryDropdown").value;
+      const searchQ=document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll(".card").forEach(card=>{
+        const title=card.dataset.title;
+        const category=card.dataset.category;
+        const matchCat=!cat||category===cat;
+        const matchSearch=!searchQ||title.includes(searchQ);
+        card.style.display=matchCat&&matchSearch?"flex":"none";
+      });
+      updateDealCount();
+    }
 
-function copyDealLink(url){
-  navigator.clipboard.writeText(url);
-  const t=document.getElementById("toast");
-  t.textContent="Link Copied!";
-  t.style.opacity="1";
-  setTimeout(()=>t.style.opacity="0",1200);
-}
-</script>
+    document.getElementById("categoryDropdown").addEventListener("change",filterDeals);
+    document.getElementById("searchInput").addEventListener("input",filterDeals);
 
+    function highlightDeepLinkedItem(){
+      const asin=new URLSearchParams(window.location.search).get("item");
+      if(!asin)return;
+      let attempts=0;
+      const max=20;
+      const interval=setInterval(()=>{
+        attempts++;
+        const card=document.querySelector('.card[data-asin="'+asin+'"]');
+        if(card){
+          clearInterval(interval);
+          card.classList.add("glow-highlight");
+          setTimeout(()=>card.scrollIntoView({behavior:"smooth",block:"center"}),250);
+          setTimeout(()=>card.classList.remove("glow-highlight"),2500);
+        }
+        if(attempts>=max)clearInterval(interval);
+      },300);
+    }
+
+    function updateDealCount(){
+      const cards=[...document.querySelectorAll(".card")]
+        .filter(c=>c.style.display!=="none");
+      document.getElementById("dealCount").textContent="Deals: "+cards.length;
+    }
+
+    const buttons={
+      today:document.getElementById("tab-today"),
+      yesterday:document.getElementById("tab-yesterday"),
+      almost:document.getElementById("tab-almost")
+    };
+
+    Object.entries(buttons).forEach(([key,btn])=>{
+      btn.addEventListener("click",()=>{
+        Object.values(buttons).forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("categoryDropdown").value="";
+        document.getElementById("searchInput").value="";
+        filterDeals();
+        loadDeals(key);
+      });
+    });
+
+    fetchTenantInfo().then(()=>{
+      loadDeals("today");
+      const asin = new URLSearchParams(window.location.search).get("item");
+      if(asin) resolveDeepLinkTab(asin);
+    });
+
+    async function resolveDeepLinkTab(asin){
+      if(!asin) return;
+      const order = ["today","yesterday","almost"];
+      for(let tab of order){
+        const res = await fetch(CSV_URLS[tab]);
+        const text = await res.text();
+        const parsed = parseCSV(text).slice(1);
+        const found = parsed.find(r => r[1] === asin);
+        if(found){
+          buttons[tab].click();
+          return;
+        }
+      }
+    }
+
+    function updateVisitorCounter(){
+      let count=localStorage.getItem("visitorCount");
+      count=count?parseInt(count)+1:1;
+      localStorage.setItem("visitorCount",count);
+      document.getElementById("visitorCounter").textContent=count;
+    }
+    updateVisitorCounter();
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      const toaster=document.getElementById("haulToaster");
+      function pennyDealsUrl(){
+        const base="https://www.amazon.com/b/?_encoding=UTF8&node=122430396011&ishaul=1&ref_=hul_hp_md_in_line_26_50off&pd_rd_w=v9Q4c&content-id=amzn1.sym.c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_p=c90ab322-5e5b-4778-9c66-d946e82a3ee8&pf_rd_r=R7B7MEVQYCHEM8F3P9RM&pd_rd_wg=mJUfW&pd_rd_r=a88b8d6a-eede-4c51-bf41-1dd26e43a407";
+        if(!amazonTag)return base;
+        return base + "&tag=" + amazonTag;
+      }
+      setTimeout(()=>toaster.style.display="flex",2000);
+      toaster.addEventListener("click",e=>{
+        if(!e.target.classList.contains("closeToaster"))
+          window.open(pennyDealsUrl(),"_blank");
+      });
+      document.querySelector(".closeToaster").addEventListener("click",e=>{
+        e.stopPropagation();
+        toaster.style.display="none";
+      });
+    });
+
+    function copyDealLink(url){
+      navigator.clipboard.writeText(url);
+      const t=document.getElementById("toast");
+      t.textContent="Link Copied!";
+      t.style.opacity="1";
+      setTimeout(()=>t.style.opacity="0",1200);
+    }
+  </script>
 </body>
 </html>
