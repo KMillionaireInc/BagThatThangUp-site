@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const asin = params.get("asin");
+    window.location.href = window.location.origin + "/?asin=" + asin;
+  </script>
+</head>
+<body>
+Redirecting...
+</body>
+</html>
