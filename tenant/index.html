@@ -424,7 +424,9 @@ async function fetchTenantInfo(){
     const s=data?.[0]||{};
 
     storeName=s.site_name||"BagThat Deals";
-    amazonTag=s.amazon_id||"";
+    amazonTag = (s.amazon_id || "").trim();
+if (!amazonTag) amazonTag = "MISSING-TAG"; 
+
 
     if(amazonTag && !amazonTag.endsWith("-20")){
       amazonTag = amazonTag + "-20";
