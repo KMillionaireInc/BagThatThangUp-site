@@ -417,85 +417,103 @@
       return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
     }
 
-    function renderDeals(rows){
-      dealsEl.innerHTML = rows
-        .filter(r => r[1])
-        .map(r => {
-          const asin = r[1];
-          const discountPrice = r[16];
-          const promoCode = r[3];
-          const ccFlag = r[5];
-          const taggedLink = r[6];
-          const hasCoupon = (r[10] || "").trim().toLowerCase() === "true";
-          const imageURL = r[8] || r[7] || "";
-          const title = r[12] || "Untitled Product";
-          const rawRating = r[14];
-          const rating = rawRating && rawRating.trim() !== "" ? rawRating : "";
-          const originalPrice = r[21] || "";
-          const category = r[13] || "";
-          const url = forceTag(taggedLink, amazonTag);
+function getCategoryHashtags(cat) {
+  const map = {
+    "Kitchen": "#kitchenideas #homeinspo",
+    "Home & Furniture": "#homeinspo #homerefresh",
+    "Beauty/Wellness": "#beautyfinds #selfcareideas",
+    "Kids/Toys": "#kidsessentials #momlife",
+    "Clothing": "#outfitinspo #styleideas",
+    "Jewelry & Accessories": "#styleideas #fashionfinds",
+    "Electronics": "#gadgets #techfinds",
+    "Fitness": "#fitnessessentials #workoutideas",
+    "Pets": "#petfinds #petideas",
+    "Outdoor & Garden": "#gardenideas #homeinspo",
+    "Sports/Outdoor": "#sportsgear #outdoorfinds",
+    "Automotive": "#caraccessories #autofinds"
+  };
+  return map[cat] || "#dailyfinds";
+}
 
-          const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
-            ? '<span class="cc-badge">✔ CC</span>'
-            : "";
+function renderDeals(rows){
+  dealsEl.innerHTML = rows
+    .filter(r => r[1])
+    .map(r => {
+      const asin = r[1];
+      const discountPrice = r[16];
+      const promoCode = r[3];
+      const ccFlag = r[5];
+      const taggedLink = r[6];
+      const hasCoupon = (r[10] || "").trim().toLowerCase() === "true";
+      const imageURL = r[8] || r[7] || "";
+      const title = r[12] || "Untitled Product";
+      const rawRating = r[14];
+      const rating = rawRating && rawRating.trim() !== "" ? rawRating : "";
+      const originalPrice = r[21] || "";
+      const category = r[13] || "Finds";
 
-          const normalizeMoney = v => String(v || "").replace(/\$/g, "").trim();
-          const disc = normalizeMoney(discountPrice);
-          const orig = normalizeMoney(originalPrice);
+      const url = forceTag(taggedLink, amazonTag);
+      const deepLink = createShareLink(asin);
 
-          const priceHTML = orig
-            ? '<div class="price"><span class="discount">$' + disc +
-              '</span><span class="original">$' + orig + '</span></div>'
-            : '<div class="price"><span class="discount">$' + disc + '</span></div>';
+      const pinterestTitle = `Trending ${category} find worth saving today`;
+      const pinterestDesc =
+        `Saw this come back around today — saving it here in case you’re browsing ${category} ideas. ` +
+        `This one keeps circulating lately, so pinning it for anyone looking for updated ${category} inspiration. ` +
+        `#amazonfinds #dailyfinds #trendingnow ${getCategoryHashtags(category)}`;
 
-          const shareSVG =
-            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" '+
-            'stroke="currentColor" stroke-width="2" stroke-linecap="round" '+
-            'stroke-linejoin="round">'+
-            '<path d="M12 3v12"></path>'+
-            '<path d="M8 7l4-4 4 4"></path>'+
-            '<path d="M5 21h14a2 2 0 0 0 2-2v-7"></path>'+
-            '<path d="M3 12v7a2 2 0 0 0 2 2"></path>'+
-            '</svg>';
+      const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
+        ? '<span class="cc-badge">✔ CC</span>'
+        : "";
 
-          const deepLink = createShareLink(asin); // per-item URL for Pinterest + copy
+      const normalizeMoney = v => String(v || "").replace(/\$/g, "").trim();
+      const disc = normalizeMoney(discountPrice);
+      const orig = normalizeMoney(originalPrice);
 
-          return (
-            '<div class="card" data-asin="' + asin + '" data-title="' + title.toLowerCase() +
-            '" data-category="' + category + '">' +
-              '<img src="' + imageURL + '" ' +
-                   'alt="Amazon Promo Codes & Trending Fashion Finds | Daily Deals" ' +
-                   'data-pin-url="' + deepLink + '" ' +
-                   'data-pin-description="Save big with daily Amazon promo codes and trending finds. Discover hidden coupons, fashion deals, beauty must-haves, and home essentials updated every morning. Follow for new Amazon deals and exclusive discounts that help you shop smarter. #AmazonFinds #AmazonPromoCodes #AmazonDeals #DailyDeals #TrendingFinds">' +
-              '<div class="info">' +
-                '<div class="asin">ASIN: ' + asin + '</div>' +
-                '<h3>' +
-                  '<span>' + title + ' ' + ccBadge + '</span>' +
-                  '<span class="share-icon" onclick="shareDeal(\'' + asin + '\')">' +
-                    shareSVG +
-                  '</span>' +
-                '</h3>' +
-                (rating ? '<div class="rating">★ ' + rating + '</div>' : '') +
-                priceHTML +
-                (promoCode
-                  ? '<div class="copy-code" onclick="copyCode(\'' + promoCode + '\')">Copy Code: ' + promoCode + '</div>'
-                  : ''
-                ) +
-                (hasCoupon
-                  ? '<div class="coupon-flag">+ coupon on listing</div>'
-                  : ''
-                ) +
-                '<div class="copy-link-btn" onclick="copyDealLink(\'' + deepLink + '\')">Copy Link</div>' +
-              '</div>' +
-              '<a class="cta" href="' + url + '" target="_blank">Go to Amazon</a>' +
-            '</div>'
-          );
-        })
-        .join("");
+      const priceHTML = orig
+        ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
+        : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
-      highlightDeepLinkedItem();
-      updateDealCount();
-    }
+      const shareSVG =
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" '+
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" '+
+        'stroke-linejoin="round">'+
+        '<path d="M12 3v12"></path>'+
+        '<path d="M8 7l4-4 4 4"></path>'+
+        '<path d="M5 21h14a2 2 0 0 0 2-2v-7"></path>'+
+        '<path d="M3 12v7a2 2 0 0 0 2 2"></path>'+
+        '</svg>';
+
+      return `
+        <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}" data-category="${category}">
+          <img 
+            src="${imageURL}"
+            alt="${title.replace(/"/g, '&quot;')}"
+            data-pin-url="${deepLink}"
+            data-pin-title="${pinterestTitle}"
+            data-pin-description="${pinterestDesc}"
+          >
+          <div class="info">
+            <div class="asin">ASIN: ${asin}</div>
+            <h3>
+              <span>${title} ${ccBadge}</span>
+              <span class="share-icon" onclick="shareDeal('${asin}')">${shareSVG}</span>
+            </h3>
+            ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
+            ${priceHTML}
+            ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
+            ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+            <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
+          </div>
+          <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+        </div>
+      `;
+    })
+    .join("");
+
+  highlightDeepLinkedItem();
+  updateDealCount();
+}
+
 
     function filterDeals(){
       const cat=document.getElementById("categoryDropdown").value;
