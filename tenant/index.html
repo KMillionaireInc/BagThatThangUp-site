@@ -435,36 +435,37 @@
 
           const deepLink = createShareLink(asin); // per-item URL for Pinterest + copy
 
-          return (
-            '<div class="card" data-asin="'+asin+'" data-title="'+title.toLowerCase()+
-            '" data-category="'+category+'">'+
-              // Pinterest per-item click-through URL
-              '<img src="'+imageURL+'" alt="Deal image" data-pin-url="'+deepLink+'">'+
-              '<div class="info">'+
-                '<div class="asin">ASIN: '+asin+'</div>'+
-                '<h3>'+
-                  '<span>'+title+' '+ccBadge+'</span>'+
-                  '<span class="share-icon" onclick="shareDeal(\''+asin+'\')">'+
-                    shareSVG+
-                  '</span>'+
-                '</h3>'+
-                (rating ? '<div class="rating">★ '+rating+'</div>' : '')+
-                priceHTML+
-                (promoCode
-                  ? '<div class="copy-code" onclick="copyCode(\''+promoCode+'\')">Copy Code: '+promoCode+'</div>'
-                  : ''
-                )+
-                (hasCoupon
-                  ? '<div class="coupon-flag">+ coupon on listing</div>'
-                  : ''
-                )+
-                '<div class="copy-link-btn" onclick="copyDealLink(\''+deepLink+'\')">Copy Link</div>'+
-              '</div>'+
-              '<a class="cta" href="'+url+'" target="_blank">Go to Amazon</a>'+
-            '</div>'
-          );
-        })
-        .join("");
+return (
+  '<div class="card" data-asin="'+asin+'" data-title="'+title.toLowerCase()+
+  '" data-category="'+category+'">'+
+    // Pinterest per-item click-through URL + prefilled description
+    '<img src="'+imageURL+'" '+
+         'alt="Amazon Promo Codes & Trending Fashion Finds | Azillionaires Daily Deals" '+
+         'data-pin-url="'+deepLink+'" '+
+         'data-pin-description="Save big with daily Amazon promo codes and trending finds from Azillionaires.com. Discover hidden coupons, fashion deals, beauty must-haves, and home essentials updated every morning. Follow for new Amazon deals and exclusive discounts that help you shop smarter. #AmazonFinds #AmazonPromoCodes #AmazonDeals #DailyDeals #TrendingFinds">'+
+    '<div class="info">'+
+      '<div class="asin">ASIN: '+asin+'</div>'+
+      '<h3>'+
+        '<span>'+title+' '+ccBadge+'</span>'+
+        '<span class="share-icon" onclick="shareDeal(\''+asin+'\')">'+
+          shareSVG+
+        '</span>'+
+      '</h3>'+
+      (rating ? '<div class="rating">★ '+rating+'</div>' : '')+
+      priceHTML+
+      (promoCode
+        ? '<div class="copy-code" onclick="copyCode(\''+promoCode+'\')">Copy Code: '+promoCode+'</div>'
+        : ''
+      )+
+      (hasCoupon
+        ? '<div class="coupon-flag">+ coupon on listing</div>'
+        : ''
+      )+
+      '<div class="copy-link-btn" onclick="copyDealLink(\''+deepLink+'\')">Copy Link</div>'+
+    '</div>'+
+    '<a class="cta" href="'+url+'" target="_blank">Go to Amazon</a>'+
+  '</div>'
+);
 
       highlightDeepLinkedItem();
       updateDealCount();
