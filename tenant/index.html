@@ -373,7 +373,6 @@
       const rows=parsed.slice(1);
       allRows=rows;
       renderDeals(rows);
-      highlightDeepLinkedItem();
     }
 
     function copyCode(code){
@@ -396,32 +395,32 @@
       dealsEl.innerHTML = rows
         .filter(r => r[1])
         .map(r => {
-          const asin=r[1];
-          const discountPrice=r[16];
-          const promoCode=r[3];
-          const ccFlag=r[5];
-          const taggedLink=r[6];
-          const hasCoupon=(r[10]||"").trim().toLowerCase()==="true";
-          const imageURL=r[8]||r[7]||"";
-          const title=r[12]||"Untitled Product";
-          const rawRating=r[14];                // same CSV index as before
+          const asin = r[1];
+          const discountPrice = r[16];
+          const promoCode = r[3];
+          const ccFlag = r[5];
+          const taggedLink = r[6];
+          const hasCoupon = (r[10] || "").trim().toLowerCase() === "true";
+          const imageURL = r[8] || r[7] || "";
+          const title = r[12] || "Untitled Product";
+          const rawRating = r[14];
           const rating = rawRating && rawRating.trim() !== "" ? rawRating : "";
-          const originalPrice=r[21]||"";
-          const category=r[13]||"";
-          const url=forceTag(taggedLink,amazonTag);
+          const originalPrice = r[21] || "";
+          const category = r[13] || "";
+          const url = forceTag(taggedLink, amazonTag);
 
           const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
             ? '<span class="cc-badge">✔ CC</span>'
             : "";
 
-          const normalizeMoney=v=>String(v||"").replace(/\$/g,"").trim();
-          const disc=normalizeMoney(discountPrice);
-          const orig=normalizeMoney(originalPrice);
+          const normalizeMoney = v => String(v || "").replace(/\$/g, "").trim();
+          const disc = normalizeMoney(discountPrice);
+          const orig = normalizeMoney(originalPrice);
 
           const priceHTML = orig
-            ? '<div class="price"><span class="discount">$'+disc+
-              '</span><span class="original">$'+orig+'</span></div>'
-            : '<div class="price"><span class="discount">$'+disc+'</span></div>';
+            ? '<div class="price"><span class="discount">$' + disc +
+              '</span><span class="original">$' + orig + '</span></div>'
+            : '<div class="price"><span class="discount">$' + disc + '</span></div>';
 
           const shareSVG =
             '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" '+
@@ -435,37 +434,38 @@
 
           const deepLink = createShareLink(asin); // per-item URL for Pinterest + copy
 
-return (
-  '<div class="card" data-asin="'+asin+'" data-title="'+title.toLowerCase()+
-  '" data-category="'+category+'">'+
-    // Pinterest per-item click-through URL + prefilled description
-    '<img src="'+imageURL+'" '+
-         'alt="Amazon Promo Codes & Trending Fashion Finds | Azillionaires Daily Deals" '+
-         'data-pin-url="'+deepLink+'" '+
-         'data-pin-description="Save big with daily Amazon promo codes and trending finds from Azillionaires.com. Discover hidden coupons, fashion deals, beauty must-haves, and home essentials updated every morning. Follow for new Amazon deals and exclusive discounts that help you shop smarter. #AmazonFinds #AmazonPromoCodes #AmazonDeals #DailyDeals #TrendingFinds">'+
-    '<div class="info">'+
-      '<div class="asin">ASIN: '+asin+'</div>'+
-      '<h3>'+
-        '<span>'+title+' '+ccBadge+'</span>'+
-        '<span class="share-icon" onclick="shareDeal(\''+asin+'\')">'+
-          shareSVG+
-        '</span>'+
-      '</h3>'+
-      (rating ? '<div class="rating">★ '+rating+'</div>' : '')+
-      priceHTML+
-      (promoCode
-        ? '<div class="copy-code" onclick="copyCode(\''+promoCode+'\')">Copy Code: '+promoCode+'</div>'
-        : ''
-      )+
-      (hasCoupon
-        ? '<div class="coupon-flag">+ coupon on listing</div>'
-        : ''
-      )+
-      '<div class="copy-link-btn" onclick="copyDealLink(\''+deepLink+'\')">Copy Link</div>'+
-    '</div>'+
-    '<a class="cta" href="'+url+'" target="_blank">Go to Amazon</a>'+
-  '</div>'
-);
+          return (
+            '<div class="card" data-asin="' + asin + '" data-title="' + title.toLowerCase() +
+            '" data-category="' + category + '">' +
+              '<img src="' + imageURL + '" ' +
+                   'alt="Amazon Promo Codes & Trending Fashion Finds | Azillionaires Daily Deals" ' +
+                   'data-pin-url="' + deepLink + '" ' +
+                   'data-pin-description="Save big with daily Amazon promo codes and trending finds from Azillionaires.com. Discover hidden coupons, fashion deals, beauty must-haves, and home essentials updated every morning. Follow for new Amazon deals and exclusive discounts that help you shop smarter. #AmazonFinds #AmazonPromoCodes #AmazonDeals #DailyDeals #TrendingFinds">' +
+              '<div class="info">' +
+                '<div class="asin">ASIN: ' + asin + '</div>' +
+                '<h3>' +
+                  '<span>' + title + ' ' + ccBadge + '</span>' +
+                  '<span class="share-icon" onclick="shareDeal(\'' + asin + '\')">' +
+                    shareSVG +
+                  '</span>' +
+                '</h3>' +
+                (rating ? '<div class="rating">★ ' + rating + '</div>' : '') +
+                priceHTML +
+                (promoCode
+                  ? '<div class="copy-code" onclick="copyCode(\'' + promoCode + '\')">Copy Code: ' + promoCode + '</div>'
+                  : ''
+                ) +
+                (hasCoupon
+                  ? '<div class="coupon-flag">+ coupon on listing</div>'
+                  : ''
+                ) +
+                '<div class="copy-link-btn" onclick="copyDealLink(\'' + deepLink + '\')">Copy Link</div>' +
+              '</div>' +
+              '<a class="cta" href="' + url + '" target="_blank">Go to Amazon</a>' +
+            '</div>'
+          );
+        })
+        .join("");
 
       highlightDeepLinkedItem();
       updateDealCount();
