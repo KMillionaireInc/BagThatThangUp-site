@@ -304,15 +304,19 @@
   /* ------------------------------------------------------
      CLEAN URL ROUTER — MUST RUN BEFORE ALL OTHER JS
   ------------------------------------------------------ */
-  (function() {
-      const path = window.location.pathname.trim();
-      const match = path.match(/^\/item\/([A-Z0-9]{10})$/i);
-      if (match) {
-          const asin = match[1];
-          window.location.hash = `item-${asin}`;
-          history.replaceState(null, "", "/");
-      }
-  })();
+// Pinterest-safe clean URL router
+(function() {
+    const path = window.location.pathname;
+    const match = path.match(/^\/item\/([A-Z0-9]{10})$/i);
+
+    if (match) {
+        const asin = match[1];
+
+        // Convert clean URL → existing deep-link modal
+        window.location.search = "?item=" + asin;
+    }
+})();
+
 
   /* ------------------------------------------------------
      ORIGINAL CODE (UNCHANGED)
@@ -419,7 +423,7 @@ function createShareLink(asin){
   const base = window.location.origin.startsWith("http")
     ? window.location.origin
     : "https://" + window.location.origin;
-  return base + "/?item=" + encodeURIComponent(asin);
+  return base + "/item/" + encodeURIComponent(asin);
 }
 
 function shareDeal(asin){
