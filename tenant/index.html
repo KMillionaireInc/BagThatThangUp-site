@@ -401,10 +401,13 @@
       }catch(e){}
     }
 
-    function createShareLink(asin){
-      const base = window.location.origin;
-      return base + "/?item=" + encodeURIComponent(asin);
-    }
+function createShareLink(asin){
+  const base = window.location.origin.startsWith("http")
+    ? window.location.origin
+    : "https://" + window.location.origin;
+  return base + "/?item=" + encodeURIComponent(asin);
+}
+
 
     function shareDeal(asin){
       const link = createShareLink(asin);
