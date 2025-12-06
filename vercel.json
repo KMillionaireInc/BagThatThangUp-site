@@ -10,21 +10,23 @@
     { "src": "**/*.png", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "headers": { "Access-Control-Allow-Origin": "*" }
-    },
 
     {
       "src": "/item/(.*)",
       "dest": "/index.html",
-      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }]
+      "has": [
+        { "type": "host", "value": "bagthatthangup.com" },
+        { "type": "host", "value": "*.bagthatthangup.com" }
+      ]
     },
 
     {
       "src": "/",
       "dest": "/index.html",
-      "has": [{ "type": "host", "value": "*.bagthatthangup.com" }]
+      "has": [
+        { "type": "host", "value": "bagthatthangup.com" },
+        { "type": "host", "value": "*.bagthatthangup.com" }
+      ]
     },
 
     { "src": "/api/(.*)", "dest": "/api/$1" },
