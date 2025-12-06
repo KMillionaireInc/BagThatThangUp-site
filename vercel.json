@@ -10,8 +10,6 @@
     { "src": "**/*.png", "use": "@vercel/static" }
   ],
   "routes": [
-
-    /* TENANT SITES — wildcard subdomains */
     {
       "src": "^/(.*)$",
       "dest": "/tenant/index.html",
@@ -22,8 +20,6 @@
         }
       ]
     },
-
-    /* CLEAN ITEM ROUTER — marketing domain ONLY */
     {
       "src": "^/item/(.*)$",
       "dest": "/index.html",
@@ -34,8 +30,6 @@
         }
       ]
     },
-
-    /* MAIN MARKETING HOMEPAGE */
     {
       "src": "^/$",
       "dest": "/index.html",
@@ -46,12 +40,9 @@
         }
       ]
     },
-
-    /* SYSTEM ROUTES */
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "^/onboarding/?$", "dest": "/onboarding/index.html" },
     { "src": "^/success/?$", "dest": "/success/index.html" },
     { "src": "^/tenant/?$", "dest": "/tenant/index.html" }
-
   ]
 }
