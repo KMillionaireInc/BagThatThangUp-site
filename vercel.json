@@ -14,7 +14,13 @@
       "src": "^/$",
       "dest": "/index.html",
       "has": [
-        { "type": "host", "value": "bagthatthangup.com" },
+        { "type": "host", "value": "bagthatthangup.com" }
+      ]
+    },
+    {
+      "src": "^/$",
+      "dest": "/index.html",
+      "has": [
         { "type": "host", "value": "www.bagthatthangup.com" }
       ]
     },
@@ -22,7 +28,10 @@
       "src": "/(.*)",
       "dest": "/tenant/index.html",
       "has": [
-        { "type": "host", "value": "*.bagthatthangup.com" }
+        {
+          "type": "host",
+          "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$"
+        }
       ]
     },
     { "src": "/api/(.*)", "dest": "/api/$1" },
@@ -30,3 +39,4 @@
     { "src": "/success", "dest": "/success/index.html" }
   ]
 }
+
