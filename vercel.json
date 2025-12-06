@@ -11,27 +11,47 @@
   ],
   "routes": [
 
+    /* TENANT SITES — wildcard subdomains */
     {
-      "src": "/item/(.*)",
-      "dest": "/index.html",
+      "src": "^/(.*)$",
+      "dest": "/tenant/index.html",
       "has": [
-        { "type": "host", "value": "bagthatthangup.com" },
-        { "type": "host", "value": "*.bagthatthangup.com" }
+        {
+          "type": "host",
+          "value": "*.bagthatthangup.com"
+        }
       ]
     },
 
+    /* CLEAN ITEM ROUTER — marketing domain ONLY */
     {
-      "src": "/",
+      "src": "^/item/(.*)$",
       "dest": "/index.html",
       "has": [
-        { "type": "host", "value": "bagthatthangup.com" },
-        { "type": "host", "value": "*.bagthatthangup.com" }
+        {
+          "type": "host",
+          "value": "bagthatthangup.com"
+        }
       ]
     },
 
+    /* MAIN MARKETING HOMEPAGE */
+    {
+      "src": "^/$",
+      "dest": "/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "bagthatthangup.com"
+        }
+      ]
+    },
+
+    /* SYSTEM ROUTES */
     { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/onboarding", "dest": "/onboarding/index.html" },
-    { "src": "/success", "dest": "/success/index.html" },
-    { "src": "/tenant", "dest": "/tenant/index.html" }
+    { "src": "^/onboarding/?$", "dest": "/onboarding/index.html" },
+    { "src": "^/success/?$", "dest": "/success/index.html" },
+    { "src": "^/tenant/?$", "dest": "/tenant/index.html" }
+
   ]
 }
