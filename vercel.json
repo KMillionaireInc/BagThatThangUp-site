@@ -10,33 +10,15 @@
     { "src": "**/*.png", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "^/$",
-      "dest": "/index.html",
-      "has": [
-        { "type": "host", "value": "bagthatthangup.com" }
-      ]
-    },
-    {
-      "src": "^/$",
-      "dest": "/index.html",
-      "has": [
-        { "type": "host", "value": "www.bagthatthangup.com" }
-      ]
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/tenant/index.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$"
-        }
-      ]
-    },
     { "src": "/api/(.*)", "dest": "/api/$1" },
+
     { "src": "/onboarding", "dest": "/onboarding/index.html" },
-    { "src": "/success", "dest": "/success/index.html" }
+    { "src": "/success", "dest": "/success/index.html" },
+
+    { "src": "^/$", "dest": "/index.html" },
+
+    { "src": "/(.*)", "dest": "/tenant/index.html", "has": [
+      { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+    ]}
   ]
 }
-
