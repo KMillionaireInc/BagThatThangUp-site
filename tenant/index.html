@@ -199,6 +199,31 @@
     #asinCopyPill:hover {
       opacity: 1;
     }
+
+    /* Secret Benable copy pill */
+#benablePill {
+  position: fixed;
+  bottom: 16px;
+  left: 56px; /* sits just to the right of the ASIN pill */
+  z-index: 9999;
+  background: #000;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+#benablePill:hover {
+  opacity: 1;
+}
+
   </style>
 </head>
 <body>
@@ -275,6 +300,9 @@
 
   <!-- Secret ASIN copy pill -->
   <div id="asinCopyPill" title="Copy all ASINs">A</div>
+
+  <!-- Secret Benable Pill -->
+<div id="benablePill" title="Copy Benable List">B</div>
 
   <script>
     function parseCSV(text){
@@ -484,7 +512,13 @@ function renderDeals(rows){
         '</svg>';
 
       return `
-        <div class="card" data-asin="${asin}" data-title="${title.toLowerCase()}" data-category="${category}">
+        <div class="card"
+          data-asin="${asin}"
+          data-title="${title.toLowerCase()}"
+          data-category="${category}"
+          data-deeplink="${deepLink}"
+        >
+
           <img 
             src="${imageURL}"
             alt="${title.replace(/"/g, '&quot;')}"
@@ -492,18 +526,23 @@ function renderDeals(rows){
             data-pin-title="${pinterestTitle}"
             data-pin-description="${pinterestDesc}"
           >
+
           <div class="info">
             <div class="asin">ASIN: ${asin}</div>
             <h3>
               <span>${title} ${ccBadge}</span>
               <span class="share-icon" onclick="shareDeal('${asin}')">${shareSVG}</span>
             </h3>
+
             ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
             ${priceHTML}
+
             ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
             ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
+
             <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
           </div>
+
           <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
         </div>
       `;
@@ -513,6 +552,7 @@ function renderDeals(rows){
   highlightDeepLinkedItem();
   updateDealCount();
 }
+
 
 
     function filterDeals(){
@@ -650,6 +690,80 @@ function renderDeals(rows){
       t.style.opacity="1";
       setTimeout(()=>t.style.opacity="0",1200);
     }
+    window.copyDealLink = copyDealLink;
+
+    /* -----------------------------------------------------------
+   BENABLE LIST BUILDER (20 links from CURRENT FILTERED CATEGORY)
+--------------------------------------------------------------*/
+(function() {
+
+  function getFilteredCards() {
+    return Array.from(document.querySelectorAll(".card"))
+      .filter(c => c.style.display !== "none");
+  }
+
+  function buildBenableList() {
+    const cards = getFilteredCards();
+
+    // Limit to 20 items
+    const selected = cards.slice(0, 20);
+
+    if (selected.length === 0) {
+      showToast("No items found.");
+      return;
+    }
+
+    // Determine category from the first visible card
+    const category = selected[0].dataset.category || "These";
+
+    // Build title
+    const listTitle = `Today’s ${category} Finds I’m Saving`;
+
+    // Build description (friendly, personal)
+    const listDesc =
+      `Sharing some of my favorite ${category} finds from today. ` +
+      `These came straight from my BagThatThangUp feed, ` +
+      `so if you’re browsing around for ${category} ideas, ` +
+      `here’s what caught my eye.`;
+
+    // Build each item
+    let itemsBlock = "";
+
+    selected.forEach(card => {
+      const link = card.getAttribute("data-deeplink");
+
+      const note =
+        `I pulled this one from today’s ${category} feed. ` +
+        `Just saving it here in case you’re looking for something like this too.`;
+
+      itemsBlock += `${link}\nNOTE: ${note}\n\n`;
+    });
+
+    // Final formatted package
+    const output =
+      `LIST TITLE:\n${listTitle}\n\n` +
+      `LIST DESCRIPTION:\n${listDesc}\n\n` +
+      `ITEMS:\n${itemsBlock}`;
+
+    navigator.clipboard.writeText(output).then(() => {
+      showToast("Benable List Copied!");
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.opacity = "1";
+    setTimeout(() => (t.style.opacity = "0"), 1200);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const pill = document.getElementById("benablePill");
+    if (pill) pill.addEventListener("click", buildBenableList);
+  });
+
+})();
+
   </script>
 </body>
 </html>
