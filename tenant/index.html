@@ -304,18 +304,17 @@
   /* ------------------------------------------------------
      CLEAN URL ROUTER — MUST RUN BEFORE ALL OTHER JS
   ------------------------------------------------------ */
-// Pinterest-safe clean URL router
-(function() {
+
+  // Read /item/ASIN path once, no redirect
+  let DEEPLINK_ASIN = null;
+
+  (function() {
     const path = window.location.pathname;
     const match = path.match(/^\/item\/([A-Z0-9]{10})$/i);
-
     if (match) {
-        const asin = match[1];
-
-        // Convert clean URL → existing deep-link modal
-        window.location.search = "?item=" + asin;
+      DEEPLINK_ASIN = match[1];
     }
-})();
+  })();
 
 
   /* ------------------------------------------------------
@@ -418,7 +417,7 @@
       }catch(e){}
   }
 
-  // FIXED: build base URL from hostname + protocol so deep links don't 404 on mobile [web:65]
+  // build base URL from hostname + protocol so deep links don't 404 on mobile
   function createShareLink(asin){
     const host = window.location.hostname || "bagthatthangup.com";
     const protocol = window.location.protocol === "http:" ? "http:" : "https:";
@@ -579,7 +578,7 @@
   document.getElementById("searchInput").addEventListener("input",filterDeals);
 
   function highlightDeepLinkedItem(){
-    const asin=new URLSearchParams(window.location.search).get("item");
+    const asin = DEEPLINK_ASIN || new URLSearchParams(window.location.search).get("item");
     if(!asin)return;
     let attempts=0;
     const max=20;
@@ -621,7 +620,7 @@
 
   fetchTenantInfo().then(()=>{
     loadDeals("today");
-    const asin = new URLSearchParams(window.location.search).get("item");
+    const asin = DEEPLINK_ASIN || new URLSearchParams(window.location.search).get("item");
     if(asin) resolveDeepLinkTab(asin);
   });
 
