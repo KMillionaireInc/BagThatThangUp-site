@@ -15,11 +15,20 @@
     { "src": "/onboarding", "dest": "/onboarding/index.html" },
     { "src": "/success", "dest": "/success/index.html" },
 
-    { "src": "^/$", "dest": "/index.html" },
+    {
+      "src": "^/item/(.*)$",
+      "dest": "/tenant/index.html",
+      "has": [
+        { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+      ]
+    },
 
-    { "src": "/(.*)", "dest": "/tenant/index.html", "has": [
-      { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
-    ]}
+    {
+      "src": "/(.*)",
+      "dest": "/tenant/index.html",
+      "has": [
+        { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+      ]
+    }
   ]
 }
-
