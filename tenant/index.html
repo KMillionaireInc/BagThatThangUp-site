@@ -410,6 +410,24 @@ if (getYourOwnLink) {
   }
 }
 
+      /* HEADER affiliate links */
+const getYourOwnLinkHeader = document.getElementById("getYourOwnLink_header");
+if (getYourOwnLinkHeader) {
+  if (bagthatAffiliate) {
+    getYourOwnLinkHeader.href = bagthatAffiliate;
+  } else {
+    getYourOwnLinkHeader.href = "https://www.bagthatthangup.com/";
+  }
+}
+
+/* Header “Become an affiliate” should mirror footer */
+const becomeAffiliateFooter = document.getElementById("becomeAffiliateLink");
+const becomeAffiliateHeader = document.getElementById("becomeAffiliateLink_header");
+
+if (becomeAffiliateFooter && becomeAffiliateHeader) {
+  becomeAffiliateHeader.href = becomeAffiliateFooter.href;
+}
+
         const links={
           amazon:s.amazon_url,
           instagram:s.instagram_url,
