@@ -5,6 +5,7 @@
     { "src": "api/**/*.js", "use": "@vercel/node" },
 
     { "src": "*.html", "use": "@vercel/static" },
+    { "src": "tenant/**/*.html", "use": "@vercel/static" },
     { "src": "onboarding/**/*.html", "use": "@vercel/static" },
     { "src": "success/**/*.html", "use": "@vercel/static" }
   ],
@@ -18,6 +19,22 @@
     {
       "src": "^/$",
       "dest": "/index.html"
+    },
+
+    {
+      "src": "^/item/(.*)$",
+      "dest": "/tenant/index.html",
+      "has": [
+        { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+      ]
+    },
+
+    {
+      "src": "/(.*)",
+      "dest": "/tenant/index.html",
+      "has": [
+        { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+      ]
     }
   ]
 }
