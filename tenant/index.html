@@ -412,10 +412,13 @@ if (getYourOwnLink) {
 
       /* HEADER affiliate links */
 const getYourOwnLinkHeader = document.getElementById("getYourOwnLink_header");
+
 if (getYourOwnLinkHeader) {
   if (bagthatAffiliate) {
+    // Tenant IS an affiliate → use THEIR affiliate URL from Supabase
     getYourOwnLinkHeader.href = bagthatAffiliate;
   } else {
+    // Tenant is NOT an affiliate → send to main landing page
     getYourOwnLinkHeader.href = "https://www.bagthatthangup.com/";
   }
 }
