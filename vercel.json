@@ -17,20 +17,8 @@
 
     { "src": "^/$", "dest": "/index.html" },
 
-    {
-      "src": "^/(.*\\.(png|jpg|jpeg|gif|webp|svg))$",
-      "dest": "/$1"
-    },
-
-    {
-      "src": "/(.*)",
-      "dest": "/tenant/index.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$"
-        }
-      ]
-    }
+    { "src": "/(.*)", "dest": "/tenant/index.html", "has": [
+      { "type": "host", "value": "^(?<tenant>.+)\\.bagthatthangup\\.com$" }
+    ]}
   ]
 }
