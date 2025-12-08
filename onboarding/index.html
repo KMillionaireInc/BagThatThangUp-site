@@ -170,6 +170,10 @@
     <label for="tiktokUrl">TikTok URL</label>
     <input type="text" id="tiktokUrl" placeholder="https://www.tiktok.com/@yourname" />
 
+    <!-- NEW LTK FIELD -->
+    <label for="ltkUrl">LTK URL</label>
+    <input type="text" id="ltkUrl" placeholder="https://www.shopltk.com/explore/yourname" />
+
     <button type="submit" id="submitBtn" disabled>Submit</button>
     <div id="msg"></div>
   </form>
@@ -293,7 +297,10 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     facebook_url: document.getElementById('facebookUrl').value.trim(),
     youtube_url: document.getElementById('youtubeUrl').value.trim(),
     pinterest_url: document.getElementById('pinterestUrl').value.trim(),
-    tiktok_url: document.getElementById('tiktokUrl').value.trim()
+    tiktok_url: document.getElementById('tiktokUrl').value.trim(),
+
+    // NEW FIELD SENT TO SUPABASE
+    ltk_url: document.getElementById('ltkUrl').value.trim()
   }];
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
