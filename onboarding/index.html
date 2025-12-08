@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <script>
-  // ACCESS CONTROL
   const allowedKeys = [
-    "bt47_f1a8c9e3b7d24658"  // NEW $47 plan key (only key allowed now)
+    "bt47_f1a8c9e3b7d24658"
   ];
   const key = new URLSearchParams(window.location.search).get("plan_key");
   if (!allowedKeys.includes(key)) {
@@ -170,7 +169,7 @@
     <label for="tiktokUrl">TikTok URL</label>
     <input type="text" id="tiktokUrl" placeholder="https://www.tiktok.com/@yourname" />
 
-    <!-- NEW LTK FIELD -->
+    <!-- NEW: LTK FIELD -->
     <label for="ltkUrl">LTK URL</label>
     <input type="text" id="ltkUrl" placeholder="https://www.shopltk.com/explore/yourname" />
 
@@ -299,7 +298,7 @@ document.getElementById('onboarding-form').addEventListener('submit', async func
     pinterest_url: document.getElementById('pinterestUrl').value.trim(),
     tiktok_url: document.getElementById('tiktokUrl').value.trim(),
 
-    // NEW FIELD SENT TO SUPABASE
+    /* NEW FIELD */
     ltk_url: document.getElementById('ltkUrl').value.trim()
   }];
 
@@ -362,3 +361,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
