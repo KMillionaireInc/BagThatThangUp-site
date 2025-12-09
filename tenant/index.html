@@ -268,14 +268,12 @@
   </header>
 
   <div id="socialLinksBar" style="text-align:center;padding:14px 0;background:#f6f4ee;border-bottom:1px solid #e7e0d4;display:none;">
-    <a id="btnAmazon" href="#" target="_blank">Amazon</a>
-    <a id="btnInstagram" href="#" target="_blank">Instagram</a>
-    <a id="btnFacebook" href="#" target="_blank">Facebook</a>
-    <a id="btnYouTube" href="#" target="_blank">YouTube</a>
-    <a id="btnPinterest" href="#" target="_blank">Pinterest</a>
-    <a id="btnTikTok" href="#" target="_blank">TikTok</a>
-
-    <!-- LTK -->
+    <a id="btnAmazon" href="#" target="_blank" style="display:none;">Amazon</a>
+    <a id="btnInstagram" href="#" target="_blank" style="display:none;">Instagram</a>
+    <a id="btnFacebook" href="#" target="_blank" style="display:none;">Facebook</a>
+    <a id="btnYouTube" href="#" target="_blank" style="display:none;">YouTube</a>
+    <a id="btnPinterest" href="#" target="_blank" style="display:none;">Pinterest</a>
+    <a id="btnTikTok" href="#" target="_blank" style="display:none;">TikTok</a>
     <a id="btnLTK" href="#" target="_blank" style="display:none;">LTK</a>
   </div>
 
@@ -347,7 +345,6 @@
   <!-----------------------  JAVASCRIPT ------------------------->
 
 <script>
-
   function parseCSV(text){
       const rows=[];let row=[];let cell="";let insideQuotes=false;
       for(let i=0;i<text.length;i++){
@@ -442,19 +439,46 @@
       links.pinterest=normalizeSocial(links.pinterest,"pinterest");
       links.tiktok=normalizeSocial(links.tiktok,"tiktok");
 
-      if(links.amazon)btnAmazon.href=links.amazon;
-      if(links.instagram)btnInstagram.href=links.instagram;
-      if(links.facebook)btnFacebook.href=links.facebook;
-      if(links.youtube)btnYouTube.href=links.youtube;
-      if(links.pinterest)btnPinterest.href=links.pinterest;
-      if(links.tiktok)btnTikTok.href=links.tiktok;
+      let anySocial = false;
+
+      if(links.amazon){
+        btnAmazon.href=links.amazon;
+        btnAmazon.style.display="inline-block";
+        anySocial = true;
+      }
+      if(links.instagram){
+        btnInstagram.href=links.instagram;
+        btnInstagram.style.display="inline-block";
+        anySocial = true;
+      }
+      if(links.facebook){
+        btnFacebook.href=links.facebook;
+        btnFacebook.style.display="inline-block";
+        anySocial = true;
+      }
+      if(links.youtube){
+        btnYouTube.href=links.youtube;
+        btnYouTube.style.display="inline-block";
+        anySocial = true;
+      }
+      if(links.pinterest){
+        btnPinterest.href=links.pinterest;
+        btnPinterest.style.display="inline-block";
+        anySocial = true;
+      }
+      if(links.tiktok){
+        btnTikTok.href=links.tiktok;
+        btnTikTok.style.display="inline-block";
+        anySocial = true;
+      }
 
       if (links.ltk) {
         btnLTK.href = links.ltk;
         btnLTK.style.display = "inline-block";
+        anySocial = true;
       }
 
-      if(links.amazon||links.instagram||links.facebook||links.youtube||links.pinterest||links.tiktok||links.ltk){
+      if(anySocial){
         socialLinksBar.style.display="block";
       }
 
@@ -643,11 +667,11 @@
     dealCount.textContent="Deals: "+cards.length;
   }
 
- const buttons = {
-  today: document.getElementById("tab-today"),
-  yesterday: document.getElementById("tab-yesterday"),
-  almost: document.getElementById("tab-almost")
-};
+  const buttons = {
+    today: document.getElementById("tab-today"),
+    yesterday: document.getElementById("tab-yesterday"),
+    almost: document.getElementById("tab-almost")
+  };
 
   Object.entries(buttons).forEach(([key,btn])=>{
     btn.addEventListener("click",()=>{
@@ -726,26 +750,37 @@
     setTimeout(()=>toast.style.opacity="0",1200);
   }
   window.copyDealLink = copyDealLink;
-
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  sharePageBtn.addEventListener("click", () => {
-    const url = window.location.origin;
+(function () {
+  function initShareBtn() {
+    const sharePageBtn = document.getElementById("sharePageBtn");
+    const toast = document.getElementById("toast");
+    if (!sharePageBtn || !toast) return;
 
-    if (navigator.share) {
-      navigator.share({ url });
-      return;
-    }
+    sharePageBtn.addEventListener("click", () => {
+      const url = window.location.origin;
 
-    navigator.clipboard.writeText(url).then(() => {
-      toast.textContent = "Page Link Copied!";
-      toast.style.opacity = "1";
-      setTimeout(() => (toast.style.opacity = "0"), 1200);
+      if (navigator.share) {
+        navigator.share({ url });
+        return;
+      }
+
+      navigator.clipboard.writeText(url).then(() => {
+        toast.textContent = "Page Link Copied!";
+        toast.style.opacity = "1";
+        setTimeout(() => (toast.style.opacity = "0"), 1200);
+      });
     });
-  });
-});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initShareBtn);
+  } else {
+    initShareBtn();
+  }
+})();
 </script>
 
 </body>
