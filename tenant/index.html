@@ -643,11 +643,11 @@
     dealCount.textContent="Deals: "+cards.length;
   }
 
-  const buttons={
-    today:tab-today,
-    yesterday:tab-yesterday,
-    almost:tab-almost
-  };
+ const buttons = {
+  today: document.getElementById("tab-today"),
+  yesterday: document.getElementById("tab-yesterday"),
+  almost: document.getElementById("tab-almost")
+};
 
   Object.entries(buttons).forEach(([key,btn])=>{
     btn.addEventListener("click",()=>{
