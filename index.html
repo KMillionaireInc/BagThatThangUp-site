@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BagThatThangUp – Automated Deals-Site Builder for Amazon Creators</title>
+
+  <!-- SOCIAL PREVIEW -->
+  <meta property="og:title" content="BagThatThangUp – Automated Deals-Site Builder for Amazon Creators">
+  <meta property="og:description" content="Your branded deals site updates itself every day with fresh promo codes so you stay consistent and earn more without posting nonstop.">
+  <meta property="og:image" content="/hero.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bagthatthangup.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="/hero.jpg">
+
+  <link rel="icon" type="image/png" href="/custompro.png"/>
+
+  <style>
+    :root {
+      --bg:#f6f5f3;
+      --ink:#1b1b1b;
+      --muted:#575757;
+      --accent:#b7a98b;
+      --white:#ffffff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    body {
+      margin:0;
+      font-family:"Inter",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+
+    /* NAV */
+    nav {
+      width:100%;
+      padding:1.2rem 2rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:blur(8px);
+      position:sticky;
+      top:0;
+      z-index:5000;
+      box-shadow:0 4px 18px rgba(0,0,0,0.06);
+    }
+    nav a {
+      color:var(--ink);
+      text-decoration:none;
+      font-weight:500;
+    }
+    nav .cta-nav {
+      padding:0.7rem 1.3rem;
+      background:var(--accent);
+      color:#fff;
+      border-radius:var(--radius);
+      font-weight:600;
+    }
+
+    /* HERO */
+    header {
+      background:
+        linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
+        url("/hero.jpg") center/cover no-repeat;
+      text-align:center;
+      color:var(--white);
+      padding:7rem 1.5rem 6rem;
+    }
+    header h1 {
+      font-size:2.8rem;
+      font-weight:800;
+      margin-bottom:1rem;
+      line-height:1.2;
+    }
+    header p {
+      font-size:1.2rem;
+      max-width:750px;
+      margin:0 auto 2rem;
+    }
+
+    .cta {
+      display:inline-block;
+      padding:1.2rem 2.3rem;
+      background:var(--accent);
+      color:var(--white);
+      border-radius:var(--radius);
+      text-decoration:none;
+      font-weight:600;
+      font-size:1.2rem;
+    }
+    .cta:hover {opacity:0.9;}
+
+    .cta-secondary {
+      display:inline-block;
+      padding:1.2rem 2.3rem;
+      background:var(--white);
+      color:var(--ink);
+      border-radius:var(--radius);
+      text-decoration:none;
+      font-weight:600;
+      font-size:1.2rem;
+      border:1px solid var(--accent);
+    }
+    .cta-secondary:hover {background:var(--accent); color:#fff;}
+
+    /* SECTIONS */
+    section {
+      max-width:1100px;
+      margin:4rem auto;
+      padding:0 1.5rem;
+    }
+    .content {
+      background:var(--white);
+      padding:2rem;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .split {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:2rem;
+      align-items:center;
+    }
+    h2 {font-size:2rem; margin-bottom:1rem;}
+    h3 {font-size:1.35rem; margin-bottom:0.6rem;}
+    p, ul {color:var(--muted); margin-bottom:1rem;}
+    ul {padding-left:1.3rem;}
+
+    /* IMAGES */
+    .visual {
+      text-align:center;
+      margin:3rem 0;
+    }
+    .visual img,
+    .split img {
+      width:100%;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    footer {
+      text-align:center;
+      padding:2rem 1rem;
+      color:#666;
+      font-size:0.9rem;
+    }
+
+    @media(max-width:850px){
+      header {padding:5rem 1rem 4rem;}
+      header h1 {font-size:2rem;}
+      header p {font-size:1rem;}
+      .split {grid-template-columns:1fr;}
+      .content {padding:1.3rem;}
+      nav {padding:1rem;}
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div style="font-size:1.4rem; font-weight:800;">BagThatThangUp</div>
+  <div style="display:flex; gap:1.5rem; align-items:center;">
+    <a href="/">Home</a>
+    <a href="/story.html">Story</a>
+    <a href="/contact.html">Contact</a>
+    <a href="https://buy.stripe.com/fZu8wOdHH6vSezrczJ00004" class="cta-nav">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header>
+  <h1 style="line-height:1.2;">
+    BagThatThangUp:<br>
+    The Automated Deals-Site Builder<br>
+    for Amazon Creators
+  </h1>
+
+  <p>Your branded deals site updates itself every day with fresh promo codes so you stay consistent and earn more without posting nonstop.</p>
+
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="https://buy.stripe.com/fZu8wOdHH6vSezrczJ00004" class="cta">Start Now — $47/Month</a>
+    <a href="https://azillionaires.bagthatthangup.com" target="_blank" class="cta-secondary">View Live Site</a>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section>
+  <div class="content">
+    <h2>The Problem</h2>
+    <p>Amazon creators don’t struggle because they lack talent — they struggle because daily posting is relentless. Reach drops. Earnings stall. Burnout hits fast.</p>
+    <p>What you need isn’t more hustle. You need a system that works whether you show up or not.</p>
+  </div>
+</section>
+
+<div class="visual">
+  <img src="/frustrated.jpg" alt="Frustrated creator">
+</div>
+
+<!-- WHAT IT DOES -->
+<section>
+  <div class="content split">
+    <div>
+      <h2>What Your Automated Deals Site Does</h2>
+      <ul>
+        <li>Builds your deals site instantly</li>
+        <li>Updates itself every single morning</li>
+        <li>Removes expired promo codes automatically</li>
+        <li>Syncs to your Amazon Associate ID</li>
+        <li>Stays branded to your identity</li>
+        <li>Gives you one clean link to share anywhere</li>
+      </ul>
+    </div>
+    <div>
+      <img src="/feature1.jpg" alt="Automated deals site preview">
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT’S FOR -->
+<section>
+  <div class="content">
+    <h2>Who It’s For</h2>
+    <p>Built for affiliates, influencers, and deal-group admins who want consistency without posting all day — and want their earnings to grow without adding more hours of work.</p>
+  </div>
+</section>
+
+<!-- FEATURE CATALOG -->
+<section>
+  <div class="content">
+    <h2>Everything BagThatThangUp Handles For You</h2>
+
+    <div class="split">
+      <div>
+        <h3>Automation Engine</h3>
+        <ul>
+          <li>Daily promo-code ingestion</li>
+          <li>Automatic expired deal cleanup</li>
+          <li>Daily site refresh</li>
+          <li>Real-time updates across devices</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Branding & Customization</h3>
+        <ul>
+          <li>Your colors, logo, and brand identity</li>
+          <li>Bio + social links integrated</li>
+          <li>Clean, mobile-first layout</li>
+          <li>Professional, trustworthy presentation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:2rem;">
+      <div>
+        <h3>Audience Experience</h3>
+        <ul>
+          <li>Fresh deals daily</li>
+          <li>Zero expired links</li>
+          <li>Easy browsing for groups & followers</li>
+          <li>Shareable anywhere — social, SMS, groups</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Creator Advantages</h3>
+        <ul>
+          <li>Stop posting manually</li>
+          <li>Stop fighting algorithms</li>
+          <li>Stay consistent without burnout</li>
+          <li>Earn while focusing on content</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="visual">
+  <img src="/feature2.jpg" alt="Automation dashboard preview">
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="content">
+    <h2>How It Works</h2>
+    <ul>
+      <li><strong>1. Click Start Now to sign up</strong></li>
+      <li><strong>2. Enter your information</strong> — store ID, social links, profile details</li>
+      <li><strong>3. Click Submit</strong> — your site is ready instantly and updates daily</li>
+    </ul>
+
+    <a href="https://buy.stripe.com/fZu8wOdHH6vSezrczJ00004" class="cta">Start Now</a>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section>
+  <div class="content split">
+    <div>
+      <h2>The Result</h2>
+      <p>Your deals stay active. Your audience sees consistent content. You stop burning out. You earn more with less effort.</p>
+      <p>You wake up — and your site is already updated.</p>
+      <a href="https://buy.stripe.com/fZu8wOdHH6vSezrczJ00004" class="cta">Launch My Automated Site</a>
+    </div>
+    <div>
+      <img src="/freedom.jpg" alt="Creator feeling free from manual posting">
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS STATIC IMAGE + HORIZONTAL QUOTE CAROUSEL -->
+<section>
+  <div class="content" style="padding:2.5rem;">
+
+    <h2 style="margin-bottom:2rem;">What Creators Are Saying</h2>
+
+    <div class="split" style="align-items:center;">
+
+      <!-- LEFT: HORIZONTAL CAROUSEL -->
+      <div style="position:relative; overflow:hidden;">
+
+        <div class="quote-track" style="
+          display:flex;
+          transition:transform 0.6s ease;
+        ">
+
+          <!-- Slide 1 -->
+          <div class="quote-slide" style="min-width:100%;">
+            <strong style="font-size:1.3rem;">Kei Cov</strong>
+            <p>"I'm in love with BagThatThangUp."</p>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="quote-slide" style="min-width:100%;">
+            <strong style="font-size:1.3rem;">Paulette</strong>
+            <p>"This saved my life and my time."</p>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="quote-slide" style="min-width:100%;">
+            <strong style="font-size:1.3rem;">ShopTilYouDropWitHC</strong>
+            <p>"The setup is so easy!"</p>
+          </div>
+
+          <!-- Slide 4 -->
+          <div class="quote-slide" style="min-width:100%;">
+            <strong style="font-size:1.3rem;">Mondy Saving Deals + Homestead</strong>
+            <p>"My views and traction doubled in four days."</p>
+          </div>
+
+        </div>
+
+        <!-- ARROWS -->
+        <button class="quote-prev" style="
+          position:absolute;left:-5px;top:50%;transform:translateY(-50%);
+          width:40px;height:40px;border-radius:50%;border:1px solid #ddd;
+          background:white;cursor:pointer;box-shadow:var(--shadow);
+        ">&lt;</button>
+
+        <button class="quote-next" style="
+          position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+          width:40px;height:40px;border-radius:50%;border:1px solid #ddd;
+          background:white;cursor:pointer;box-shadow:var(--shadow);
+        ">&gt;</button>
+
+        <!-- DOTS -->
+        <div style="margin-top:1.5rem;">
+          <span class="quote-dot" data-slide="0" style="display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 6px;background:#ccc;cursor:pointer;"></span>
+          <span class="quote-dot" data-slide="1" style="display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 6px;background:#ccc;cursor:pointer;"></span>
+          <span class="quote-dot" data-slide="2" style="display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 6px;background:#ccc;cursor:pointer;"></span>
+          <span class="quote-dot" data-slide="3" style="display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 6px;background:#ccc;cursor:pointer;"></span>
+        </div>
+
+      </div>
+
+      <!-- RIGHT STATIC IMAGE -->
+      <div style="text-align:center;">
+        <img src="/testimonial.jpg"
+             alt="Testimonial Image"
+             style="width:100%; max-width:420px; border-radius:var(--radius); box-shadow:var(--shadow);">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const qTrack = document.querySelector(".quote-track");
+  const qDots = document.querySelectorAll(".quote-dot");
+  const qPrev = document.querySelector(".quote-prev");
+  const qNext = document.querySelector(".quote-next");
+  const qSlides = document.querySelectorAll(".quote-slide");
+
+  let qIndex = 0;
+  const qTotal = qSlides.length;
+
+  function updateQuote() {
+    qTrack.style.transform = `translateX(-${qIndex * 100}%)`;
+    qDots.forEach(dot => dot.style.background = "#ccc");
+    qDots[qIndex].style.background = "var(--accent)";
+  }
+
+  qNext.onclick = () => {
+    qIndex = (qIndex + 1) % qTotal;
+    updateQuote();
+  };
+
+  qPrev.onclick = () => {
+    qIndex = (qIndex - 1 + qTotal) % qTotal;
+    updateQuote();
+  };
+
+  qDots.forEach(dot => {
+    dot.onclick = () => {
+      qIndex = parseInt(dot.dataset.slide);
+      updateQuote();
+    };
+  });
+
+  setInterval(() => {
+    qIndex = (qIndex + 1) % qTotal;
+    updateQuote();
+  }, 5000);
+
+  updateQuote();
+</script>
+
+<footer>
+  <p>As an Amazon Associate, members may earn commissions from qualifying purchases.</p>
+  <p>&copy; BagThatThangUp</p>
+</footer>
+
+</body>
+</html>
+
