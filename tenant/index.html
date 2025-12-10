@@ -150,7 +150,7 @@
     /* Popup: Christmas green, slightly lower */
     #haulToaster {
       position:fixed; 
-      top:60%;          /* moved down from 50% */
+      top:60%;
       left:50%;
       transform:translate(-50%, -50%);
       background:#1E792C;
@@ -733,14 +733,13 @@
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
-    /* Delay popup to 3 seconds */
     setTimeout(()=>haulToaster.style.display="flex",3000);
     haulToaster.addEventListener("click",e=>{
-      if(!e.target.classList.contains("closeToaster"))
-        window.open(
-          "https://www.amazon.com/b/?node=210963928011&enabledRefinements=%5B%7B%22rid%22%3A%22p_n_availability%22%2C%22value%22%3A%222661600011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%2C%7B%22rid%22%3A%22p_n_condition-type%22%2C%22value%22%3A%226461716011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%5Dref_=nav_cs_events_hg_2025#dossier-asin-grid",
-          "_blank"
-        );
+      if(!e.target.classList.contains("closeToaster")) {
+        const baseHolidayUrl = "https://www.amazon.com/b/?node=210963928011&enabledRefinements=%5B%7B%22rid%22%3A%22p_n_availability%22%2C%22value%22%3A%222661600011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%2C%7B%22rid%22%3A%22p_n_condition-type%22%2C%22value%22%3A%226461716011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%5Dref_=nav_cs_events_hg_2025#dossier-asin-grid";
+        const taggedHolidayUrl = forceTag(baseHolidayUrl, amazonTag);
+        window.open(taggedHolidayUrl, "_blank");
+      }
     });
     document.querySelector(".closeToaster").addEventListener("click",e=>{
       e.stopPropagation();
