@@ -147,10 +147,14 @@
       font-weight:600; padding:6px 10px; border-radius:6px;
       z-index:9999; backdrop-filter:blur(4px);
     }
+    /* Popup: Christmas green, slightly lower */
     #haulToaster {
-      position:fixed; top:50%; left:50%;
+      position:fixed; 
+      top:60%;          /* moved down from 50% */
+      left:50%;
       transform:translate(-50%, -50%);
-      background:#ff7a00; color:#fff; border-radius:18px;
+      background:#1E792C;
+      color:#fff; border-radius:18px;
       padding:28px 32px; box-shadow:0 12px 28px rgba(0,0,0,0.22);
       font-family:Inter,sans-serif; display:none; align-items:center;
       gap:16px; z-index:99999; cursor:pointer;
@@ -317,7 +321,7 @@
   <div id="visitorCounter"></div>
 
   <div id="haulToaster">
-    AMAZON HIDDEN 50% OFF DEALS!
+    Amazon Holiday Deals!
     <div class="closeToaster">×</div>
   </div>
 
@@ -729,10 +733,14 @@
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
-    setTimeout(()=>haulToaster.style.display="flex",2000);
+    /* Delay popup to 3 seconds */
+    setTimeout(()=>haulToaster.style.display="flex",3000);
     haulToaster.addEventListener("click",e=>{
       if(!e.target.classList.contains("closeToaster"))
-        window.open("https://www.amazon.com/b/?_encoding=UTF8&node=122430396011","_blank");
+        window.open(
+          "https://www.amazon.com/b/?node=210963928011&enabledRefinements=%5B%7B%22rid%22%3A%22p_n_availability%22%2C%22value%22%3A%222661600011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%2C%7B%22rid%22%3A%22p_n_condition-type%22%2C%22value%22%3A%226461716011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%5Dref_=nav_cs_events_hg_2025#dossier-asin-grid",
+          "_blank"
+        );
     });
     document.querySelector(".closeToaster").addEventListener("click",e=>{
       e.stopPropagation();
