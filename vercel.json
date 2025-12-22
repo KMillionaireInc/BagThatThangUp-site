@@ -12,6 +12,12 @@
     { "src": "/success", "dest": "/success/index.html" },
 
     { "src": "^/$", "dest": "/index.html" }
+  ],
+
+  "crons": [
+    {
+      "path": "/api/cron/generate-collages",
+      "schedule": "30 8 * * *"
+    }
   ]
 }
-
