@@ -543,6 +543,26 @@
     return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
   }
 
+  /* NEW: try to open Amazon app on mobile when possible */
+  function toAmazonAppLink(url) {
+    if (!url) return url;
+    const ua = navigator.userAgent || "";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
+
+    if (!isMobile) {
+      // Desktop: keep normal URL
+      return url;
+    }
+
+    try {
+      const u = new URL(url);
+      // Example: https://www.amazon.com/dp/ASIN?tag=...  ->  amazon://www.amazon.com/dp/ASIN?tag=...
+      return "amazon://" + u.host + u.pathname + (u.search || "");
+    } catch (e) {
+      return url;
+    }
+  }
+
   function getCategoryHashtags(cat) {
     const map = {
       "Kitchen": "#kitchenideas #homeinspo",
@@ -577,7 +597,9 @@
         const originalPrice = r[21] || "";
         const category = r[13] || "Finds";
 
-        const url = forceTag(taggedLink, amazonTag);
+        const url = toAmazonAppLink(
+          forceTag(taggedLink, amazonTag)
+        );
         const deepLink = createShareLink(asin);
 
         const pinterestTitle = `Trending ${category} find worth saving today`;
@@ -742,13 +764,15 @@
 
   document.addEventListener("DOMContentLoaded",()=>{
     setTimeout(()=>haulToaster.style.display="flex",3000);
-haulToaster.addEventListener("click", e => {
-  if (!e.target.classList.contains("closeToaster")) {
-    const baseAmazonUrl = "https://www.amazon.com/haul/store";
-    const taggedAmazonUrl = forceTag(baseAmazonUrl, amazonTag);
-    window.open(taggedAmazonUrl, "_blank");
-  }
-});
+    haulToaster.addEventListener("click", e => {
+      if (!e.target.classList.contains("closeToaster")) {
+        const baseAmazonUrl = "https://www.amazon.com/haul/store";
+        const taggedAmazonUrl = toAmazonAppLink(
+          forceTag(baseAmazonUrl, amazonTag)
+        );
+        window.open(taggedAmazonUrl, "_blank");
+      }
+    });
     document.querySelector(".closeToaster").addEventListener("click",e=>{
       e.stopPropagation();
       haulToaster.style.display="none";
