@@ -155,8 +155,8 @@
   background:#FF8C00;
   color:#fff;
   border-radius:18px;
-  padding:28px 44px;          /* wider feel */
-  min-width:320px;            /* ensures width */
+  padding:28px 44px;
+  min-width:320px;
   max-width:92%;
   box-shadow:0 12px 28px rgba(0,0,0,0.22);
   font-family:Inter,sans-serif;
@@ -626,6 +626,7 @@
             data-title="${title.toLowerCase()}"
             data-category="${category}"
             data-deeplink="${deepLink}"
+            data-cc="${ccFlag || ""}"
           >
 
             <img 
@@ -750,13 +751,22 @@
   function copyVisibleAsins() {
     const visibleCards = Array.from(document.querySelectorAll(".card"))
       .filter(c => c.style.display !== "none");
-    const asins = visibleCards
+
+    const ccAsins = visibleCards
+      .filter(c => (c.getAttribute("data-cc") || "").toLowerCase() === "yes")
       .map(c => c.getAttribute("data-asin"))
       .filter(Boolean);
-    if (!asins.length) return;
-    const list = asins.join(",");
+
+    if (!ccAsins.length) {
+      toast.textContent = "No CC ASINs visible.";
+      toast.style.opacity = "1";
+      setTimeout(() => toast.style.opacity = "0", 1200);
+      return;
+    }
+
+    const list = ccAsins.join(", ");
     navigator.clipboard.writeText(list).then(() => {
-      toast.textContent = "ASINs Copied!";
+      toast.textContent = `Copied ${ccAsins.length} CC ASIN${ccAsins.length === 1 ? "" : "s"}!`;
       toast.style.opacity = "1";
       setTimeout(() => toast.style.opacity = "0", 1200);
     });
