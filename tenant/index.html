@@ -88,10 +88,22 @@
       background:var(--white); border-radius:var(--radius);
       box-shadow:var(--shadow); overflow:hidden;
       display:flex; flex-direction:column;
+      position:relative;
     }
     .card.glow-highlight {
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
+    }
+    /* Collage selection checkbox */
+    .collage-checkbox {
+      position:absolute;
+      top:8px;
+      left:8px;
+      width:18px;
+      height:18px;
+      cursor:pointer;
+      accent-color:var(--accent);
+      z-index:5;
     }
     .card img {
       width:100%; object-fit:contain; aspect-ratio:1/1;
@@ -148,28 +160,28 @@
       z-index:9999; backdrop-filter:blur(4px);
     }
    #haulToaster {
-  position:fixed; 
-  top:60%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  background:#FF8C00;
-  color:#fff;
-  border-radius:18px;
-  padding:28px 44px;
-  min-width:320px;
-  max-width:92%;
-  box-shadow:0 12px 28px rgba(0,0,0,0.22);
-  font-family:Inter,sans-serif;
-  display:none;
-  align-items:center;
-  gap:16px;
-  z-index:99999;
-  cursor:pointer;
-  animation:fadeInPop .45s ease-out;
-  font-weight:700;
-  font-size:18px;
-  text-align:center;
-}
+      position:fixed; 
+      top:60%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:#FF8C00;
+      color:#fff;
+      border-radius:18px;
+      padding:28px 44px;
+      min-width:320px;
+      max-width:92%;
+      box-shadow:0 12px 28px rgba(0,0,0,0.22);
+      font-family:Inter,sans-serif;
+      display:none;
+      align-items:center;
+      gap:16px;
+      z-index:99999;
+      cursor:pointer;
+      animation:fadeInPop .45s ease-out;
+      font-weight:700;
+      font-size:18px;
+      text-align:center;
+    }
     #haulToaster .closeToaster {
       position:absolute; top:10px; right:12px; font-size:24px;
       cursor:pointer; padding:4px 8px; color:#fff;
@@ -229,6 +241,111 @@
     #sharePageBtn:hover {
       filter: brightness(1.1);
       transform: translateY(-1px);
+    }
+
+    /* Collage action pill */
+    #collageActionPill {
+      position:fixed;
+      bottom:60px;
+      left:50%;
+      transform:translateX(-50%);
+      background:var(--accent);
+      color:#fff;
+      padding:10px 18px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:600;
+      box-shadow:0 4px 14px rgba(0,0,0,0.18);
+      display:none;
+      cursor:pointer;
+      z-index:9999;
+    }
+
+    /* Collage modal */
+    #collageModalBackdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:10000;
+    }
+    #collageModal {
+      background:#fff;
+      padding:16px;
+      border-radius:12px;
+      max-width:420px;
+      width:90%;
+      box-shadow:0 6px 24px rgba(0,0,0,0.25);
+    }
+    #collageSizeToggle {
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .toggle-option {
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid #d2d2d2;
+      cursor:pointer;
+    }
+    .toggle-option.active {
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+    #collagePreview {
+      width:100%;
+      background:#f3f3f3;
+      border-radius:8px;
+      margin-bottom:10px;
+    }
+    #collageCaption {
+      font-size:14px;
+      color:var(--ink);
+      background:#f9f8f6;
+      padding:10px;
+      border-radius:8px;
+      margin-bottom:10px;
+    }
+    .modal-actions {
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+    }
+    .modal-actions button {
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    #collageDownloadBtn {
+      background:var(--accent);
+      color:#fff;
+    }
+    #collageCopyCaptionBtn {
+      background:#eee;
+      color:#000;
+    }
+    #collageCloseBtn {
+      background:transparent;
+      color:#333;
+    }
+
+    /* Collage intro modal (every visit) */
+    #collageIntroBackdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:10001;
     }
   </style>
 </head>
@@ -335,6 +452,46 @@
 
   <div id="asinCopyPill" title="Copy all ASINs">A</div>
 
+  <!-- Collage action pill -->
+  <div id="collageActionPill">Build & Share Collage (0)</div>
+
+  <!-- Collage Modal -->
+  <div id="collageModalBackdrop">
+    <div id="collageModal">
+      <canvas id="collageCanvas" width="1080" height="1080" style="display:none;"></canvas>
+      <div id="collageSizeToggle">
+        <div class="toggle-option active" data-mode="square">Square (1080×1080)</div>
+        <div class="toggle-option" data-mode="story">Story (1080×1920)</div>
+      </div>
+      <img id="collagePreview" alt="Collage preview"/>
+      <div id="collageCaption"></div>
+      <div class="modal-actions">
+        <button id="collageCloseBtn">Close</button>
+        <button id="collageCopyCaptionBtn">Copy Caption</button>
+        <button id="collageDownloadBtn">Download Image</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collage Intro Modal (every visit) -->
+  <div id="collageIntroBackdrop">
+    <div style="
+      background:#fff; padding:20px; border-radius:14px;
+      max-width:420px; width:90%; text-align:center;">
+      <h2 style="margin-top:0;">New: Build & Share a Collage</h2>
+      <p style="font-size:14px; color:#333; margin:10px 0 16px;">
+        Check 4–6 promo code deals on this page and tap
+        <strong>Build &amp; Share Collage</strong> to get a ready-to-share image
+        and caption for your social media.
+      </p>
+      <button id="collageIntroGotIt" style="
+        border:none; border-radius:999px; padding:8px 16px;
+        background:var(--accent); color:#fff; font-weight:600; cursor:pointer;">
+        Got it
+      </button>
+    </div>
+  </div>
+
   <footer style="margin:32px auto 20px;max-width:700px;padding:14px 18px;border-top:1px solid #e3dbcf;text-align:center;font-size:14px;color:#1b1b1b;">
     <div style="margin-bottom:6px;font-weight:600;">Powered by BagThat</div>
     <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
@@ -382,6 +539,8 @@
   let storeName="";
   let allRows=[];
   const dealsEl=document.getElementById("deals");
+  let collageSelectedAsins = [];
+  let collageMode = "square"; // "square" | "story"[web:249]
 
   async function fetchTenantInfo(){
     try{
@@ -543,20 +702,18 @@
     return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
   }
 
-  /* NEW: try to open Amazon app on mobile when possible */
+  /* Try to open Amazon app on mobile when possible */
   function toAmazonAppLink(url) {
     if (!url) return url;
     const ua = navigator.userAgent || "";
     const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
 
     if (!isMobile) {
-      // Desktop: keep normal URL
       return url;
     }
 
     try {
       const u = new URL(url);
-      // Example: https://www.amazon.com/dp/ASIN?tag=...  ->  amazon://www.amazon.com/dp/ASIN?tag=...
       return "amazon://" + u.host + u.pathname + (u.search || "");
     } catch (e) {
       return url;
@@ -628,7 +785,7 @@
             data-deeplink="${deepLink}"
             data-cc="${ccFlag || ""}"
           >
-
+            <input type="checkbox" class="collage-checkbox" data-asin="${asin}">
             <img 
               src="${imageURL}"
               alt="${title.replace(/"/g, '&quot;')}"
@@ -658,6 +815,7 @@
       })
       .join("");
 
+    attachCollageCheckboxHandlers();
     highlightDeepLinkedItem();
     updateDealCount();
   }
@@ -799,6 +957,247 @@
     setTimeout(()=>toast.style.opacity="0",1200);
   }
   window.copyDealLink = copyDealLink;
+
+  /* Collage selection + pill */
+  function attachCollageCheckboxHandlers() {
+    collageSelectedAsins = [];
+    updateCollagePill();
+
+    const checkboxes = document.querySelectorAll(".collage-checkbox");
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        const asin = cb.getAttribute("data-asin");
+        if (cb.checked) {
+          if (!collageSelectedAsins.includes(asin)) {
+            collageSelectedAsins.push(asin);
+          }
+        } else {
+          collageSelectedAsins = collageSelectedAsins.filter(a => a !== asin);
+        }
+        updateCollagePill();
+      });
+    });
+  }
+
+  function updateCollagePill() {
+    const pill = document.getElementById("collageActionPill");
+    const count = collageSelectedAsins.length;
+    if (count > 0) {
+      pill.style.display = "block";
+      pill.textContent = `Build & Share Collage (${count})`;
+    } else {
+      pill.style.display = "none";
+    }
+  }
+
+  function clearCollageSelection() {
+    collageSelectedAsins = [];
+    document.querySelectorAll(".collage-checkbox").forEach(cb => {
+      cb.checked = false;
+    });
+    updateCollagePill();
+  }
+
+  /* Caption generator */
+  function generatePromoCaption(selectedCards) {
+    const n = selectedCards.length;
+    const url = window.location.origin;
+
+    const cats = selectedCards.map(c => c.dataset.category || "").filter(Boolean);
+    let catWord = "promo code";
+    if (cats.length) {
+      const freq = {};
+      cats.forEach(c => { freq[c] = (freq[c] || 0) + 1; });
+      const topCat = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
+      catWord = topCat + " promo code";
+    }
+
+    const templates = [
+      `These ${n} promo code deals are live *today* — prices and codes can change at any time 👇 Shop them here: ${url}`,
+      `Stack your savings while these promo code deals are still active 🔥 They update daily, so peek before they disappear: ${url}`,
+      `If you love catching ${catWord} deals *before* they're gone, don't skip these ${n} picks 👇 They won't all be here tomorrow: ${url}`
+    ];
+    const idx = Math.floor(Math.random() * templates.length);
+    return templates[idx];
+  }
+
+  /* Collage rendering (square or story) */
+  async function renderCollageImage(selectedCards) {
+    const canvas = document.getElementById("collageCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const isStory = (collageMode === "story");
+    const width = 1080;
+    const height = isStory ? 1920 : 1080; // story 9:16, square 1:1[web:249][web:252]
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.fillStyle = "#f3f3f3";
+    ctx.fillRect(0, 0, width, height);
+
+    const imgAreaY = 0;
+    const imgAreaHeight = height;
+
+    const imgElements = await Promise.all(
+      selectedCards.map(card => {
+        const imgEl = card.querySelector("img");
+        const src = imgEl ? imgEl.src : "";
+        return new Promise(resolve => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = src;
+        });
+      })
+    );
+
+    const count = imgElements.length;
+
+    let cols, rows;
+    if (isStory) {
+      cols = 2;
+      rows = Math.ceil(count / cols);
+    } else {
+      cols = count <= 3 ? count : Math.ceil(Math.sqrt(count));
+      rows = Math.ceil(count / cols);
+    }
+
+    const cellW = width / cols;
+    const cellH = imgAreaHeight / rows;
+
+    imgElements.forEach((img, index) => {
+      if (!img) return;
+      const col = index % cols;
+      const row = Math.floor(index / cols);
+      const x = col * cellW;
+      const y = imgAreaY + row * cellH;
+
+      const scale = Math.min(cellW / img.width, cellH / img.height);
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+      const dx = x + (cellW - drawW) / 2;
+      const dy = y + (cellH - drawH) / 2;
+
+      ctx.drawImage(img, dx, dy, drawW, drawH);
+    });
+
+    const dataUrl = canvas.toDataURL("image/png");
+    document.getElementById("collagePreview").src = dataUrl;
+  }
+
+  function getSelectedCardsForCollage() {
+    let selectedCards = collageSelectedAsins.length
+      ? collageSelectedAsins.map(asin => document.querySelector(`.card[data-asin="${asin}"]`)).filter(Boolean)
+      : [];
+
+    if (!selectedCards.length) {
+      const allCards = Array.from(document.querySelectorAll(".card"));
+      selectedCards = allCards.slice(0, 4);
+    }
+
+    if (selectedCards.length < 2) {
+      toast.textContent = "Select at least 2 items for a collage.";
+      toast.style.opacity = "1";
+      setTimeout(() => toast.style.opacity = "0", 1400);
+      return null;
+    }
+    if (selectedCards.length > 8) {
+      selectedCards = selectedCards.slice(0, 8);
+    }
+    return selectedCards;
+  }
+
+  async function createCollageFromSelection() {
+    const selectedCards = getSelectedCardsForCollage();
+    if (!selectedCards) return;
+
+    await renderCollageImage(selectedCards);
+
+    const caption = generatePromoCaption(selectedCards);
+    document.getElementById("collageCaption").textContent = caption;
+
+    document.getElementById("collageModalBackdrop").style.display="flex";
+  }
+
+  /* Collage modal + toggle controls */
+  (function(){
+    const pill = document.getElementById("collageActionPill");
+    const backdrop = document.getElementById("collageModalBackdrop");
+    const closeBtn = document.getElementById("collageCloseBtn");
+    const copyCaptionBtn = document.getElementById("collageCopyCaptionBtn");
+    const downloadBtn = document.getElementById("collageDownloadBtn");
+    const sizeToggle = document.getElementById("collageSizeToggle");
+
+    pill.addEventListener("click", createCollageFromSelection);
+
+    function closeCollageModal() {
+      backdrop.style.display="none";
+      clearCollageSelection();
+    }
+
+    closeBtn.addEventListener("click", closeCollageModal);
+    backdrop.addEventListener("click", e => {
+      if (e.target === backdrop) {
+        closeCollageModal();
+      }
+    });
+
+    sizeToggle.addEventListener("click", async (e) => {
+      const opt = e.target.closest(".toggle-option");
+      if (!opt) return;
+      const mode = opt.getAttribute("data-mode");
+      if (!mode || mode === collageMode) return;
+      collageMode = mode;
+
+      sizeToggle.querySelectorAll(".toggle-option").forEach(el => el.classList.remove("active"));
+      opt.classList.add("active");
+
+      const selectedCards = getSelectedCardsForCollage();
+      if (!selectedCards) return;
+
+      await renderCollageImage(selectedCards);
+    });
+
+    copyCaptionBtn.addEventListener("click", () => {
+      const caption = document.getElementById("collageCaption").textContent || "";
+      if (!caption) return;
+      navigator.clipboard.writeText(caption).then(()=>{
+        toast.textContent = "Caption copied!";
+        toast.style.opacity = "1";
+        setTimeout(() => toast.style.opacity = "0", 1200);
+      });
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      const canvas = document.getElementById("collageCanvas");
+      const link = document.createElement("a");
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth()+1).padStart(2,"0");
+      const d = String(now.getDate()).padStart(2,"0");
+      const dateStr = `${y}${m}${d}`;
+
+      const modeLabel = (collageMode === "story") ? "vertical" : "square";
+      link.href = canvas.toDataURL("image/png");
+      link.download = `bagthatthangup-${modeLabel}-collage-${dateStr}.png`;
+      link.click();
+    });
+  })();
+
+  /* Collage Intro modal ON EVERY VISIT */
+  (function(){
+    const backdrop = document.getElementById("collageIntroBackdrop");
+    function dismissIntro() {
+      backdrop.style.display = "none";
+    }
+    backdrop.style.display = "flex";
+    document.getElementById("collageIntroGotIt").addEventListener("click", dismissIntro);
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) dismissIntro();
+    });
+  })();
 </script>
 
 <script>
