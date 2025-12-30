@@ -94,17 +94,17 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
-    /* Collage selection checkbox */
-    .collage-checkbox {
-      position:absolute;
-      top:8px;
-      left:8px;
-      width:18px;
-      height:18px;
-      cursor:pointer;
-      accent-color:var(--accent);
-      z-index:5;
-    }
+/* Collage selection checkbox – move to top right */
+.collage-checkbox {
+  position:absolute;
+  top:8px;
+  right:8px;   /* was left:8px */
+  width:18px;
+  height:18px;
+  cursor:pointer;
+  accent-color:var(--accent);
+  z-index:5;
+}
     .card img {
       width:100%; object-fit:contain; aspect-ratio:1/1;
       background:var(--white); padding:12px;
