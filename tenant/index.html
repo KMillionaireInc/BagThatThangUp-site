@@ -94,17 +94,17 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
-/* Collage selection checkbox – move to top right */
-.collage-checkbox {
-  position:absolute;
-  top:8px;
-  right:8px;   /* was left:8px */
-  width:18px;
-  height:18px;
-  cursor:pointer;
-  accent-color:var(--accent);
-  z-index:5;
-}
+    /* Collage selection checkbox – move to top right */
+    .collage-checkbox {
+      position:absolute;
+      top:8px;
+      right:8px;
+      width:18px;
+      height:18px;
+      cursor:pointer;
+      accent-color:var(--accent);
+      z-index:5;
+    }
     .card img {
       width:100%; object-fit:contain; aspect-ratio:1/1;
       background:var(--white); padding:12px;
@@ -159,8 +159,8 @@
       font-weight:600; padding:6px 10px; border-radius:6px;
       z-index:9999; backdrop-filter:blur(4px);
     }
-   #haulToaster {
-      position:fixed; 
+    #haulToaster {
+      position:fixed;
       top:60%;
       left:50%;
       transform:translate(-50%, -50%);
@@ -510,18 +510,16 @@
     </div>
   </footer>
 
-
-  <!-----------------------  JAVASCRIPT ------------------------->
-
+<!-----------------------  JAVASCRIPT ------------------------->
 <script>
   function parseCSV(text){
       const rows=[];let row=[];let cell="";let insideQuotes=false;
       for(let i=0;i<text.length;i++){
         const c=text[i];
-        if(c==='"'&&text[i+1]==='"'){cell+='"';i++;continue;}
-        if(c==='"'){insideQuotes=!insideQuotes;continue;}
+        if(c=='"'&&text[i+1]=='"'){cell+='"';i++;continue;}
+        if(c=='"'){insideQuotes=!insideQuotes;continue;}
         if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}
-        if(c==='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
+        if(c=='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
         cell+=c;
       }
       if(cell.length||row.length){row.push(cell);rows.push(row);}
@@ -540,7 +538,7 @@
   let allRows=[];
   const dealsEl=document.getElementById("deals");
   let collageSelectedAsins = [];
-  let collageMode = "square"; // "square" | "story"[web:249]
+  let collageMode = "square"; // "square" | "story" [file:1]
 
   async function fetchTenantInfo(){
     try{
@@ -695,16 +693,31 @@
     });
   }
 
+  // Ensure we always return a valid https Amazon URL with tag
   function forceTag(url, tag) {
     if (!url) return "";
-    if (!tag) return url;
-    if (url.includes("tag=")) return url;
-    return url + (url.includes("?") ? "&tag=" + tag : "?tag=" + tag);
+    let u = url.trim();
+
+    // If ASIN-only or path-like, normalize into full Amazon product URL
+    const asinMatch = u.match(/^[A-Z0-9]{8,10}$/i);
+    if (asinMatch && asinMatch[0]) {
+      u = "https://www.amazon.com/dp/" + asinMatch[0];
+    }
+
+    if (!u.startsWith("http")) {
+      u = "https://" + u.replace(/^https?:\/\//, "");
+    }
+
+    if (!tag) return u;
+    if (u.includes("tag=")) return u;
+
+    const sep = u.includes("?") ? "&" : "?";
+    return u + sep + "tag=" + encodeURIComponent(tag);
   }
 
-  /* Try to open Amazon app on mobile when possible */
+  // Try to open Amazon app on mobile when possible but always keep a valid URL
   function toAmazonAppLink(url) {
-    if (!url) return url;
+    if (!url) return "";
     const ua = navigator.userAgent || "";
     const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
 
@@ -714,6 +727,8 @@
 
     try {
       const u = new URL(url);
+      // Only rewrite real Amazon URLs
+      if (!/amazon\./i.test(u.host)) return url;
       return "amazon://" + u.host + u.pathname + (u.search || "");
     } catch (e) {
       return url;
@@ -754,9 +769,9 @@
         const originalPrice = r[21] || "";
         const category = r[13] || "Finds";
 
-        const url = toAmazonAppLink(
-          forceTag(taggedLink, amazonTag)
-        );
+        // Build a safe Amazon URL and then a mobile deep link where appropriate
+        const baseUrl = forceTag(taggedLink, amazonTag);
+        const url = toAmazonAppLink(baseUrl);
         const deepLink = createShareLink(asin);
 
         const pinterestTitle = `Trending ${category} find worth saving today`;
@@ -809,7 +824,7 @@
               <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
             </div>
 
-            <a class="cta" href="${url}" target="_blank">Go to Amazon</a>
+            <a class="cta" href="${url}" target="_blank" rel="nofollow noopener">Go to Amazon</a>
           </div>
         `;
       })
@@ -1028,7 +1043,7 @@
 
     const isStory = (collageMode === "story");
     const width = 1080;
-    const height = isStory ? 1920 : 1080; // story 9:16, square 1:1[web:249][web:252]
+    const height = isStory ? 1920 : 1080;
 
     canvas.width = width;
     canvas.height = height;
