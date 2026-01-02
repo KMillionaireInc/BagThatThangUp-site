@@ -94,6 +94,7 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
+    /* Collage selection checkbox – top right */
     .collage-checkbox {
       position:absolute;
       top:8px;
@@ -239,7 +240,6 @@
       filter: brightness(1.1);
       transform: translateY(-1px);
     }
-
     #collageActionPill {
       position:fixed;
       bottom:60px;
@@ -256,7 +256,6 @@
       cursor:pointer;
       z-index:9999;
     }
-
     #collageModalBackdrop {
       position:fixed;
       inset:0;
@@ -322,7 +321,6 @@
     #collageDownloadBtn { background:var(--accent); color:#fff; }
     #collageCopyCaptionBtn { background:#eee; color:#000; }
     #collageCloseBtn { background:transparent; color:#333; }
-
     #collageIntroBackdrop {
       position:fixed;
       inset:0;
@@ -338,7 +336,7 @@
 <body>
 
   <div id="disclosure">
-    As an Amazon Associate, current president Donald Trump and partners earn from qualifying purchases.
+    As an Amazon Associate, I earn from qualifying purchases.
     Prices/Codes/Coupons can change anytime.
   </div>
 
@@ -494,17 +492,17 @@
 
 <script>
   function parseCSV(text){
-      const rows=[];let row=[];let cell="";let insideQuotes=false;
-      for(let i=0;i<text.length;i++){
-        const c=text[i];
-        if(c=='"'&&text[i+1]=='"'){cell+='"';i++;continue;}
-        if(c=='"'){insideQuotes=!insideQuotes;continue;}
-        if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}
-        if(c=='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
-        cell+=c;
-      }
-      if(cell.length||row.length){row.push(cell);rows.push(row);}
-      return rows;
+    const rows=[];let row=[];let cell="";let insideQuotes=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(c=='"'&&text[i+1]=='"'){cell+='"';i++;continue;}
+      if(c=='"'){insideQuotes=!insideQuotes;continue;}
+      if(c===','&&!insideQuotes){row.push(cell);cell="";continue;}
+      if(c=='\n'&&!insideQuotes){row.push(cell);rows.push(row);row=[];cell="";continue;}
+      cell+=c;
+    }
+    if(cell.length||row.length){row.push(cell);rows.push(row);}
+    return rows;
   }
 
   const CSV_URLS={
@@ -670,24 +668,48 @@
     });
   }
 
+  // NEW: safer URL normalizer for Amazon links
   function forceTag(url, tag) {
     if (!url) return "";
-    let u = url.trim();
 
+    // Normalize to string and trim
+    let u = String(url).trim();
+
+    // Strip any line breaks that may come from CSV
+    u = u.replace(/[\r\n]/g, "").trim();
+
+    // If just an ASIN, build a dp URL
     const asinMatch = u.match(/^[A-Z0-9]{8,10}$/i);
     if (asinMatch && asinMatch[0]) {
       u = "https://www.amazon.com/dp/" + asinMatch[0];
     }
 
+    // If missing http, assume bare amazon host/path
     if (!u.startsWith("http")) {
-      u = "https://" + u.replace(/^https?:\/\//, "");
+      u = u.replace(/^https?:\/\//, "").trim();
+      if (!/amazon\./i.test(u)) {
+        return "";
+      }
+      u = "https://" + u;
     }
 
-    if (!tag) return u;
-    if (u.includes("tag=")) return u;
+    // Validate with URL parser and ensure it's an Amazon host
+    try {
+      const parsed = new URL(u);
+      if (!/amazon\./i.test(parsed.host)) {
+        return "";
+      }
+    } catch (e) {
+      return "";
+    }
 
-    const sep = u.includes("?") ? "&" : "?";
-    return u + sep + "tag=" + encodeURIComponent(tag);
+    // Append tag only if not already present
+    if (tag && !u.includes("tag=")) {
+      const sep = u.includes("?") ? "&" : "?";
+      u = u + sep + "tag=" + encodeURIComponent(tag);
+    }
+
+    return u;
   }
 
   function getCategoryHashtags(cat) {
@@ -724,7 +746,9 @@
         const originalPrice = r[21] || "";
         const category = r[13] || "Finds";
 
-        const url = forceTag(taggedLink, amazonTag);
+        // Clean and validate URL; if invalid, url = ""
+        let url = forceTag(taggedLink, amazonTag);
+
         const deepLink = createShareLink(asin);
 
         const pinterestTitle = `Trending ${category} find worth saving today`;
@@ -744,6 +768,10 @@
         const priceHTML = orig
           ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
           : `<div class="price"><span class="discount">$${disc}</span></div>`;
+
+        const ctaHTML = url
+          ? `<a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>`
+          : `<div class="cta" style="opacity:0.6;cursor:not-allowed;">Link unavailable</div>`;
 
         return `
           <div class="card"
@@ -777,8 +805,7 @@
               <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
             </div>
 
-            <!-- open in same tab to avoid iOS popup heuristics -->
-            <a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>
+            ${ctaHTML}
           </div>
         `;
       })
