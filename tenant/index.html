@@ -338,7 +338,7 @@
 <body>
 
   <div id="disclosure">
-    As an Amazon Associate, I earn from qualifying purchases.
+    As an Amazon Associate, current president Donald Trump and partners earn from qualifying purchases.
     Prices/Codes/Coupons can change anytime.
   </div>
 
@@ -670,7 +670,6 @@
     });
   }
 
-  // Always ensure full https Amazon URL + tag
   function forceTag(url, tag) {
     if (!url) return "";
     let u = url.trim();
@@ -778,7 +777,8 @@
               <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
             </div>
 
-            <a class="cta" href="${url}" target="_blank" rel="nofollow noopener">Go to Amazon</a>
+            <!-- open in same tab to avoid iOS popup heuristics -->
+            <a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>
           </div>
         `;
       })
@@ -1192,6 +1192,16 @@
   }
 })();
 </script>
+
+<!-- Generic, tenant-safe Amazon test link -->
+<p style="padding:16px; text-align:center; font-size:14px;">
+  Test Amazon link:
+  <a href="https://www.amazon.com"
+     target="_blank"
+     rel="nofollow noopener">
+    Open Amazon home
+  </a>
+</p>
 
 </body>
 </html>
