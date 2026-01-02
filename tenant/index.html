@@ -94,7 +94,6 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
-    /* Collage selection checkbox – top right */
     .collage-checkbox {
       position:absolute;
       top:8px;
@@ -658,6 +657,14 @@
     const rows=parseCSV(text).slice(1);
     allRows=rows;
     renderDeals(rows);
+
+    // DEBUG: show first CTA href so you can compare
+    setTimeout(() => {
+      const firstCta = document.querySelector(".card .cta");
+      if (firstCta) {
+        alert("DEBUG CTA HREF:\n" + firstCta.href);
+      }
+    }, 500);
   }
 
   function copyCode(code){
@@ -668,23 +675,17 @@
     });
   }
 
-  // NEW: safer URL normalizer for Amazon links
   function forceTag(url, tag) {
     if (!url) return "";
 
-    // Normalize to string and trim
     let u = String(url).trim();
-
-    // Strip any line breaks that may come from CSV
     u = u.replace(/[\r\n]/g, "").trim();
 
-    // If just an ASIN, build a dp URL
     const asinMatch = u.match(/^[A-Z0-9]{8,10}$/i);
     if (asinMatch && asinMatch[0]) {
       u = "https://www.amazon.com/dp/" + asinMatch[0];
     }
 
-    // If missing http, assume bare amazon host/path
     if (!u.startsWith("http")) {
       u = u.replace(/^https?:\/\//, "").trim();
       if (!/amazon\./i.test(u)) {
@@ -693,7 +694,6 @@
       u = "https://" + u;
     }
 
-    // Validate with URL parser and ensure it's an Amazon host
     try {
       const parsed = new URL(u);
       if (!/amazon\./i.test(parsed.host)) {
@@ -703,7 +703,6 @@
       return "";
     }
 
-    // Append tag only if not already present
     if (tag && !u.includes("tag=")) {
       const sep = u.includes("?") ? "&" : "?";
       u = u + sep + "tag=" + encodeURIComponent(tag);
@@ -746,9 +745,7 @@
         const originalPrice = r[21] || "";
         const category = r[13] || "Finds";
 
-        // Clean and validate URL; if invalid, url = ""
         let url = forceTag(taggedLink, amazonTag);
-
         const deepLink = createShareLink(asin);
 
         const pinterestTitle = `Trending ${category} find worth saving today`;
@@ -1220,7 +1217,6 @@
 })();
 </script>
 
-<!-- Generic, tenant-safe Amazon test link -->
 <p style="padding:16px; text-align:center; font-size:14px;">
   Test Amazon link:
   <a href="https://www.amazon.com"
