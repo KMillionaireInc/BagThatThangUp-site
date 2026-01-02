@@ -94,7 +94,6 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
-    /* Collage selection checkbox – move to top right */
     .collage-checkbox {
       position:absolute;
       top:8px;
@@ -219,9 +218,7 @@
       cursor: pointer;
       opacity: 0.7;
     }
-    #asinCopyPill:hover {
-      opacity: 1;
-    }
+    #asinCopyPill:hover { opacity: 1; }
     #sharePageBtn {
       margin-top: 10px;
       text-align: center;
@@ -243,7 +240,6 @@
       transform: translateY(-1px);
     }
 
-    /* Collage action pill */
     #collageActionPill {
       position:fixed;
       bottom:60px;
@@ -261,7 +257,6 @@
       z-index:9999;
     }
 
-    /* Collage modal */
     #collageModalBackdrop {
       position:fixed;
       inset:0;
@@ -324,20 +319,10 @@
       font-weight:600;
       cursor:pointer;
     }
-    #collageDownloadBtn {
-      background:var(--accent);
-      color:#fff;
-    }
-    #collageCopyCaptionBtn {
-      background:#eee;
-      color:#000;
-    }
-    #collageCloseBtn {
-      background:transparent;
-      color:#333;
-    }
+    #collageDownloadBtn { background:var(--accent); color:#fff; }
+    #collageCopyCaptionBtn { background:#eee; color:#000; }
+    #collageCloseBtn { background:transparent; color:#333; }
 
-    /* Collage intro modal (every visit) */
     #collageIntroBackdrop {
       position:fixed;
       inset:0;
@@ -452,10 +437,8 @@
 
   <div id="asinCopyPill" title="Copy all ASINs">A</div>
 
-  <!-- Collage action pill -->
   <div id="collageActionPill">Build & Share Collage (0)</div>
 
-  <!-- Collage Modal -->
   <div id="collageModalBackdrop">
     <div id="collageModal">
       <canvas id="collageCanvas" width="1080" height="1080" style="display:none;"></canvas>
@@ -473,7 +456,6 @@
     </div>
   </div>
 
-  <!-- Collage Intro Modal (every visit) -->
   <div id="collageIntroBackdrop">
     <div style="
       background:#fff; padding:20px; border-radius:14px;
@@ -510,7 +492,6 @@
     </div>
   </footer>
 
-<!-----------------------  JAVASCRIPT ------------------------->
 <script>
   function parseCSV(text){
       const rows=[];let row=[];let cell="";let insideQuotes=false;
@@ -538,7 +519,7 @@
   let allRows=[];
   const dealsEl=document.getElementById("deals");
   let collageSelectedAsins = [];
-  let collageMode = "square"; // "square" | "story" [file:1]
+  let collageMode = "square";
 
   async function fetchTenantInfo(){
     try{
@@ -565,11 +546,9 @@
 
       const bagthatAffiliate = (s.bagthat_affiliate_url || "").trim();
       const getYourOwnLink = document.getElementById("getYourOwnLink");
-
       if (getYourOwnLink) {
         getYourOwnLink.href = bagthatAffiliate || "https://www.bagthatthangup.com/";
       }
-
       const getYourOwnLinkHeader = document.getElementById("getYourOwnLink_header");
       if (getYourOwnLinkHeader) {
         getYourOwnLinkHeader.href = bagthatAffiliate || "https://www.bagthatthangup.com/";
@@ -640,7 +619,6 @@
         btnTikTok.style.display="inline-block";
         anySocial = true;
       }
-
       if (links.ltk) {
         btnLTK.href = links.ltk;
         btnLTK.style.display = "inline-block";
@@ -669,10 +647,9 @@
       navigator.share({ url: link });
     } else {
       navigator.clipboard.writeText(link);
-      const t = toast;
-      t.textContent = "Link Copied!";
-      t.style.opacity = "1";
-      setTimeout(() => t.style.opacity = "0", 1200);
+      toast.textContent = "Link Copied!";
+      toast.style.opacity = "1";
+      setTimeout(() => toast.style.opacity = "0", 1200);
     }
   }
 
@@ -693,12 +670,11 @@
     });
   }
 
-  // Ensure we always return a valid https Amazon URL with tag
+  // Always ensure full https Amazon URL + tag
   function forceTag(url, tag) {
     if (!url) return "";
     let u = url.trim();
 
-    // If ASIN-only or path-like, normalize into full Amazon product URL
     const asinMatch = u.match(/^[A-Z0-9]{8,10}$/i);
     if (asinMatch && asinMatch[0]) {
       u = "https://www.amazon.com/dp/" + asinMatch[0];
@@ -713,26 +689,6 @@
 
     const sep = u.includes("?") ? "&" : "?";
     return u + sep + "tag=" + encodeURIComponent(tag);
-  }
-
-  // Try to open Amazon app on mobile when possible but always keep a valid URL
-  function toAmazonAppLink(url) {
-    if (!url) return "";
-    const ua = navigator.userAgent || "";
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua);
-
-    if (!isMobile) {
-      return url;
-    }
-
-    try {
-      const u = new URL(url);
-      // Only rewrite real Amazon URLs
-      if (!/amazon\./i.test(u.host)) return url;
-      return "amazon://" + u.host + u.pathname + (u.search || "");
-    } catch (e) {
-      return url;
-    }
   }
 
   function getCategoryHashtags(cat) {
@@ -769,9 +725,7 @@
         const originalPrice = r[21] || "";
         const category = r[13] || "Finds";
 
-        // Build a safe Amazon URL and then a mobile deep link where appropriate
-        const baseUrl = forceTag(taggedLink, amazonTag);
-        const url = toAmazonAppLink(baseUrl);
+        const url = forceTag(taggedLink, amazonTag);
         const deepLink = createShareLink(asin);
 
         const pinterestTitle = `Trending ${category} find worth saving today`;
@@ -950,9 +904,7 @@
     haulToaster.addEventListener("click", e => {
       if (!e.target.classList.contains("closeToaster")) {
         const baseAmazonUrl = "https://www.amazon.com/haul/store";
-        const taggedAmazonUrl = toAmazonAppLink(
-          forceTag(baseAmazonUrl, amazonTag)
-        );
+        const taggedAmazonUrl = forceTag(baseAmazonUrl, amazonTag);
         window.open(taggedAmazonUrl, "_blank");
       }
     });
@@ -973,7 +925,6 @@
   }
   window.copyDealLink = copyDealLink;
 
-  /* Collage selection + pill */
   function attachCollageCheckboxHandlers() {
     collageSelectedAsins = [];
     updateCollagePill();
@@ -1013,7 +964,6 @@
     updateCollagePill();
   }
 
-  /* Caption generator */
   function generatePromoCaption(selectedCards) {
     const n = selectedCards.length;
     const url = window.location.origin;
@@ -1036,7 +986,6 @@
     return templates[idx];
   }
 
-  /* Collage rendering (square or story) */
   async function renderCollageImage(selectedCards) {
     const canvas = document.getElementById("collageCanvas");
     const ctx = canvas.getContext("2d");
@@ -1136,7 +1085,6 @@
     document.getElementById("collageModalBackdrop").style.display="flex";
   }
 
-  /* Collage modal + toggle controls */
   (function(){
     const pill = document.getElementById("collageActionPill");
     const backdrop = document.getElementById("collageModalBackdrop");
@@ -1201,7 +1149,6 @@
     });
   })();
 
-  /* Collage Intro modal ON EVERY VISIT */
   (function(){
     const backdrop = document.getElementById("collageIntroBackdrop");
     function dismissIntro() {
