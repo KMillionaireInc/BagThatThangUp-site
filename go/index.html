@@ -1,13 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Redirecting…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const asin = params.get("asin");
-    window.location.href = window.location.origin + "/?asin=" + asin;
+    (function () {
+      var path = window.location.pathname.split('/');
+      var asin = path[path.length - 1];
+
+      if (!asin || asin.length < 8) {
+        document.body.innerHTML = 'Invalid product link.';
+        return;
+      }
+
+      var tag = new URLSearchParams(window.location.search).get('tag') || 'DEFAULTTAG-20';
+
+      var amazonUrl =
+        'https://www.amazon.com/dp/' + asin +
+        '?tag=' + tag +
+        '&linkCode=ogi' +
+        '&th=1&psc=1' +
+        '&ref_=assoc_app_link';
+
+      var ua = navigator.userAgent || '';
+      var isInApp = /FBAN|FBAV|Instagram|Pinterest|TikTok|Snapchat/i.test(ua);
+
+      setTimeout(function () {
+        window.location.replace(amazonUrl);
+      }, isInApp ? 350 : 50);
+    })();
   </script>
 </head>
 <body>
-Redirecting...
+Redirecting to Amazon…
 </body>
 </html>
