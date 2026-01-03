@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Redirecting…</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script>
     (function () {
       var path = window.location.pathname.split('/');
@@ -14,21 +15,34 @@
         return;
       }
 
-      var tag = new URLSearchParams(window.location.search).get('tag') || 'DEFAULTTAG-20';
+      var params = new URLSearchParams(window.location.search);
+      var tag = params.get('tag') || 'DEFAULTTAG-20';
 
-      var amazonUrl =
+      var webUrl =
         'https://www.amazon.com/dp/' + asin +
         '?tag=' + tag +
-        '&linkCode=ogi' +
-        '&th=1&psc=1' +
-        '&ref_=assoc_app_link';
+        '&linkCode=ogi&th=1&psc=1&ref_=assoc_app_link';
+
+      var appUrl = 'amazon://dp/' + asin;
 
       var ua = navigator.userAgent || '';
+      var isIOS = /iPhone|iPad|iPod/i.test(ua);
+      var isAndroid = /Android/i.test(ua);
       var isInApp = /FBAN|FBAV|Instagram|Pinterest|TikTok|Snapchat/i.test(ua);
 
-      setTimeout(function () {
-        window.location.replace(amazonUrl);
-      }, isInApp ? 350 : 50);
+      function openWeb() {
+        window.location.replace(webUrl);
+      }
+
+      if (isIOS || isAndroid) {
+        // Attempt app open first
+        window.location.href = appUrl;
+
+        // Fallback to web after short delay
+        setTimeout(openWeb, isInApp ? 700 : 400);
+      } else {
+        openWeb();
+      }
     })();
   </script>
 </head>
