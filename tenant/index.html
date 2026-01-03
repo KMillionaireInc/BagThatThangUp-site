@@ -189,14 +189,7 @@
       0% { opacity:0; transform:translate(-50%, -45%) scale(.9); }
       100%{ opacity:1; transform:translate(-50%, -50%) scale(1); }
     }
-    .copy-link-btn {
-      background: var(--accent); color: white;
-      padding: 10px 14px; border-radius: 10px;
-      font-size: 14px; font-weight: 700; cursor: pointer;
-      width: fit-content; margin-top: 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-      transition: filter .2s ease, transform .2s ease;
-    }
+
     .copy-link-btn:hover {
       filter: brightness(1.08); transform: translateY(-1px);
     }
@@ -658,41 +651,36 @@
     });
   }
 
-  function forceTag(url, tag) {
-    if (!url) return "";
+function forceTag(url, tag) {
+  if (!url) return "";
 
-    let u = String(url).trim();
-    u = u.replace(/[\r\n]/g, "").trim();
+  let u = String(url).trim().replace(/[\r\n]/g, "");
 
-    const asinMatch = u.match(/^[A-Z0-9]{8,10}$/i);
-    if (asinMatch && asinMatch[0]) {
-      u = "https://www.amazon.com/dp/" + asinMatch[0];
-    }
-
-    if (!u.startsWith("http")) {
-      u = u.replace(/^https?:\/\//, "").trim();
-      if (!/amazon\./i.test(u)) {
-        return "";
-      }
-      u = "https://" + u;
-    }
-
-    try {
-      const parsed = new URL(u);
-      if (!/amazon\./i.test(parsed.host)) {
-        return "";
-      }
-    } catch (e) {
-      return "";
-    }
-
+  // Allow BagThat redirect links
+  if (u.includes("/go/")) {
     if (tag && !u.includes("tag=")) {
       const sep = u.includes("?") ? "&" : "?";
-      u = u + sep + "tag=" + encodeURIComponent(tag);
+      return u + sep + encodeURIComponent("tag=" + tag);
     }
-
     return u;
   }
+
+  // Fallback for legacy Amazon links
+  if (/^[A-Z0-9]{8,10}$/i.test(u)) {
+    u = "https://www.amazon.com/dp/" + u;
+  }
+
+  if (!u.startsWith("http")) {
+    u = "https://" + u.replace(/^https?:\/\//, "");
+  }
+
+  if (tag && !u.includes("tag=")) {
+    const sep = u.includes("?") ? "&" : "?";
+    u += sep + "tag=" + encodeURIComponent(tag);
+  }
+
+  return u;
+}
 
   function getCategoryHashtags(cat) {
     const map = {
@@ -782,7 +770,7 @@
               ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
               ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
 
-              <div class="copy-link-btn" onclick="copyDealLink('${url}')">Copy Amazon Link</div>
+             
             </div>
 
             ${ctaHTML}
@@ -923,20 +911,6 @@
     asinCopyPill.addEventListener("click", copyVisibleAsins);
     dealCount.addEventListener("click", copyVisibleAsins);
   });
-
-  function copyDealLink(url){
-    if (!url) {
-      toast.textContent="No Amazon link available.";
-      toast.style.opacity="1";
-      setTimeout(()=>toast.style.opacity="0",1200);
-      return;
-    }
-    navigator.clipboard.writeText(url);
-    toast.textContent="Link Copied!";
-    toast.style.opacity="1";
-    setTimeout(()=>toast.style.opacity="0",1200);
-  }
-  window.copyDealLink = copyDealLink;
 
   function attachCollageCheckboxHandlers() {
     collageSelectedAsins = [];
@@ -1208,4 +1182,3 @@
 
 </body>
 </html>
-
