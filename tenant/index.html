@@ -142,9 +142,10 @@
       margin-top:10px; width:fit-content;
     }
     .cta {
-      margin-top:auto; background:var(--accent); color:white;
-      padding:14px; text-align:center; font-weight:700;
+      margin-top:auto; background:#f3efe7; color:var(--ink);
+      padding:10px 14px; text-align:center; font-weight:600;
       text-decoration:none; border-radius:0 0 var(--radius) var(--radius);
+      font-size:13px;
     }
     #toast {
       position:fixed; bottom:20px; left:50%;
@@ -239,6 +240,7 @@
       filter: brightness(1.1);
       transform: translateY(-1px);
     }
+
     #collageActionPill {
       position:fixed;
       bottom:60px;
@@ -255,6 +257,7 @@
       cursor:pointer;
       z-index:9999;
     }
+
     #collageModalBackdrop {
       position:fixed;
       inset:0;
@@ -320,6 +323,7 @@
     #collageDownloadBtn { background:var(--accent); color:#fff; }
     #collageCopyCaptionBtn { background:#eee; color:#000; }
     #collageCloseBtn { background:transparent; color:#333; }
+
     #collageIntroBackdrop {
       position:fixed;
       inset:0;
@@ -416,7 +420,7 @@
     <div id="searchContainer" style="position:relative;">
       <input id="searchInput" placeholder="Search deals..." />
       <svg id="searchIcon" width="20" height="20" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"></circle>
+        ircle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
     </div>
@@ -438,7 +442,7 @@
 
   <div id="collageModalBackdrop">
     <div id="collageModal">
-      <canvas id="collageCanvas" width="1080" height="1080" style="display:none;"></canvas>
+      anvas id="collageCanvas" width="1080" height="1080" style="display:none;"></canvas>
       <div id="collageSizeToggle">
         <div class="toggle-option active" data-mode="square">Square (1080×1080)</div>
         <div class="toggle-option" data-mode="story">Story (1080×1920)</div>
@@ -657,14 +661,6 @@
     const rows=parseCSV(text).slice(1);
     allRows=rows;
     renderDeals(rows);
-
-    // DEBUG: show first CTA href so you can compare
-    setTimeout(() => {
-      const firstCta = document.querySelector(".card .cta");
-      if (firstCta) {
-        alert("DEBUG CTA HREF:\n" + firstCta.href);
-      }
-    }, 500);
   }
 
   function copyCode(code){
@@ -766,10 +762,6 @@
           ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
           : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
-        const ctaHTML = url
-          ? `<a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>`
-          : `<div class="cta" style="opacity:0.6;cursor:not-allowed;">Link unavailable</div>`;
-
         return `
           <div class="card"
             data-asin="${asin}"
@@ -799,10 +791,12 @@
               ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
               ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
 
-              <div class="copy-link-btn" onclick="copyDealLink('${deepLink}')">Copy Link</div>
+              <div class="copy-link-btn" onclick="copyDealLink('${url}')">Copy Amazon Link</div>
             </div>
 
-            ${ctaHTML}
+            <div class="cta">
+              After copying, paste in your Amazon app or browser search bar.
+            </div>
           </div>
         `;
       })
@@ -942,6 +936,12 @@
   });
 
   function copyDealLink(url){
+    if (!url) {
+      toast.textContent="No Amazon link available.";
+      toast.style.opacity="1";
+      setTimeout(()=>toast.style.opacity="0",1200);
+      return;
+    }
     navigator.clipboard.writeText(url);
     toast.textContent="Link Copied!";
     toast.style.opacity="1";
@@ -1216,15 +1216,6 @@
   }
 })();
 </script>
-
-<p style="padding:16px; text-align:center; font-size:14px;">
-  Test Amazon link:
-  <a href="https://www.amazon.com"
-     target="_blank"
-     rel="nofollow noopener">
-    Open Amazon home
-  </a>
-</p>
 
 </body>
 </html>
