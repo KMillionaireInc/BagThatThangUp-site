@@ -142,10 +142,9 @@
       margin-top:10px; width:fit-content;
     }
     .cta {
-      margin-top:auto; background:#f3efe7; color:var(--ink);
-      padding:10px 14px; text-align:center; font-weight:600;
+      margin-top:auto; background:var(--accent); color:white;
+      padding:14px; text-align:center; font-weight:700;
       text-decoration:none; border-radius:0 0 var(--radius) var(--radius);
-      font-size:13px;
     }
     #toast {
       position:fixed; bottom:20px; left:50%;
@@ -642,18 +641,6 @@
     return protocol + "//" + host + "/?item=" + encodeURIComponent(asin);
   }
 
-  function shareDeal(asin){
-    const link = createShareLink(asin);
-    if (navigator.share) {
-      navigator.share({ url: link });
-    } else {
-      navigator.clipboard.writeText(link);
-      toast.textContent = "Link Copied!";
-      toast.style.opacity = "1";
-      setTimeout(() => toast.style.opacity = "0", 1200);
-    }
-  }
-
   async function loadDeals(type="today"){
     dealsEl.textContent="Loading deals...";
     const res=await fetch(CSV_URLS[type]);
@@ -762,6 +749,10 @@
           ? `<div class="price"><span class="discount">$${disc}</span><span class="original">$${orig}</span></div>`
           : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
+        const ctaHTML = url
+          ? `<a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>`
+          : `<div class="cta" style="opacity:0.6;cursor:not-allowed;">Amazon link unavailable</div>`;
+
         return `
           <div class="card"
             data-asin="${asin}"
@@ -794,9 +785,7 @@
               <div class="copy-link-btn" onclick="copyDealLink('${url}')">Copy Amazon Link</div>
             </div>
 
-            <div class="cta">
-              After copying, paste in your Amazon app or browser search bar.
-            </div>
+            ${ctaHTML}
           </div>
         `;
       })
@@ -1219,3 +1208,4 @@
 
 </body>
 </html>
+
