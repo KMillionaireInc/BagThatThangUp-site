@@ -6,6 +6,8 @@
   ],
 
   "routes": [
+    { "src": "/go/(.*)", "dest": "/go/index.html" },
+
     { "src": "/api/(.*)", "dest": "/api/$1" },
 
     { "src": "/onboarding", "dest": "/onboarding/index.html" },
