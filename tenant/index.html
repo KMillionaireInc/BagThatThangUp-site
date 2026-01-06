@@ -94,6 +94,22 @@
       box-shadow:0 0 18px rgba(183,169,139,0.8);
       border:2px solid var(--accent);
     }
+
+    /* NEW: top-left CC pill inside card */
+    .cc-pill {
+      position:absolute;
+      top:8px;
+      left:8px;
+      background:#16a34a; /* green */
+      color:#fff;
+      font-size:0.65rem;
+      font-weight:700;
+      padding:3px 7px;
+      border-radius:999px;
+      z-index:6;
+      letter-spacing:0.03em;
+    }
+
     .collage-checkbox {
       position:absolute;
       top:8px;
@@ -115,11 +131,14 @@
       display:flex; justify-content:space-between; align-items:center;
       color:var(--ink);
     }
+
+    /* OLD inline cc-badge kept in case you need it elsewhere, but no longer used next to title */
     .cc-badge {
       background:#f3efe7; color:var(--ink); font-size:0.7rem;
       padding:2px 6px; border-radius:6px; font-weight:700;
       margin-left:4px;
     }
+
     .share-icon { cursor:pointer; opacity:0.85; }
     .rating { font-size:0.9rem; color:#d1a500; margin-bottom:6px; }
     .price {
@@ -725,9 +744,8 @@ function forceTag(url, tag) {
           `This one keeps circulating lately, so pinning it for anyone looking for updated ${category} inspiration. ` +
           `#amazonfinds #dailyfinds #trendingnow ${getCategoryHashtags(category)}`;
 
-        const ccBadge = ccFlag && ccFlag.toLowerCase() === "yes"
-          ? '<span class="cc-badge">✔ CC</span>'
-          : "";
+        const isCC = ccFlag && ccFlag.toLowerCase() === "yes";
+        const ccPillHTML = isCC ? `<div class="cc-pill">CC</div>` : "";
 
         const normalizeMoney = v => String(v || "").replace(/\$/g, "").trim();
         const disc = normalizeMoney(discountPrice);
@@ -749,6 +767,7 @@ function forceTag(url, tag) {
             data-deeplink="${deepLink}"
             data-cc="${ccFlag || ""}"
           >
+            ${ccPillHTML}
             <input type="checkbox" class="collage-checkbox" data-asin="${asin}">
             <img 
               src="${imageURL}"
@@ -761,7 +780,7 @@ function forceTag(url, tag) {
             <div class="info">
               <div class="asin">ASIN: ${asin}</div>
               <h3>
-                <span>${title} ${ccBadge}</span>
+                <span>${title}</span>
               </h3>
 
               ${rating ? `<div class="rating">★ ${rating}</div>` : ""}
@@ -895,7 +914,7 @@ function forceTag(url, tag) {
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
-    setTimeout(()=>haulToaster.style.display="flex",3000);
+    setTimeout(()=>haulToaster.style.display="flex",20000);
     haulToaster.addEventListener("click", e => {
       if (!e.target.classList.contains("closeToaster")) {
         const baseAmazonUrl = "https://www.amazon.com/haul/store";
@@ -1136,12 +1155,33 @@ function forceTag(url, tag) {
     });
   })();
 
+  /* UPDATED: show intro only once per day using localStorage */
   (function(){
     const backdrop = document.getElementById("collageIntroBackdrop");
+    const STORAGE_KEY = "bt_collage_intro_last_shown";
+
+    function isSameDay(ts) {
+      const d1 = new Date(ts);
+      const d2 = new Date();
+      d1.setHours(0,0,0,0);
+      d2.setHours(0,0,0,0);
+      return d1.getTime() === d2.getTime();
+    }
+
+    const lastShown = localStorage.getItem(STORAGE_KEY);
+    const shouldShow = !lastShown || !isSameDay(parseInt(lastShown,10));
+
     function dismissIntro() {
       backdrop.style.display = "none";
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      localStorage.setItem(STORAGE_KEY, String(now.getTime()));
     }
-    backdrop.style.display = "flex";
+
+    if (shouldShow) {
+      backdrop.style.display = "flex";
+    }
+
     document.getElementById("collageIntroGotIt").addEventListener("click", dismissIntro);
     backdrop.addEventListener("click", (e) => {
       if (e.target === backdrop) dismissIntro();
