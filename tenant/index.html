@@ -18,14 +18,12 @@
       position: sticky; top: 0; z-index: 2000; background: var(--ink);
       color: var(--white); text-align: center; font-size: 14px;
       padding: 10px 12px; letter-spacing: 0.3px;
-
-      /* NEW: space on right for tiny bag icon */
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    /* NEW: tiny creator bag icon in disclosure bar */
+    /* tiny creator bag icon in disclosure bar */
     #creatorIconWrapper {
       position: absolute;
       right: 10px;
@@ -44,7 +42,7 @@
       opacity: 1;
     }
 
-    /* NEW: simple creator panel overlay */
+    /* creator panel overlay */
     #creatorPanelBackdrop {
       position: fixed;
       inset: 0;
@@ -162,7 +160,6 @@
       border:2px solid var(--accent);
     }
 
-    /* NEW: top-left CC pill inside card */
     .cc-pill {
       position:absolute;
       top:8px;
@@ -419,25 +416,29 @@
     As an Amazon Associate, I earn from qualifying purchases.
     Prices/Codes/Coupons can change anytime.
 
-    <!-- NEW tiny Creator bag icon -->
-<div id="creatorIconWrapper" title="Creator Panel">
-  <img
-    src="https://raw.githubusercontent.com/KMillionaireInc/BagThatThangUp-site/main/tenant/custompro.png"
-    alt="Creator Panel"
-  >
-</div>
-
-
+    <!-- tiny Creator bag icon -->
+    <div id="creatorIconWrapper" title="Creator Panel">
+      <img
+        src="https://raw.githubusercontent.com/KMillionaireInc/BagThatThangUp-site/main/tenant/custompro.png"
+        alt="Creator Panel"
+      >
+    </div>
   </div>
 
-  <!-- NEW Creator Panel overlay -->
+  <!-- Creator Panel overlay -->
   <div id="creatorPanelBackdrop">
     <div id="creatorPanel">
       <button id="creatorPanelClose" aria-label="Close creator panel">×</button>
       <div id="creatorPanelTitle">Creator Panel</div>
       <div id="creatorPanelBody">
-        This is your private BagThat Creator area.  
-        Future tools (like the Commission Booster Optimizer) will live here.
+        This is your private BagThat Creator area.<br>
+        Future tools (like the Commission Booster Optimizer) will live here.<br><br>
+
+        <strong>Visible deals:</strong>
+        <span id="creatorVisibleDeals">0</span><br>
+
+        <strong>Creator Connection items:</strong>
+        <span id="creatorCcCount">0</span>
       </div>
     </div>
   </div>
@@ -758,36 +759,34 @@
     });
   }
 
-function forceTag(url, tag) {
-  if (!url) return "";
+  function forceTag(url, tag) {
+    if (!url) return "";
 
-  let u = String(url).trim().replace(/[\r\n]/g, "");
+    let u = String(url).trim().replace(/[\r\n]/g, "");
 
-  // Allow BagThat redirect links
-  if (u.includes("/go/")) {
+    if (u.includes("/go/")) {
+      if (tag && !u.includes("tag=")) {
+        const sep = u.includes("?") ? "&" : "?";
+        return u + sep + encodeURIComponent("tag=" + tag);
+      }
+      return u;
+    }
+
+    if (/^[A-Z0-9]{8,10}$/i.test(u)) {
+      u = "https://www.amazon.com/dp/" + u;
+    }
+
+    if (!u.startsWith("http")) {
+      u = "https://" + u.replace(/^https?:\/\//, "");
+    }
+
     if (tag && !u.includes("tag=")) {
       const sep = u.includes("?") ? "&" : "?";
-      return u + sep + encodeURIComponent("tag=" + tag);
+      u += sep + "tag=" + encodeURIComponent(tag);
     }
+
     return u;
   }
-
-  // Fallback for legacy Amazon links
-  if (/^[A-Z0-9]{8,10}$/i.test(u)) {
-    u = "https://www.amazon.com/dp/" + u;
-  }
-
-  if (!u.startsWith("http")) {
-    u = "https://" + u.replace(/^https?:\/\//, "");
-  }
-
-  if (tag && !u.includes("tag=")) {
-    const sep = u.includes("?") ? "&" : "?";
-    u += sep + "tag=" + encodeURIComponent(tag);
-  }
-
-  return u;
-}
 
   function getCategoryHashtags(cat) {
     const map = {
@@ -877,7 +876,6 @@ function forceTag(url, tag) {
               ${promoCode ? `<div class="copy-code" onclick="copyCode('${promoCode}')">Copy Code: ${promoCode}</div>` : ""}
               ${hasCoupon ? `<div class="coupon-flag">+ coupon on listing</div>` : ""}
 
-             
             </div>
 
             ${ctaHTML}
@@ -928,7 +926,22 @@ function forceTag(url, tag) {
   function updateDealCount(){
     const cards=[...document.querySelectorAll(".card")]
       .filter(c=>c.style.display!=="none");
+
     dealCount.textContent="Deals: "+cards.length;
+
+    const creatorVisibleSpan = document.getElementById("creatorVisibleDeals");
+    const creatorCcSpan = document.getElementById("creatorCcCount");
+
+    if (creatorVisibleSpan) {
+      creatorVisibleSpan.textContent = cards.length;
+    }
+
+    if (creatorCcSpan) {
+      const ccVisible = cards.filter(c =>
+        (c.getAttribute("data-cc") || "").toLowerCase() === "yes"
+      ).length;
+      creatorCcSpan.textContent = ccVisible;
+    }
   }
 
   const buttons = {
@@ -1018,7 +1031,6 @@ function forceTag(url, tag) {
     asinCopyPill.addEventListener("click", copyVisibleAsins);
     dealCount.addEventListener("click", copyVisibleAsins);
 
-    // NEW: creator bag icon click behavior
     const creatorIcon = document.getElementById("creatorIconWrapper");
     const creatorBackdrop = document.getElementById("creatorPanelBackdrop");
     const creatorClose = document.getElementById("creatorPanelClose");
