@@ -942,8 +942,8 @@
           : `<div class="price"><span class="discount">$${disc}</span></div>`;
 
         const ctaHTML = url
-          ? `<a class="cta" href="${url}" rel="nofollow">Go to Amazon</a>`
-          : `<div class="cta" style="opacity:0.6;cursor:not-allowed;">Amazon link unavailable</div>`;
+  ? `<a class="cta" href="${url}" target="_blank" rel="nofollow noopener noreferrer">Go to Amazon</a>`
+  : `<div class="cta" style="opacity:0.6;cursor:not-allowed;">Amazon link unavailable</div>`;
 
         return `
           <div class="card"
