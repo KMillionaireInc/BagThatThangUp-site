@@ -903,7 +903,10 @@
   }
 
   function renderDeals(rows){
-    dealsEl.innerHTML = rows
+    // randomize order without mutating original rows
+    const shuffled = rows.slice().sort(() => Math.random() - 0.5);
+
+    dealsEl.innerHTML = shuffled
       .filter(r => r[1])
       .map(r => {
         const asin = r[1];
