@@ -303,40 +303,6 @@
       font-weight:600; padding:6px 10px; border-radius:6px;
       z-index:9999; backdrop-filter:blur(4px);
     }
-    #haulToaster {
-      position:fixed;
-      top:60%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      background:#c8102e;
-      color:#fff;
-      border-radius:24px;
-      padding:26px 40px;
-      min-width:320px;
-      max-width:92%;
-      box-shadow:0 12px 28px rgba(0,0,0,0.22);
-      font-family:Inter,sans-serif;
-      display:none;
-      align-items:center;
-      gap:16px;
-      z-index:99999;
-      cursor:pointer;
-      animation:fadeInPop .45s ease-out;
-      font-weight:700;
-      font-size:18px;
-      text-align:center;
-      background-image: radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0, transparent 55%),
-                       radial-gradient(circle at 90% 80%, rgba(255,192,203,0.35) 0, transparent 55%);
-    }
-
-    #haulToaster .closeToaster {
-      position:absolute; top:10px; right:12px; font-size:24px;
-      cursor:pointer; padding:4px 8px; color:#fff;
-    }
-    @keyframes fadeInPop {
-      0% { opacity:0; transform:translate(-50%, -45%) scale(.9); }
-      100%{ opacity:1; transform:translate(-50%, -50%) scale(1); }
-    }
 
     #asinCopyPill {
       position: fixed;
@@ -474,7 +440,6 @@
 </head>
 
 <body>
-
   <div id="disclosure">
     As an Amazon Associate, I earn from qualifying purchases.
     Prices/Codes/Coupons can change anytime.
@@ -620,11 +585,6 @@
 
   <div id="toast">Copied!</div>
   <div id="visitorCounter"></div>
-
-  <div id="haulToaster">
-    ❤️ Valentine’s Day Finds ❤️
-    <div class="closeToaster">×</div>
-  </div>
 
   <div id="asinCopyPill" title="Copy all ASINs">A</div>
 
@@ -862,6 +822,11 @@
     if (!url) return "";
 
     let u = String(url).trim().replace(/[\r\n]/g, "");
+
+    // If it looks like just a relative path, bail.
+    if (u.startsWith("/")) {
+      return u;
+    }
 
     // If it's an Amazon /go/ link
     if (u.includes("/go/")) {
@@ -1128,20 +1093,6 @@
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
-    setTimeout(()=>haulToaster.style.display="flex",120000);
-    haulToaster.addEventListener("click", e => {
-      if (!e.target.classList.contains("closeToaster")) {
-        const baseAmazonUrl = "https://www.amazon.com/b/?_encoding=UTF8&node=213319488011&enabledRefinements=%5B%7B%22rid%22%3A%22p_n_condition-type%22%2C%22value%22%3A%226461716011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%2C%7B%22rid%22%3A%22p_n_availability%22%2C%22value%22%3A%222661600011%22%2C%22ridType%22%3A%22SEARCH_SHORT_ID%22%2C%22type%22%3A%22BROWSE_NODE%22%7D%5D&pd_rd_w=KKOXG&content-id=amzn1.sym.c3de6daa-f1e0-4cf9-83ac-8a2da9fdf9a7&pf_rd_p=c3de6daa-f1e0-4cf9-83ac-8a2da9fdf9a7&pf_rd_r=9S2M3BTV1Q152WQEBEMJ&pd_rd_wg=phd86&pd_rd_r=7503ee83-f105-452f-9cbd-7a39ed630f59&ref_=pd_hp_d_btf_unk#dossier-asin-grid";
-        const taggedAmazonUrl = forceTag(baseAmazonUrl, amazonTag);
-        window.open(taggedAmazonUrl, "_blank");
-      }
-    });
-
-    document.querySelector(".closeToaster").addEventListener("click",e=>{
-      e.stopPropagation();
-      haulToaster.style.display="none";
-    });
-
     asinCopyPill.addEventListener("click", copyVisibleAsins);
     dealCount.addEventListener("click", copyVisibleAsins);
 
